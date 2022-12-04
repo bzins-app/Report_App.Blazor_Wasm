@@ -1,0 +1,2469 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="A report is a process that creates a file based on one or several queries against the database settings configured at the activity level. A report must be scheduled. The file format can be choosen and if need the a deposit path can be defined. A report can be also sent by email." xml:space="preserve">
+    <value>Een rapport is een proces dat een bestand aanmaakt op basis van een of meer query's tegen de database-instellingen die op het activiteitenniveau zijn geconfigureerd. Een rapport moet worden ingepland. Het bestandsformaat kan worden gekozen en indien nodig kan een depotpad worden gedefinieerd. Een rapport kan ook per e-mail worden verzonden.</value>
+  </data>
+  <data name="Acces failed count" xml:space="preserve">
+    <value>Aantal mislukte toegangen</value>
+  </data>
+  <data name="Access denied" xml:space="preserve">
+    <value>Toegang geweigerd</value>
+  </data>
+  <data name="account" xml:space="preserve">
+    <value>rekening</value>
+  </data>
+  <data name="Account updated" xml:space="preserve">
+    <value>Account bijgewerkt</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acties</value>
+  </data>
+  <data name="Activate report and email" xml:space="preserve">
+    <value>Activeer rapport en e-mail</value>
+  </data>
+  <data name="Activate SSL" xml:space="preserve">
+    <value>SSL activeren</value>
+  </data>
+  <data name="Activate the alert" xml:space="preserve">
+    <value>Activeer de waarschuwing</value>
+  </data>
+  <data name="Activate Workers and logs" xml:space="preserve">
+    <value>Activeer Werkers en logs</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Actief</value>
+  </data>
+  <data name="Activities" xml:space="preserve">
+    <value>Activiteiten</value>
+  </data>
+  <data name="Activities list" xml:space="preserve">
+    <value>Activiteiten lijst</value>
+  </data>
+  <data name="Activities manager" xml:space="preserve">
+    <value>Activiteiten manager</value>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Activiteit</value>
+  </data>
+  <data name="Activity deposit path" xml:space="preserve">
+    <value>Activiteit depot pad</value>
+  </data>
+  <data name="Activity id" xml:space="preserve">
+    <value>Activiteit id</value>
+  </data>
+  <data name="Activity manager" xml:space="preserve">
+    <value>Activiteit manager</value>
+  </data>
+  <data name="Activity name" xml:space="preserve">
+    <value>Naam activiteit</value>
+  </data>
+  <data name="Activity overview" xml:space="preserve">
+    <value>Activiteit overzicht</value>
+  </data>
+  <data name="Activity parameters" xml:space="preserve">
+    <value>Activiteit parameters</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Toevoegen</value>
+  </data>
+  <data name="Add a parameter" xml:space="preserve">
+    <value>Een parameter toevoegen</value>
+  </data>
+  <data name="Add a query" xml:space="preserve">
+    <value>Een query toevoegen</value>
+  </data>
+  <data name="Add a report" xml:space="preserve">
+    <value>Voeg een rapport toe</value>
+  </data>
+  <data name="Add another service to log in." xml:space="preserve">
+    <value>Voeg een andere dienst toe om in te loggen</value>
+  </data>
+  <data name="Add authenticator app" xml:space="preserve">
+    <value>Voeg authenticator app toe</value>
+  </data>
+  <data name="Add email recipient" xml:space="preserve">
+    <value>E-mail ontvanger toevoegen</value>
+  </data>
+  <data name="Add new credentials" xml:space="preserve">
+    <value>Nieuwe credentials toevoegen</value>
+  </data>
+  <data name="Add new sFTP" xml:space="preserve">
+    <value>Nieuwe sFTP toevoegen</value>
+  </data>
+  <data name="Add query" xml:space="preserve">
+    <value>Query toevoegen</value>
+  </data>
+  <data name="Add recipient" xml:space="preserve">
+    <value>Ontvanger toevoegen</value>
+  </data>
+  <data name="Add recipients" xml:space="preserve">
+    <value>Ontvangers toevoegen</value>
+  </data>
+  <data name="Add recipients to email report" xml:space="preserve">
+    <value>Ontvangers toevoegen aan e-mail rapport</value>
+  </data>
+  <data name="Add the primary key" xml:space="preserve">
+    <value>De primaire sleutel toevoegen</value>
+  </data>
+  <data name="Add validation sheet?" xml:space="preserve">
+    <value>Validatieblad toevoegen?</value>
+  </data>
+  <data name="Administrator email for error notifications" xml:space="preserve">
+    <value>Beheerder e-mail voor foutmeldingen</value>
+  </data>
+  <data name="Affected columns" xml:space="preserve">
+    <value>Betrokken kolommen</value>
+  </data>
+  <data name="Alert" xml:space="preserve">
+    <value>Waarschuwing</value>
+  </data>
+  <data name="Alert details" xml:space="preserve">
+    <value>Details van de waarschuwing</value>
+  </data>
+  <data name="Alert email prefix" xml:space="preserve">
+    <value>Waarschuwing e-mail voorvoegsel</value>
+  </data>
+  <data name="Alert service" xml:space="preserve">
+    <value>Waarschuwingsdienst</value>
+  </data>
+  <data name="Alert title" xml:space="preserve">
+    <value>Titel van de waarschuwing</value>
+  </data>
+  <data name="Alert title1" xml:space="preserve">
+    <value>Titel van de waarschuwing1</value>
+  </data>
+  <data name="Alert1" xml:space="preserve">
+    <value>Waarschuwing1</value>
+  </data>
+  <data name="Alerts" xml:space="preserve">
+    <value>Waarschuwingen</value>
+  </data>
+  <data name="All related data and sudata will be totally removed" xml:space="preserve">
+    <value>Alle gerelateerde gegevens en sudata zullen volledig worden verwijderd</value>
+  </data>
+  <data name="Allready have an account?" xml:space="preserve">
+    <value>Heeft u al een account?</value>
+  </data>
+  <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
+    <value>Een activiteit is in principe een verbinding met een specifieke database server en schema. Je kunt er een depotpad, een naam en een logo aan koppelen. Wanneer je een activiteit aanmaakt, wordt op de achtergrond een rol met dezelfde naam aangemaakt.</value>
+  </data>
+  <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
+    <value>Een waarschuwing is een proces dat een e-mail stuurt als een of meer query's een niet-nul resultaat opleveren ten opzichte van de database-instellingen die op activiteitniveau zijn geconfigureerd. Een waarschuwing moet worden gepland en de ontvangers van de e-mail moeten worden gedefinieerd</value>
+  </data>
+  <data name="An error has occurred" xml:space="preserve">
+    <value>Er is een fout opgetreden</value>
+  </data>
+  <data name="An error has occurred. This application may no longer respond until reloaded." xml:space="preserve">
+    <value>Er heeft zich een fout voorgedaan. Deze toepassing mag niet meer reageren tot ze herladen wordt.</value>
+  </data>
+  <data name="An unhandled exception has occurred. See browser dev tools for details." xml:space="preserve">
+    <value>Er is een niet-afgehandelde uitzondering opgetreden. Zie browser dev tools voor details.</value>
+  </data>
+  <data name="and" xml:space="preserve">
+    <value>en</value>
+  </data>
+  <data name="App DB name" xml:space="preserve">
+    <value>App DB naam</value>
+  </data>
+  <data name="Append" xml:space="preserve">
+    <value>Toevoegen</value>
+  </data>
+  <data name="Application Dashboard" xml:space="preserve">
+    <value>Toepassing Dashboard</value>
+  </data>
+  <data name="Application DB size" xml:space="preserve">
+    <value>DB-grootte toepassing</value>
+  </data>
+  <data name="Application intent read only?" xml:space="preserve">
+    <value>Applicatie intentie alleen lezen?</value>
+  </data>
+  <data name="Application logs charts" xml:space="preserve">
+    <value>Toepassingslogs grafieken</value>
+  </data>
+  <data name="Application logs follow up" xml:space="preserve">
+    <value>Applicatie logs follow-up</value>
+  </data>
+  <data name="Application Manager" xml:space="preserve">
+    <value>Applicatie Beheerder</value>
+  </data>
+  <data name="Application name" xml:space="preserve">
+    <value>Toepassingsnaam</value>
+  </data>
+  <data name="Application parameters" xml:space="preserve">
+    <value>Toepassing parameters</value>
+  </data>
+  <data name="Application structure" xml:space="preserve">
+    <value>Toepassingsstructuur</value>
+  </data>
+  <data name="Apply filters" xml:space="preserve">
+    <value>Filters toepassen</value>
+  </data>
+  <data name="Apr" xml:space="preserve">
+    <value>Apr</value>
+  </data>
+  <data name="Archiving duration in days" xml:space="preserve">
+    <value>Archiveringsduur in dagen</value>
+  </data>
+  <data name="Are you sure you want to create a file to the directory? It could interfer with other processes" xml:space="preserve">
+    <value>Weet je zeker dat je een bestand in de directory wilt zetten? Het zou andere processen kunnen hinderen</value>
+  </data>
+  <data name="Are you sure you want to transfer data? It could interfer with other processes" xml:space="preserve">
+    <value>Weet u zeker dat u gegevens wilt verzenden? Het zou kunnen interfereren met andere processen</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>Ben je zeker?</value>
+  </data>
+  <data name="Ask an administrator to grant you rights" xml:space="preserve">
+    <value>Vraag een beheerder om u rechten te verlenen</value>
+  </data>
+  <data name="Assign a role" xml:space="preserve">
+    <value>Een rol toewijzen</value>
+  </data>
+  <data name="Assign role" xml:space="preserve">
+    <value>Rol toewijzen</value>
+  </data>
+  <data name="Associate your" xml:space="preserve">
+    <value>Associeer uw</value>
+  </data>
+  <data name="Audit system logs" xml:space="preserve">
+    <value>Systeemlogboeken controleren</value>
+  </data>
+  <data name="Audit Trail" xml:space="preserve">
+    <value>Audit spoor</value>
+  </data>
+  <data name="Audit trail: values changed" xml:space="preserve">
+    <value>Audit trail: gewijzigde waarden</value>
+  </data>
+  <data name="Audits" xml:space="preserve">
+    <value>Audits</value>
+  </data>
+  <data name="Aug" xml:space="preserve">
+    <value>Aug</value>
+  </data>
+  <data name="Average time of sync (in seconds)" xml:space="preserve">
+    <value>Gemiddelde tijd van synchronisatie (in seconden)</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Terug</value>
+  </data>
+  <data name="Back to Home" xml:space="preserve">
+    <value>Terug naar Home</value>
+  </data>
+  <data name="Back to login page?" xml:space="preserve">
+    <value>Terug naar inlogpagina?</value>
+  </data>
+  <data name="Background" xml:space="preserve">
+    <value>Achtergrond</value>
+  </data>
+  <data name="Background jobs manager" xml:space="preserve">
+    <value>Achtergrond taken manager</value>
+  </data>
+  <data name="Background taks" xml:space="preserve">
+    <value>Achtergrond taken</value>
+  </data>
+  <data name="Background Tasks" xml:space="preserve">
+    <value>Achtergrond taken</value>
+  </data>
+  <data name="Background tasks logs" xml:space="preserve">
+    <value>Achtergrond taken logs</value>
+  </data>
+  <data name="Background workers logs" xml:space="preserve">
+    <value>Logboeken achtergrondwerkers</value>
+  </data>
+  <data name="BackgroundWorkers" xml:space="preserve">
+    <value>AchtergrondWerkers</value>
+  </data>
+  <data name="Base parameters" xml:space="preserve">
+    <value>Basis parameters</value>
+  </data>
+  <data name="Base view" xml:space="preserve">
+    <value>Basisweergave</value>
+  </data>
+  <data name="before you can log in with a recovery code." xml:space="preserve">
+    <value>voordat u zich kunt aanmelden met een herstelcode.</value>
+  </data>
+  <data name="Blind copy" xml:space="preserve">
+    <value>Blinde kopie</value>
+  </data>
+  <data name="Boxed" xml:space="preserve">
+    <value>Geboxed</value>
+  </data>
+  <data name="Branch" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="Browser" xml:space="preserve">
+    <value>Browser</value>
+  </data>
+  <data name="Build filters" xml:space="preserve">
+    <value>Filters bouwen</value>
+  </data>
+  <data name="Business area" xml:space="preserve">
+    <value>Zakelijk gebied</value>
+  </data>
+  <data name="Cache Is Activated?" xml:space="preserve">
+    <value>Cache is geactiveerd?</value>
+  </data>
+  <data name="Calculated date" xml:space="preserve">
+    <value>Berekende datum</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuleren</value>
+  </data>
+  <data name="cannot be enabled because no email recipients have been entered" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat geen e-mailontvangers zijn ingevoerd</value>
+  </data>
+  <data name="cannot be enabled because no query is attached to this job" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat geen query aan deze taak is gekoppeld</value>
+  </data>
+  <data name="cannot be enabled because no query is attached to this report" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat aan dit rapport geen query is gekoppeld</value>
+  </data>
+  <data name="cannot be enabled because no SMTP configuration has been activated" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat geen SMTP-configuratie is geactiveerd</value>
+  </data>
+  <data name="cannot be enabled because the related activity is not enabled" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat de desbetreffende activiteit niet is ingeschakeld</value>
+  </data>
+  <data name="cannot be enabled because the scheduler value is not defined" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat de planningswaarde niet is gedefinieerd</value>
+  </data>
+  <data name="Caution !" xml:space="preserve">
+    <value>Voorzichtig !</value>
+  </data>
+  <data name="Cell reference" xml:space="preserve">
+    <value>Cel verwijzing</value>
+  </data>
+  <data name="Change email" xml:space="preserve">
+    <value>Wijzig e-mail</value>
+  </data>
+  <data name="Change password" xml:space="preserve">
+    <value>Wijzig wachtwoord</value>
+  </data>
+  <data name="Change your account settings" xml:space="preserve">
+    <value>Wijzig uw account instellingen</value>
+  </data>
+  <data name="Changed password successfully" xml:space="preserve">
+    <value>Wachtwoord succesvol gewijzigd</value>
+  </data>
+  <data name="check if a report or an alert will be correctly sent by email" xml:space="preserve">
+    <value>controleer of een rapport of een waarschuwing correct per e-mail wordt verzonden</value>
+  </data>
+  <data name="Check if service is active" xml:space="preserve">
+    <value>Controleer of de dienst actief is</value>
+  </data>
+  <data name="Check if the activity exists" xml:space="preserve">
+    <value>Controleer of de activiteit bestaat</value>
+  </data>
+  <data name="Check SMTP configuration" xml:space="preserve">
+    <value>Controleer SMTP configuratie</value>
+  </data>
+  <data name="Check task" xml:space="preserve">
+    <value>Controleer taak</value>
+  </data>
+  <data name="Chek if your report or alert is active and for report if the &quot;Send by email&quot; button is on" xml:space="preserve">
+    <value>Controleer of het rapport of de waarschuwing actief is en of de knop "Per e-mail verzenden" aan staat voor het rapport</value>
+  </data>
+  <data name="Choose a credential configuration" xml:space="preserve">
+    <value>Kies een credential configuratie</value>
+  </data>
+  <data name="Choose a deposit path" xml:space="preserve">
+    <value>Kies een stortingspad</value>
+  </data>
+  <data name="Choose a deposit path configuration" xml:space="preserve">
+    <value>Kies een depot pad configuratie</value>
+  </data>
+  <data name="Choose an sFTP configuration" xml:space="preserve">
+    <value>Kies een sFTP configuratie</value>
+  </data>
+  <data name="Choose first parameters" xml:space="preserve">
+    <value>Kies de eerste parameters</value>
+  </data>
+  <data name="Cleaner service" xml:space="preserve">
+    <value>Reinigingsdienst</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Sluit</value>
+  </data>
+  <data name="Close your account" xml:space="preserve">
+    <value>Sluit uw rekening</value>
+  </data>
+  <data name="Color Scheme" xml:space="preserve">
+    <value>Kleurenschema</value>
+  </data>
+  <data name="ColorIcon" xml:space="preserve">
+    <value>ColorIcon</value>
+  </data>
+  <data name="Column name" xml:space="preserve">
+    <value>Kolom naam</value>
+  </data>
+  <data name="Column name1" xml:space="preserve">
+    <value>Kolomnaam1</value>
+  </data>
+  <data name="Command behaviour" xml:space="preserve">
+    <value>Gedrag</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Commentaar</value>
+  </data>
+  <data name="Compact" xml:space="preserve">
+    <value>Compact</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Bedrijf</value>
+  </data>
+  <data name="Company name" xml:space="preserve">
+    <value>Naam bedrijf</value>
+  </data>
+  <data name="Condensed" xml:space="preserve">
+    <value>Gecomprimeerd</value>
+  </data>
+  <data name="Condition" xml:space="preserve">
+    <value>Voorwaarde</value>
+  </data>
+  <data name="Configuration name" xml:space="preserve">
+    <value>Configuratie naam</value>
+  </data>
+  <data name="Configure a custom deposit path" xml:space="preserve">
+    <value>Een aangepast depotpad configureren</value>
+  </data>
+  <data name="Configure authenticator app" xml:space="preserve">
+    <value>Authenticator-app configureren</value>
+  </data>
+  <data name="Configure the scheduler" xml:space="preserve">
+    <value>Configureer planner</value>
+  </data>
+  <data name="Configure the scheduler and deposit path" xml:space="preserve">
+    <value>Configureer de planner en het stortpad</value>
+  </data>
+  <data name="Configure the scheduler and deposit path1" xml:space="preserve">
+    <value>Configureer de planner en het stortpad1</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Bevestig</value>
+  </data>
+  <data name="Confirm duplication" xml:space="preserve">
+    <value>Duplicatie bevestigen</value>
+  </data>
+  <data name="Confirm email" xml:space="preserve">
+    <value>E-mail bevestigen</value>
+  </data>
+  <data name="Confirm email change" xml:space="preserve">
+    <value>E-mail wijziging bevestigen</value>
+  </data>
+  <data name="Confirm manual job" xml:space="preserve">
+    <value>Handmatige job bevestigen</value>
+  </data>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Bevestig wachtwoord</value>
+  </data>
+  <data name="Confirm Password1" xml:space="preserve">
+    <value>Bevestig Wachtwoord1</value>
+  </data>
+  <data name="Confirm the deletion by entering" xml:space="preserve">
+    <value>Bevestig de verwijdering door in te toetsen</value>
+  </data>
+  <data name="Connection Feedback:" xml:space="preserve">
+    <value>Feedback over verbinding:</value>
+  </data>
+  <data name="Connection login" xml:space="preserve">
+    <value>Inloggen op verbinding</value>
+  </data>
+  <data name="Connection path" xml:space="preserve">
+    <value>Pad verbinding</value>
+  </data>
+  <data name="Connection port" xml:space="preserve">
+    <value>Poort verbinding</value>
+  </data>
+  <data name="Contains" xml:space="preserve">
+    <value>Bevat</value>
+  </data>
+  <data name="Create a new account" xml:space="preserve">
+    <value>Maak een nieuw account</value>
+  </data>
+  <data name="Create a new activity" xml:space="preserve">
+    <value>Creëer een nieuwe activiteit</value>
+  </data>
+  <data name="Create a new alert" xml:space="preserve">
+    <value>Nieuwe waarschuwing aanmaken</value>
+  </data>
+  <data name="Create a new branch" xml:space="preserve">
+    <value>Nieuwe vestiging aanmaken</value>
+  </data>
+  <data name="Create a new business area" xml:space="preserve">
+    <value>Nieuwe sector aanmaken</value>
+  </data>
+  <data name="Create a new company" xml:space="preserve">
+    <value>Een nieuw bedrijf aanmaken</value>
+  </data>
+  <data name="Create a new data transfer" xml:space="preserve">
+    <value>Een nieuwe gegevensoverdracht aanmaken</value>
+  </data>
+  <data name="Create a new deposit path" xml:space="preserve">
+    <value>Een nieuw stortingstraject aanmaken</value>
+  </data>
+  <data name="Create a new deposit path1" xml:space="preserve">
+    <value>Maak een nieuw storting pad1</value>
+  </data>
+  <data name="Create a new email report" xml:space="preserve">
+    <value>Maak een nieuw e-mail rapport</value>
+  </data>
+  <data name="Create a new LDAP profil" xml:space="preserve">
+    <value>Een nieuw LDAP-profiel aanmaken</value>
+  </data>
+  <data name="Create a new network credential" xml:space="preserve">
+    <value>Creëer een nieuwe netwerk credential</value>
+  </data>
+  <data name="Create a new report" xml:space="preserve">
+    <value>Maak een nieuw rapport</value>
+  </data>
+  <data name="Create a new SFTP profil" xml:space="preserve">
+    <value>Maak een nieuw SFTP profiel</value>
+  </data>
+  <data name="Create a new SMTP profil" xml:space="preserve">
+    <value>Maak een nieuw SMTP profiel</value>
+  </data>
+  <data name="create a report" xml:space="preserve">
+    <value>Maak een rapport</value>
+  </data>
+  <data name="Create account" xml:space="preserve">
+    <value>Maak account</value>
+  </data>
+  <data name="Create activity" xml:space="preserve">
+    <value>Activiteit aanmaken</value>
+  </data>
+  <data name="Create an activity" xml:space="preserve">
+    <value>Activiteit aanmaken</value>
+  </data>
+  <data name="create an alert" xml:space="preserve">
+    <value>Een waarschuwing aanmaken</value>
+  </data>
+  <data name="Create by" xml:space="preserve">
+    <value>Aanmaken door</value>
+  </data>
+  <data name="Create file manually" xml:space="preserve">
+    <value>Maak handmatig een bestand</value>
+  </data>
+  <data name="Create target table?" xml:space="preserve">
+    <value>Doel tabel maken?</value>
+  </data>
+  <data name="Create the alert" xml:space="preserve">
+    <value>Maak de waarschuwing</value>
+  </data>
+  <data name="Create the report" xml:space="preserve">
+    <value>Maak het rapport</value>
+  </data>
+  <data name="Create/modify users" xml:space="preserve">
+    <value>Gebruikers aanmaken/wijzigen</value>
+  </data>
+  <data name="Created at" xml:space="preserve">
+    <value>Aangemaakt bij</value>
+  </data>
+  <data name="Created by" xml:space="preserve">
+    <value>Aangemaakt door</value>
+  </data>
+  <data name="Created date" xml:space="preserve">
+    <value>Datum aangemaakt</value>
+  </data>
+  <data name="Created hour" xml:space="preserve">
+    <value>Uur aangemaakt</value>
+  </data>
+  <data name="Cron description" xml:space="preserve">
+    <value>Cron beschrijving</value>
+  </data>
+  <data name="Cron expression" xml:space="preserve">
+    <value>Cron expressie</value>
+  </data>
+  <data name="CSV delimiter" xml:space="preserve">
+    <value>CSV scheidingsteken</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Donker</value>
+  </data>
+  <data name="Dark Mode" xml:space="preserve">
+    <value>Donkere modus</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Data DB name" xml:space="preserve">
+    <value>Gegevens DB naam</value>
+  </data>
+  <data name="Data DB size" xml:space="preserve">
+    <value>Gegevens DB grootte</value>
+  </data>
+  <data name="Data Sync Is Activated?" xml:space="preserve">
+    <value>Gegevenssynchronisatie is geactiveerd?</value>
+  </data>
+  <data name="Data transfer parameters" xml:space="preserve">
+    <value>Gegevens overdracht parameters</value>
+  </data>
+  <data name="Data transfer service" xml:space="preserve">
+    <value>Gegevensoverdracht service</value>
+  </data>
+  <data name="Data type" xml:space="preserve">
+    <value>Type gegevens</value>
+  </data>
+  <data name="Database Maintenance" xml:space="preserve">
+    <value>Databank onderhoud</value>
+  </data>
+  <data name="Database name" xml:space="preserve">
+    <value>Databasenaam</value>
+  </data>
+  <data name="Database rows per table" xml:space="preserve">
+    <value>Database rijen per tabel</value>
+  </data>
+  <data name="Database Type" xml:space="preserve">
+    <value>Databasetype</value>
+  </data>
+  <data name="Day of month" xml:space="preserve">
+    <value>Dag van maand</value>
+  </data>
+  <data name="Day of week" xml:space="preserve">
+    <value>Dag van de week</value>
+  </data>
+  <data name="DB schema" xml:space="preserve">
+    <value>DB-schema</value>
+  </data>
+  <data name="Dec" xml:space="preserve">
+    <value>Dec</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="Delete data and close my account" xml:space="preserve">
+    <value>Gegevens verwijderen en mijn account sluiten</value>
+  </data>
+  <data name="Delete Personal Data" xml:space="preserve">
+    <value>Persoonlijke gegevens verwijderen</value>
+  </data>
+  <data name="Delete the target table" xml:space="preserve">
+    <value>De doeltabel verwijderen</value>
+  </data>
+  <data name="Delete user" xml:space="preserve">
+    <value>Gebruiker verwijderen</value>
+  </data>
+  <data name="Deleting can not be undone!" xml:space="preserve">
+    <value>Verwijderen kan niet ongedaan worden gemaakt!</value>
+  </data>
+  <data name="Deleting this data will permanently remove your account, and this cannot be recovered." xml:space="preserve">
+    <value>Het verwijderen van deze gegevens zal uw account permanent verwijderen, en dit kan niet worden hersteld.</value>
+  </data>
+  <data name="Deposit path" xml:space="preserve">
+    <value>Storting pad</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Disable 2FA" xml:space="preserve">
+    <value>2FA uitschakelen</value>
+  </data>
+  <data name="Disable two-factor authentication (2FA)" xml:space="preserve">
+    <value>Schakel twee-factor authenticatie (2FA) uit</value>
+  </data>
+  <data name="disabled" xml:space="preserve">
+    <value>uitgeschakeld</value>
+  </data>
+  <data name="Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should" xml:space="preserve">
+    <value>Het uitschakelen van 2FA wijzigt de sleutels die in authenticatie-apps worden gebruikt niet. Als u de sleutel wilt wijzigen die in een authenticatie-app wordt gebruikt, moet u</value>
+  </data>
+  <data name="Dispatching" xml:space="preserve">
+    <value>Uitschakelen</value>
+  </data>
+  <data name="Display details" xml:space="preserve">
+    <value>Details weergeven</value>
+  </data>
+  <data name="Display until 10k lines" xml:space="preserve">
+    <value>Weergeven tot 10k regels</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Domein</value>
+  </data>
+  <data name="Domain1" xml:space="preserve">
+    <value>Domein1</value>
+  </data>
+  <data name="Don't have access to your authenticator device? You can" xml:space="preserve">
+    <value>Heeft u geen toegang tot uw authenticator apparaat? U kunt</value>
+  </data>
+  <data name="Don't have an account?" xml:space="preserve">
+    <value>Heeft u geen account?</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Downloaden</value>
+  </data>
+  <data name="Download a two-factor authenticator app like Microsoft Authenticator for" xml:space="preserve">
+    <value>Download een authenticatie-app met twee factoren zoals Microsoft Authenticator voor</value>
+  </data>
+  <data name="Download duration" xml:space="preserve">
+    <value>Duur downloaden</value>
+  </data>
+  <data name="Download Your Data" xml:space="preserve">
+    <value>Uw gegevens downloaden</value>
+  </data>
+  <data name="Drop file" xml:space="preserve">
+    <value>Bestand laten vallen</value>
+  </data>
+  <data name="Duplicate" xml:space="preserve">
+    <value>Duplicaat</value>
+  </data>
+  <data name="Duration in seconds" xml:space="preserve">
+    <value>Duur in seconden</value>
+  </data>
+  <data name="Dynamic Reports" xml:space="preserve">
+    <value>Dynamische Rapporten</value>
+  </data>
+  <data name="Each day" xml:space="preserve">
+    <value>Elke dag</value>
+  </data>
+  <data name="Each month" xml:space="preserve">
+    <value>Elke maand</value>
+  </data>
+  <data name="Each selected day" xml:space="preserve">
+    <value>Elke geselecteerde dag</value>
+  </data>
+  <data name="Each selected day1" xml:space="preserve">
+    <value>Elke geselecteerde dag1</value>
+  </data>
+  <data name="Each selected hour" xml:space="preserve">
+    <value>Elk geselecteerd uur</value>
+  </data>
+  <data name="Each selected minute" xml:space="preserve">
+    <value>Elke geselecteerde minuut</value>
+  </data>
+  <data name="Each selected month" xml:space="preserve">
+    <value>Elke geselecteerde maand</value>
+  </data>
+  <data name="Each week" xml:space="preserve">
+    <value>Elke week</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Wijzig</value>
+  </data>
+  <data name="Edit a data transfer" xml:space="preserve">
+    <value>Bewerk een gegevensoverdracht</value>
+  </data>
+  <data name="Edit a query" xml:space="preserve">
+    <value>Een query bewerken</value>
+  </data>
+  <data name="Edit a report" xml:space="preserve">
+    <value>Een rapport bewerken</value>
+  </data>
+  <data name="Edit activity" xml:space="preserve">
+    <value>Activiteit bewerken</value>
+  </data>
+  <data name="Edit an activity" xml:space="preserve">
+    <value>Een activiteit bewerken</value>
+  </data>
+  <data name="Edit an alert" xml:space="preserve">
+    <value>Een waarschuwing bewerken</value>
+  </data>
+  <data name="Edit an email report" xml:space="preserve">
+    <value>Een e-mailbericht bewerken</value>
+  </data>
+  <data name="Edit email message" xml:space="preserve">
+    <value>E-mailbericht bewerken</value>
+  </data>
+  <data name="Edit error email" xml:space="preserve">
+    <value>E-mail met foutmelding bewerken</value>
+  </data>
+  <data name="Edit error email template" xml:space="preserve">
+    <value>E-mailsjabloon voor foutberichten bewerken</value>
+  </data>
+  <data name="Edit name and logo" xml:space="preserve">
+    <value>Bewerk naam en logo</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Email confirmed?" xml:space="preserve">
+    <value>E-mail bevestigd?</value>
+  </data>
+  <data name="Email entered is not correct" xml:space="preserve">
+    <value>E-mail ingevoerd is niet correct</value>
+  </data>
+  <data name="Email message" xml:space="preserve">
+    <value>Email bericht</value>
+  </data>
+  <data name="Email prefix" xml:space="preserve">
+    <value>Email voorvoegsel</value>
+  </data>
+  <data name="Email Sender" xml:space="preserve">
+    <value>Email afzender</value>
+  </data>
+  <data name="Email sender Is Activated?" xml:space="preserve">
+    <value>Email afzender is geactiveerd?</value>
+  </data>
+  <data name="Email sender logs" xml:space="preserve">
+    <value>Email afzender logs</value>
+  </data>
+  <data name="Email service" xml:space="preserve">
+    <value>Email dienst</value>
+  </data>
+  <data name="Email title" xml:space="preserve">
+    <value>Titel e-mail</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>Leeg</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>ingeschakeld</value>
+  </data>
+  <data name="Encoding type" xml:space="preserve">
+    <value>Type codering</value>
+  </data>
+  <data name="End date time" xml:space="preserve">
+    <value>Eind datum tijd</value>
+  </data>
+  <data name="EndOfLastMonth" xml:space="preserve">
+    <value>EndOfLastMonth</value>
+  </data>
+  <data name="EndOfLastWeek" xml:space="preserve">
+    <value>EndOfLastWeek</value>
+  </data>
+  <data name="EndOfThisMonth" xml:space="preserve">
+    <value>Einde VanDezeMaand</value>
+  </data>
+  <data name="EndOfThisQuarter" xml:space="preserve">
+    <value>Einde van dit kwartaal</value>
+  </data>
+  <data name="EndOfThisWeek" xml:space="preserve">
+    <value>Einde van deze week</value>
+  </data>
+  <data name="EndOfThisYear" xml:space="preserve">
+    <value>Einde VanDitJaar</value>
+  </data>
+  <data name="Ends with" xml:space="preserve">
+    <value>Eindigt met</value>
+  </data>
+  <data name="Enter a keyword" xml:space="preserve">
+    <value>Voer een trefwoord in</value>
+  </data>
+  <data name="Enter a report title, select an activity then the type of file you want to generate" xml:space="preserve">
+    <value>Voer een rapporttitel in, selecteer een activiteit en vervolgens het bestandstype dat u wilt genereren</value>
+  </data>
+  <data name="Enter a report title, select an activity then the type of file you want to generate and validate" xml:space="preserve">
+    <value>Voer een rapporttitel in, selecteer een activiteit en vervolgens het type bestand dat u wilt genereren en valideren</value>
+  </data>
+  <data name="Enter an alert title, select an activity and validate" xml:space="preserve">
+    <value>Voer een waarschuwingstitel in, selecteer een activiteit en valideer</value>
+  </data>
+  <data name="Enter the email address" xml:space="preserve">
+    <value>Voer het e-mailadres in</value>
+  </data>
+  <data name="Enter the primary key column" xml:space="preserve">
+    <value>Voer de kolom met de primaire sleutel in</value>
+  </data>
+  <data name="Enter the query here" xml:space="preserve">
+    <value>Voer hier de query in</value>
+  </data>
+  <data name="Enter value" xml:space="preserve">
+    <value>Waarde invoeren</value>
+  </data>
+  <data name="Enter Your Current and New Password" xml:space="preserve">
+    <value>Voer uw huidige en nieuwe wachtwoord in</value>
+  </data>
+  <data name="Equals" xml:space="preserve">
+    <value>Is gelijk aan</value>
+  </data>
+  <data name="Error email prefix" xml:space="preserve">
+    <value>Fout e-mail voorvoegsel</value>
+  </data>
+  <data name="Error?" xml:space="preserve">
+    <value>Fout?</value>
+  </data>
+  <data name="Every" xml:space="preserve">
+    <value>Elke</value>
+  </data>
+  <data name="Every day" xml:space="preserve">
+    <value>Elke dag</value>
+  </data>
+  <data name="Every hour" xml:space="preserve">
+    <value>Elk uur</value>
+  </data>
+  <data name="Every minute" xml:space="preserve">
+    <value>Elke minuut</value>
+  </data>
+  <data name="Every month" xml:space="preserve">
+    <value>Elke maand</value>
+  </data>
+  <data name="Every n hours" xml:space="preserve">
+    <value>Elke n uur</value>
+  </data>
+  <data name="Every n minutes" xml:space="preserve">
+    <value>Elke n minuten</value>
+  </data>
+  <data name="Every week" xml:space="preserve">
+    <value>Elke week</value>
+  </data>
+  <data name="Excel data table name" xml:space="preserve">
+    <value>Excel-gegevenstabel naam</value>
+  </data>
+  <data name="Excel tab name" xml:space="preserve">
+    <value>Naam Excel-tabblad</value>
+  </data>
+  <data name="Excel Template" xml:space="preserve">
+    <value>Excel sjabloon</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exporteren</value>
+  </data>
+  <data name="Export to excel" xml:space="preserve">
+    <value>Exporteren naar Excel</value>
+  </data>
+  <data name="External logins" xml:space="preserve">
+    <value>Externe aanmeldingen</value>
+  </data>
+  <data name="External queries" xml:space="preserve">
+    <value>Externe query's</value>
+  </data>
+  <data name="Feb" xml:space="preserve">
+    <value>Feb</value>
+  </data>
+  <data name="File deposit configuration" xml:space="preserve">
+    <value>Bestand deponeren configuratie</value>
+  </data>
+  <data name="File deposit path" xml:space="preserve">
+    <value>Bestand depot pad</value>
+  </data>
+  <data name="File deposit path1" xml:space="preserve">
+    <value>Bestand depot pad1</value>
+  </data>
+  <data name="File desposit path" xml:space="preserve">
+    <value>Bestand desposit pad</value>
+  </data>
+  <data name="File name" xml:space="preserve">
+    <value>Bestandsnaam</value>
+  </data>
+  <data name="File name1" xml:space="preserve">
+    <value>Bestandsnaam1</value>
+  </data>
+  <data name="File path" xml:space="preserve">
+    <value>Bestandspad</value>
+  </data>
+  <data name="File size in MB" xml:space="preserve">
+    <value>Bestandsgrootte in MB</value>
+  </data>
+  <data name="File type" xml:space="preserve">
+    <value>Bestandstype</value>
+  </data>
+  <data name="FileServer size" xml:space="preserve">
+    <value>BestandsServer grootte</value>
+  </data>
+  <data name="Firstname.Lastname" xml:space="preserve">
+    <value>Voornaam.Achternaam</value>
+  </data>
+  <data name="Fixed" xml:space="preserve">
+    <value>Vast</value>
+  </data>
+  <data name="Flow dashboard" xml:space="preserve">
+    <value>Stroom dashboard</value>
+  </data>
+  <data name="Fluid" xml:space="preserve">
+    <value>Vloeistof</value>
+  </data>
+  <data name="Forget this browser" xml:space="preserve">
+    <value>Deze browser vergeten</value>
+  </data>
+  <data name="Forgot password confirmation" xml:space="preserve">
+    <value>Wachtwoord vergeten bevestiging</value>
+  </data>
+  <data name="Forgot password?" xml:space="preserve">
+    <value>Wachtwoord vergeten?</value>
+  </data>
+  <data name="Forgot your password? Enter your email" xml:space="preserve">
+    <value>Wachtwoord vergeten? Voer uw e-mail</value>
+  </data>
+  <data name="Fragmentation report" xml:space="preserve">
+    <value>Versnippering verslag</value>
+  </data>
+  <data name="Friday" xml:space="preserve">
+    <value>Vrijdag</value>
+  </data>
+  <data name="From email" xml:space="preserve">
+    <value>Van e-mail</value>
+  </data>
+  <data name="From full name" xml:space="preserve">
+    <value>Van volledige naam</value>
+  </data>
+  <data name="FullVersion" xml:space="preserve">
+    <value>VolledigeVersie</value>
+  </data>
+  <data name="generate a new set of recovery codes" xml:space="preserve">
+    <value>genereer een nieuwe set herstelcodes</value>
+  </data>
+  <data name="Generate if empty?" xml:space="preserve">
+    <value>Genereren indien leeg?</value>
+  </data>
+  <data name="Generate Recovery Codes" xml:space="preserve">
+    <value>Genereer herstelcodes</value>
+  </data>
+  <data name="Generate two-factor authentication (2FA) recovery codes" xml:space="preserve">
+    <value>Genereer twee-factor authenticatie (2FA) herstelcodes</value>
+  </data>
+  <data name="Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should" xml:space="preserve">
+    <value>Het genereren van nieuwe herstelcodes verandert niets aan de sleutels die in authenticatie-apps worden gebruikt. Als u de sleutel wilt wijzigen die in een authenticatie-app wordt gebruikt, moet u</value>
+  </data>
+  <data name="Get cron Data" xml:space="preserve">
+    <value>Cron-gegevens ophalen</value>
+  </data>
+  <data name="Global query parameters" xml:space="preserve">
+    <value>Globale query parameters</value>
+  </data>
+  <data name="Go back to alerts list" xml:space="preserve">
+    <value>Ga terug naar waarschuwingenlijst</value>
+  </data>
+  <data name="Go back to email report list" xml:space="preserve">
+    <value>Ga terug naar email rapport lijst</value>
+  </data>
+  <data name="Go back to reports list" xml:space="preserve">
+    <value>Ga terug naar de rapporten lijst</value>
+  </data>
+  <data name="Go back to the activity list" xml:space="preserve">
+    <value>Ga terug naar de activiteitenlijst</value>
+  </data>
+  <data name="Go to first page" xml:space="preserve">
+    <value>Ga naar de eerste pagina</value>
+  </data>
+  <data name="Go to last page" xml:space="preserve">
+    <value>Ga naar de laatste pagina</value>
+  </data>
+  <data name="Go to next page" xml:space="preserve">
+    <value>Ga naar de volgende pagina</value>
+  </data>
+  <data name="Go to previous page" xml:space="preserve">
+    <value>Ga naar de vorige pagina</value>
+  </data>
+  <data name="Google Authenticator for" xml:space="preserve">
+    <value>Google Authenticator voor</value>
+  </data>
+  <data name="Greater than" xml:space="preserve">
+    <value>Groter dan</value>
+  </data>
+  <data name="Greater than or equals" xml:space="preserve">
+    <value>Groter dan of gelijk aan</value>
+  </data>
+  <data name="he password and confirmation password do not match." xml:space="preserve">
+    <value>e wachtwoord en bevestigingswachtwoord komen niet overeen.</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>Koptekst</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="Help step by step" xml:space="preserve">
+    <value>Help stap voor stap</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Host" xml:space="preserve">
+    <value>Gastheer</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Uur</value>
+  </data>
+  <data name="hours" xml:space="preserve">
+    <value>uren</value>
+  </data>
+  <data name="I would like to" xml:space="preserve">
+    <value>Ik wil graag</value>
+  </data>
+  <data name="If you lose your device and don't have the recovery codes you will lose access to your account." xml:space="preserve">
+    <value>Als u uw apparaat verliest en niet over de herstelcodes beschikt, verliest u de toegang tot uw account.</value>
+  </data>
+  <data name="If you reset your authenticator key your authenticator app will not work until you reconfigure it." xml:space="preserve">
+    <value>Als u uw authenticator sleutel reset zal uw authenticator app niet werken totdat u deze opnieuw configureert.</value>
+  </data>
+  <data name="In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences" xml:space="preserve">
+    <value>Om een te grote stroom van waarschuwingen te voorkomen, kunt u het gedrag instellen in geval van meerdere voorvallen. Het kan gebaseerd zijn op een tijdsduur tussen voorvallen of op aantal of op aantal voorvallen</value>
+  </data>
+  <data name="Inbound" xml:space="preserve">
+    <value>Inkomend</value>
+  </data>
+  <data name="Incorrect password" xml:space="preserve">
+    <value>Onjuist wachtwoord</value>
+  </data>
+  <data name="Indicate the database name?" xml:space="preserve">
+    <value>Geef de naam van de database op?</value>
+  </data>
+  <data name="Information sheet text" xml:space="preserve">
+    <value>Informatie blad tekst</value>
+  </data>
+  <data name="Internal server error!" xml:space="preserve">
+    <value>Interne serverfout!</value>
+  </data>
+  <data name="into your two factor authenticator app. Spaces and casing do not matter." xml:space="preserve">
+    <value>in uw twee factor authenticator app. Spaties en omhulsels doen er niet toe.</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>Inventaris</value>
+  </data>
+  <data name="IP or Servername" xml:space="preserve">
+    <value>IP of Servernaam</value>
+  </data>
+  <data name="Is activated?" xml:space="preserve">
+    <value>Is geactiveerd?</value>
+  </data>
+  <data name="Is available?" xml:space="preserve">
+    <value>Is beschikbaar?</value>
+  </data>
+  <data name="is diplayed" xml:space="preserve">
+    <value>wordt weergegeven</value>
+  </data>
+  <data name="is not displayed" xml:space="preserve">
+    <value>wordt niet weergegeven</value>
+  </data>
+  <data name="Is not null" xml:space="preserve">
+    <value>Is niet nul</value>
+  </data>
+  <data name="Is null" xml:space="preserve">
+    <value>Is nietig</value>
+  </data>
+  <data name="Is reachable" xml:space="preserve">
+    <value>Is bereikbaar</value>
+  </data>
+  <data name="Is visible?" xml:space="preserve">
+    <value>Is zichtbaar?</value>
+  </data>
+  <data name="items" xml:space="preserve">
+    <value>items</value>
+  </data>
+  <data name="Jan" xml:space="preserve">
+    <value>Jan</value>
+  </data>
+  <data name="Job description" xml:space="preserve">
+    <value>Baanbeschrijving</value>
+  </data>
+  <data name="Job details" xml:space="preserve">
+    <value>Job details</value>
+  </data>
+  <data name="Job duration" xml:space="preserve">
+    <value>Duur opdracht</value>
+  </data>
+  <data name="Job duration (in sec)" xml:space="preserve">
+    <value>Duur van de opdracht (in sec)</value>
+  </data>
+  <data name="Job end date time" xml:space="preserve">
+    <value>Taak einddatum tijd</value>
+  </data>
+  <data name="Job on going" xml:space="preserve">
+    <value>Aan de gang</value>
+  </data>
+  <data name="Job Start Date Time" xml:space="preserve">
+    <value>Tijd begin opdracht</value>
+  </data>
+  <data name="Job title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="Jobs with the max avg time of exec per activity" xml:space="preserve">
+    <value>Jobs met de max avg tijd van uitvoering per activiteit</value>
+  </data>
+  <data name="Jul" xml:space="preserve">
+    <value>Jul</value>
+  </data>
+  <data name="Jun" xml:space="preserve">
+    <value>Jun</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="LastOpeningDay" xml:space="preserve">
+    <value>Laatste openingsdag</value>
+  </data>
+  <data name="LastRun" xml:space="preserve">
+    <value>Laatste uitvoering</value>
+  </data>
+  <data name="LDAP configuration" xml:space="preserve">
+    <value>LDAP configuratie</value>
+  </data>
+  <data name="Left Sidebar Color" xml:space="preserve">
+    <value>Kleur linkerzijbalk</value>
+  </data>
+  <data name="Left Sidebar Size" xml:space="preserve">
+    <value>Linker zijbalk grootte</value>
+  </data>
+  <data name="Less than" xml:space="preserve">
+    <value>Minder dan</value>
+  </data>
+  <data name="Less than or equals" xml:space="preserve">
+    <value>Kleiner dan of gelijk aan</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Niveau</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="Light Mode" xml:space="preserve">
+    <value>Lichtstand</value>
+  </data>
+  <data name="List of recipient" xml:space="preserve">
+    <value>Lijst van ontvanger</value>
+  </data>
+  <data name="Loading time" xml:space="preserve">
+    <value>Laad tijd</value>
+  </data>
+  <data name="Local login" xml:space="preserve">
+    <value>Lokale aanmelding</value>
+  </data>
+  <data name="Localization configuration check" xml:space="preserve">
+    <value>Controle lokalisatieconfiguratie</value>
+  </data>
+  <data name="Lock end" xml:space="preserve">
+    <value>Einde vergrendeling</value>
+  </data>
+  <data name="Locked out" xml:space="preserve">
+    <value>Buitengesloten</value>
+  </data>
+  <data name="Log in" xml:space="preserve">
+    <value>Inloggen</value>
+  </data>
+  <data name="log in with a recovery code" xml:space="preserve">
+    <value>inloggen met een herstelcode</value>
+  </data>
+  <data name="Log out" xml:space="preserve">
+    <value>Uitloggen</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Inloggen</value>
+  </data>
+  <data name="Logo" xml:space="preserve">
+    <value>Logo</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Uitloggen</value>
+  </data>
+  <data name="Logs" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="Logs: Archiving duration" xml:space="preserve">
+    <value>Logs: Duur archiveren</value>
+  </data>
+  <data name="Manage account" xml:space="preserve">
+    <value>Beheer account</value>
+  </data>
+  <data name="Manage alerts" xml:space="preserve">
+    <value>Waarschuwingen beheren</value>
+  </data>
+  <data name="Manage by duration?" xml:space="preserve">
+    <value>Beheren op duur?</value>
+  </data>
+  <data name="Manage data transfers" xml:space="preserve">
+    <value>Beheer gegevensoverdrachten</value>
+  </data>
+  <data name="Manage email" xml:space="preserve">
+    <value>Beheer e-mail</value>
+  </data>
+  <data name="Manage email reports" xml:space="preserve">
+    <value>Beheer e-mail rapporten</value>
+  </data>
+  <data name="Manage parameters" xml:space="preserve">
+    <value>Parameters beheren</value>
+  </data>
+  <data name="Manage Predictions" xml:space="preserve">
+    <value>Voorspellingen beheren</value>
+  </data>
+  <data name="Manage recipients" xml:space="preserve">
+    <value>Beheer ontvangers</value>
+  </data>
+  <data name="Manage reports" xml:space="preserve">
+    <value>Beheer rapporten</value>
+  </data>
+  <data name="Manage users" xml:space="preserve">
+    <value>Beheer gebruikers</value>
+  </data>
+  <data name="Manage your account" xml:space="preserve">
+    <value>Beheer uw account</value>
+  </data>
+  <data name="Manage your external logins" xml:space="preserve">
+    <value>Beheer uw externe logins</value>
+  </data>
+  <data name="Mar" xml:space="preserve">
+    <value>Mar</value>
+  </data>
+  <data name="May" xml:space="preserve">
+    <value>Mei</value>
+  </data>
+  <data name="Menus (Leftsidebar and Topbar) Positon" xml:space="preserve">
+    <value>Menu's (Linkerzijbalk en Bovenbalk) Positie</value>
+  </data>
+  <data name="Message to put in the email body" xml:space="preserve">
+    <value>Bericht voor in de e-mail</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minuten</value>
+  </data>
+  <data name="minutes" xml:space="preserve">
+    <value>minuten</value>
+  </data>
+  <data name="Modify tasks" xml:space="preserve">
+    <value>Taken wijzigen</value>
+  </data>
+  <data name="Monday" xml:space="preserve">
+    <value>Maandag</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Maand</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="Name and Logo" xml:space="preserve">
+    <value>Naam en logo</value>
+  </data>
+  <data name="Navigate to &quot;Base parameters&quot; and &quot;Manage activities&quot; and check if your activity exists. If not ask to the application admin" xml:space="preserve">
+    <value>Navigeer naar "Basis parameters" en "Beheer activiteiten" en controleer of uw activiteit bestaat. Indien niet, vraag het aan de applicatiebeheerder</value>
+  </data>
+  <data name="Navigate to &quot;Base parameters&quot; and &quot;SMTP configuration&quot; and check if one is active. If not ask to the application admin" xml:space="preserve">
+    <value>Navigeer naar "Basis parameters" en "SMTP configuratie" en controleer of er een actief is. Indien niet, vraag het aan de applicatiebeheerder</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; and switch on the report. If something goes wrong you will get an error with the reason" xml:space="preserve">
+    <value>Navigeer naar "Modifity tasks" en "Alerts" en zet het rapport aan. Als er iets fout gaat krijg je een foutmelding met de reden</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; then select create a new alert" xml:space="preserve">
+    <value>Navigeer naar "Modifity tasks" en "Alerts" en selecteer create a new alert</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; and switch on the report and if needed the &quot;Send by email&quot; button. If something goes wrong you will get an error with the reason" xml:space="preserve">
+    <value>Navigeer naar "Modifity taken" en "Rapporten" en zet het rapport aan en indien nodig de "Verstuur per email" knop. Als er iets fout gaat krijg je een foutmelding met de reden</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; then select create a new report" xml:space="preserve">
+    <value>Navigeer naar "Wijzigen taken" en "Rapporten" en selecteer een nieuw rapport maken</value>
+  </data>
+  <data name="Nbr of active alerts" xml:space="preserve">
+    <value>Aantal actieve waarschuwingen</value>
+  </data>
+  <data name="Nbr of active reports" xml:space="preserve">
+    <value>Aantal actieve rapporten</value>
+  </data>
+  <data name="Nbr of activities" xml:space="preserve">
+    <value>Aantal activiteiten</value>
+  </data>
+  <data name="Nbr of alerts performed today" xml:space="preserve">
+    <value>Aantal waarschuwingen uitgevoerd vandaag</value>
+  </data>
+  <data name="Nbr of details" xml:space="preserve">
+    <value>Aantal details</value>
+  </data>
+  <data name="Nbr of emails sent today" xml:space="preserve">
+    <value>Aantal verstuurde emails vandaag</value>
+  </data>
+  <data name="Nbr of errors" xml:space="preserve">
+    <value>Aantal fouten</value>
+  </data>
+  <data name="Nbr of files" xml:space="preserve">
+    <value>Aantal bestanden</value>
+  </data>
+  <data name="Nbr of files stored locally" xml:space="preserve">
+    <value>Aantal lokaal opgeslagen bestanden</value>
+  </data>
+  <data name="Nbr of jobs" xml:space="preserve">
+    <value>Aantal taken</value>
+  </data>
+  <data name="Nbr of lines inserted" xml:space="preserve">
+    <value>Aantal ingevoegde regels</value>
+  </data>
+  <data name="Nbr of minutes between occcurences" xml:space="preserve">
+    <value>Aantal minuten tussen incidenten</value>
+  </data>
+  <data name="Nbr of occurences before to resubmit alert" xml:space="preserve">
+    <value>Aantal gevallen voor het opnieuw verzenden van een waarschuwing</value>
+  </data>
+  <data name="Nbr of queries" xml:space="preserve">
+    <value>Aantal zoekopdrachten</value>
+  </data>
+  <data name="Nbr of reports performed today" xml:space="preserve">
+    <value>Aantal uitgevoerde rapporten vandaag</value>
+  </data>
+  <data name="Nbr of rows" xml:space="preserve">
+    <value>Aantal rijen</value>
+  </data>
+  <data name="Nbr of rows fetched from databases" xml:space="preserve">
+    <value>Aantal rijen opgehaald uit databanken</value>
+  </data>
+  <data name="Nbr of rows returned" xml:space="preserve">
+    <value>Aantal geretourneerde rijen</value>
+  </data>
+  <data name="Nbr of tasks" xml:space="preserve">
+    <value>Aantal taken</value>
+  </data>
+  <data name="Nbr of tasks in error" xml:space="preserve">
+    <value>Aantal taken in fout</value>
+  </data>
+  <data name="Nbr of tasks over the last 10 days" xml:space="preserve">
+    <value>Aantal taken in de afgelopen 10 dagen</value>
+  </data>
+  <data name="Nbr of tasks performed today" xml:space="preserve">
+    <value>Aantal uitgevoerde taken vandaag</value>
+  </data>
+  <data name="Nbr of users" xml:space="preserve">
+    <value>Aantal gebruikers</value>
+  </data>
+  <data name="Nbr total of rows" xml:space="preserve">
+    <value>Br totaal van rijen</value>
+  </data>
+  <data name="Need to connect locally?" xml:space="preserve">
+    <value>Moet u lokaal verbinding maken?</value>
+  </data>
+  <data name="Network credentials" xml:space="preserve">
+    <value>Netwerk referenties</value>
+  </data>
+  <data name="New email" xml:space="preserve">
+    <value>Nieuw e-mail</value>
+  </data>
+  <data name="New password" xml:space="preserve">
+    <value>Nieuw wachtwoord</value>
+  </data>
+  <data name="New values" xml:space="preserve">
+    <value>Nieuwe waarden</value>
+  </data>
+  <data name="Not contains" xml:space="preserve">
+    <value>Bevat niet</value>
+  </data>
+  <data name="Not equals" xml:space="preserve">
+    <value>Niet gelijk aan</value>
+  </data>
+  <data name="Not sent by email" xml:space="preserve">
+    <value>Niet verzonden per e-mail</value>
+  </data>
+  <data name="Nov" xml:space="preserve">
+    <value>Nov</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Nu</value>
+  </data>
+  <data name="Object added" xml:space="preserve">
+    <value>Object toegevoegd</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Object verwijderd</value>
+  </data>
+  <data name="Object updated" xml:space="preserve">
+    <value>Object bijgewerkt</value>
+  </data>
+  <data name="Oct" xml:space="preserve">
+    <value>Okt</value>
+  </data>
+  <data name="of" xml:space="preserve">
+    <value>van</value>
+  </data>
+  <data name="of1" xml:space="preserve">
+    <value>van</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Uit</value>
+  </data>
+  <data name="Old password" xml:space="preserve">
+    <value>Oud wachtwoord</value>
+  </data>
+  <data name="Old values" xml:space="preserve">
+    <value>Oude waarden</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>Op</value>
+  </data>
+  <data name="Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code.Enter the code in the confirmation box below." xml:space="preserve">
+    <value>Zodra u de QR code heeft gescand of de sleutel heeft ingevoerd, zal uw twee factor authenticatie app u een unieke code geven.Voer de code in het bevestigingsvak hieronder in.</value>
+  </data>
+  <data name="Only when query does not require a separate file" xml:space="preserve">
+    <value>Alleen wanneer query geen apart bestand vereist</value>
+  </data>
+  <data name="Only when query is generated in separated file" xml:space="preserve">
+    <value>Alleen wanneer query in gescheiden bestand wordt gegenereerd</value>
+  </data>
+  <data name="Optional: Add email recipient" xml:space="preserve">
+    <value>Optioneel: E-mail ontvanger toevoegen</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>of</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>Overige</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>Pagina</value>
+  </data>
+  <data name="Parameter identifier" xml:space="preserve">
+    <value>Parameteraanduiding</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Wachtwoord</value>
+  </data>
+  <data name="Pasword must contains {0} characters, {1} digit, {2} uppercase, {3} lowercase, {4} non aphanumeric and {5} unique characters" xml:space="preserve">
+    <value>Het wachtwoord moet bestaan uit {0} tekens, {1} cijfers, {2} hoofdletters, {3} kleine letters, {4} niet-alfanumerieke tekens en {5} unieke tekens</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>Pad</value>
+  </data>
+  <data name="Personal data" xml:space="preserve">
+    <value>Persoonlijke gegevens</value>
+  </data>
+  <data name="Phone number" xml:space="preserve">
+    <value>Telefoonnummer</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platform</value>
+  </data>
+  <data name="Please check your email to confirm your account." xml:space="preserve">
+    <value>Controleer uw e-mail om uw account te bevestigen.</value>
+  </data>
+  <data name="Please check your email to reset your password." xml:space="preserve">
+    <value>Controleer uw e-mail om uw wachtwoord opnieuw in te stellen.</value>
+  </data>
+  <data name="Please enter an email address for this site below and click the Register button to finish logging in." xml:space="preserve">
+    <value>Voer hieronder een e-mailadres in voor deze site en klik op de knop Registreren om het inloggen te voltooien.</value>
+  </data>
+  <data name="please enter your old paswword" xml:space="preserve">
+    <value>voer uw oude wachtwoord in</value>
+  </data>
+  <data name="Please enter your windows account credentials" xml:space="preserve">
+    <value>Voer uw Windows-accountgegevens in</value>
+  </data>
+  <data name="Please select a Db type" xml:space="preserve">
+    <value>Selecteer een Db type</value>
+  </data>
+  <data name="Predictions" xml:space="preserve">
+    <value>Voorspellingen</value>
+  </data>
+  <data name="Predictions Reports" xml:space="preserve">
+    <value>Voorspellingen Rapporten</value>
+  </data>
+  <data name="Primary key" xml:space="preserve">
+    <value>Primaire sleutel</value>
+  </data>
+  <data name="Primary key1" xml:space="preserve">
+    <value>Primaire sleutel1</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Verwerking</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profiel</value>
+  </data>
+  <data name="Put these codes in a safe place." xml:space="preserve">
+    <value>Bewaar deze codes op een veilige plaats.</value>
+  </data>
+  <data name="Queries" xml:space="preserve">
+    <value>Query's</value>
+  </data>
+  <data name="Queries to seed DB" xml:space="preserve">
+    <value>Query's om DB te zaaien</value>
+  </data>
+  <data name="Query" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="Query execution logs" xml:space="preserve">
+    <value>Query uitvoering logs</value>
+  </data>
+  <data name="Query name" xml:space="preserve">
+    <value>Naam van de query</value>
+  </data>
+  <data name="Query parameters" xml:space="preserve">
+    <value>Parameters opvragen</value>
+  </data>
+  <data name="Query sequence" xml:space="preserve">
+    <value>Query volgorde</value>
+  </data>
+  <data name="Rebuild indexes" xml:space="preserve">
+    <value>Herbouw indexen</value>
+  </data>
+  <data name="Recipient Email" xml:space="preserve">
+    <value>Ontvanger e-mail</value>
+  </data>
+  <data name="Recipients" xml:space="preserve">
+    <value>Ontvangers</value>
+  </data>
+  <data name="Recovery code verification" xml:space="preserve">
+    <value>Verificatie herstelcodes</value>
+  </data>
+  <data name="Recovery codes" xml:space="preserve">
+    <value>Herstelcodes</value>
+  </data>
+  <data name="recovery codes left." xml:space="preserve">
+    <value>herstelcodes links.</value>
+  </data>
+  <data name="Recreate" xml:space="preserve">
+    <value>Herstellen</value>
+  </data>
+  <data name="Reduce DB size" xml:space="preserve">
+    <value>DB-grootte verkleinen</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Vernieuwen</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registreren</value>
+  </data>
+  <data name="Register confirmation" xml:space="preserve">
+    <value>Register bevestiging</value>
+  </data>
+  <data name="Registered Logins" xml:space="preserve">
+    <value>Geregistreerde aanmeldingen</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Opnieuw laden</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="Remove a role" xml:space="preserve">
+    <value>Een rol verwijderen</value>
+  </data>
+  <data name="Remove filters" xml:space="preserve">
+    <value>Filters verwijderen</value>
+  </data>
+  <data name="Remove Header" xml:space="preserve">
+    <value>Koptekst verwijderen</value>
+  </data>
+  <data name="Remove logo" xml:space="preserve">
+    <value>Logo verwijderen</value>
+  </data>
+  <data name="Remove role" xml:space="preserve">
+    <value>Rol verwijderen</value>
+  </data>
+  <data name="Report deposit path" xml:space="preserve">
+    <value>Stortplaats rapport</value>
+  </data>
+  <data name="Report details" xml:space="preserve">
+    <value>Details rapport</value>
+  </data>
+  <data name="Report name" xml:space="preserve">
+    <value>Naam rapport</value>
+  </data>
+  <data name="Report service" xml:space="preserve">
+    <value>Rapport dienst</value>
+  </data>
+  <data name="Report sub name" xml:space="preserve">
+    <value>Subnaam rapport</value>
+  </data>
+  <data name="Report title" xml:space="preserve">
+    <value>Rapport titel</value>
+  </data>
+  <data name="Report type" xml:space="preserve">
+    <value>Soort rapport</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Rapporten</value>
+  </data>
+  <data name="Reports execution plan" xml:space="preserve">
+    <value>Rapporten uitvoeringsplan</value>
+  </data>
+  <data name="Reports Result" xml:space="preserve">
+    <value>Rapporten Resultaat</value>
+  </data>
+  <data name="Reports result logs" xml:space="preserve">
+    <value>Rapporten resultaat logs</value>
+  </data>
+  <data name="Reports1" xml:space="preserve">
+    <value>Rapporten1</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Vereist</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Reset authenticator app" xml:space="preserve">
+    <value>Reset authenticator app</value>
+  </data>
+  <data name="Reset authenticator key" xml:space="preserve">
+    <value>Reset authenticatorsleutel</value>
+  </data>
+  <data name="Reset password" xml:space="preserve">
+    <value>Reset wachtwoord</value>
+  </data>
+  <data name="Reset password confirmation" xml:space="preserve">
+    <value>Bevestiging wachtwoord resetten</value>
+  </data>
+  <data name="Reset recovery codes" xml:space="preserve">
+    <value>Herstel herstelcodes</value>
+  </data>
+  <data name="Reset to Default" xml:space="preserve">
+    <value>Terugzetten naar standaard</value>
+  </data>
+  <data name="reset your authenticator keys." xml:space="preserve">
+    <value>Uw authenticatorsleutels opnieuw instellen.</value>
+  </data>
+  <data name="reset1" xml:space="preserve">
+    <value>reset</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Herstel</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Resultaat</value>
+  </data>
+  <data name="Retrieve reports" xml:space="preserve">
+    <value>Rapporten ophalen</value>
+  </data>
+  <data name="Return to report editor" xml:space="preserve">
+    <value>Terug naar rapport editor</value>
+  </data>
+  <data name="Role added" xml:space="preserve">
+    <value>Rol toegevoegd</value>
+  </data>
+  <data name="Role name" xml:space="preserve">
+    <value>Naam rol</value>
+  </data>
+  <data name="Role removed" xml:space="preserve">
+    <value>Rol verwijderd</value>
+  </data>
+  <data name="Role usage" xml:space="preserve">
+    <value>Gebruik rol</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Rollen</value>
+  </data>
+  <data name="Roles :" xml:space="preserve">
+    <value>Rollen :</value>
+  </data>
+  <data name="Roles assigned" xml:space="preserve">
+    <value>Toegewezen rollen</value>
+  </data>
+  <data name="Roles assigned to" xml:space="preserve">
+    <value>Rollen toegewezen aan</value>
+  </data>
+  <data name="Roles available" xml:space="preserve">
+    <value>Rollen beschikbaar</value>
+  </data>
+  <data name="Roles list" xml:space="preserve">
+    <value>Lijst Rollen</value>
+  </data>
+  <data name="Rows per activity" xml:space="preserve">
+    <value>Rijen per activiteit</value>
+  </data>
+  <data name="Rows per page" xml:space="preserve">
+    <value>Rijen per pagina</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Uitvoeren</value>
+  </data>
+  <data name="Run by" xml:space="preserve">
+    <value>Uitgevoerd per</value>
+  </data>
+  <data name="Run manually" xml:space="preserve">
+    <value>Handmatig uitvoeren</value>
+  </data>
+  <data name="Run reports manually" xml:space="preserve">
+    <value>Rapporten handmatig uitvoeren</value>
+  </data>
+  <data name="Saturday" xml:space="preserve">
+    <value>Zaterdag</value>
+  </data>
+  <data name="Save changes" xml:space="preserve">
+    <value>Wijzigingen opslaan</value>
+  </data>
+  <data name="Save credentials" xml:space="preserve">
+    <value>Bewaar referenties</value>
+  </data>
+  <data name="Scan the QR Code or enter this key" xml:space="preserve">
+    <value>Scan de QR-code of voer deze sleutel in</value>
+  </data>
+  <data name="Scheduler" xml:space="preserve">
+    <value>Scheduler</value>
+  </data>
+  <data name="Scheduler simulation for next 60 days" xml:space="preserve">
+    <value>Planning simulatie voor de komende 60 dagen</value>
+  </data>
+  <data name="Scrollable" xml:space="preserve">
+    <value>Scrollbaar</value>
+  </data>
+  <data name="Seed DB from date" xml:space="preserve">
+    <value>Zaad DB van datum</value>
+  </data>
+  <data name="Select a branch" xml:space="preserve">
+    <value>Selecteer een vestiging</value>
+  </data>
+  <data name="Select a business area" xml:space="preserve">
+    <value>Selecteer een bedrijfsgebied</value>
+  </data>
+  <data name="Select a Company" xml:space="preserve">
+    <value>Selecteer een bedrijf</value>
+  </data>
+  <data name="Select a data type" xml:space="preserve">
+    <value>Selecteer een gegevenstype</value>
+  </data>
+  <data name="Select a date calculation" xml:space="preserve">
+    <value>Selecteer een datumberekening</value>
+  </data>
+  <data name="Select a log to display the message" xml:space="preserve">
+    <value>Selecteer een log om het bericht weer te geven</value>
+  </data>
+  <data name="Select a log to display the values" xml:space="preserve">
+    <value>Selecteer een logboek om de waarden weer te geven</value>
+  </data>
+  <data name="Select activity Logo" xml:space="preserve">
+    <value>Selecteer activiteit Logo</value>
+  </data>
+  <data name="Select an activity" xml:space="preserve">
+    <value>Selecteer een activiteit</value>
+  </data>
+  <data name="Select an excel template" xml:space="preserve">
+    <value>Kies een excel sjabloon</value>
+  </data>
+  <data name="Select application Logo" xml:space="preserve">
+    <value>Selecteer toepassing Logo</value>
+  </data>
+  <data name="send by email" xml:space="preserve">
+    <value>Verstuur per e-mail</value>
+  </data>
+  <data name="Send by email?" xml:space="preserve">
+    <value>Versturen per e-mail?</value>
+  </data>
+  <data name="Send for all recipients" xml:space="preserve">
+    <value>Verzenden voor alle ontvangers</value>
+  </data>
+  <data name="Send for me" xml:space="preserve">
+    <value>Versturen voor mij</value>
+  </data>
+  <data name="Send verification email" xml:space="preserve">
+    <value>Stuur verificatie e-mail</value>
+  </data>
+  <data name="Sep" xml:space="preserve">
+    <value>Sep</value>
+  </data>
+  <data name="Separate query in on file?" xml:space="preserve">
+    <value>Aparte query in op bestand?</value>
+  </data>
+  <data name="Separated excel file?" xml:space="preserve">
+    <value>Gescheiden excel bestand?</value>
+  </data>
+  <data name="Sequence" xml:space="preserve">
+    <value>Volgorde</value>
+  </data>
+  <data name="Service down" xml:space="preserve">
+    <value>Service uit</value>
+  </data>
+  <data name="Service up" xml:space="preserve">
+    <value>Dienst omhoog</value>
+  </data>
+  <data name="Services status" xml:space="preserve">
+    <value>Diensten status</value>
+  </data>
+  <data name="Set password" xml:space="preserve">
+    <value>Wachtwoord instellen</value>
+  </data>
+  <data name="Set your password" xml:space="preserve">
+    <value>Stel uw wachtwoord in</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="Setup authenticator app" xml:space="preserve">
+    <value>Instellen authenticator app</value>
+  </data>
+  <data name="SFTP configuration" xml:space="preserve">
+    <value>SFTP configuratie</value>
+  </data>
+  <data name="SFTP host" xml:space="preserve">
+    <value>SFTP host</value>
+  </data>
+  <data name="SFTP password" xml:space="preserve">
+    <value>SFTP-wachtwoord</value>
+  </data>
+  <data name="SFTP port" xml:space="preserve">
+    <value>SFTP-poort</value>
+  </data>
+  <data name="SFTP username" xml:space="preserve">
+    <value>SFTP gebruikersnaam</value>
+  </data>
+  <data name="Side menu" xml:space="preserve">
+    <value>Zijmenu</value>
+  </data>
+  <data name="Sign up" xml:space="preserve">
+    <value>Aanmelden</value>
+  </data>
+  <data name="Signup" xml:space="preserve">
+    <value>Aanmelden</value>
+  </data>
+  <data name="Size of files stored locally" xml:space="preserve">
+    <value>Grootte van lokaal opgeslagen bestanden</value>
+  </data>
+  <data name="SMTP configuration" xml:space="preserve">
+    <value>SMTP configuratie</value>
+  </data>
+  <data name="SMTP host" xml:space="preserve">
+    <value>SMTP host</value>
+  </data>
+  <data name="SMTP password" xml:space="preserve">
+    <value>SMTP wachtwoord</value>
+  </data>
+  <data name="SMTP port" xml:space="preserve">
+    <value>SMTP-poort</value>
+  </data>
+  <data name="SMTP username" xml:space="preserve">
+    <value>SMTP gebruikersnaam</value>
+  </data>
+  <data name="Sorry, the page you visited does not exist." xml:space="preserve">
+    <value>Sorry, de pagina die u bezoekt bestaat niet.</value>
+  </data>
+  <data name="Sorry, you are not authorized to access this page." xml:space="preserve">
+    <value>Sorry, u bent niet gemachtigd om deze pagina te openen.</value>
+  </data>
+  <data name="SQL execution duration" xml:space="preserve">
+    <value>Duur uitvoering SQL</value>
+  </data>
+  <data name="SSL Activated?" xml:space="preserve">
+    <value>SSL geactiveerd?</value>
+  </data>
+  <data name="Standard" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
+  <data name="Start date time" xml:space="preserve">
+    <value>Begindatum tijd</value>
+  </data>
+  <data name="StartOfLastMonth" xml:space="preserve">
+    <value>StartOfLastMaand</value>
+  </data>
+  <data name="StartOfLastWeek" xml:space="preserve">
+    <value>StartOfLastWeek</value>
+  </data>
+  <data name="StartOfThisMonth" xml:space="preserve">
+    <value>Begin van deze maand</value>
+  </data>
+  <data name="StartOfThisQuarter" xml:space="preserve">
+    <value>Begin vanDitKwartaal</value>
+  </data>
+  <data name="StartOfThisWeek" xml:space="preserve">
+    <value>Begin van deze week</value>
+  </data>
+  <data name="StartOfThisYear" xml:space="preserve">
+    <value>Begin van dit jaar</value>
+  </data>
+  <data name="Starts with" xml:space="preserve">
+    <value>Begint met</value>
+  </data>
+  <data name="Storage per report" xml:space="preserve">
+    <value>Opslag per rapport</value>
+  </data>
+  <data name="Structure" xml:space="preserve">
+    <value>Structuur</value>
+  </data>
+  <data name="Sunday" xml:space="preserve">
+    <value>Zondag</value>
+  </data>
+  <data name="Switch to Dark Theme" xml:space="preserve">
+    <value>Schakel over naar Donker Thema</value>
+  </data>
+  <data name="Switch to Light Theme" xml:space="preserve">
+    <value>Schakel naar Licht Thema</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>Systeem</value>
+  </data>
+  <data name="System log message" xml:space="preserve">
+    <value>Systeem logboek bericht</value>
+  </data>
+  <data name="System logs" xml:space="preserve">
+    <value>Systeem logs</value>
+  </data>
+  <data name="System logs by level" xml:space="preserve">
+    <value>Systeem logs op niveau</value>
+  </data>
+  <data name="Table name" xml:space="preserve">
+    <value>Tabel naam</value>
+  </data>
+  <data name="Target table name" xml:space="preserve">
+    <value>Naam doeltabel</value>
+  </data>
+  <data name="Tasks in error" xml:space="preserve">
+    <value>Taken in fout</value>
+  </data>
+  <data name="Tasks manager" xml:space="preserve">
+    <value>Taken manager</value>
+  </data>
+  <data name="Tasks per day" xml:space="preserve">
+    <value>Taken per dag</value>
+  </data>
+  <data name="Tasks per type" xml:space="preserve">
+    <value>Taken per type</value>
+  </data>
+  <data name="Tasks today" xml:space="preserve">
+    <value>Taken vandaag</value>
+  </data>
+  <data name="Template tab name to use" xml:space="preserve">
+    <value>Te gebruiken sjabloon-tabbladnaam</value>
+  </data>
+  <data name="Test Db connection" xml:space="preserve">
+    <value>Test Db verbinding</value>
+  </data>
+  <data name="Test Feedback:" xml:space="preserve">
+    <value>Test Terugkoppeling:</value>
+  </data>
+  <data name="Test query" xml:space="preserve">
+    <value>Test query</value>
+  </data>
+  <data name="Thank you for confirming your email." xml:space="preserve">
+    <value>Dank u voor het bevestigen van uw e-mail.</value>
+  </data>
+  <data name="The email address is invalid" xml:space="preserve">
+    <value>Het e-mailadres is ongeldig</value>
+  </data>
+  <data name="The password and confirmation password do not match" xml:space="preserve">
+    <value>Het wachtwoord en het bevestigingswachtwoord komen niet overeen</value>
+  </data>
+  <data name="The passwords entered must be equal" xml:space="preserve">
+    <value>De ingevoerde wachtwoorden moeten gelijk zijn</value>
+  </data>
+  <data name="The purpose of this application is to easily create reports or alerts in selecting data from several types of database. Each task can be scheduled with a dedicated tool and results can be monitored via logs or the task manager." xml:space="preserve">
+    <value>Het doel van deze applicatie is om eenvoudig rapporten of alerts te maken in het selecteren van gegevens uit verschillende soorten databases. Elke taak kan worden gepland met een speciale tool en de resultaten kunnen worden gecontroleerd via logs of de task manager.</value>
+  </data>
+  <data name="The same date with" xml:space="preserve">
+    <value>Dezelfde datum met</value>
+  </data>
+  <data name="There are changes pending" xml:space="preserve">
+    <value>Er zijn wijzigingen in behandeling</value>
+  </data>
+  <data name="This account has been locked out, please try again later." xml:space="preserve">
+    <value>Dit account is vergrendeld, probeer het later nog eens.</value>
+  </data>
+  <data name="This action only disables 2FA" xml:space="preserve">
+    <value>Deze actie schakelt alleen 2FA uit</value>
+  </data>
+  <data name="This activity is Visible?" xml:space="preserve">
+    <value>Deze activiteit is zichtbaar?</value>
+  </data>
+  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
+    <value>Dit proces schakelt 2FA uit totdat u uw authenticator app heeft geverifieerd.  Als u de configuratie van uw authenticator-app niet voltooit, kunt u de toegang tot uw account verliezen.</value>
+  </data>
+  <data name="Thursday" xml:space="preserve">
+    <value>Donderdag</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Tijdstempel</value>
+  </data>
+  <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. If you want to define a specific deposit path, click on the corresponding button. When you have finished, validate the changes" xml:space="preserve">
+    <value>Om de planner te beheren selecteert u "Configureer planner" en vervolgens kiest u. Als u een specifiek stortpad wilt definiëren, klikt u op de overeenkomstige knop. Wanneer u klaar bent, valideert u de wijzigingen</value>
+  </data>
+  <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. When you have finished, validate the changes" xml:space="preserve">
+    <value>Om de planner te beheren, selecteert u "Configureer planner" en kiest u vervolgens. Wanneer u klaar bent, valideert u de wijzigingen</value>
+  </data>
+  <data name="To use an authenticator app go through the following steps:" xml:space="preserve">
+    <value>Om een authenticatie app te gebruiken doorloop je de volgende stappen:</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Vandaag</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Morgen</value>
+  </data>
+  <data name="Topbar" xml:space="preserve">
+    <value>Bovenbalk</value>
+  </data>
+  <data name="Total duration" xml:space="preserve">
+    <value>Totale duur</value>
+  </data>
+  <data name="Total nbr of active queries" xml:space="preserve">
+    <value>Totaal aantal actieve queries</value>
+  </data>
+  <data name="Total size in MB" xml:space="preserve">
+    <value>Totale grootte in MB</value>
+  </data>
+  <data name="TOTAL Users" xml:space="preserve">
+    <value>TOTAAL gebruikers</value>
+  </data>
+  <data name="Try to create folder" xml:space="preserve">
+    <value>Probeer map aan te maken</value>
+  </data>
+  <data name="Try to create the target folder if not exists?" xml:space="preserve">
+    <value>Probeer de doelmap aan te maken als deze nog niet bestaat?</value>
+  </data>
+  <data name="Tuesday" xml:space="preserve">
+    <value>Dinsdag</value>
+  </data>
+  <data name="Two-factor authentication" xml:space="preserve">
+    <value>Twee-factor authenticatie</value>
+  </data>
+  <data name="Two-factor authentication (2FA)" xml:space="preserve">
+    <value>Twee-factor authenticatie (2FA)</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Type of change" xml:space="preserve">
+    <value>Type wijziging</value>
+  </data>
+  <data name="Type of Database" xml:space="preserve">
+    <value>Type gegevensbestand</value>
+  </data>
+  <data name="Type of file" xml:space="preserve">
+    <value>Type bestand</value>
+  </data>
+  <data name="Type of job" xml:space="preserve">
+    <value>Type opdracht</value>
+  </data>
+  <data name="Type of report" xml:space="preserve">
+    <value>Soort rapport</value>
+  </data>
+  <data name="Type of synchronisation" xml:space="preserve">
+    <value>Soort synchronisatie</value>
+  </data>
+  <data name="Type of tasks" xml:space="preserve">
+    <value>Soort taken</value>
+  </data>
+  <data name="understand what is a report" xml:space="preserve">
+    <value>begrijpen wat een rapport is</value>
+  </data>
+  <data name="understand what is an activity" xml:space="preserve">
+    <value>begrijpen wat een activiteit is</value>
+  </data>
+  <data name="understand what is an alert" xml:space="preserve">
+    <value>begrijpen wat een waarschuwing is</value>
+  </data>
+  <data name="Unfortunately, you do not yet have any access" xml:space="preserve">
+    <value>Helaas, je hebt nog geen toegang</value>
+  </data>
+  <data name="Until 200k lines" xml:space="preserve">
+    <value>Tot 200k lijnen</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Update a deposit path" xml:space="preserve">
+    <value>Een stortingspad bijwerken</value>
+  </data>
+  <data name="Update a new network credential" xml:space="preserve">
+    <value>Update een nieuwe netwerk credential</value>
+  </data>
+  <data name="Update activity" xml:space="preserve">
+    <value>Activiteit bijwerken</value>
+  </data>
+  <data name="Update all tempory tables" xml:space="preserve">
+    <value>Werk alle tijdelijke tabellen bij</value>
+  </data>
+  <data name="Update by" xml:space="preserve">
+    <value>Update door</value>
+  </data>
+  <data name="Update Db manually" xml:space="preserve">
+    <value>Db handmatig bijwerken</value>
+  </data>
+  <data name="Update password" xml:space="preserve">
+    <value>Wachtwoord bijwerken</value>
+  </data>
+  <data name="Update SMTP profil" xml:space="preserve">
+    <value>SMTP profiel bijwerken</value>
+  </data>
+  <data name="Updated at" xml:space="preserve">
+    <value>Bijgewerkt bij</value>
+  </data>
+  <data name="Updated by" xml:space="preserve">
+    <value>Bijgewerkt door</value>
+  </data>
+  <data name="Upload a logo" xml:space="preserve">
+    <value>Upload een logo</value>
+  </data>
+  <data name="Upload the company's logo" xml:space="preserve">
+    <value>Upload het logo van het bedrijf</value>
+  </data>
+  <data name="Use a DB schema?" xml:space="preserve">
+    <value>Een DB schema gebruiken?</value>
+  </data>
+  <data name="Use a specific file naming?" xml:space="preserve">
+    <value>Een specifieke bestandsnaamgeving gebruiken?</value>
+  </data>
+  <data name="Use an excel data table?" xml:space="preserve">
+    <value>Een Excel-gegevenstabel gebruiken?</value>
+  </data>
+  <data name="Use an excel template?" xml:space="preserve">
+    <value>Gebruik je een excel template?</value>
+  </data>
+  <data name="Use application user credential?" xml:space="preserve">
+    <value>Gebruik applicatie gebruikers referentie?</value>
+  </data>
+  <data name="Use global query parameters?" xml:space="preserve">
+    <value>Globale query parameters gebruiken?</value>
+  </data>
+  <data name="Use os credential" xml:space="preserve">
+    <value>Gebruik os referentie</value>
+  </data>
+  <data name="Use primary keys?" xml:space="preserve">
+    <value>Primaire sleutels gebruiken?</value>
+  </data>
+  <data name="Use sFTP protocol" xml:space="preserve">
+    <value>SFTP protocol gebruiken</value>
+  </data>
+  <data name="Use sFTP protocol?" xml:space="preserve">
+    <value>SFTP-protocol gebruiken?</value>
+  </data>
+  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
+    <value>Standaard query's gebruiken voor Rhs WMS?</value>
+  </data>
+  <data name="Use the default deposit path of the activity?" xml:space="preserve">
+    <value>Het standaard depotpad van de activiteit gebruiken?</value>
+  </data>
+  <data name="Use Windows authentication?" xml:space="preserve">
+    <value>Windows-verificatie gebruiken?</value>
+  </data>
+  <data name="User actions logs" xml:space="preserve">
+    <value>Gebruikers acties logs</value>
+  </data>
+  <data name="User name" xml:space="preserve">
+    <value>Naam gebruiker</value>
+  </data>
+  <data name="User Settings" xml:space="preserve">
+    <value>Instellingen gebruiker</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Gebruikers</value>
+  </data>
+  <data name="Users and roles" xml:space="preserve">
+    <value>Gebruikers en rollen</value>
+  </data>
+  <data name="Users list" xml:space="preserve">
+    <value>Gebruikers lijst</value>
+  </data>
+  <data name="Users management" xml:space="preserve">
+    <value>Gebruikers beheer</value>
+  </data>
+  <data name="Validate" xml:space="preserve">
+    <value>Valideren</value>
+  </data>
+  <data name="Validate and add detail" xml:space="preserve">
+    <value>Valideren en details toevoegen</value>
+  </data>
+  <data name="Validate the new activity" xml:space="preserve">
+    <value>Valideer de nieuwe activiteit</value>
+  </data>
+  <data name="Verification code" xml:space="preserve">
+    <value>Verificatie code</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Verifiëren</value>
+  </data>
+  <data name="Visual Cron Editor" xml:space="preserve">
+    <value>Visuele Cron-editor</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Waarschuwing</value>
+  </data>
+  <data name="Warning: keep the {0} tag inner the message to see the values ​​of the variable" xml:space="preserve">
+    <value>Waarschuwing: houd de {0} tag binnen het bericht om de waarden van de variabele te zien</value>
+  </data>
+  <data name="Wednesday" xml:space="preserve">
+    <value>Woensdag</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welkom</value>
+  </data>
+  <data name="When you are editing the report, click on the &quot;Manage recipients&quot; tab. Enter an emsail adress then click on &quot;Add recipients&quot; button. You can also customize the message of the email with teh button &quot;Edit email message&quot;" xml:space="preserve">
+    <value>Wanneer u het rapport aan het bewerken bent, klik dan op de tab "Ontvangers beheren". Voer een e-mailadres in en klik op de knop "Ontvangers toevoegen". U kunt ook de boodschap van de e-mail aanpassen met de knop "E-mailbericht bewerken".</value>
+  </data>
+  <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
+    <value>Wanneer u het rapport aan het bewerken bent, klik dan op de "Rapport details" tab. Voeg een detail toe, kies de query naam en voer de query in. U kunt het resultaat testen. Klik tenslotte op de knop "Valideren</value>
+  </data>
+  <data name="Width" xml:space="preserve">
+    <value>Breedte</value>
+  </data>
+  <data name="Windows authentication" xml:space="preserve">
+    <value>Windows verificatie</value>
+  </data>
+  <data name="Workers logs" xml:space="preserve">
+    <value>Werkers logboeken</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Yes, I understand and confirm" xml:space="preserve">
+    <value>Ja, ik begrijp en bevestig</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Gisteren</value>
+  </data>
+  <data name="You can create, edit and delete reports." xml:space="preserve">
+    <value>U kunt rapporten aanmaken, bewerken en verwijderen.</value>
+  </data>
+  <data name="You can download the reports already created and consult the plan of the next report executions." xml:space="preserve">
+    <value>U kunt de reeds gemaakte rapporten downloaden en de planning van de volgende rapportuitvoeringen raadplegen.</value>
+  </data>
+  <data name="You can enter below a subject on which you would to get help" xml:space="preserve">
+    <value>U kunt hieronder een onderwerp ingeven waarover u hulp wenst</value>
+  </data>
+  <data name="You do not have a local username/password for this site. Add a local account so you can log in without an external login." xml:space="preserve">
+    <value>U heeft geen lokale gebruikersnaam/wachtwoord voor deze site. Voeg een lokale account toe zodat u kunt inloggen zonder externe login.</value>
+  </data>
+  <data name="You have" xml:space="preserve">
+    <value>U heeft</value>
+  </data>
+  <data name="You have 1 recovery code left." xml:space="preserve">
+    <value>U heeft nog 1 herstelcode over.</value>
+  </data>
+  <data name="You have access to the activity" xml:space="preserve">
+    <value>Je hebt toegang tot de activiteit</value>
+  </data>
+  <data name="You have full access to the general settings." xml:space="preserve">
+    <value>Je hebt volledige toegang tot de algemene instellingen.</value>
+  </data>
+  <data name="You have no recovery codes left." xml:space="preserve">
+    <value>Je hebt geen herstelcodes meer.</value>
+  </data>
+  <data name="You have requested to log in with a recovery code. This login will not be remembered until you provid an authenticator app code at log in or disable 2FA and log in again." xml:space="preserve">
+    <value>U heeft gevraagd om in te loggen met een herstelcode. Deze login zal niet worden onthouden totdat u een authenticator app code verstrekt bij het inloggen of 2FA uitschakelt en opnieuw inlogt.</value>
+  </data>
+  <data name="You have successfully logged out of the application." xml:space="preserve">
+    <value>U bent succesvol uitgelogd uit de applicatie.</value>
+  </data>
+  <data name="You have the role" xml:space="preserve">
+    <value>U heeft de rol</value>
+  </data>
+  <data name="You must" xml:space="preserve">
+    <value>U moet</value>
+  </data>
+  <data name="You should" xml:space="preserve">
+    <value>U moet</value>
+  </data>
+  <data name="You've successfully authenticated with" xml:space="preserve">
+    <value>U heeft zich succesvol geauthenticeerd met</value>
+  </data>
+  <data name="Your account contains personal data that you have given us. This page allows you to download or delete that data." xml:space="preserve">
+    <value>Uw account bevat persoonlijke gegevens die u ons hebt gegeven. Op deze pagina kunt u die gegevens downloaden of verwijderen.</value>
+  </data>
+  <data name="Your account has been updated" xml:space="preserve">
+    <value>Uw account is bijgewerkt</value>
+  </data>
+  <data name="Your login is protected with an authenticator app. Enter your authenticator code below." xml:space="preserve">
+    <value>Uw login is beveiligd met een authenticator app. Voer hieronder uw authenticatiecode in.</value>
+  </data>
+  <data name="Your password cannot be empty" xml:space="preserve">
+    <value>Uw wachtwoord mag niet leeg zijn</value>
+  </data>
+  <data name="Your password has been reset." xml:space="preserve">
+    <value>Uw wachtwoord is opnieuw ingesteld.</value>
+  </data>
+  <data name="Your password length must be at least 6" xml:space="preserve">
+    <value>Uw wachtwoord moet minstens 6 tekens lang zijn</value>
+  </data>
+  <data name="Your password must contain at least one (!? *.)" xml:space="preserve">
+    <value>Uw wachtwoord moet ten minste één (!? *.) bevatten</value>
+  </data>
+  <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
+    <value>Uw wachtwoord moet minstens één kleine letter bevatten</value>
+  </data>
+  <data name="Your password must contain at least one number" xml:space="preserve">
+    <value>Uw wachtwoord moet minstens één cijfer bevatten</value>
+  </data>
+  <data name="Your password must contain at least one uppercase letter" xml:space="preserve">
+    <value>Uw wachtwoord moet minstens één hoofdletter bevatten</value>
+  </data>
+</root>

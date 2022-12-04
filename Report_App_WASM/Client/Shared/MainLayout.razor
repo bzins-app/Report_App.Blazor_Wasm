@@ -1,0 +1,53 @@
+﻿@using Report_App_WASM.Client.Shared.Theme;
+@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode="_isDarkMode" Theme="AppTheme"/>
+<MudDialogProvider FullWidth="true"
+                   MaxWidth="MaxWidth.Small"
+                   CloseButton="true"
+                   DisableBackdropClick="true"
+                   Position="DialogPosition.Center"
+                   CloseOnEscapeKey="false" />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Color="Color.Surface">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        @*<img src="@ApplicationConstants.ApplicationLogo" alt="@ApplicationConstants.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />*@
+        <MudSpacer />
+        <MudTooltip Duration="1000"  Text="Switch dark mode">
+            <MudIconButton Icon="@(_isDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@DarkModeChange" />
+        </MudTooltip>
+       @* <LanguageSwitch />*@
+        <LoginDisplay />
+    </MudAppBar>
+    <AuthorizeView>
+        <Authorized>
+            <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Never">
+                @*<NavMenu  _isDarkMode="_isDarkMode" />*@
+            </MudDrawer>
+        </Authorized>
+    </AuthorizeView>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4" Style="padding-bottom:10px">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+@code{
+    private string userName { get; set; }
+    readonly MudTheme AppTheme = ApplicationTheme.ApplicationMudTheme();
+
+    private bool _isDarkMode;
+    public bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task DarkModeChange()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+}
