@@ -1,39 +1,102 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Report_App_WASM</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@using Report_App_WASM.Client.Utils
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+@inject HttpClient Http
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<MudNavMenu Color="Color.Info" Bordered="true" Margin="Margin.Normal">
+    <MudText Typo="Typo.h6" Class="px-4">
+        <a href="/">
+            <div style="height:64px;  display: flex; justify-content: center; align-items: center; font-size:17px">
+                <span class="logo-sm">
+                    <img src="images/AppLogo.png" style="-webkit-filter:invert(100%)" alt="" height="30">
+                </span>
+                <span class="logo-lg" style="flex: none;">
+                    <span style="color:white; padding-left:5px">@ApplicationConstants.ApplicationName</span>
+                </span>
+            </div>
+        </a>
+    </MudText>
+    <MudDivider />
+    <MudNavLink Href="Home" Style="padding-top:15px" Icon="@Icons.Material.Outlined.Home">@localizer.Get("Home")</MudNavLink>
+    <MudNavLink Href="DashboardApp" Icon="@Icons.Material.Outlined.AreaChart">@localizer.Get("Dashboard")</MudNavLink>
+    <MudNavGroup Title="@localizer.Get("Reports")" Icon="@Icons.Material.Outlined.ManageSearch">
+        @foreach (var t in activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
+        {
+            <AuthorizeView Roles=@(t.ActivityName)>
+                <MudNavGroup Title="@t.ActivityName" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">
+                    @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
+                    {
+                        <MudNavLink Href="@("ReportsPerActivity/" + t.ActivityName + "/" + t.ActivityId)">@localizer.Get("Run reports manually")</MudNavLink>
+                    }
+                    @if (context.User.IsInRole("Supervisor"))
+                    {
+                        <MudNavLink Href=@("TasksPerActivity/Report/"+t.ActivityName) Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Manage reports")</MudNavLink>
+                    }
+                    <MudNavLink Href="@("RetrieveReports/" + t.ActivityName + "/" + t.ActivityId)">@localizer.Get("Retrieve reports")</MudNavLink>
+                </MudNavGroup>
+            </AuthorizeView>
+        }
+    </MudNavGroup>
+    <MudNavLink Href="Services" Icon="@Icons.Material.Outlined.DesignServices">@localizer.Get("Services status")</MudNavLink>
+    <AuthorizeView Roles="Admin, Supervisor">
+        <Authorized>
+            <MudNavGroup Title="@localizer.Get("Modify tasks")" Icon="@Icons.Material.Outlined.AddTask">
+                <MudNavLink Href="TaskManager/Report" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Reports")</MudNavLink>
+                <MudNavLink Href="TaskManager/Alert" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Alerts")</MudNavLink>
+                <MudNavLink Href="TaskManager/DataTransfer" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Data transfer")</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="@localizer.Get("Base parameters")" Icon="@Icons.Material.Outlined.SettingsApplications">
+                <MudNavLink Href="ApplicationParameters" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Application parameters")</MudNavLink>
+                <MudNavLink Href="Activities" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Activities manager")</MudNavLink>
+                <MudNavLink Href="DataTransferParameters" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Data transfer parameters")</MudNavLink>
+                <MudNavLink Href="SMTP" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("SMTP configuration")</MudNavLink>
+                <MudNavLink Href="LDAP" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("LDAP configuration")</MudNavLink>
+                <MudNavLink Href="DepositPath" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Deposit path")</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="@localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
+                <MudNavLink Href="AuditTrail" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Audit Trail")</MudNavLink>
+                <MudNavLink Href="BackgroundTasksLogs" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Background Tasks")</MudNavLink>
+                <MudNavLink Href="SystemLogs" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("System")</MudNavLink>
+                <MudNavLink Href="QueryExecutionLogs" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Query execution logs")</MudNavLink>
+                <MudNavLink Href="ReportsResultLogs" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Reports Result")</MudNavLink>
+                <MudNavLink Href="EmailSenderLogs" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Email Sender")</MudNavLink>
+            </MudNavGroup>
+            <MudNavLink Href="UsersManagement" Icon="@Icons.Material.Outlined.SupervisedUserCircle">@localizer.Get("Users")</MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+    <MudNavLink Href="help" Icon="@Icons.Material.Outlined.QuestionMark">@localizer.Get("Help")</MudNavLink>
+    <AuthorizeView>
+        <Authorized>
+            @if (context.User.IsInRole("Admin"))
+            {
+                <MudNavLink Href="/Hangfire" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@localizer.Get("Tasks manager")</MudNavLink>
+            }
+            else
+            {
+                <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@localizer.Get("Tasks manager")</MudNavLink>
+            }
+        </Authorized>
+    </AuthorizeView>
+</MudNavMenu>
+<MudDivider Class="mt-auto"></MudDivider>
+<MudNavMenu Class="d-flex justify-space-between pa-4">
+    <MudLink Href="#" Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">@@2022</MudLink>
+    <MudText Class="" Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">version 0.9.5</MudText>
+</MudNavMenu>
 
 @code {
-    private bool collapseNavMenu = true;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    [Parameter] public bool _isDarkMode { get; set; }
+    private List<SelectItemActivitiesInfo> activities = new();
 
-    private void ToggleNavMenu()
+    protected override async Task OnInitializedAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
+        activities = (await Http.GetFromJsonAsync<SelectItemActivitiesInfo[]>("ApplicationParameters/ActivitiesInfo")).ToList();
+        var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>("ApplicationParameters/ApplicationConstants");
+        ApplicationConstants.ApplicationLogo=values.ApplicationLogo;
+        ApplicationConstants.ApplicationName = values.ApplicationName;
     }
+
 }

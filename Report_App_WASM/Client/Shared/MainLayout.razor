@@ -1,5 +1,9 @@
 ﻿@using Report_App_WASM.Client.Shared.Theme;
+@using Report_App_WASM.Client.Utils;
 @inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject IdentityAuthenticationStateProvider authStateProvider
+@attribute [Authorize]
 
 <MudThemeProvider IsDarkMode="_isDarkMode" Theme="AppTheme"/>
 <MudDialogProvider FullWidth="true"
@@ -13,18 +17,18 @@
 <MudLayout>
     <MudAppBar Color="Color.Surface">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
-        @*<img src="@ApplicationConstants.ApplicationLogo" alt="@ApplicationConstants.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />*@
+        <img src="@ApplicationConstants.ApplicationLogo" alt="@ApplicationConstants.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />
         <MudSpacer />
-        <MudTooltip Duration="1000"  Text="Switch dark mode">
+        <MudTooltip Duration="1000" Text="@(_isDarkMode ? localizer.Get("Switch to Light Theme") : localizer.Get("Switch to Dark Theme"))">
             <MudIconButton Icon="@(_isDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@DarkModeChange" />
         </MudTooltip>
-       @* <LanguageSwitch />*@
+        <LanguageSwitch />
         <LoginDisplay />
     </MudAppBar>
     <AuthorizeView>
         <Authorized>
             <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Never">
-                @*<NavMenu  _isDarkMode="_isDarkMode" />*@
+                <NavMenu  _isDarkMode="_isDarkMode" />
             </MudDrawer>
         </Authorized>
     </AuthorizeView>

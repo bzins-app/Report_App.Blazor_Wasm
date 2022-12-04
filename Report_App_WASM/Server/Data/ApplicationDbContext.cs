@@ -10,8 +10,7 @@ namespace Report_App_WASM.Server.Data
     public class ApplicationDbContext : AuditableIdentityContext
     {
         public ApplicationDbContext(
-            DbContextOptions options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+            DbContextOptions options) : base(options)
         {
         }
 

@@ -1,6 +1,6 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-html, body {
+/*html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -20,7 +20,7 @@ a, .btn-link {
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+}*/
 
 .content {
     padding-top: 1.1rem;
@@ -98,4 +98,102 @@ a, .btn-link {
 
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
+    }
+
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+.apexcharts-svg {
+    background: none !important;
+}
+
+.apexcharts-legend-text {
+    color: var(--mud-palette-text-secondary) !important;
+}
+
+.apexcharts-title-text {
+    fill: var(--mud-palette-text-secondary) !important;
+}
+
+.apexcharts-text {
+    fill: var(--mud-palette-text-secondary) !important;
+}
+
+.apexcharts-tooltip.apexcharts-theme-light {
+    border: 1px solid #e3e3e3;
+    background: var(--mud-palette-background) !important;
+}
+
+    .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+        background: var(--mud-palette-surface) !important;
+        border-bottom: 1px solid #ddd;
+    }
+
+table.grid-table .grid-header > .grid-header-group > .grid-header-title > button {
+    background-color: transparent !important;
+}
+
+.row {
+    --bs-gutter-x: 0rem !important;
+    /* --bs-gutter-y: 0; */
+    display: flex;
+    /* flex-wrap: wrap; */
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+}
+
+/*html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.body {
+    font-size: 12px !important;
+}*/
+
+.table {
+    color: inherit !important;
+}
+
+a, .btn-link {
+    color: #0366d6;
+}
+
+/*.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.content {
+    padding-top: 1.1rem;
+}*/
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
     }

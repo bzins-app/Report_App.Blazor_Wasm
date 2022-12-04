@@ -10,13 +10,13 @@ namespace Report_App_WASM.Server
     public class InitializeDatabase
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly BaseUser _baseUser;
 
         public InitializeDatabase(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<IdentityRole<Guid>> roleManager,
             ApplicationDbContext context,
             IOptions<BaseUser> baseUser
             )
@@ -76,7 +76,7 @@ namespace Report_App_WASM.Server
                 {
                     if (!await _roleManager.RoleExistsAsync(t).ConfigureAwait(true))
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(t)).ConfigureAwait(true);
+                        await _roleManager.CreateAsync(new IdentityRole<Guid>(t)).ConfigureAwait(true);
                     }
                 }
             }

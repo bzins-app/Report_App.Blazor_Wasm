@@ -5,14 +5,15 @@ using Report_App_WASM.Server.Models;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Report_App_WASM.Server.Data
 {
-    public abstract class AuditableIdentityContext : ApiAuthorizationDbContext<ApplicationUser>
+    public abstract class AuditableIdentityContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public AuditableIdentityContext(
-            DbContextOptions options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+            DbContextOptions options) : base(options)
         {
         }
         public DbSet<ApplicationAuditTrail> AuditLogs { get; set; }

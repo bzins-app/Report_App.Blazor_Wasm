@@ -1,12 +1,20 @@
 ﻿@using System.Net.Http
-@using System.Net.Http.Json
-@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Components.Web.Virtualization
-@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Authorization.Infrastructure
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.JSInterop
 @using Report_App_WASM.Client
 @using Report_App_WASM.Client.Shared
+@using Report_App_WASM.Client.Services.Implementations
+@using Report_App_WASM.Shared
+@using Report_App_WASM.Shared.Services
 @using MudBlazor
+@using Report_App_WASM.Client.Services.States
+@using System.Security.Claims
+@using System.Net.Http.Json
+@inject NavigationManager navigationManager
+@inject IdentityAuthenticationStateProvider authStateProvider
+@inject CommonLocalizationService localizer

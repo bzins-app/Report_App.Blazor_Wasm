@@ -1,0 +1,42 @@
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.Extensions.Options
+@inject NavigationManager NavigationManager
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+<MudTooltip Text="@localizer.Get("Language")">
+    <MudMenu Class="mx-1" Icon="@Icons.Material.Outlined.Translate" Color="Color.Default" Direction="Direction.Bottom" OffsetY="true" AnchorOrigin="Origin.BottomLeft"
+             Dense="true">
+        @foreach (var language in LocOptions.Value.SupportedUICultures)
+        {
+            if (language.Name == _language)
+            {
+                <MudMenuItem style="background:var(--mud-palette-primary); color:white">@language.DisplayName</MudMenuItem>
+            }
+            else
+            {
+                <MudMenuItem OnClick="(()=>SetLanguage(language.Name))">@language.DisplayName</MudMenuItem>
+            }
+        }
+    </MudMenu>
+</MudTooltip>
+
+@code {
+    private string _language;
+
+    protected override void OnInitialized()
+    {
+        _language = CultureInfo.CurrentCulture.Name;
+    }
+
+    private void SetLanguage(string value)
+    {
+        var culture = value;
+        var uri = new Uri(NavigationManager.Uri)
+            .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+        var query = $"?culture={Uri.EscapeDataString(culture)}&" +
+            $"redirectUri={Uri.EscapeDataString(uri)}";
+
+        NavigationManager.NavigateTo("/Culture/SetCulture" + query, forceLoad: true);
+    }
+}
