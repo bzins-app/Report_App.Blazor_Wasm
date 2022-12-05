@@ -1,0 +1,129 @@
+﻿@page "/SystemLogs"
+@implements IAsyncDisposable
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+@inject HttpClient Http
+
+<PageTitle>@localizer.Get("System logs")</PageTitle>
+
+<ErrorBoundary>
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@localizer.Get("System logs")</MudText>
+            <MudSpacer />
+            <MudStack Row="true">
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering" />
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering"/>
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(ExtractElements)"
+                               Icon="@Icons.Material.Filled.Download" Title="@localizer.Get("Download")" Disabled="_processing" />
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow:auto">
+                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination"  @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogSystemDTO">
+                    <PropertyColumn Property="@(p => p.TimeStampAppHour)" Title="@localizer.Get("Timestamp")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.EventId)" Title="@localizer.Get("Event Id")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Id)" Title="@localizer.Get("Id")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Level)" Title="@localizer.Get("Level")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Path)" Title="@localizer.Get("Path")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Name)" Title="@localizer.Get("Name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.User)" Title="@localizer.Get("User name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Host)" Title="@localizer.Get("Host")" Sortable="true" />
+                </SimpleGrid>
+            </div>
+            <Paginator Value="@pagination" />
+        </MudCardContent>
+    </MudCard>
+    <MudCard Elevation="6">
+        <MudCardContent>
+            <div style="overflow:auto">
+                <MudText Typo="Typo.h6">@localizer.Get("System log message")</MudText>
+                @if (values.Message == null)
+                {
+                    <p class="muted">
+                        @localizer.Get("Select a log to display the message")
+                    </p>
+                }
+                else
+                {
+                    <p><b>@localizer.Get("Browser"):</b></p>
+                    <p>@values.Browser</p>
+                    <p><b>@localizer.Get("Platform"):</b></p>
+                    <p>@values.Platform</p>
+                    <p><b>@localizer.Get("Message"):</b></p>
+                    <p>@values.Message</p>
+                }
+            </div>
+        </MudCardContent>
+    </MudCard>
+</ErrorBoundary>
+
+
+
+
+@code
+{
+    IQueryable<ApplicationLogSystemDTO>? Elements;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    //SimpleGridFieldsContent Translations;
+    private bool _processing = false;
+    SimpleGrid<ApplicationLogSystemDTO> _grid = default!;
+    private bool rendering = false;
+    ErrorDetails values = new();
+
+    private class ErrorDetails
+    {
+        public string Message { get; set; }
+        public string Browser { get; set; }
+        public string Platform { get; set; }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+        Elements = (await Http.GetFromJsonAsync<ApplicationLogSystemDTO[]>("ApplicationLogs/SystemLogs")).AsQueryable();
+        //Translations = _repo.GetGridTranslations();
+    }
+
+    private async Task OnRefresh()
+    {
+        rendering = true;
+        await _grid.RefreshDataAsync();
+        rendering = false;
+    }
+
+    private async Task ExtractElements()
+    {
+        _processing = true;
+        string fileName = "System logs";
+        //await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
+        _processing = false;
+    }
+    private async Task RemoveFilters()
+    {
+        rendering = true;
+        await _grid.RemoveFilters();
+        rendering = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _grid.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
+
+    void RowClicked(SimpleGridRowClickEventArgs<ApplicationLogSystemDTO> args)
+    {
+        values.Browser = args.Item.Browser;
+        values.Platform = args.Item.Platform;
+        values.Message = args.Item.Message;
+    }
+}

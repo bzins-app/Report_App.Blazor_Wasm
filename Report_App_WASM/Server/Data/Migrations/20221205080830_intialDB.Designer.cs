@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221204141800_intialDB")]
+    [Migration("20221205080830_intialDB")]
     partial class intialDB
     {
         /// <inheritdoc />
@@ -516,7 +516,6 @@ namespace ReportAppWASM.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Browser")
-                        .IsRequired()
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
 
@@ -524,12 +523,10 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FullVersion")
-                        .IsRequired()
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
 
                     b.Property<string>("Host")
-                        .IsRequired()
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
 
@@ -546,12 +543,10 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Path")
-                        .IsRequired()
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
 
                     b.Property<string>("Platform")
-                        .IsRequired()
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
 
@@ -562,7 +557,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("User")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 

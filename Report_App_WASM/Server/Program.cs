@@ -1,3 +1,4 @@
+using AutoMapper;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
@@ -21,6 +22,14 @@ using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.ConfigureLogging((hostingContext, logging) =>
+{
+    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+
+    logging.AddEntityFramework<ApplicationDbContext, ApplicationLogSystem>();
+
+});
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -35,6 +44,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.Configure<BaseUser>(builder.Configuration.GetSection("BaseUserDefaultOptions"));
 
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddHttpContextAccessor();
 //builder.Services.AddAuthentication()
 //    .AddIdentityServerJwt();
 builder.Services.AddTransient<InitializeDatabase>();
@@ -67,7 +79,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "../Report_App_WASM.Shared/LanguageRessources");
+builder.Services.AddLocalization(options => options.ResourcesPath = "Utils/LanguageRessources");
 builder.Services.AddSingleton<CommonLocalizationService>();
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -129,6 +141,14 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     options.Level = CompressionLevel.Fastest;
 });
 
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -168,8 +188,9 @@ else
     app.UseHsts();
 }
 
+app.UseResponseCompression();
 app.UseHttpsRedirection();
-
+app.UseRequestLocalization();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 

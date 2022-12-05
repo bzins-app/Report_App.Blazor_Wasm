@@ -1,0 +1,2418 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="A report is a process that creates a file based on one or several queries against the database settings configured at the activity level. A report must be scheduled. The file format can be choosen and if need the a deposit path can be defined. A report can be also sent by email." xml:space="preserve">
+    <value>Ein Bericht ist ein Prozess, der eine Datei auf der Grundlage einer oder mehrerer Abfragen gegen die auf der Aktivitätsebene konfigurierten Datenbankeinstellungen erstellt. Ein Bericht muss geplant werden. Das Dateiformat kann ausgewählt und bei Bedarf ein Ablagepfad definiert werden. Ein Bericht kann auch per E-Mail verschickt werden.</value>
+  </data>
+  <data name="Acces failed count" xml:space="preserve">
+    <value>Anzahl fehlgeschlagener Zugriffe</value>
+  </data>
+  <data name="Access denied" xml:space="preserve">
+    <value>Zugang verweigert</value>
+  </data>
+  <data name="account" xml:space="preserve">
+    <value>Konto</value>
+  </data>
+  <data name="Account updated" xml:space="preserve">
+    <value>Konto aktualisiert</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="Activate report and email" xml:space="preserve">
+    <value>Bericht und E-Mail aktivieren</value>
+  </data>
+  <data name="Activate SSL" xml:space="preserve">
+    <value>SSL aktivieren</value>
+  </data>
+  <data name="Activate the alert" xml:space="preserve">
+    <value>Aktivieren Sie die Meldung</value>
+  </data>
+  <data name="Activate Workers and logs" xml:space="preserve">
+    <value>Arbeiter und Protokolle aktivieren</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="Activities" xml:space="preserve">
+    <value>Aktivitäten</value>
+  </data>
+  <data name="Activities list" xml:space="preserve">
+    <value>Liste der Aktivitäten</value>
+  </data>
+  <data name="Activities manager" xml:space="preserve">
+    <value>Manager für Aktivitäten</value>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Aktivität</value>
+  </data>
+  <data name="Activity deposit path" xml:space="preserve">
+    <value>Pfad für Aktivitätsablage</value>
+  </data>
+  <data name="Activity id" xml:space="preserve">
+    <value>Aktivität id</value>
+  </data>
+  <data name="Activity manager" xml:space="preserve">
+    <value>Aktivitäts-Manager</value>
+  </data>
+  <data name="Activity name" xml:space="preserve">
+    <value>Name der Aktivität</value>
+  </data>
+  <data name="Activity overview" xml:space="preserve">
+    <value>Überblick über die Aktivitäten</value>
+  </data>
+  <data name="Activity parameters" xml:space="preserve">
+    <value>Parameter der Aktivität</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>hinzufügen</value>
+  </data>
+  <data name="Add a parameter" xml:space="preserve">
+    <value>Hinzufügen eines Parameters</value>
+  </data>
+  <data name="Add a query" xml:space="preserve">
+    <value>Eine Anfrage hinzufügen</value>
+  </data>
+  <data name="Add a report" xml:space="preserve">
+    <value>Einen Bericht hinzufügen</value>
+  </data>
+  <data name="Add another service to log in." xml:space="preserve">
+    <value>Fügen Sie einen weiteren Dienst zum Anmelden hinzu.</value>
+  </data>
+  <data name="Add authenticator app" xml:space="preserve">
+    <value>Authentifikator-App hinzufügen</value>
+  </data>
+  <data name="Add email recipient" xml:space="preserve">
+    <value>E-Mail-Empfänger hinzufügen</value>
+  </data>
+  <data name="Add new credentials" xml:space="preserve">
+    <value>Neue Anmeldeinformationen hinzufügen</value>
+  </data>
+  <data name="Add new sFTP" xml:space="preserve">
+    <value>Neues sFTP hinzufügen</value>
+  </data>
+  <data name="Add query" xml:space="preserve">
+    <value>Abfrage hinzufügen</value>
+  </data>
+  <data name="Add recipient" xml:space="preserve">
+    <value>Empfänger hinzufügen</value>
+  </data>
+  <data name="Add recipients to email report" xml:space="preserve">
+    <value>Empfänger zum E-Mail-Bericht hinzufügen</value>
+  </data>
+  <data name="Add the primary key" xml:space="preserve">
+    <value>Fügen Sie den Primärschlüssel hinzu</value>
+  </data>
+  <data name="Add validation sheet?" xml:space="preserve">
+    <value>Validierungsblatt hinzufügen?</value>
+  </data>
+  <data name="Administrator email for error notifications" xml:space="preserve">
+    <value>Administrator-E-Mail für Fehlerbenachrichtigungen</value>
+  </data>
+  <data name="Affected columns" xml:space="preserve">
+    <value>Betroffene Spalten</value>
+  </data>
+  <data name="Alert" xml:space="preserve">
+    <value>Alarm</value>
+  </data>
+  <data name="Alert details" xml:space="preserve">
+    <value>Details zur Ausschreibung</value>
+  </data>
+  <data name="Alert email prefix" xml:space="preserve">
+    <value>E-Mail-Präfix für Warnungen</value>
+  </data>
+  <data name="Alert service" xml:space="preserve">
+    <value>Alarmierungsdienst</value>
+  </data>
+  <data name="Alert title" xml:space="preserve">
+    <value>Titel der Warnmeldung</value>
+  </data>
+  <data name="Alert title1" xml:space="preserve">
+    <value>Titel der Warnmeldung</value>
+  </data>
+  <data name="Alert1" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="Alerts" xml:space="preserve">
+    <value>Warnmeldungen</value>
+  </data>
+  <data name="All related data and sudata will be totally removed" xml:space="preserve">
+    <value>Alle zugehörigen Daten und Sudaten werden vollständig entfernt.</value>
+  </data>
+  <data name="Allready have an account?" xml:space="preserve">
+    <value>Haben Sie bereits ein Konto?</value>
+  </data>
+  <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
+    <value>Eine Aktivität ist im Grunde eine Verbindung zu einem bestimmten Datenbankserver und -schema. Sie können ihr einen Ablagepfad, einen Namen und ein Logo zuordnen. Wenn Sie eine Aktivität erstellen, wird im Hintergrund eine Rolle mit demselben Namen angelegt.</value>
+  </data>
+  <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
+    <value>Ein Alert ist ein Prozess, der eine E-Mail sendet, wenn eine oder mehrere Abfragen ein Ergebnis liefern, das nicht Null ist, und zwar im Vergleich zu den auf der Aktivitätsebene konfigurierten Datenbankeinstellungen. Ein Alert muss geplant werden und es müssen E-Mail-Empfänger definiert werden.</value>
+  </data>
+  <data name="An error has occurred" xml:space="preserve">
+    <value>Es ist ein Fehler aufgetreten</value>
+  </data>
+  <data name="An error has occurred. This application may no longer respond until reloaded." xml:space="preserve">
+    <value>Es ist ein Fehler aufgetreten. Diese Anwendung reagiert möglicherweise nicht mehr, bis sie neu geladen wird.</value>
+  </data>
+  <data name="An unhandled exception has occurred. See browser dev tools for details." xml:space="preserve">
+    <value>Eine unbehandelte Ausnahme ist aufgetreten. Siehe Browser-Entwicklungstools für Details.</value>
+  </data>
+  <data name="and" xml:space="preserve">
+    <value>und</value>
+  </data>
+  <data name="App DB name" xml:space="preserve">
+    <value>DB-Name anwenden</value>
+  </data>
+  <data name="Append" xml:space="preserve">
+    <value>Anhängen</value>
+  </data>
+  <data name="Application Dashboard" xml:space="preserve">
+    <value>Dashboard der Anwendung</value>
+  </data>
+  <data name="Application DB size" xml:space="preserve">
+    <value>Größe der Anwendungs-DB</value>
+  </data>
+  <data name="Application intent read only?" xml:space="preserve">
+    <value>Application intent read only?</value>
+  </data>
+  <data name="Application logs charts" xml:space="preserve">
+    <value>Diagramme der Anwendungsprotokolle</value>
+  </data>
+  <data name="Application logs follow up" xml:space="preserve">
+    <value>Nachverfolgung der Anwendungsprotokolle</value>
+  </data>
+  <data name="Application Manager" xml:space="preserve">
+    <value>Anwendungs-Manager</value>
+  </data>
+  <data name="Application name" xml:space="preserve">
+    <value>Name der Anwendung</value>
+  </data>
+  <data name="Application parameters" xml:space="preserve">
+    <value>Anwendungsparameter</value>
+  </data>
+  <data name="Application structure" xml:space="preserve">
+    <value>Struktur der Anwendung</value>
+  </data>
+  <data name="Apply filters" xml:space="preserve">
+    <value>Filter anwenden</value>
+  </data>
+  <data name="Apr" xml:space="preserve">
+    <value>Apr</value>
+  </data>
+  <data name="Archiving duration in days" xml:space="preserve">
+    <value>Archivierungsdauer in Tagen</value>
+  </data>
+  <data name="Are you sure you want to create a file to the directory? It could interfer with other processes" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie eine Datei in dem Verzeichnis erstellen wollen? Es könnte andere Prozesse stören</value>
+  </data>
+  <data name="Are you sure you want to transfer data? It could interfer with other processes" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie die Daten übertragen wollen? Es könnte andere Prozesse stören</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>Sind Sie sicher?</value>
+  </data>
+  <data name="Ask an administrator to grant you rights" xml:space="preserve">
+    <value>Bitten Sie einen Administrator, Ihnen Rechte zu gewähren</value>
+  </data>
+  <data name="Assign a role" xml:space="preserve">
+    <value>Eine Rolle zuweisen</value>
+  </data>
+  <data name="Assign role" xml:space="preserve">
+    <value>Rolle zuweisen</value>
+  </data>
+  <data name="Associate your" xml:space="preserve">
+    <value>Assoziieren Sie Ihre</value>
+  </data>
+  <data name="Audit system logs" xml:space="preserve">
+    <value>Audit-System-Protokolle</value>
+  </data>
+  <data name="Audit Trail" xml:space="preserve">
+    <value>Prüfpfad</value>
+  </data>
+  <data name="Audit trail: values changed" xml:space="preserve">
+    <value>Audit Trail: Werte geändert</value>
+  </data>
+  <data name="Audits" xml:space="preserve">
+    <value>Audits</value>
+  </data>
+  <data name="Aug" xml:space="preserve">
+    <value>Aug</value>
+  </data>
+  <data name="Average time of sync (in seconds)" xml:space="preserve">
+    <value>Durchschnittliche Zeit der Synchronisation (in Sekunden)</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="Back to Home" xml:space="preserve">
+    <value>Zurück zu Hause</value>
+  </data>
+  <data name="Back to login page?" xml:space="preserve">
+    <value>Zurück zur Login-Seite?</value>
+  </data>
+  <data name="Background" xml:space="preserve">
+    <value>Hintergrund</value>
+  </data>
+  <data name="Background jobs manager" xml:space="preserve">
+    <value>Manager für Hintergrundjobs</value>
+  </data>
+  <data name="Background taks" xml:space="preserve">
+    <value>Hintergrundtakes</value>
+  </data>
+  <data name="Background Tasks" xml:space="preserve">
+    <value>Hintergrund-Aufgaben</value>
+  </data>
+  <data name="Background tasks logs" xml:space="preserve">
+    <value>Protokolle der Hintergrundaufgaben</value>
+  </data>
+  <data name="Background workers logs" xml:space="preserve">
+    <value>Protokolle von Hintergrundarbeitern</value>
+  </data>
+  <data name="BackgroundWorkers" xml:space="preserve">
+    <value>Hintergrund-Arbeiter</value>
+  </data>
+  <data name="Base parameters" xml:space="preserve">
+    <value>Basis-Parameter</value>
+  </data>
+  <data name="Base view" xml:space="preserve">
+    <value>Basis-Ansicht</value>
+  </data>
+  <data name="before you can log in with a recovery code." xml:space="preserve">
+    <value>bevor Sie sich mit einem Wiederherstellungscode anmelden können.</value>
+  </data>
+  <data name="Blind copy" xml:space="preserve">
+    <value>Blindkopie</value>
+  </data>
+  <data name="Boxed" xml:space="preserve">
+    <value>Schachtel</value>
+  </data>
+  <data name="Branch" xml:space="preserve">
+    <value>Zweigstelle</value>
+  </data>
+  <data name="Browser" xml:space="preserve">
+    <value>Browser</value>
+  </data>
+  <data name="Build filters" xml:space="preserve">
+    <value>Filter bauen</value>
+  </data>
+  <data name="Business area" xml:space="preserve">
+    <value>Geschäftsbereich</value>
+  </data>
+  <data name="Cache Is Activated?" xml:space="preserve">
+    <value>Ist der Cache aktiviert?</value>
+  </data>
+  <data name="Calculated date" xml:space="preserve">
+    <value>Berechnetes Datum</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="cannot be enabled because no email recipients have been entered" xml:space="preserve">
+    <value>kann nicht aktiviert werden, da keine E-Mail-Empfänger eingegeben wurden</value>
+  </data>
+  <data name="cannot be enabled because no query is attached to this job" xml:space="preserve">
+    <value>kann nicht aktiviert werden, da diesem Job keine Abfrage zugeordnet ist</value>
+  </data>
+  <data name="cannot be enabled because no query is attached to this report" xml:space="preserve">
+    <value>kann nicht aktiviert werden, da keine Abfrage an diesen Bericht angehängt ist</value>
+  </data>
+  <data name="cannot be enabled because no SMTP configuration has been activated" xml:space="preserve">
+    <value>kann nicht aktiviert werden, da keine SMTP-Konfiguration aktiviert wurde</value>
+  </data>
+  <data name="cannot be enabled because the related activity is not enabled" xml:space="preserve">
+    <value>kann nicht aktiviert werden, da die entsprechende Aktivität nicht aktiviert ist</value>
+  </data>
+  <data name="cannot be enabled because the scheduler value is not defined" xml:space="preserve">
+    <value>kann nicht aktiviert werden, weil der Scheduler-Wert nicht definiert ist</value>
+  </data>
+  <data name="Caution !" xml:space="preserve">
+    <value>Vorsicht!</value>
+  </data>
+  <data name="Cell reference" xml:space="preserve">
+    <value>Zellenreferenz</value>
+  </data>
+  <data name="Change email" xml:space="preserve">
+    <value>E-Mail ändern</value>
+  </data>
+  <data name="Change password" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="Change your account settings" xml:space="preserve">
+    <value>Ändern Sie Ihre Kontoeinstellungen</value>
+  </data>
+  <data name="Changed password successfully" xml:space="preserve">
+    <value>Passwort erfolgreich geändert</value>
+  </data>
+  <data name="check if a report or an alert will be correctly sent by email" xml:space="preserve">
+    <value>Prüfen Sie, ob ein Bericht oder eine Warnmeldung korrekt per E-Mail versendet wird. </value>
+  </data>
+  <data name="Check if service is active" xml:space="preserve">
+    <value>Prüfen, ob der Dienst aktiv ist</value>
+  </data>
+  <data name="Check if the activity exists" xml:space="preserve">
+    <value>Prüfen Sie, ob die Aktivität existiert</value>
+  </data>
+  <data name="Check SMTP configuration" xml:space="preserve">
+    <value>Prüfen Sie die SMTP-Konfiguration</value>
+  </data>
+  <data name="Check task" xml:space="preserve">
+    <value>Aufgabe prüfen</value>
+  </data>
+  <data name="Chek if your report or alert is active and for report if the &quot;Send by email&quot; button is on" xml:space="preserve">
+    <value>Prüfen Sie, ob Ihr Bericht oder Ihre Meldung aktiv ist und ob die Schaltfläche "Per E-Mail versenden" aktiviert ist.</value>
+  </data>
+  <data name="Choose a credential configuration" xml:space="preserve">
+    <value>Wählen Sie eine Berechtigungskonfiguration</value>
+  </data>
+  <data name="Choose a deposit path" xml:space="preserve">
+    <value>wähle einen Einzahlungspfad</value>
+  </data>
+  <data name="Choose a deposit path configuration" xml:space="preserve">
+    <value>Wählen Sie eine Pfandpfadkonfiguration</value>
+  </data>
+  <data name="Choose an sFTP configuration" xml:space="preserve">
+    <value>Eine sFTP-Konfiguration auswählen</value>
+  </data>
+  <data name="Choose first parameters" xml:space="preserve">
+    <value>Wählen Sie die ersten Parameter</value>
+  </data>
+  <data name="Cleaner service" xml:space="preserve">
+    <value>Saubererer Dienst</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>schließen</value>
+  </data>
+  <data name="Close your account" xml:space="preserve">
+    <value>Schließen Sie Ihr Konto</value>
+  </data>
+  <data name="Color Scheme" xml:space="preserve">
+    <value>Farbschema</value>
+  </data>
+  <data name="ColorIcon" xml:space="preserve">
+    <value>FarbIcon</value>
+  </data>
+  <data name="Column name" xml:space="preserve">
+    <value>Spaltenname</value>
+  </data>
+  <data name="Column name1" xml:space="preserve">
+    <value>Spaltenname</value>
+  </data>
+  <data name="Command behaviour" xml:space="preserve">
+    <value>Befehlsverhalten</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Kommentar</value>
+  </data>
+  <data name="Compact" xml:space="preserve">
+    <value>Kompakt</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Unternehmen</value>
+  </data>
+  <data name="Company name" xml:space="preserve">
+    <value>Name des Unternehmens</value>
+  </data>
+  <data name="Condensed" xml:space="preserve">
+    <value>Kurzfassung</value>
+  </data>
+  <data name="Condition" xml:space="preserve">
+    <value>Bedingung</value>
+  </data>
+  <data name="Configuration name" xml:space="preserve">
+    <value>Name der Konfiguration</value>
+  </data>
+  <data name="Configure a custom deposit path" xml:space="preserve">
+    <value>Konfigurieren Sie einen benutzerdefinierten Einzahlungspfad</value>
+  </data>
+  <data name="Configure authenticator app" xml:space="preserve">
+    <value>Konfigurieren der Authentifizierer-Anwendung</value>
+  </data>
+  <data name="Configure the scheduler" xml:space="preserve">
+    <value>Planer konfigurieren</value>
+  </data>
+  <data name="Configure the scheduler and deposit path" xml:space="preserve">
+    <value>Konfigurieren Sie den Zeitplaner und den Ablagepfad</value>
+  </data>
+  <data name="Configure the scheduler and deposit path1" xml:space="preserve">
+    <value>Konfigurieren Sie den Zeitplaner und den Einzahlungspfad</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Bestätigen</value>
+  </data>
+  <data name="Confirm duplication" xml:space="preserve">
+    <value>Duplizierung bestätigen</value>
+  </data>
+  <data name="Confirm email" xml:space="preserve">
+    <value>E-Mail bestätigen</value>
+  </data>
+  <data name="Confirm email change" xml:space="preserve">
+    <value>E-Mail-Änderung bestätigen</value>
+  </data>
+  <data name="Confirm manual job" xml:space="preserve">
+    <value>Manuellen Job bestätigen</value>
+  </data>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Passwort bestätigen</value>
+  </data>
+  <data name="Confirm Password1" xml:space="preserve">
+    <value>Bestätigen Sie das Passwort</value>
+  </data>
+  <data name="Confirm the deletion by entering" xml:space="preserve">
+    <value>Bestätigen Sie die Löschung durch Eingabe von</value>
+  </data>
+  <data name="Connection Feedback:" xml:space="preserve">
+    <value>Verbindungs-Feedback:</value>
+  </data>
+  <data name="Connection login" xml:space="preserve">
+    <value>Anmeldung zur Verbindung</value>
+  </data>
+  <data name="Connection path" xml:space="preserve">
+    <value>Verbindungsweg</value>
+  </data>
+  <data name="Connection port" xml:space="preserve">
+    <value>Port der Verbindung</value>
+  </data>
+  <data name="Contains" xml:space="preserve">
+    <value>Enthält</value>
+  </data>
+  <data name="Create a new account" xml:space="preserve">
+    <value>Ein neues Konto erstellen</value>
+  </data>
+  <data name="Create a new activity" xml:space="preserve">
+    <value>Erstellen Sie eine neue Aktivität</value>
+  </data>
+  <data name="Create a new alert" xml:space="preserve">
+    <value>Eine neue Meldung erstellen</value>
+  </data>
+  <data name="Create a new branch" xml:space="preserve">
+    <value>Erstellen Sie einen neuen Zweig</value>
+  </data>
+  <data name="Create a new business area" xml:space="preserve">
+    <value>Erstellen Sie einen neuen Geschäftsbereich</value>
+  </data>
+  <data name="Create a new company" xml:space="preserve">
+    <value>Ein neues Unternehmen erstellen</value>
+  </data>
+  <data name="Create a new data transfer" xml:space="preserve">
+    <value>Erstellen Sie eine neue Datenübertragung</value>
+  </data>
+  <data name="Create a new deposit path" xml:space="preserve">
+    <value>Einen neuen Pfandpfad erstellen</value>
+  </data>
+  <data name="Create a new deposit path1" xml:space="preserve">
+    <value>Einen neuen Einzahlungspfad erstellen</value>
+  </data>
+  <data name="Create a new email report" xml:space="preserve">
+    <value>Einen neuen E-Mail-Bericht erstellen</value>
+  </data>
+  <data name="Create a new LDAP profil" xml:space="preserve">
+    <value>Erstellen Sie ein neues LDAP-Profil</value>
+  </data>
+  <data name="Create a new network credential" xml:space="preserve">
+    <value>Erstellen einer neuen Netzwerkzugangsberechtigung</value>
+  </data>
+  <data name="Create a new SFTP profil" xml:space="preserve">
+    <value>Erstellen eines neuen SFTP-Profils</value>
+  </data>
+  <data name="Create a new SMTP profil" xml:space="preserve">
+    <value>Erstellen eines neuen SMTP-Profils</value>
+  </data>
+  <data name="create a report" xml:space="preserve">
+    <value>einen Bericht erstellen</value>
+  </data>
+  <data name="Create account" xml:space="preserve">
+    <value>Konto erstellen</value>
+  </data>
+  <data name="Create activity" xml:space="preserve">
+    <value>Aktivität erstellen</value>
+  </data>
+  <data name="create an alert" xml:space="preserve">
+    <value>eine Warnung erstellen</value>
+  </data>
+  <data name="Create by" xml:space="preserve">
+    <value>Erstellen von</value>
+  </data>
+  <data name="Create file manually" xml:space="preserve">
+    <value>Datei manuell erstellen</value>
+  </data>
+  <data name="Create target table?" xml:space="preserve">
+    <value>Zieltabelle erstellen?</value>
+  </data>
+  <data name="Create the alert" xml:space="preserve">
+    <value>Erstellen Sie die Meldung</value>
+  </data>
+  <data name="Create the report" xml:space="preserve">
+    <value>Erstellen Sie den Bericht</value>
+  </data>
+  <data name="Create/modify users" xml:space="preserve">
+    <value>Benutzer anlegen/ändern</value>
+  </data>
+  <data name="Created at" xml:space="preserve">
+    <value>Erstellt am</value>
+  </data>
+  <data name="Created by" xml:space="preserve">
+    <value>Erstellt von</value>
+  </data>
+  <data name="Created date" xml:space="preserve">
+    <value>Erstelltes Datum</value>
+  </data>
+  <data name="Created hour" xml:space="preserve">
+    <value>Erstellte Stunde</value>
+  </data>
+  <data name="Cron description" xml:space="preserve">
+    <value>Cron Beschreibung</value>
+  </data>
+  <data name="Cron expression" xml:space="preserve">
+    <value>Cron-Ausdruck</value>
+  </data>
+  <data name="CSV delimiter" xml:space="preserve">
+    <value>CSV-Trennzeichen</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Dunkelheit</value>
+  </data>
+  <data name="Dark Mode" xml:space="preserve">
+    <value>Dunkel-Modus</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Data DB name" xml:space="preserve">
+    <value>Daten-DB-Name</value>
+  </data>
+  <data name="Data DB size" xml:space="preserve">
+    <value>Daten-DB-Größe</value>
+  </data>
+  <data name="Data Sync Is Activated?" xml:space="preserve">
+    <value>Ist die Datensynchronisation aktiviert?</value>
+  </data>
+  <data name="Data transfer parameters" xml:space="preserve">
+    <value>Datentransfer</value>
+  </data>
+  <data name="Data transfer service" xml:space="preserve">
+    <value>Datenübertragungsdienst</value>
+  </data>
+  <data name="Data type" xml:space="preserve">
+    <value>Datenart</value>
+  </data>
+  <data name="Database Maintenance" xml:space="preserve">
+    <value>Pflege der Datenbank</value>
+  </data>
+  <data name="Database rows per table" xml:space="preserve">
+    <value>Datenbankzeilen pro Tabelle</value>
+  </data>
+  <data name="Database Type" xml:space="preserve">
+    <value>Datenbank-Typ</value>
+  </data>
+  <data name="Day of month" xml:space="preserve">
+    <value>Tag des Monats</value>
+  </data>
+  <data name="Day of week" xml:space="preserve">
+    <value>Tag der Woche</value>
+  </data>
+  <data name="DB schema" xml:space="preserve">
+    <value>DB-Schema</value>
+  </data>
+  <data name="Dec" xml:space="preserve">
+    <value>Dez</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Standardmäßig</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Löschen Sie</value>
+  </data>
+  <data name="Delete data and close my account" xml:space="preserve">
+    <value>Daten löschen und mein Konto schließen</value>
+  </data>
+  <data name="Delete Personal Data" xml:space="preserve">
+    <value>Persönliche Daten löschen</value>
+  </data>
+  <data name="Delete the target table" xml:space="preserve">
+    <value>Löschen Sie die Zieltabelle</value>
+  </data>
+  <data name="Delete user" xml:space="preserve">
+    <value>Benutzer löschen</value>
+  </data>
+  <data name="Deleting can not be undone!" xml:space="preserve">
+    <value>Das Löschen kann nicht rückgängig gemacht werden!</value>
+  </data>
+  <data name="Deleting this data will permanently remove your account, and this cannot be recovered." xml:space="preserve">
+    <value>Wenn Sie diese Daten löschen, wird Ihr Konto dauerhaft entfernt, und dies kann nicht wiederhergestellt werden.</value>
+  </data>
+  <data name="Deposit path" xml:space="preserve">
+    <value>Einzahlungspfad</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Einzelheiten</value>
+  </data>
+  <data name="Disable 2FA" xml:space="preserve">
+    <value>2FA deaktivieren</value>
+  </data>
+  <data name="Disable two-factor authentication (2FA)" xml:space="preserve">
+    <value>Deaktivieren der Zwei-Faktor-Authentifizierung (2FA)</value>
+  </data>
+  <data name="disabled" xml:space="preserve">
+    <value>deaktiviert</value>
+  </data>
+  <data name="Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should" xml:space="preserve">
+    <value>Die Deaktivierung von 2FA ändert nicht die in Authentifizierungsanwendungen verwendeten Schlüssel. Wenn Sie den in einer Authenticator-Anwendung verwendeten Schlüssel ändern möchten, sollten Sie</value>
+  </data>
+  <data name="Dispatching" xml:space="preserve">
+    <value>Versand</value>
+  </data>
+  <data name="Display details" xml:space="preserve">
+    <value>Details anzeigen</value>
+  </data>
+  <data name="Display until 10k lines" xml:space="preserve">
+    <value>Anzeige bis 10k Zeilen</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Domäne</value>
+  </data>
+  <data name="Domain1" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="Don't have access to your authenticator device? You can" xml:space="preserve">
+    <value>Sie haben keinen Zugang zu Ihrem Authentifizierungsgerät? Sie können</value>
+  </data>
+  <data name="Don't have an account?" xml:space="preserve">
+    <value>Sie haben kein Konto?</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>herunterladen</value>
+  </data>
+  <data name="Download a two-factor authenticator app like Microsoft Authenticator for" xml:space="preserve">
+    <value>Laden Sie eine Zwei-Faktor-Authentifizierer-Anwendung wie Microsoft Authenticator für</value>
+  </data>
+  <data name="Download duration" xml:space="preserve">
+    <value>Dauer des Herunterladens</value>
+  </data>
+  <data name="Download Your Data" xml:space="preserve">
+    <value>Laden Sie Ihre Daten herunter</value>
+  </data>
+  <data name="Drop file" xml:space="preserve">
+    <value>Datei ablegen</value>
+  </data>
+  <data name="Duplicate" xml:space="preserve">
+    <value>Duplikat</value>
+  </data>
+  <data name="Duration in seconds" xml:space="preserve">
+    <value>Dauer in Sekunden</value>
+  </data>
+  <data name="Dynamic Reports" xml:space="preserve">
+    <value>Dynamische Berichte</value>
+  </data>
+  <data name="Each day" xml:space="preserve">
+    <value>jeden Tag</value>
+  </data>
+  <data name="Each month" xml:space="preserve">
+    <value>Jeder Monat</value>
+  </data>
+  <data name="Each selected day" xml:space="preserve">
+    <value>Jeden ausgewählten Tag</value>
+  </data>
+  <data name="Each selected day1" xml:space="preserve">
+    <value>Jeden ausgewählten Tag</value>
+  </data>
+  <data name="Each selected hour" xml:space="preserve">
+    <value>Jede gewählte Stunde</value>
+  </data>
+  <data name="Each selected minute" xml:space="preserve">
+    <value>Jede ausgewählte Minute</value>
+  </data>
+  <data name="Each selected month" xml:space="preserve">
+    <value>Jeder gewählte Monat</value>
+  </data>
+  <data name="Each week" xml:space="preserve">
+    <value>Jede Woche</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>bearbeiten</value>
+  </data>
+  <data name="Edit a data transfer" xml:space="preserve">
+    <value>Bearbeiten Sie eine Datenübertragung</value>
+  </data>
+  <data name="Edit activity" xml:space="preserve">
+    <value>Aktivität bearbeiten</value>
+  </data>
+  <data name="Edit an alert" xml:space="preserve">
+    <value>Eine Meldung bearbeiten</value>
+  </data>
+  <data name="Edit an email report" xml:space="preserve">
+    <value>Einen E-Mail-Bericht bearbeiten</value>
+  </data>
+  <data name="Edit email message" xml:space="preserve">
+    <value>E-Mail-Nachricht bearbeiten</value>
+  </data>
+  <data name="Edit error email" xml:space="preserve">
+    <value>Fehler-E-Mail bearbeiten</value>
+  </data>
+  <data name="Edit error email template" xml:space="preserve">
+    <value>Fehler-E-Mail-Vorlage bearbeiten</value>
+  </data>
+  <data name="Edit name and logo" xml:space="preserve">
+    <value>Name und Logo bearbeiten</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="Email confirmed?" xml:space="preserve">
+    <value>E-Mail bestätigt?</value>
+  </data>
+  <data name="Email entered is not correct" xml:space="preserve">
+    <value>Eingegebene E-Mail ist nicht korrekt</value>
+  </data>
+  <data name="Email message" xml:space="preserve">
+    <value>E-Mail-Nachricht</value>
+  </data>
+  <data name="Email prefix" xml:space="preserve">
+    <value>E-Mail-Präfix</value>
+  </data>
+  <data name="Email Sender" xml:space="preserve">
+    <value>E-Mail Absender</value>
+  </data>
+  <data name="Email sender Is Activated?" xml:space="preserve">
+    <value>E-Mail-Absender ist aktiviert?</value>
+  </data>
+  <data name="Email sender logs" xml:space="preserve">
+    <value>E-Mail-Absender-Protokolle</value>
+  </data>
+  <data name="Email service" xml:space="preserve">
+    <value>E-Mail-Dienst</value>
+  </data>
+  <data name="Email title" xml:space="preserve">
+    <value>Titel der E-Mail</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>Leere</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>aktiviert</value>
+  </data>
+  <data name="Encoding type" xml:space="preserve">
+    <value>Kodierungsart</value>
+  </data>
+  <data name="End date time" xml:space="preserve">
+    <value>Enddatum Uhrzeit</value>
+  </data>
+  <data name="EndOfLastMonth" xml:space="preserve">
+    <value>EndeVorletzterMonat</value>
+  </data>
+  <data name="EndOfLastWeek" xml:space="preserve">
+    <value>EndeLetzteWoche</value>
+  </data>
+  <data name="EndOfThisMonth" xml:space="preserve">
+    <value>Ende DiesesMonats</value>
+  </data>
+  <data name="EndOfThisQuarter" xml:space="preserve">
+    <value>Ende DiesesQuartals</value>
+  </data>
+  <data name="EndOfThisWeek" xml:space="preserve">
+    <value>Ende DieserWoche</value>
+  </data>
+  <data name="EndOfThisYear" xml:space="preserve">
+    <value>Ende DesJahres</value>
+  </data>
+  <data name="Ends with" xml:space="preserve">
+    <value>Endet mit</value>
+  </data>
+  <data name="Enter a keyword" xml:space="preserve">
+    <value>Ein Schlüsselwort eingeben</value>
+  </data>
+  <data name="Enter a report title, select an activity then the type of file you want to generate" xml:space="preserve">
+    <value>Geben Sie einen Berichtstitel ein, wählen Sie eine Aktivität und dann den Dateityp, den Sie erstellen möchten.</value>
+  </data>
+  <data name="Enter a report title, select an activity then the type of file you want to generate and validate" xml:space="preserve">
+    <value>Geben Sie einen Berichtstitel ein, wählen Sie eine Aktivität, dann die Art der zu erstellenden Datei und bestätigen Sie.</value>
+  </data>
+  <data name="Enter an alert title, select an activity and validate" xml:space="preserve">
+    <value>Geben Sie einen Alarmtitel ein, wählen Sie eine Aktivität aus und bestätigen Sie.</value>
+  </data>
+  <data name="Enter the email address" xml:space="preserve">
+    <value>Geben Sie die E-Mail-Adresse ein</value>
+  </data>
+  <data name="Enter the primary key column" xml:space="preserve">
+    <value>Geben Sie die Primärschlüsselspalte ein</value>
+  </data>
+  <data name="Enter the query here" xml:space="preserve">
+    <value>Geben Sie die Anfrage hier ein</value>
+  </data>
+  <data name="Enter value" xml:space="preserve">
+    <value>Wert eingeben</value>
+  </data>
+  <data name="Enter Your Current and New Password" xml:space="preserve">
+    <value>Geben Sie Ihr aktuelles und neues Passwort ein</value>
+  </data>
+  <data name="Equals" xml:space="preserve">
+    <value>Entspricht</value>
+  </data>
+  <data name="Error email prefix" xml:space="preserve">
+    <value>Fehler-E-Mail-Präfix</value>
+  </data>
+  <data name="Error?" xml:space="preserve">
+    <value>Fehler?</value>
+  </data>
+  <data name="Every" xml:space="preserve">
+    <value>Jede</value>
+  </data>
+  <data name="Every day" xml:space="preserve">
+    <value>jeden Tag</value>
+  </data>
+  <data name="Every hour" xml:space="preserve">
+    <value>Jede Stunde</value>
+  </data>
+  <data name="Every minute" xml:space="preserve">
+    <value>Jede Minute</value>
+  </data>
+  <data name="Every month" xml:space="preserve">
+    <value>Jeden Monat</value>
+  </data>
+  <data name="Every n hours" xml:space="preserve">
+    <value>Alle n Stunden</value>
+  </data>
+  <data name="Every n minutes" xml:space="preserve">
+    <value>Alle n Minuten</value>
+  </data>
+  <data name="Every week" xml:space="preserve">
+    <value>Jede Woche</value>
+  </data>
+  <data name="Excel data table name" xml:space="preserve">
+    <value>Name der Excel-Datentabelle</value>
+  </data>
+  <data name="Excel tab name" xml:space="preserve">
+    <value>Name der Excel-Registerkarte</value>
+  </data>
+  <data name="Excel Template" xml:space="preserve">
+    <value>Excel-Vorlage</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exportieren</value>
+  </data>
+  <data name="Export to excel" xml:space="preserve">
+    <value>Exportieren in Excel</value>
+  </data>
+  <data name="External logins" xml:space="preserve">
+    <value>Externe Anmeldungen</value>
+  </data>
+  <data name="External queries" xml:space="preserve">
+    <value>Externe Anfragen</value>
+  </data>
+  <data name="Feb" xml:space="preserve">
+    <value>Feb</value>
+  </data>
+  <data name="File deposit configuration" xml:space="preserve">
+    <value>Konfiguration der Dateiablage</value>
+  </data>
+  <data name="File deposit path" xml:space="preserve">
+    <value>Pfad der Dateiablage</value>
+  </data>
+  <data name="File deposit path1" xml:space="preserve">
+    <value>Pfad zur Dateiablage</value>
+  </data>
+  <data name="File desposit path" xml:space="preserve">
+    <value>Dateiablagepfad</value>
+  </data>
+  <data name="File name" xml:space="preserve">
+    <value>Name der Datei</value>
+  </data>
+  <data name="File name1" xml:space="preserve">
+    <value>Dateiname</value>
+  </data>
+  <data name="File path" xml:space="preserve">
+    <value>Dateipfad</value>
+  </data>
+  <data name="File size in MB" xml:space="preserve">
+    <value>Dateigröße in MB</value>
+  </data>
+  <data name="File type" xml:space="preserve">
+    <value>Dateityp</value>
+  </data>
+  <data name="FileServer size" xml:space="preserve">
+    <value>FileServer-Größe</value>
+  </data>
+  <data name="Firstname.Lastname" xml:space="preserve">
+    <value>Vorname.Nachname</value>
+  </data>
+  <data name="Fixed" xml:space="preserve">
+    <value>Festgelegt</value>
+  </data>
+  <data name="Flow dashboard" xml:space="preserve">
+    <value>Flow-Dashboard</value>
+  </data>
+  <data name="Fluid" xml:space="preserve">
+    <value>Flüssigkeit</value>
+  </data>
+  <data name="Forget this browser" xml:space="preserve">
+    <value>Vergessen Sie diesen Browser</value>
+  </data>
+  <data name="Forgot password confirmation" xml:space="preserve">
+    <value>Bestätigung für vergessenes Passwort</value>
+  </data>
+  <data name="Forgot password?" xml:space="preserve">
+    <value>Haben Sie Ihr Passwort vergessen?</value>
+  </data>
+  <data name="Forgot your password? Enter your email" xml:space="preserve">
+    <value>Haben Sie Ihr Passwort vergessen? E-Mail eingeben</value>
+  </data>
+  <data name="Fragmentation report" xml:space="preserve">
+    <value>Fragmentierungsbericht</value>
+  </data>
+  <data name="Friday" xml:space="preserve">
+    <value>Freitag</value>
+  </data>
+  <data name="From email" xml:space="preserve">
+    <value>Von E-Mail</value>
+  </data>
+  <data name="From full name" xml:space="preserve">
+    <value>Vom vollständigen Namen</value>
+  </data>
+  <data name="FullVersion" xml:space="preserve">
+    <value>VollVersion</value>
+  </data>
+  <data name="generate a new set of recovery codes" xml:space="preserve">
+    <value>einen neuen Satz von Wiederherstellungscodes generieren</value>
+  </data>
+  <data name="Generate if empty?" xml:space="preserve">
+    <value>Generieren, wenn leer?</value>
+  </data>
+  <data name="Generate Recovery Codes" xml:space="preserve">
+    <value>Generieren von Wiederherstellungscodes</value>
+  </data>
+  <data name="Generate two-factor authentication (2FA) recovery codes" xml:space="preserve">
+    <value>Generieren von Wiederherstellungscodes mit Zwei-Faktor-Authentifizierung (2FA)</value>
+  </data>
+  <data name="Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should" xml:space="preserve">
+    <value>Die Generierung neuer Wiederherstellungscodes ändert nicht die in Authentifizierungsanwendungen verwendeten Schlüssel. Wenn Sie den in einer Authenticator-Anwendung verwendeten Schlüssel ändern möchten, sollten Sie</value>
+  </data>
+  <data name="Get cron Data" xml:space="preserve">
+    <value>Cron-Daten abrufen</value>
+  </data>
+  <data name="Global query parameters" xml:space="preserve">
+    <value>Globale Abfrageparameter</value>
+  </data>
+  <data name="Go back to alerts list" xml:space="preserve">
+    <value>Zurück zur Liste der Warnmeldungen</value>
+  </data>
+  <data name="Go back to email report list" xml:space="preserve">
+    <value>Zurück zur E-Mail-Berichtsliste</value>
+  </data>
+  <data name="Go to first page" xml:space="preserve">
+    <value>Gehe zur ersten Seite</value>
+  </data>
+  <data name="Go to last page" xml:space="preserve">
+    <value>Gehe zur letzten Seite</value>
+  </data>
+  <data name="Go to next page" xml:space="preserve">
+    <value>Zur nächsten Seite gehen</value>
+  </data>
+  <data name="Go to previous page" xml:space="preserve">
+    <value>Gehe zur vorherigen Seite</value>
+  </data>
+  <data name="Google Authenticator for" xml:space="preserve">
+    <value>Google Authenticator für</value>
+  </data>
+  <data name="Greater than" xml:space="preserve">
+    <value>Größer als</value>
+  </data>
+  <data name="Greater than or equals" xml:space="preserve">
+    <value>Größer als oder gleich</value>
+  </data>
+  <data name="he password and confirmation password do not match." xml:space="preserve">
+    <value>Das Passwort und das Bestätigungspasswort stimmen nicht überein.</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>Kopfzeile</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Hilfe</value>
+  </data>
+  <data name="Help step by step" xml:space="preserve">
+    <value>Schritt für Schritt helfen</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Startseite</value>
+  </data>
+  <data name="Host" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Stunde</value>
+  </data>
+  <data name="hours" xml:space="preserve">
+    <value>Stunden</value>
+  </data>
+  <data name="I would like to" xml:space="preserve">
+    <value>Ich möchte</value>
+  </data>
+  <data name="If you lose your device and don't have the recovery codes you will lose access to your account." xml:space="preserve">
+    <value>Wenn Sie Ihr Gerät verlieren und nicht über die Wiederherstellungscodes verfügen, verlieren Sie den Zugang zu Ihrem Konto.</value>
+  </data>
+  <data name="If you reset your authenticator key your authenticator app will not work until you reconfigure it." xml:space="preserve">
+    <value>Wenn Sie Ihren Authentifizierungsschlüssel zurücksetzen, wird Ihre Authentifizierungsanwendung nicht funktionieren, bis Sie sie neu konfigurieren.</value>
+  </data>
+  <data name="In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences" xml:space="preserve">
+    <value>Um einen zu großen Strom von Warnmeldungen zu vermeiden, können Sie das Verhalten bei mehrfachem Auftreten festlegen. Es kann entweder auf einer Dauer zwischen den Ereignissen oder auf der Anzahl der Ereignisse basieren.</value>
+  </data>
+  <data name="Inbound" xml:space="preserve">
+    <value>Eingehend</value>
+  </data>
+  <data name="Incorrect password" xml:space="preserve">
+    <value>Falsches Passwort</value>
+  </data>
+  <data name="Information sheet text" xml:space="preserve">
+    <value>Informationsblatttext</value>
+  </data>
+  <data name="Internal server error!" xml:space="preserve">
+    <value>Interner Serverfehler!</value>
+  </data>
+  <data name="into your two factor authenticator app. Spaces and casing do not matter." xml:space="preserve">
+    <value>in Ihre Zwei-Faktor-Authentifizierer-Anwendung. Leerzeichen und Gehäuse spielen keine Rolle.</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>Bestandsaufnahme</value>
+  </data>
+  <data name="Is activated?" xml:space="preserve">
+    <value>Ist aktiviert?</value>
+  </data>
+  <data name="Is available?" xml:space="preserve">
+    <value>Ist verfügbar?</value>
+  </data>
+  <data name="is diplayed" xml:space="preserve">
+    <value>wird angezeigt</value>
+  </data>
+  <data name="is not displayed" xml:space="preserve">
+    <value>wird nicht angezeigt</value>
+  </data>
+  <data name="Is not null" xml:space="preserve">
+    <value>Ist nicht null</value>
+  </data>
+  <data name="Is null" xml:space="preserve">
+    <value>Ist null</value>
+  </data>
+  <data name="Is reachable" xml:space="preserve">
+    <value>Ist erreichbar</value>
+  </data>
+  <data name="Is visible?" xml:space="preserve">
+    <value>Ist sichtbar?</value>
+  </data>
+  <data name="items" xml:space="preserve">
+    <value>Artikel</value>
+  </data>
+  <data name="Jan" xml:space="preserve">
+    <value>Jan</value>
+  </data>
+  <data name="Job description" xml:space="preserve">
+    <value>Beschreibung des Auftrags</value>
+  </data>
+  <data name="Job details" xml:space="preserve">
+    <value>Details zum Job</value>
+  </data>
+  <data name="Job duration" xml:space="preserve">
+    <value>Dauer des Auftrags</value>
+  </data>
+  <data name="Job duration (in sec)" xml:space="preserve">
+    <value>Auftragsdauer (in Sekunden)</value>
+  </data>
+  <data name="Job end date time" xml:space="preserve">
+    <value>Datum und Uhrzeit des Auftragsendes</value>
+  </data>
+  <data name="Job on going" xml:space="preserve">
+    <value>Job geht weiter</value>
+  </data>
+  <data name="Job Start Date Time" xml:space="preserve">
+    <value>Job-Startdatum Uhrzeit</value>
+  </data>
+  <data name="Job title" xml:space="preserve">
+    <value>Berufsbezeichnung</value>
+  </data>
+  <data name="Jobs with the max avg time of exec per activity" xml:space="preserve">
+    <value>Jobs mit der maximalen durchschnittlichen Ausführungszeit pro Aktivität</value>
+  </data>
+  <data name="Jul" xml:space="preserve">
+    <value>Juli</value>
+  </data>
+  <data name="Jun" xml:space="preserve">
+    <value>Jun</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="LastOpeningDay" xml:space="preserve">
+    <value>Letzter Öffnungstag</value>
+  </data>
+  <data name="LastRun" xml:space="preserve">
+    <value>Letzter Lauf</value>
+  </data>
+  <data name="LDAP configuration" xml:space="preserve">
+    <value>LDAP-Konfiguration</value>
+  </data>
+  <data name="Left Sidebar Color" xml:space="preserve">
+    <value>Farbe der linken Sidebar</value>
+  </data>
+  <data name="Left Sidebar Size" xml:space="preserve">
+    <value>Größe der linken Seitenleiste</value>
+  </data>
+  <data name="Less than" xml:space="preserve">
+    <value>Weniger als</value>
+  </data>
+  <data name="Less than or equals" xml:space="preserve">
+    <value>Kleiner als oder gleich</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Ebene</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="Light Mode" xml:space="preserve">
+    <value>Lichtmodus</value>
+  </data>
+  <data name="List of recipient" xml:space="preserve">
+    <value>Liste der Empfänger</value>
+  </data>
+  <data name="Loading time" xml:space="preserve">
+    <value>Ladezeit</value>
+  </data>
+  <data name="Local login" xml:space="preserve">
+    <value>Lokale Anmeldung</value>
+  </data>
+  <data name="Localization configuration check" xml:space="preserve">
+    <value>Überprüfung der Lokalisierungskonfiguration</value>
+  </data>
+  <data name="Lock end" xml:space="preserve">
+    <value>Ende sperren</value>
+  </data>
+  <data name="Locked out" xml:space="preserve">
+    <value>Ausgesperrt</value>
+  </data>
+  <data name="Log in" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="log in with a recovery code" xml:space="preserve">
+    <value>sich mit einem Wiederherstellungscode anmelden</value>
+  </data>
+  <data name="Log out" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Anmeldung</value>
+  </data>
+  <data name="Logo" xml:space="preserve">
+    <value>Logo</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="Logs" xml:space="preserve">
+    <value>Protokolle</value>
+  </data>
+  <data name="Logs: Archiving duration" xml:space="preserve">
+    <value>Protokolle: Dauer der Archivierung</value>
+  </data>
+  <data name="Manage account" xml:space="preserve">
+    <value>Konto verwalten</value>
+  </data>
+  <data name="Manage alerts" xml:space="preserve">
+    <value>Alarme verwalten</value>
+  </data>
+  <data name="Manage by duration?" xml:space="preserve">
+    <value>Verwalten nach Dauer?</value>
+  </data>
+  <data name="Manage data transfers" xml:space="preserve">
+    <value>Datenübertragungen verwalten</value>
+  </data>
+  <data name="Manage email" xml:space="preserve">
+    <value>E-Mail verwalten</value>
+  </data>
+  <data name="Manage email reports" xml:space="preserve">
+    <value>Verwalten von E-Mail-Berichten</value>
+  </data>
+  <data name="Manage parameters" xml:space="preserve">
+    <value>Verwalten von Parametern</value>
+  </data>
+  <data name="Manage Predictions" xml:space="preserve">
+    <value>Vorhersagen verwalten</value>
+  </data>
+  <data name="Manage recipients" xml:space="preserve">
+    <value>Empfänger verwalten</value>
+  </data>
+  <data name="Manage reports" xml:space="preserve">
+    <value>Berichte verwalten</value>
+  </data>
+  <data name="Manage users" xml:space="preserve">
+    <value>Benutzer verwalten</value>
+  </data>
+  <data name="Manage your account" xml:space="preserve">
+    <value>Verwalten Sie Ihr Konto</value>
+  </data>
+  <data name="Manage your external logins" xml:space="preserve">
+    <value>Verwalten Sie Ihre externen Logins</value>
+  </data>
+  <data name="Mar" xml:space="preserve">
+    <value>Mar</value>
+  </data>
+  <data name="May" xml:space="preserve">
+    <value>Mai</value>
+  </data>
+  <data name="Menus (Leftsidebar and Topbar) Positon" xml:space="preserve">
+    <value>Menüs (linke Seitenleiste und obere Leiste) Positon</value>
+  </data>
+  <data name="Message to put in the email body" xml:space="preserve">
+    <value>Nachricht zum Einfügen in den E-Mail-Text</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="minutes" xml:space="preserve">
+    <value>Minuten</value>
+  </data>
+  <data name="Modify tasks" xml:space="preserve">
+    <value>Aufgaben ändern</value>
+  </data>
+  <data name="Monday" xml:space="preserve">
+    <value>Montag</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Monat</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Name and Logo" xml:space="preserve">
+    <value>Name und Logo</value>
+  </data>
+  <data name="Navigate to &quot;Base parameters&quot; and &quot;Manage activities&quot; and check if your activity exists. If not ask to the application admin" xml:space="preserve">
+    <value>Navigieren Sie zu "Basisparameter" und "Aktivitäten verwalten" und überprüfen Sie, ob Ihre Aktivität existiert. Wenn nicht, wenden Sie sich an den Anwendungsadministrator</value>
+  </data>
+  <data name="Navigate to &quot;Base parameters&quot; and &quot;SMTP configuration&quot; and check if one is active. If not ask to the application admin" xml:space="preserve">
+    <value>Navigieren Sie zu "Basisparameter" und "SMTP-Konfiguration" und überprüfen Sie, ob eine aktiv ist. Falls nicht, wenden Sie sich an den Anwendungsadministrator</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; and switch on the report. If something goes wrong you will get an error with the reason" xml:space="preserve">
+    <value>Navigieren Sie zu "Modifity tasks" und "Alerts" und schalten Sie den Bericht ein. Wenn etwas schief geht, erhalten Sie eine Fehlermeldung mit dem Grund</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; then select create a new alert" xml:space="preserve">
+    <value>Navigieren Sie zu "Modifizierungsaufgaben" und "Warnmeldungen" und wählen Sie dann "Neue Warnmeldung erstellen".</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; and switch on the report and if needed the &quot;Send by email&quot; button. If something goes wrong you will get an error with the reason" xml:space="preserve">
+    <value>Navigieren Sie zu "Modifizierungsaufgaben" und "Berichte" und schalten Sie den Bericht und bei Bedarf die Schaltfläche "Per E-Mail senden" ein. Wenn etwas schief geht, erhalten Sie eine Fehlermeldung mit dem Grund</value>
+  </data>
+  <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; then select create a new report" xml:space="preserve">
+    <value>Navigieren Sie zu "Änderungsaufgaben" und "Berichte" und wählen Sie dann "Neuen Bericht erstellen".</value>
+  </data>
+  <data name="Nbr of active alerts" xml:space="preserve">
+    <value>Anzahl der aktiven Warnungen</value>
+  </data>
+  <data name="Nbr of active reports" xml:space="preserve">
+    <value>Anzahl der aktiven Berichte</value>
+  </data>
+  <data name="Nbr of activities" xml:space="preserve">
+    <value>Nbr von Aktivitäten</value>
+  </data>
+  <data name="Nbr of alerts performed today" xml:space="preserve">
+    <value>Anzahl der heute durchgeführten Warnungen</value>
+  </data>
+  <data name="Nbr of details" xml:space="preserve">
+    <value>Nbr von Details</value>
+  </data>
+  <data name="Nbr of emails sent today" xml:space="preserve">
+    <value>Anzahl der heute gesendeten Emails</value>
+  </data>
+  <data name="Nbr of errors" xml:space="preserve">
+    <value>Anzahl der Fehler</value>
+  </data>
+  <data name="Nbr of files" xml:space="preserve">
+    <value>Nbr von Dateien</value>
+  </data>
+  <data name="Nbr of files stored locally" xml:space="preserve">
+    <value>Anzahl der lokal gespeicherten Dateien</value>
+  </data>
+  <data name="Nbr of jobs" xml:space="preserve">
+    <value>Anzahl der Aufträge</value>
+  </data>
+  <data name="Nbr of lines inserted" xml:space="preserve">
+    <value>Nbr der eingefügten Zeilen</value>
+  </data>
+  <data name="Nbr of minutes between occcurences" xml:space="preserve">
+    <value>Anzahl der Minuten zwischen den Vorkommnissen</value>
+  </data>
+  <data name="Nbr of occurences before to resubmit alert" xml:space="preserve">
+    <value>Anzahl der Ereignisse, bevor die Meldung erneut gesendet werden muss</value>
+  </data>
+  <data name="Nbr of queries" xml:space="preserve">
+    <value>Anzahl der Abfragen</value>
+  </data>
+  <data name="Nbr of reports performed today" xml:space="preserve">
+    <value>Anzahl der heute durchgeführten Berichte</value>
+  </data>
+  <data name="Nbr of rows" xml:space="preserve">
+    <value>Nbr von Reihen</value>
+  </data>
+  <data name="Nbr of rows fetched from databases" xml:space="preserve">
+    <value>Anzahl der aus Datenbanken abgerufenen Zeilen</value>
+  </data>
+  <data name="Nbr of rows returned" xml:space="preserve">
+    <value>Anzahl der zurückgegebenen Zeilen</value>
+  </data>
+  <data name="Nbr of tasks" xml:space="preserve">
+    <value>Anzahl der Aufgaben</value>
+  </data>
+  <data name="Nbr of tasks in error" xml:space="preserve">
+    <value>Anzahl der fehlerhaften Aufgaben</value>
+  </data>
+  <data name="Nbr of tasks over the last 10 days" xml:space="preserve">
+    <value>Anzahl der Aufgaben in den letzten 10 Tagen</value>
+  </data>
+  <data name="Nbr of tasks performed today" xml:space="preserve">
+    <value>Anzahl der heute ausgeführten Aufgaben</value>
+  </data>
+  <data name="Nbr of users" xml:space="preserve">
+    <value>Anzahl der Benutzer</value>
+  </data>
+  <data name="Nbr total of rows" xml:space="preserve">
+    <value>Nbr Summe der Zeilen</value>
+  </data>
+  <data name="Need to connect locally?" xml:space="preserve">
+    <value>Müssen Sie sich lokal verbinden?</value>
+  </data>
+  <data name="Network credentials" xml:space="preserve">
+    <value>Netzwerk-Anmeldeinformationen</value>
+  </data>
+  <data name="New email" xml:space="preserve">
+    <value>Neue E-Mail</value>
+  </data>
+  <data name="New password" xml:space="preserve">
+    <value>Neues Kennwort</value>
+  </data>
+  <data name="New values" xml:space="preserve">
+    <value>Neue Werte</value>
+  </data>
+  <data name="Not contains" xml:space="preserve">
+    <value>Nicht enthält</value>
+  </data>
+  <data name="Not equals" xml:space="preserve">
+    <value>Nicht gleich</value>
+  </data>
+  <data name="Nov" xml:space="preserve">
+    <value>Nov</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Jetzt</value>
+  </data>
+  <data name="Object added" xml:space="preserve">
+    <value>Objekt hinzugefügt</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Objekt gelöscht</value>
+  </data>
+  <data name="Object updated" xml:space="preserve">
+    <value>Objekt aktualisiert</value>
+  </data>
+  <data name="Oct" xml:space="preserve">
+    <value>Okt</value>
+  </data>
+  <data name="of" xml:space="preserve">
+    <value>von</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Aus</value>
+  </data>
+  <data name="Old password" xml:space="preserve">
+    <value>Altes Kennwort</value>
+  </data>
+  <data name="Old values" xml:space="preserve">
+    <value>Alte Werte</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>Auf</value>
+  </data>
+  <data name="Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code.Enter the code in the confirmation box below." xml:space="preserve">
+    <value>Sobald Sie den QR-Code gescannt oder den oben genannten Schlüssel eingegeben haben, erhalten Sie von Ihrer Zwei-Faktor-Authentifizierungsanwendung einen eindeutigen Code. Geben Sie den Code in das Bestätigungsfeld unten ein.</value>
+  </data>
+  <data name="Only when query does not require a separate file" xml:space="preserve">
+    <value>Nur wenn Abfrage keine separate Datei erfordert</value>
+  </data>
+  <data name="Only when query is generated in separated file" xml:space="preserve">
+    <value>Nur wenn die Abfrage in einer getrennten Datei generiert wird</value>
+  </data>
+  <data name="Optional: Add email recipient" xml:space="preserve">
+    <value>Optional: E-Mail-Empfänger hinzufügen</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>oder</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>Andere</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>Seite</value>
+  </data>
+  <data name="Parameter identifier" xml:space="preserve">
+    <value>Parameter-Bezeichner</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Kennwort</value>
+  </data>
+  <data name="Pasword must contains {0} characters, {1} digit, {2} uppercase, {3} lowercase, {4} non aphanumeric and {5} unique characters" xml:space="preserve">
+    <value>Das Passwort muss {0} Zeichen, {1} Ziffern, {2} Großbuchstaben, {3} Kleinbuchstaben, {4} nicht alphanumerische Zeichen und {5} eindeutige Zeichen enthalten</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>Pfad</value>
+  </data>
+  <data name="Personal data" xml:space="preserve">
+    <value>Persönliche Daten</value>
+  </data>
+  <data name="Phone number" xml:space="preserve">
+    <value>Telefonnummer</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Plattform</value>
+  </data>
+  <data name="Please check your email to confirm your account." xml:space="preserve">
+    <value>Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu bestätigen.</value>
+  </data>
+  <data name="Please check your email to reset your password." xml:space="preserve">
+    <value>Bitte überprüfen Sie Ihre E-Mail, um Ihr Passwort zurückzusetzen.</value>
+  </data>
+  <data name="Please enter an email address for this site below and click the Register button to finish logging in." xml:space="preserve">
+    <value>Bitte geben Sie unten eine E-Mail-Adresse für diese Website ein und klicken Sie auf die Schaltfläche Registrieren, um die Anmeldung abzuschließen.</value>
+  </data>
+  <data name="please enter your old paswword" xml:space="preserve">
+    <value>Bitte geben Sie Ihr altes Kennwort ein</value>
+  </data>
+  <data name="Please enter your windows account credentials" xml:space="preserve">
+    <value>Bitte geben Sie die Anmeldeinformationen Ihres Windows-Kontos ein</value>
+  </data>
+  <data name="Please select a Db type" xml:space="preserve">
+    <value>Bitte wählen Sie einen Db-Typ</value>
+  </data>
+  <data name="Predictions" xml:space="preserve">
+    <value>Vorhersagen</value>
+  </data>
+  <data name="Predictions Reports" xml:space="preserve">
+    <value>Berichte über Vorhersagen</value>
+  </data>
+  <data name="Primary key" xml:space="preserve">
+    <value>Primärschlüssel</value>
+  </data>
+  <data name="Primary key1" xml:space="preserve">
+    <value>Primärschlüssel</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>wird bearbeitet</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Put these codes in a safe place." xml:space="preserve">
+    <value>Bewahren Sie diese Codes an einem sicheren Ort auf.</value>
+  </data>
+  <data name="Queries" xml:space="preserve">
+    <value>Anfragen</value>
+  </data>
+  <data name="Queries to seed DB" xml:space="preserve">
+    <value>Abfragen zum Setzen von DB</value>
+  </data>
+  <data name="Query" xml:space="preserve">
+    <value>Anfrage</value>
+  </data>
+  <data name="Query execution logs" xml:space="preserve">
+    <value>Protokolle der Abfrageausführung</value>
+  </data>
+  <data name="Query name" xml:space="preserve">
+    <value>Name der Abfrage</value>
+  </data>
+  <data name="Query parameters" xml:space="preserve">
+    <value>Parameter abfragen</value>
+  </data>
+  <data name="Query sequence" xml:space="preserve">
+    <value>Abfragesequenz</value>
+  </data>
+  <data name="Rebuild indexes" xml:space="preserve">
+    <value>Indizes wiederherstellen</value>
+  </data>
+  <data name="Recipient Email" xml:space="preserve">
+    <value>E-Mail-Empfänger</value>
+  </data>
+  <data name="Recipients" xml:space="preserve">
+    <value>Empfänger</value>
+  </data>
+  <data name="Recovery code verification" xml:space="preserve">
+    <value>Überprüfung des Wiederherstellungscodes</value>
+  </data>
+  <data name="Recovery codes" xml:space="preserve">
+    <value>Wiederherstellungs-Codes</value>
+  </data>
+  <data name="recovery codes left." xml:space="preserve">
+    <value>Wiederherstellungscodes übrig.</value>
+  </data>
+  <data name="Recreate" xml:space="preserve">
+    <value>Neu erstellen</value>
+  </data>
+  <data name="Reduce DB size" xml:space="preserve">
+    <value>DB-Größe reduzieren</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registrieren</value>
+  </data>
+  <data name="Register confirmation" xml:space="preserve">
+    <value>Bestätigung der Registrierung</value>
+  </data>
+  <data name="Registered Logins" xml:space="preserve">
+    <value>Registrierte Anmeldungen</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>entfernen</value>
+  </data>
+  <data name="Remove a role" xml:space="preserve">
+    <value>Eine Rolle entfernen</value>
+  </data>
+  <data name="Remove filters" xml:space="preserve">
+    <value>Filter entfernen</value>
+  </data>
+  <data name="Remove Header" xml:space="preserve">
+    <value>Kopfzeile entfernen</value>
+  </data>
+  <data name="Remove logo" xml:space="preserve">
+    <value>Logo entfernen</value>
+  </data>
+  <data name="Remove role" xml:space="preserve">
+    <value>Rolle entfernen</value>
+  </data>
+  <data name="Report deposit path" xml:space="preserve">
+    <value>Ablagepfad melden</value>
+  </data>
+  <data name="Report details" xml:space="preserve">
+    <value>Details zum Bericht</value>
+  </data>
+  <data name="Report name" xml:space="preserve">
+    <value>Name des Berichts</value>
+  </data>
+  <data name="Report service" xml:space="preserve">
+    <value>Berichtsdienst</value>
+  </data>
+  <data name="Report sub name" xml:space="preserve">
+    <value>Name des Unterberichts</value>
+  </data>
+  <data name="Report title" xml:space="preserve">
+    <value>Titel des Berichts</value>
+  </data>
+  <data name="Report type" xml:space="preserve">
+    <value>Berichtstyp</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Berichte</value>
+  </data>
+  <data name="Reports execution plan" xml:space="preserve">
+    <value>Ausführungsplan für Berichte</value>
+  </data>
+  <data name="Reports Result" xml:space="preserve">
+    <value>Berichte Ergebnis</value>
+  </data>
+  <data name="Reports result logs" xml:space="preserve">
+    <value>Berichte Ergebnisprotokolle</value>
+  </data>
+  <data name="Reports1" xml:space="preserve">
+    <value>Berichte</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Erforderlich</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="Reset authenticator app" xml:space="preserve">
+    <value>Authentifikator-App zurücksetzen</value>
+  </data>
+  <data name="Reset authenticator key" xml:space="preserve">
+    <value>Authentifikator-Schlüssel zurücksetzen</value>
+  </data>
+  <data name="Reset password" xml:space="preserve">
+    <value>Passwort zurücksetzen</value>
+  </data>
+  <data name="Reset password confirmation" xml:space="preserve">
+    <value>Bestätigung des Passworts zurücksetzen</value>
+  </data>
+  <data name="Reset recovery codes" xml:space="preserve">
+    <value>Wiederherstellungscodes zurücksetzen</value>
+  </data>
+  <data name="Reset to Default" xml:space="preserve">
+    <value>Auf Standard zurücksetzen</value>
+  </data>
+  <data name="reset your authenticator keys." xml:space="preserve">
+    <value>setzen Sie Ihre Authentifizierungsschlüssel zurück.</value>
+  </data>
+  <data name="reset1" xml:space="preserve">
+    <value>zurücksetzen</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>wiederherstellen</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="Retrieve reports" xml:space="preserve">
+    <value>Berichte abrufen</value>
+  </data>
+  <data name="Return to report editor" xml:space="preserve">
+    <value>Zurück zum Berichtseditor</value>
+  </data>
+  <data name="Role added" xml:space="preserve">
+    <value>Rolle hinzugefügt</value>
+  </data>
+  <data name="Role name" xml:space="preserve">
+    <value>Name der Rolle</value>
+  </data>
+  <data name="Role removed" xml:space="preserve">
+    <value>Rolle entfernt</value>
+  </data>
+  <data name="Role usage" xml:space="preserve">
+    <value>Verwendung der Rolle</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Rollen</value>
+  </data>
+  <data name="Roles :" xml:space="preserve">
+    <value>Rollen :</value>
+  </data>
+  <data name="Roles assigned" xml:space="preserve">
+    <value>Zugewiesene Rollen</value>
+  </data>
+  <data name="Roles assigned to" xml:space="preserve">
+    <value>Rollen, die zugewiesen sind an</value>
+  </data>
+  <data name="Roles available" xml:space="preserve">
+    <value>Verfügbare Rollen</value>
+  </data>
+  <data name="Roles list" xml:space="preserve">
+    <value>Rollen-Liste</value>
+  </data>
+  <data name="Rows per activity" xml:space="preserve">
+    <value>Reihen pro Aktivität</value>
+  </data>
+  <data name="Rows per page" xml:space="preserve">
+    <value>Zeilen pro Seite</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Ausführen</value>
+  </data>
+  <data name="Run by" xml:space="preserve">
+    <value>Ausgeführt von</value>
+  </data>
+  <data name="Run manually" xml:space="preserve">
+    <value>Manuell ausführen</value>
+  </data>
+  <data name="Run reports manually" xml:space="preserve">
+    <value>Berichte manuell ausführen</value>
+  </data>
+  <data name="Saturday" xml:space="preserve">
+    <value>Samstag</value>
+  </data>
+  <data name="Save changes" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+  <data name="Save credentials" xml:space="preserve">
+    <value>Anmeldeinformationen speichern</value>
+  </data>
+  <data name="Scan the QR Code or enter this key" xml:space="preserve">
+    <value>Scannen Sie den QR-Code oder geben Sie diesen Schlüssel ein</value>
+  </data>
+  <data name="Scheduler" xml:space="preserve">
+    <value>Zeitplaner</value>
+  </data>
+  <data name="Scheduler simulation for next 60 days" xml:space="preserve">
+    <value>Scheduler-Simulation für die nächsten 60 Tage</value>
+  </data>
+  <data name="Scrollable" xml:space="preserve">
+    <value>Bildlauffähig</value>
+  </data>
+  <data name="Seed DB from date" xml:space="preserve">
+    <value>Saatgut-DB ab Datum</value>
+  </data>
+  <data name="Select a branch" xml:space="preserve">
+    <value>Wählen Sie einen Zweig</value>
+  </data>
+  <data name="Select a business area" xml:space="preserve">
+    <value>Wählen Sie einen Geschäftsbereich</value>
+  </data>
+  <data name="Select a Company" xml:space="preserve">
+    <value>Wählen Sie ein Unternehmen</value>
+  </data>
+  <data name="Select a data type" xml:space="preserve">
+    <value>Wählen Sie einen Datentyp</value>
+  </data>
+  <data name="Select a date calculation" xml:space="preserve">
+    <value>Wählen Sie eine Datumsberechnung</value>
+  </data>
+  <data name="Select a log to display the message" xml:space="preserve">
+    <value>Wählen Sie ein Protokoll, um die Meldung anzuzeigen</value>
+  </data>
+  <data name="Select a log to display the values" xml:space="preserve">
+    <value>Wählen Sie ein Protokoll, um die Werte anzuzeigen</value>
+  </data>
+  <data name="Select activity Logo" xml:space="preserve">
+    <value>Aktivität auswählen Logo</value>
+  </data>
+  <data name="Select an activity" xml:space="preserve">
+    <value>Wählen Sie eine Aktivität</value>
+  </data>
+  <data name="Select an excel template" xml:space="preserve">
+    <value>Wählen Sie eine Excel-Vorlage</value>
+  </data>
+  <data name="Select application Logo" xml:space="preserve">
+    <value>Anwendungslogo auswählen</value>
+  </data>
+  <data name="send by email" xml:space="preserve">
+    <value>per E-Mail senden</value>
+  </data>
+  <data name="Send for all recipients" xml:space="preserve">
+    <value>Für alle Empfänger senden</value>
+  </data>
+  <data name="Send for me" xml:space="preserve">
+    <value>Für mich senden</value>
+  </data>
+  <data name="Send verification email" xml:space="preserve">
+    <value>Bestätigungs-E-Mail senden</value>
+  </data>
+  <data name="Sep" xml:space="preserve">
+    <value>Sep</value>
+  </data>
+  <data name="Separate query in on file?" xml:space="preserve">
+    <value>Separate Abfrage in der Datei?</value>
+  </data>
+  <data name="Separated excel file?" xml:space="preserve">
+    <value>Getrennte Excel-Datei?</value>
+  </data>
+  <data name="Service down" xml:space="preserve">
+    <value>Dienst deaktiviert</value>
+  </data>
+  <data name="Service up" xml:space="preserve">
+    <value>Dienst aktiviert</value>
+  </data>
+  <data name="Services status" xml:space="preserve">
+    <value>Status der Dienste</value>
+  </data>
+  <data name="Set password" xml:space="preserve">
+    <value>Kennwort festlegen</value>
+  </data>
+  <data name="Set your password" xml:space="preserve">
+    <value>Legen Sie Ihr Passwort fest</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Setup authenticator app" xml:space="preserve">
+    <value>Authentifikator-App einrichten</value>
+  </data>
+  <data name="SFTP configuration" xml:space="preserve">
+    <value>SFTP-Konfiguration</value>
+  </data>
+  <data name="SFTP host" xml:space="preserve">
+    <value>SFTP-Host</value>
+  </data>
+  <data name="SFTP password" xml:space="preserve">
+    <value>SFTP-Kennwort</value>
+  </data>
+  <data name="SFTP port" xml:space="preserve">
+    <value>SFTP-Anschluss</value>
+  </data>
+  <data name="SFTP username" xml:space="preserve">
+    <value>SFTP-Benutzername</value>
+  </data>
+  <data name="Side menu" xml:space="preserve">
+    <value>Seitliches Menü</value>
+  </data>
+  <data name="Sign up" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="Signup" xml:space="preserve">
+    <value>Anmeldung</value>
+  </data>
+  <data name="Size of files stored locally" xml:space="preserve">
+    <value>Größe der lokal gespeicherten Dateien</value>
+  </data>
+  <data name="SMTP configuration" xml:space="preserve">
+    <value>SMTP-Konfiguration</value>
+  </data>
+  <data name="SMTP host" xml:space="preserve">
+    <value>SMTP-Host</value>
+  </data>
+  <data name="SMTP password" xml:space="preserve">
+    <value>SMTP-Kennwort</value>
+  </data>
+  <data name="SMTP port" xml:space="preserve">
+    <value>SMTP-Anschluss</value>
+  </data>
+  <data name="SMTP username" xml:space="preserve">
+    <value>SMTP-Benutzername</value>
+  </data>
+  <data name="Sorry, the page you visited does not exist." xml:space="preserve">
+    <value>Die Seite, die Sie besucht haben, existiert leider nicht.</value>
+  </data>
+  <data name="Sorry, you are not authorized to access this page." xml:space="preserve">
+    <value>Leider sind Sie nicht berechtigt, auf diese Seite zuzugreifen.</value>
+  </data>
+  <data name="SQL execution duration" xml:space="preserve">
+    <value>Dauer der SQL-Ausführung</value>
+  </data>
+  <data name="SSL Activated?" xml:space="preserve">
+    <value>SSL aktiviert?</value>
+  </data>
+  <data name="Standard" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Start date time" xml:space="preserve">
+    <value>Startdatum Uhrzeit</value>
+  </data>
+  <data name="StartOfLastMonth" xml:space="preserve">
+    <value>BeginnVorletzterMonat</value>
+  </data>
+  <data name="StartOfLastWeek" xml:space="preserve">
+    <value>BeginnderletztenWoche</value>
+  </data>
+  <data name="StartOfThisMonth" xml:space="preserve">
+    <value>Beginn DiesesMonats</value>
+  </data>
+  <data name="StartOfThisQuarter" xml:space="preserve">
+    <value>Beginn dieses Quartals</value>
+  </data>
+  <data name="StartOfThisWeek" xml:space="preserve">
+    <value>Beginn DieserWoche</value>
+  </data>
+  <data name="StartOfThisYear" xml:space="preserve">
+    <value>Anfang dieses Jahres</value>
+  </data>
+  <data name="Starts with" xml:space="preserve">
+    <value>Beginnt mit</value>
+  </data>
+  <data name="Storage per report" xml:space="preserve">
+    <value>Speicherplatz pro Bericht</value>
+  </data>
+  <data name="Structure" xml:space="preserve">
+    <value>Struktur</value>
+  </data>
+  <data name="Sunday" xml:space="preserve">
+    <value>Sonntag</value>
+  </data>
+  <data name="Switch to Dark Theme" xml:space="preserve">
+    <value>Zum dunklen Design</value>
+  </data>
+  <data name="Switch to Light Theme" xml:space="preserve">
+    <value>Zum Lichtdesign</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="System log message" xml:space="preserve">
+    <value>Systemprotokollmeldung</value>
+  </data>
+  <data name="System logs" xml:space="preserve">
+    <value>System-Protokolle</value>
+  </data>
+  <data name="System logs by level" xml:space="preserve">
+    <value>Systemprotokolle nach Ebene</value>
+  </data>
+  <data name="Table name" xml:space="preserve">
+    <value>Name der Tabelle</value>
+  </data>
+  <data name="Target table name" xml:space="preserve">
+    <value>Name der Zieltabelle</value>
+  </data>
+  <data name="Tasks in error" xml:space="preserve">
+    <value>Fehlerhafte Aufgaben</value>
+  </data>
+  <data name="Tasks per day" xml:space="preserve">
+    <value>Aufgaben pro Tag</value>
+  </data>
+  <data name="Tasks per type" xml:space="preserve">
+    <value>Aufgaben pro Typ</value>
+  </data>
+  <data name="Tasks today" xml:space="preserve">
+    <value>Aufgaben heute</value>
+  </data>
+  <data name="Template tab name to use" xml:space="preserve">
+    <value>Name der zu verwendenden Registerkarte der Vorlage</value>
+  </data>
+  <data name="Test Db connection" xml:space="preserve">
+    <value>Db-Verbindung testen</value>
+  </data>
+  <data name="Test Feedback:" xml:space="preserve">
+    <value>Rückmeldung testen:</value>
+  </data>
+  <data name="Test query" xml:space="preserve">
+    <value>Testabfrage</value>
+  </data>
+  <data name="Thank you for confirming your email." xml:space="preserve">
+    <value>Vielen Dank für die Bestätigung Ihrer E-Mail.</value>
+  </data>
+  <data name="The email address is invalid" xml:space="preserve">
+    <value>Die E-Mail Adresse ist ungültig</value>
+  </data>
+  <data name="The password and confirmation password do not match" xml:space="preserve">
+    <value>Das Kennwort und das Bestätigungskennwort stimmen nicht überein</value>
+  </data>
+  <data name="The passwords entered must be equal" xml:space="preserve">
+    <value>Die eingegebenen Passwörter müssen gleich sein</value>
+  </data>
+  <data name="The purpose of this application is to easily create reports or alerts in selecting data from several types of database. Each task can be scheduled with a dedicated tool and results can be monitored via logs or the task manager." xml:space="preserve">
+    <value>Der Zweck dieser Anwendung ist die einfache Erstellung von Berichten oder Warnungen bei der Auswahl von Daten aus verschiedenen Arten von Datenbanken. Jede Aufgabe kann mit einem speziellen Werkzeug geplant werden und die Ergebnisse können über Protokolle oder den Aufgabenmanager überwacht werden.</value>
+  </data>
+  <data name="The same date with" xml:space="preserve">
+    <value>Das gleiche Datum mit</value>
+  </data>
+  <data name="There are changes pending" xml:space="preserve">
+    <value>Es sind Änderungen anhängig</value>
+  </data>
+  <data name="This account has been locked out, please try again later." xml:space="preserve">
+    <value>Dieses Konto wurde gesperrt, bitte versuchen Sie es später noch einmal.</value>
+  </data>
+  <data name="This action only disables 2FA" xml:space="preserve">
+    <value>Diese Aktion deaktiviert nur 2FA</value>
+  </data>
+  <data name="This activity is Visible?" xml:space="preserve">
+    <value>Diese Aktivität ist sichtbar?</value>
+  </data>
+  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
+    <value>Dieser Prozess deaktiviert 2FA, bis Sie Ihre Authentifizierer-Anwendung verifiziert haben.  Wenn Sie die Konfiguration Ihrer Authentifizierungsanwendung nicht abschließen, können Sie den Zugriff auf Ihr Konto verlieren.</value>
+  </data>
+  <data name="Thursday" xml:space="preserve">
+    <value>Donnerstag</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Zeitstempel</value>
+  </data>
+  <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. If you want to define a specific deposit path, click on the corresponding button. When you have finished, validate the changes" xml:space="preserve">
+    <value>Um den Zeitplaner zu verwalten, wählen Sie "Zeitplaner konfigurieren" und dann wählen. Wenn Sie einen bestimmten Ablagepfad festlegen möchten, klicken Sie auf die entsprechende Schaltfläche. Wenn Sie fertig sind, validieren Sie die Änderungen.</value>
+  </data>
+  <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. When you have finished, validate the changes" xml:space="preserve">
+    <value>Um den Planer zu verwalten, wählen Sie "Planer konfigurieren" und wählen Sie dann. Wenn Sie fertig sind, validieren Sie die Änderungen.</value>
+  </data>
+  <data name="To use an authenticator app go through the following steps:" xml:space="preserve">
+    <value>Um eine Authentifizierungsanwendung zu verwenden, gehen Sie die folgenden Schritte durch:</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Heute</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Morgen</value>
+  </data>
+  <data name="Topbar" xml:space="preserve">
+    <value>Kopfleiste</value>
+  </data>
+  <data name="Total duration" xml:space="preserve">
+    <value>Gesamtdauer</value>
+  </data>
+  <data name="Total nbr of active queries" xml:space="preserve">
+    <value>Gesamtzahl der aktiven Abfragen</value>
+  </data>
+  <data name="Total size in MB" xml:space="preserve">
+    <value>Gesamtgröße in MB</value>
+  </data>
+  <data name="TOTAL Users" xml:space="preserve">
+    <value>GESAMTBENUTZER</value>
+  </data>
+  <data name="Try to create folder" xml:space="preserve">
+    <value>Versuch, einen Ordner zu erstellen</value>
+  </data>
+  <data name="Try to create the target folder if not exists?" xml:space="preserve">
+    <value>Versuchen, den Zielordner zu erstellen, wenn er nicht existiert?</value>
+  </data>
+  <data name="Tuesday" xml:space="preserve">
+    <value>Dienstag</value>
+  </data>
+  <data name="Two-factor authentication" xml:space="preserve">
+    <value>Zwei-Faktor-Authentifizierung</value>
+  </data>
+  <data name="Two-factor authentication (2FA)" xml:space="preserve">
+    <value>Zwei-Faktor-Authentifizierung (2FA)</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="Type of change" xml:space="preserve">
+    <value>Art der Änderung</value>
+  </data>
+  <data name="Type of Database" xml:space="preserve">
+    <value>Typ der Datenbank</value>
+  </data>
+  <data name="Type of file" xml:space="preserve">
+    <value>Typ der Datei</value>
+  </data>
+  <data name="Type of job" xml:space="preserve">
+    <value>Art des Auftrags</value>
+  </data>
+  <data name="Type of report" xml:space="preserve">
+    <value>Art des Berichts</value>
+  </data>
+  <data name="Type of synchronisation" xml:space="preserve">
+    <value>Art der Synchronisierung</value>
+  </data>
+  <data name="Type of tasks" xml:space="preserve">
+    <value>Art der Aufgaben</value>
+  </data>
+  <data name="understand what is a report" xml:space="preserve">
+    <value>Verstehen, was ein Bericht ist</value>
+  </data>
+  <data name="understand what is an activity" xml:space="preserve">
+    <value>Verstehen, was eine Aktivität ist</value>
+  </data>
+  <data name="understand what is an alert" xml:space="preserve">
+    <value>Verstehen, was ein Alarm ist</value>
+  </data>
+  <data name="Unfortunately, you do not yet have any access" xml:space="preserve">
+    <value>Leider haben Sie noch keinen Zugang</value>
+  </data>
+  <data name="Until 200k lines" xml:space="preserve">
+    <value>Bis 200k Linien</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Aktualisierung</value>
+  </data>
+  <data name="Update a deposit path" xml:space="preserve">
+    <value>Aktualisieren eines Pfandsystems</value>
+  </data>
+  <data name="Update a new network credential" xml:space="preserve">
+    <value>Aktualisieren einer neuen Netzzugangsberechtigung</value>
+  </data>
+  <data name="Update activity" xml:space="preserve">
+    <value>Update-Aktivität</value>
+  </data>
+  <data name="Update all tempory tables" xml:space="preserve">
+    <value>Alle temporären Tabellen aktualisieren</value>
+  </data>
+  <data name="Update by" xml:space="preserve">
+    <value>Aktualisierung durch</value>
+  </data>
+  <data name="Update Db manually" xml:space="preserve">
+    <value>Db manuell aktualisieren</value>
+  </data>
+  <data name="Update password" xml:space="preserve">
+    <value>Passwort aktualisieren</value>
+  </data>
+  <data name="Update SMTP profil" xml:space="preserve">
+    <value>SMTP-Profil aktualisieren</value>
+  </data>
+  <data name="Updated at" xml:space="preserve">
+    <value>Aktualisiert unter</value>
+  </data>
+  <data name="Updated by" xml:space="preserve">
+    <value>Aktualisiert von</value>
+  </data>
+  <data name="Upload a logo" xml:space="preserve">
+    <value>Ein Logo hochladen</value>
+  </data>
+  <data name="Upload the company's logo" xml:space="preserve">
+    <value>Laden Sie das Firmenlogo hoch</value>
+  </data>
+  <data name="Use a DB schema?" xml:space="preserve">
+    <value>Ein DB-Schema verwenden?</value>
+  </data>
+  <data name="Use a specific file naming?" xml:space="preserve">
+    <value>Verwenden Sie einen bestimmten Dateinamen?</value>
+  </data>
+  <data name="Use an excel data table?" xml:space="preserve">
+    <value>Eine Excel-Datentabelle verwenden?</value>
+  </data>
+  <data name="Use an excel template?" xml:space="preserve">
+    <value>Verwenden Sie eine Excel-Vorlage?</value>
+  </data>
+  <data name="Use application user credential?" xml:space="preserve">
+    <value>Anmeldeinformationen des Anwendungsbenutzers verwenden?</value>
+  </data>
+  <data name="Use global query parameters?" xml:space="preserve">
+    <value>Globale Abfrageparameter verwenden?</value>
+  </data>
+  <data name="Use os credential" xml:space="preserve">
+    <value>Betriebssystem-Zugangsdaten verwenden</value>
+  </data>
+  <data name="Use primary keys?" xml:space="preserve">
+    <value>Primärschlüssel verwenden?</value>
+  </data>
+  <data name="Use sFTP protocol" xml:space="preserve">
+    <value>sFTP-Protokoll verwenden</value>
+  </data>
+  <data name="Use sFTP protocol?" xml:space="preserve">
+    <value>sFTP-Protokoll verwenden?</value>
+  </data>
+  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
+    <value>Standardabfragen für Rhs WMS verwenden?</value>
+  </data>
+  <data name="Use the default deposit path of the activity?" xml:space="preserve">
+    <value>Den Standard-Einzahlungspfad der Aktivität verwenden?</value>
+  </data>
+  <data name="User actions logs" xml:space="preserve">
+    <value>Protokolle der Benutzeraktionen</value>
+  </data>
+  <data name="User name" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="User Settings" xml:space="preserve">
+    <value>Benutzer-Einstellungen</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="Users and roles" xml:space="preserve">
+    <value>Benutzer und Rollen</value>
+  </data>
+  <data name="Users list" xml:space="preserve">
+    <value>Benutzer-Liste</value>
+  </data>
+  <data name="Users management" xml:space="preserve">
+    <value>Benutzerverwaltung</value>
+  </data>
+  <data name="Validate" xml:space="preserve">
+    <value>Bestätigen Sie</value>
+  </data>
+  <data name="Validate and add detail" xml:space="preserve">
+    <value>Validierung und Hinzufügen von Details</value>
+  </data>
+  <data name="Validate the new activity" xml:space="preserve">
+    <value>Validieren Sie die neue Aktivität</value>
+  </data>
+  <data name="Verification code" xml:space="preserve">
+    <value>Verifizierungs-Code</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Überprüfen Sie</value>
+  </data>
+  <data name="Visual Cron Editor" xml:space="preserve">
+    <value>Visueller Cron-Editor</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="Warning: keep the {0} tag inner the message to see the values ​​of the variable" xml:space="preserve">
+    <value>Achtung: Behalten Sie den {0}-Tag innerhalb der Nachricht, um die Werte der Variablen zu sehen</value>
+  </data>
+  <data name="Wednesday" xml:space="preserve">
+    <value>Mittwoch</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Willkommen</value>
+  </data>
+  <data name="When you are editing the report, click on the &quot;Manage recipients&quot; tab. Enter an emsail adress then click on &quot;Add recipients&quot; button. You can also customize the message of the email with teh button &quot;Edit email message&quot;" xml:space="preserve">
+    <value>Wenn Sie den Bericht bearbeiten, klicken Sie auf die Registerkarte "Empfänger verwalten". Geben Sie eine E-Mail-Adresse ein und klicken Sie dann auf die Schaltfläche "Empfänger hinzufügen". Sie können auch die Nachricht der E-Mail mit der Schaltfläche "E-Mail-Nachricht bearbeiten" anpassen.</value>
+  </data>
+  <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
+    <value>Wenn Sie den Bericht bearbeiten, klicken Sie auf die Registerkarte "Berichtsdetails". Fügen Sie ein Detail hinzu, wählen Sie den Abfragenamen und geben Sie die Abfrage ein. Sie können das Ergebnis testen. Klicken Sie abschließend auf die Schaltfläche "Validieren".</value>
+  </data>
+  <data name="Width" xml:space="preserve">
+    <value>Breite</value>
+  </data>
+  <data name="Windows authentication" xml:space="preserve">
+    <value>Windows-Authentifizierung</value>
+  </data>
+  <data name="Workers logs" xml:space="preserve">
+    <value>Arbeiter-Protokolle</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Yes, I understand and confirm" xml:space="preserve">
+    <value>Ja, ich verstehe und bestätige</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Gestern</value>
+  </data>
+  <data name="You can create, edit and delete reports." xml:space="preserve">
+    <value>Sie können Berichte erstellen, bearbeiten und löschen.</value>
+  </data>
+  <data name="You can download the reports already created and consult the plan of the next report executions." xml:space="preserve">
+    <value>Sie können die bereits erstellten Berichte herunterladen und den Plan der nächsten Berichtsausführungen einsehen.</value>
+  </data>
+  <data name="You can enter below a subject on which you would to get help" xml:space="preserve">
+    <value>Sie können unten ein Thema eingeben, zu dem Sie Hilfe erhalten möchten</value>
+  </data>
+  <data name="You do not have a local username/password for this site. Add a local account so you can log in without an external login." xml:space="preserve">
+    <value>Sie haben keinen lokalen Benutzernamen/Passwort für diese Website. Fügen Sie ein lokales Konto hinzu, damit Sie sich ohne externe Anmeldung anmelden können.</value>
+  </data>
+  <data name="You have" xml:space="preserve">
+    <value>Sie haben</value>
+  </data>
+  <data name="You have 1 recovery code left." xml:space="preserve">
+    <value>Sie haben noch 1 Wiederherstellungscode übrig.</value>
+  </data>
+  <data name="You have access to the activity" xml:space="preserve">
+    <value>Sie haben Zugriff auf die Aktivität</value>
+  </data>
+  <data name="You have full access to the general settings." xml:space="preserve">
+    <value>Sie haben vollen Zugriff auf die allgemeinen Einstellungen.</value>
+  </data>
+  <data name="You have no recovery codes left." xml:space="preserve">
+    <value>Sie haben keine Wiederherstellungscodes mehr übrig.</value>
+  </data>
+  <data name="You have requested to log in with a recovery code. This login will not be remembered until you provid an authenticator app code at log in or disable 2FA and log in again." xml:space="preserve">
+    <value>Sie haben darum gebeten, sich mit einem Wiederherstellungscode anzumelden. Diese Anmeldung wird nicht gespeichert, bis Sie beim Einloggen einen Authentifizierungsanwendungscode angeben oder 2FA deaktivieren und sich erneut einloggen.</value>
+  </data>
+  <data name="You have successfully logged out of the application." xml:space="preserve">
+    <value>Sie haben sich erfolgreich aus der Anwendung ausgeloggt.</value>
+  </data>
+  <data name="You have the role" xml:space="preserve">
+    <value>Sie haben die Rolle</value>
+  </data>
+  <data name="You must" xml:space="preserve">
+    <value>Sie müssen</value>
+  </data>
+  <data name="You should" xml:space="preserve">
+    <value>Sie sollten</value>
+  </data>
+  <data name="You've successfully authenticated with" xml:space="preserve">
+    <value>Sie haben sich erfolgreich authentifiziert mit</value>
+  </data>
+  <data name="Your account contains personal data that you have given us. This page allows you to download or delete that data." xml:space="preserve">
+    <value>Ihr Konto enthält persönliche Daten, die Sie uns mitgeteilt haben. Auf dieser Seite können Sie diese Daten herunterladen oder löschen.</value>
+  </data>
+  <data name="Your account has been updated" xml:space="preserve">
+    <value>Ihr Konto wurde aktualisiert</value>
+  </data>
+  <data name="Your login is protected with an authenticator app. Enter your authenticator code below." xml:space="preserve">
+    <value>Ihr Login ist mit einer Authentifizierungsapplikation geschützt. Geben Sie Ihren Authentifizierungscode unten ein.</value>
+  </data>
+  <data name="Your password cannot be empty" xml:space="preserve">
+    <value>Ihr Passwort darf nicht leer sein</value>
+  </data>
+  <data name="Your password has been reset." xml:space="preserve">
+    <value>Ihr Passwort wurde zurückgesetzt.</value>
+  </data>
+  <data name="Your password length must be at least 6" xml:space="preserve">
+    <value>Die Länge Ihres Passworts muss mindestens 6 betragen</value>
+  </data>
+  <data name="Your password must contain at least one (!? *.)" xml:space="preserve">
+    <value>Ihr Passwort muss mindestens ein (!? *.) enthalten</value>
+  </data>
+  <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
+    <value>Ihr Passwort muss mindestens einen Kleinbuchstaben enthalten</value>
+  </data>
+  <data name="Your password must contain at least one number" xml:space="preserve">
+    <value>Ihr Passwort muss mindestens eine Zahl enthalten</value>
+  </data>
+  <data name="Your password must contain at least one uppercase letter" xml:space="preserve">
+    <value>Ihr Passwort muss mindestens einen Großbuchstaben enthalten</value>
+  </data>
+</root>

@@ -24,7 +24,6 @@ namespace Report_App_WASM.Server.Models
                 {
                     Host = accessor.HttpContext.Connection?.RemoteIpAddress?.ToString();
                 }
-
             }
         }
 
@@ -33,17 +32,17 @@ namespace Report_App_WASM.Server.Models
         }
         public DateTime TimeStampAppHour { get; set; } = DateTime.Now;
         [MaxLength(600)]
-        public string Browser { get; set; }
+        public string? Browser { get; set; }
         [MaxLength(600)]
-        public string Platform { get; set; }
+        public string? Platform { get; set; } 
         [MaxLength(600)]
-        public string FullVersion { get; set; }
+        public string? FullVersion { get; set; }
         [MaxLength(600)]
-        public string Host { get; set; }
+        public string? Host { get; set; } 
         [MaxLength(600)]
-        public string Path { get; set; }
+        public string? Path { get; set; } 
         [MaxLength(200)]
-        public string User { get; set; }
+        public string? User { get; set; } 
 
     }
 }
