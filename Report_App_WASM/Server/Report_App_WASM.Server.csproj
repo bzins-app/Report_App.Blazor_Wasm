@@ -14,6 +14,7 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.0-rc2" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.0-rc2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.11" />
     <PackageReference Include="MySql.Data" Version="8.0.31" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.80" />
     <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="6.0.0" />
