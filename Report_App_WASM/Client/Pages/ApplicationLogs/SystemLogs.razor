@@ -143,7 +143,7 @@
         string fileName = "System logs";
         //await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
         var OdataQuery = _grid?.GetODataUrl();
-        string url = $"odata/SystemLogs/Extract?";
+        string url = $"odata/SystemLogs({1})?";
         if (string.IsNullOrEmpty(OdataQuery))
         {
             url += $"$count=true&$top=10";
