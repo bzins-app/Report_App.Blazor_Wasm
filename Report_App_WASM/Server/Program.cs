@@ -31,6 +31,13 @@ static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
     builder.EntitySet<ApplicationLogSystem>("SystemLogs");
+    builder.EntitySet<ApplicationLogEmailSender>("EmailLogs");
+    builder.EntitySet<ApplicationLogQueryExecution>("QueryExecutionLogs");
+    builder.EntitySet<ApplicationLogReportResult>("ReportResultLogs");
+    builder.EntitySet<ApplicationLogTask>("TaskLogs");
+    builder.EntitySet<ApplicationAuditTrail>("AuditTrail");
+
+
     builder.EntityType<ApplicationLogSystem>().Collection
     .Function("Extract").Returns<IQueryable<ApplicationLogSystem>>();
     return builder.GetEdmModel();

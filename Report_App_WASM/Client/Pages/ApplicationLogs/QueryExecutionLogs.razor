@@ -1,0 +1,156 @@
+﻿@page "/QueryExecutionLogs"
+@implements IAsyncDisposable
+@inject HttpClient Http
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<PageTitle>@localizer.Get("Query execution logs")</PageTitle>
+
+<ErrorBoundary>
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@localizer.Get("Query execution logs")</MudText>
+            <MudSpacer />
+            <MudStack Row="true">
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering" />
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering"/>
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(ExtractElements)"
+                               Icon="@Icons.Material.Filled.Download" Title="@localizer.Get("Download")" Disabled="_processing" />
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow:auto">
+                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogQueryExecutionDTO">
+                    <PropertyColumn Property="@(p => p.ActivityName)" Title="@localizer.Get("Activity name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.QueryName)" Title="@localizer.Get("Query name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.StartDateTime)" Title="@localizer.Get("Start date time")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.EndDateTime)" Title="@localizer.Get("End date time")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.TotalDuration)" Title="@localizer.Get("Total duration")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SQLExcecutionDuration)" Title="@localizer.Get("SQL execution duration")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.DownloadDuration)" Title="@localizer.Get("Download duration")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.NbrOfRows)" Title="@localizer.Get("Nbr of rows returned")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.DBType)" Title="@localizer.Get("Type of Database")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Database)" Title="@localizer.Get("Database name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CommandTimeOut)" Title="@localizer.Get("Command timeout")" Sortable="true" />
+                </SimpleGrid>
+            </div>
+            @if (rendering)
+            {
+                <MudProgressLinear Color="Color.Info" Indeterminate="@rendering" />
+            }
+            <Paginator Value="@pagination" FieldsContent="@Translations" />
+        </MudCardContent>
+        <MudCard Elevation="6">
+            <MudCardContent>
+                <div style="overflow:auto">
+                    <h4>
+                        @localizer.Get("Query")
+                    </h4>
+                    @if (queryValue == null)
+                    {
+                        <p class="muted">
+                            @localizer.Get("Select a log to display the message")
+                        </p>
+                    }
+                    else
+                    {
+                        <MudTextField ReadOnly="true" T="string" Text="@queryValue" Lines="10" />
+                    }
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </MudCard>
+</ErrorBoundary>
+
+
+
+
+@code
+{
+    GridItemsProvider<ApplicationLogQueryExecutionDTO>? _ItemsProvider;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    SimpleGridFieldsContent Translations = new();
+    private bool _processing = false;
+    SimpleGrid<ApplicationLogQueryExecutionDTO> _grid;
+    private string queryValue = string.Empty;
+    private bool rendering = false;
+
+    protected override void OnInitialized()
+    {
+        _ItemsProvider = async req =>
+        {
+            rendering = true;
+            var response = await GetRemoteData(req);
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<ApplicationLogQueryExecutionDTO>(), 0);
+            }
+            rendering = false;
+            return GridItemsProviderResult.From(response.Value, response.Count);
+        };
+    }
+
+    private async Task<ApiResponse<ApplicationLogQueryExecutionDTO>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogQueryExecutionDTO> req)
+    {
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var OdataQuery = _grid?.GetODataUrl();
+        string url = "odata/QueryExecutionLogs?";
+        if (string.IsNullOrEmpty(OdataQuery))
+        {
+            url += $"$count=true&$top=10";
+        }
+        else
+        {
+            url += OdataQuery;
+        }
+        try
+        {
+            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogQueryExecutionDTO>>(url, req.CancellationToken);
+        }
+        catch
+        {
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
+    }
+
+    private async Task OnRefresh()
+    {
+        rendering = true;
+        await _grid.RefreshDataAsync();
+        rendering = false;
+    }
+
+    private async Task ExtractElements()
+    {
+        _processing = true;
+        string fileName = "Query execution logs";
+        //await _rep.GetExcelExtractionAsync(_grid.Items, fileName, "Queries", 10000);
+        _processing = false;
+    }
+    private async Task RemoveFilters()
+    {
+        rendering = true;
+        await _grid.RemoveFilters();
+        rendering = false;
+    }
+
+    void RowClicked(SimpleGridRowClickEventArgs<ApplicationLogQueryExecutionDTO> args)
+    {
+        queryValue = args.Item.Query;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _grid.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
+}

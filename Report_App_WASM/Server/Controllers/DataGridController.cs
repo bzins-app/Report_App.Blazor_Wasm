@@ -15,13 +15,13 @@ using Report_App_WASM.Shared.DTO;
 namespace Report_App_WASM.Server.Controllers
 {
 
-    public class ApplicationLogsController : ODataController
+    public class DataGridController : ODataController
     {
-        private readonly ILogger<ApplicationLogsController> _logger;
+        private readonly ILogger<DataGridController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public ApplicationLogsController(ILogger<ApplicationLogsController> logger,
+        public DataGridController(ILogger<DataGridController> logger,
             ApplicationDbContext context, IMapper mapper)
         {
             _logger = logger;
@@ -50,5 +50,39 @@ namespace Report_App_WASM.Server.Controllers
             return q;
         }
 
+        [EnableQuery()]
+        [Route("odata/EmailLogs")]
+        public IQueryable<ApplicationLogEmailSender> GetEmailLogs()
+        {
+            return _context.ApplicationLogEmailSender.AsNoTracking();
+        }
+
+        [EnableQuery()]
+        [Route("odata/QueryExecutionLogs")]
+        public IQueryable<ApplicationLogQueryExecution> GetQueryExecutionLogs()
+        {
+            return _context.ApplicationLogQueryExecution.AsNoTracking();
+        }
+
+        [EnableQuery()]
+        [Route("odata/ReportResultLogs")]
+        public IQueryable<ApplicationLogReportResult> GetReportResultLogs()
+        {
+            return _context.ApplicationLogReportResult.AsNoTracking();
+        }
+
+        [EnableQuery()]
+        [Route("odata/TaskLogs")]
+        public IQueryable<ApplicationLogTask> GetTaskLogs()
+        {
+            return _context.ApplicationLogTask.AsNoTracking();
+        }
+
+        [EnableQuery()]
+        [Route("odata/AuditTrail")]
+        public IQueryable<ApplicationAuditTrail> GetAuditTrail()
+        {
+            return _context.ApplicationAuditTrail.AsNoTracking();
+        }
     }
 }

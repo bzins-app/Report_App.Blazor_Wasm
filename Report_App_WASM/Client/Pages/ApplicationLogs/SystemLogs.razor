@@ -133,7 +133,7 @@
     private async Task OnRefresh()
     {
         rendering = true;
-        await _grid.RefreshDataAsync();
+        await _grid?.RefreshDataAsync()!;
         rendering = false;
     }
 
@@ -167,13 +167,13 @@
     private async Task RemoveFilters()
     {
         rendering = true;
-        await _grid.RemoveFilters();
+        await _grid?.RemoveFilters()!;
         rendering = false;
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _grid.DisposeAsync();
+        await _grid.DisposeAsync()!;
         GC.SuppressFinalize(this);
     }
 
