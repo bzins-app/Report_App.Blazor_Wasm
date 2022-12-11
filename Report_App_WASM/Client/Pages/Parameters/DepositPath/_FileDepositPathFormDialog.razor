@@ -1,0 +1,126 @@
+﻿@*@using AutoMapper
+@using AutoMapper.QueryableExtensions
+@using Report_App_BlazorServ.Services.FilesManagement
+@inject ApplicationDbContext _context
+@inject IMapper _mapper
+@inject LocalFilesService _fileDeposit
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
+            @localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@Item" @ref="@form">
+            <MudTextField @bind-Value="Item.ConfigurationName" Label="@localizer.Get("Configuration name")" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.FilePath" Label="@localizer.Get("File path")" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudSwitch @bind-Checked="Item.TryToCreateFolder" Label="@localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudSwitch @bind-Checked="Item.UseSFTPProtocol" Label="@localizer.Get("Use sFTP protocol?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudSelect T="int" Label="@localizer.Get("Choose an sFTP configuration")" @bind-Value="SFTPConfigurationId"
+                       AnchorOrigin="Origin.BottomCenter" Disabled="!Item.UseSFTPProtocol"
+                       Required>
+                @foreach (var value in listConfigs)
+                {
+                    <MudSelectItem Value="@value.Id" se>@value.ValueName</MudSelectItem>
+                }
+            </MudSelect>
+        </MudForm>
+        @if (Action == CrudAction.Delete)
+        {
+            <MudTextField @bind-Value="deletionValidation" Label="@(localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@localizer.Get("Required")" />
+        }
+        else
+        {
+            <MudButton OnClick="TestConfiguration" Variant="Variant.Filled" Color="MudBlazor.Color.Info" Style="text-transform: none" Size="Size.Small">@localizer.Get("Test path configuration")</MudButton>
+            <MudText>@localizer.Get("Test Feedback:") @directoryTestResult</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
+        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public FileDepositPathConfigurationDTO Item { get; set; }
+    [Parameter] public CrudAction Action { get; set; }
+    private List<SelectItemIntString> listConfigs = new();
+    private MudForm form = default!;
+    private string deletionValidation;
+    private int SFTPConfigurationId;
+    private string directoryTestResult;
+
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        listConfigs = await _context.SFTPConfiguration.Select(a => new SelectItemIntString { Id = a.SFTPConfigurationId, ValueName = a.ConfigurationName }).ToListAsync();
+        Item.SFTPConfiguration = new();
+        if(Action!=CrudAction.Create)
+        {
+            var config = await _context.FileDepositPathConfiguration.Where(a => a.FileDepositPathConfigurationId == Item.FileDepositPathConfigurationId&&a.SFTPConfiguration!=null).Include(a => a.SFTPConfiguration).ProjectTo<FileDepositPathConfigurationDTO>(_mapper.ConfigurationProvider).Select(a=>a.SFTPConfiguration).FirstOrDefaultAsync();
+            if (config != null)
+            {
+                Item.SFTPConfiguration = config;
+            }
+        }
+
+        SFTPConfigurationId = Item.SFTPConfiguration.SFTPConfigurationId;
+    }
+
+    private async Task Validate()
+    {
+        if (Action == CrudAction.Delete)
+        {
+            if (deletionValidation=="Validate")
+            {
+                MudDialog.Close(DialogResult.Ok(Item));
+            }
+        }
+        else
+        {
+            await form.Validate();
+            if (form.IsValid)
+            {
+                if (SFTPConfigurationId != null || SFTPConfigurationId>0)
+                {
+                    Item.SFTPConfiguration = await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).ProjectTo<SFTPConfigurationDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                }
+                MudDialog.Close(DialogResult.Ok(Item));
+            }
+        }
+    }
+
+    private async Task TestConfiguration()
+    {
+        if (Item.UseSFTPProtocol)
+        {
+            var config = await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).Select(a => a.UseFTPProtocol).FirstOrDefaultAsync();
+            if (config)
+            {
+                using var deposit = new FtpService(_context);
+                var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
+                directoryTestResult = result.Message;
+            }
+            else
+            {
+                using var deposit = new SftpService(_context);
+                var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
+                directoryTestResult = result.Message;
+            }
+        }
+        else
+        {
+            var result = await _fileDeposit.TestDirectory( Item.FilePath, Item.TryToCreateFolder);
+            directoryTestResult = result.Message;
+        }
+
+    }
+}*@

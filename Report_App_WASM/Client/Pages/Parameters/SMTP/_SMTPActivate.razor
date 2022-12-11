@@ -1,0 +1,38 @@
+﻿@*@using AutoMapper
+@using AutoMapper.QueryableExtensions
+@inject IMapper _mapper
+@inject ApplicationDbContext _context
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudSwitch Checked="@Item.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+
+    @code {
+	[Parameter]
+	public SMTPConfigurationDTO Item { get; set; }
+
+	private async Task ChangeStatusAsync(bool value)
+	{
+		Item.IsActivated = value ;
+		if (Item.IsActivated)
+		{
+			var otherSMTP = await _context.SMTPConfiguration.Where(a => a.Id != Item.Id && a.IsActivated).ToListAsync();
+			if (otherSMTP != null)
+			{
+				foreach (var t in otherSMTP)
+				{
+					t.IsActivated = false;
+					_context.Update(t);
+				}
+			}
+		}
+		
+		var ItemUpdate = _mapper.Map<SMTPConfiguration>(Item);
+		_context.Update(ItemUpdate);
+		var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+		await _context.SaveChangesAsync(currentUser.Identity.Name);
+		_context.Entry(ItemUpdate).State = EntityState.Detached;
+
+		Snackbar.Add(Item.IsActivated  ? "SMTP " + localizer.Get("enabled") :"SMTP " + localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+	}
+    }*@

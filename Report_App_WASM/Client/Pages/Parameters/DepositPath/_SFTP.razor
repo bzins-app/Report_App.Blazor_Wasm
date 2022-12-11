@@ -1,0 +1,193 @@
+﻿@*@using Report_App_BlazorServ.Services.Repository
+@implements IAsyncDisposable
+@inject DataGridRepository<SFTPConfiguration,SFTPConfigurationDTO> _rep
+@inject GeneralRepository _repo
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<PageTitle>@localizer.Get("SFTP configuration")</PageTitle>
+
+<ErrorBoundary>
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@localizer.Get("An error has occurred"): @errorMessage</b></MudText>
+    }
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@localizer.Get("SFTP configuration")</MudText>
+            <MudSpacer />
+            <MudStack Row="true">
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OpenCreateDialog)"
+                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering"/>
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering" />
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow:auto">
+                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                    <TemplateColumn>
+                        <MudStack Row=true>
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                        </MudStack>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@localizer.Get("Configuration name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Host)" Title="@localizer.Get("SFTP host")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Port)" Title="@localizer.Get("SFTP port")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                </SimpleGrid>
+            </div>
+            <Paginator Value="@pagination" FieldsContent="@Translations" />
+        </MudCardContent>
+    </MudCard>
+</ErrorBoundary>
+
+@code
+{
+    #nullable enable
+    IQueryable<SFTPConfigurationDTO>? Elements;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    SimpleGridFieldsContent Translations = default!;
+    private bool _processing = false;
+    SimpleGrid<SFTPConfigurationDTO> _grid = default!;
+    private string errorMessage = default!;
+    private bool rendering = false;
+
+    protected override void OnInitialized()
+    {
+        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+        Elements = _rep.GetElements().OrderBy(a=>a.SFTPConfigurationId);
+        Translations = _repo.GetGridTranslations();
+    }
+
+    private async Task OnRefresh()
+    {
+        rendering = true;
+        await _grid.RefreshDataAsync();
+        rendering = false;
+    }
+
+    private async Task ExtractElements()
+    {
+        _processing = true;
+        string fileName = "SFTP configuration";
+        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
+        _processing = false;
+    }
+    private async Task RemoveFilters()
+    {
+        rendering = true;
+        await _grid.RemoveFilters();
+        rendering = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _grid.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
+
+    private async Task OpenEditDialog(SFTPConfigurationDTO value)
+    {
+        var item = new SFTPConfigurationDTO
+            {
+
+                ConfigurationName = value.ConfigurationName,
+                Host = value.Host,
+                Port = value.Port,
+                UserName = value.UserName,
+                Password = value.Password,
+                UseFTPProtocol = value.UseFTPProtocol
+            };
+        var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
+
+        var dialog = DialogService.Show<_SFTPFormDialog>("Edit", parameters);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            errorMessage = string.Empty;
+            value.ConfigurationName = item.ConfigurationName;
+            value.Host = item.Host;
+            value.Port = item.Port;
+            value.UserName = item.UserName;
+            value.Password = item.Password;
+            value.UseFTPProtocol = item.UseFTPProtocol;
+
+            var result = await _rep.Update(value);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task OpenDeleteDialog(SFTPConfigurationDTO value)
+    {
+        var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
+
+        var dialog = DialogService.Show<_SFTPFormDialog>("Delete", parameters);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            errorMessage = string.Empty;
+            var result = await _rep.Delete(value);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var value = new SFTPConfigurationDTO();
+        var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
+
+        var dialog = DialogService.Show<_SFTPFormDialog>("Create", parameters);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            errorMessage = string.Empty;
+            var result = await _rep.Insert(value);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object added"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
+        }
+    }
+
+}*@

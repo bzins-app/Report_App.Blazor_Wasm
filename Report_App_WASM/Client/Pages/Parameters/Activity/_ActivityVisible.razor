@@ -1,0 +1,26 @@
+﻿@*@using AutoMapper
+@using AutoMapper.QueryableExtensions
+@inject IMapper _mapper
+@inject ApplicationDbContext _context
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudSwitch Checked="@Item.Display" Color="Color.Primary"  ThumbIcon="@(Item.Display ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.Display ? Color.Success : Color.Error)"  CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+
+ @code {
+	[Parameter]
+	public ActivityDTO Item { get; set; }
+
+	private async Task ChangeStatusAsync(bool value)
+	{
+		Item.Display = value;
+
+		var ItemUpdate = _mapper.Map<Activity>(Item);
+		_context.Entry(ItemUpdate).State = EntityState.Modified;
+		var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+		await _context.SaveChangesAsync(currentUser.Identity.Name);
+		_context.Entry(ItemUpdate).State = EntityState.Detached;
+
+		Snackbar.Add(Item.Display ? Item.ActivityName +" " +localizer.Get("is diplayed") : Item.ActivityName +" " +localizer.Get("is not displayed"), Item.Display ? Severity.Success : Severity.Normal);
+	}
+ }*@

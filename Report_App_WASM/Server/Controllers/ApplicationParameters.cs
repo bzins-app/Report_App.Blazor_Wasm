@@ -7,7 +7,7 @@ using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Server.Controllers
 {
-    [Authorize]
+
     [ApiController]
     [Route("[controller]")]
     public class ApplicationParametersController : ControllerBase

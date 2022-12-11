@@ -94,9 +94,6 @@
     protected override async Task OnInitializedAsync()
     {
         activities = (await Http.GetFromJsonAsync<SelectItemActivitiesInfo[]>("ApplicationParameters/ActivitiesInfo")).ToList();
-        var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>("ApplicationParameters/ApplicationConstants");
-        ApplicationConstants.ApplicationLogo=values.ApplicationLogo;
-        ApplicationConstants.ApplicationName = values.ApplicationName;
     }
 
 }
