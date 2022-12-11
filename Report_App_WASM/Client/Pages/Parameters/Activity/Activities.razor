@@ -1,0 +1,195 @@
+﻿@*@page "/Activities"
+@implements IAsyncDisposable
+@inject DataGridRepository<Activity,ActivityDTO> _rep
+@inject GeneralRepository _repo
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IBackgroundWorkers _BGW
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<PageTitle>@localizer.Get("Activities manager")</PageTitle>
+
+<ErrorBoundary>
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@localizer.Get("An error has occurred"): @errorMessage</b></MudText>
+    }
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@localizer.Get("Activities manager")</MudText>
+            <MudSpacer />
+            <MudStack Row="true">
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OpenCreateDialog)"
+                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering"/>
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering" />
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow:auto">
+                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                    <TemplateColumn>
+                        <MudStack Row=true>
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                        </MudStack>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(p => p.ActivityName)" Title="@localizer.Get("Activity name")" Sortable="true" />
+                    <TemplateColumn Title="@localizer.Get("Is activated?")">
+                        <_ActivityActivate Item="context" />
+                    </TemplateColumn>
+                    <TemplateColumn Title="@localizer.Get("Is visible?")">
+                        <_ActivityVisible Item="context" />
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                </SimpleGrid>
+            </div>
+            <Paginator Value="@pagination" FieldsContent="@Translations" />
+        </MudCardContent>
+    </MudCard>
+</ErrorBoundary>
+
+@code
+{
+    #nullable enable
+    IQueryable<ActivityDTO>? Elements;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    SimpleGridFieldsContent Translations = default!;
+    private bool _processing = false;
+    SimpleGrid<ActivityDTO> _grid = default!;
+    private string errorMessage = default!;
+    private bool rendering = false;
+
+
+    protected override void OnInitialized()
+    {
+        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+        Elements = _rep.GetElements().OrderBy(a=>a.ActivityName);
+        Translations = _repo.GetGridTranslations();
+    }
+
+    private async Task OnRefresh()
+    {
+        rendering = true;
+        await _grid.RefreshDataAsync();
+        rendering = false;
+    }
+
+    private async Task ExtractElements()
+    {
+        _processing = true;
+        string fileName = "Activities";
+        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
+        _processing = false;
+    }
+    private async Task RemoveFilters()
+    {
+        rendering = true;
+        await _grid.RemoveFilters();
+        rendering = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _grid.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
+
+    private async Task OpenEditDialog(ActivityDTO value)
+    {
+        var item = new ActivityDTO
+            {
+
+                ActivityName = value.ActivityName,
+                ActivityLogo = value.ActivityLogo,
+                ActivityDbConnections = value.ActivityDbConnections
+            };
+        var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
+
+        var dialog = DialogService.Show<_ActivityFormDialog>("Edit", parameters);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            errorMessage = string.Empty;
+            value.ActivityName = item.ActivityName;
+            value.ActivityLogo = item.ActivityLogo;
+            value.ActivityDbConnections = item.ActivityDbConnections;
+
+            var result = await _rep.Update(value);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task OpenDeleteDialog(ActivityDTO value)
+    {
+        var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
+
+        var dialog = DialogService.Show<_ActivityFormDialog>("Delete", parameters);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            errorMessage = string.Empty;
+            await _BGW.SwitchBackgroundTaskAsync(value.ActivityId, false);
+            var result = await _rep.Delete(value);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new ActivityDbConnectionDTO() }, ActivityType = ActivityTypeEnum.SourceDB.ToString() };
+        var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
+
+        var dialog = DialogService.Show<_ActivityFormDialog>("Create", parameters);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            errorMessage = string.Empty;
+            var result = await _rep.Insert(value);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object added"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
+        }
+    }
+
+}
+*@

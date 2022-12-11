@@ -12,6 +12,8 @@ using Report_App_WASM.Client.Services.States;
 using Report_App_WASM.Shared.Services;
 using Report_App_WASM.Shared.LanguageResources;
 using System.Globalization;
+using BlazorDownloadFile;
+using Report_App_WASM.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -23,6 +25,7 @@ builder.Services.AddScoped<IdentityAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
 builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped<DataEntityService>();
 builder.Services.AddMudServices();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "LanguageRessources");
@@ -40,5 +43,5 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });
-
+builder.Services.AddBlazorDownloadFile(ServiceLifetime.Scoped);
 await builder.Build().RunAsync();

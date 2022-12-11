@@ -24,6 +24,8 @@ using Microsoft.AspNetCore.OData.Extensions;
 using Microsoft.OData.ModelBuilder;
 using static MudBlazor.Icons;
 using Microsoft.OData.Edm;
+using Report_App_WASM.Shared.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,8 +40,14 @@ static IEdmModel GetEdmModel()
     builder.EntitySet<ApplicationAuditTrail>("AuditTrail");
 
 
-    builder.EntityType<ApplicationLogSystem>().Collection
-    .Function("Extract").Returns<IQueryable<ApplicationLogSystem>>();
+    builder.EntitySet<LDAPConfiguration>("LDAP");
+    builder.EntitySet<SMTPConfiguration>("SMTP");
+    builder.EntitySet<SFTPConfiguration>("SFTP");
+    builder.EntitySet<FileDepositPathConfiguration>("DepositPath");
+    builder.EntitySet<Activity>("Activities");
+
+
+    builder.Action("ExtractLogs");
     return builder.GetEdmModel();
 }
 

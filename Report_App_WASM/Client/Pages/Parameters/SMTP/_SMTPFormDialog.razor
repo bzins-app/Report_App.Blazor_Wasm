@@ -1,0 +1,62 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
+            @localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@Item" @ref="@form">
+            <MudTextField @bind-Value="Item.ConfigurationName" Label="@localizer.Get("Configuration name")" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.smtpHost" Label="@localizer.Get("SMTP host")" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudNumericField @bind-Value="Item.smtpPort" Label="@localizer.Get("SMTP port")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudSwitch @bind-Checked="Item.smtpSSL" Label="@localizer.Get("SSL Activated?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.smtpUserName" Label="@localizer.Get("SMTP username")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.smtpPassword" Label="@localizer.Get("SMTP password")" InputType="InputType.Password" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.fromEmail" Label="@localizer.Get("From email")" InputType="InputType.Email" Validation="@(new EmailAddressAttribute() {ErrorMessage = localizer.Get("The email address is invalid")})" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.fromFullName" Label="@localizer.Get("From full name")" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+        </MudForm>
+        @if (Action == CrudAction.Delete)
+        {
+            <MudTextField @bind-Value="deletionValidation" Label="@(localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@localizer.Get("Required")" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
+        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public SMTPConfigurationDTO Item { get; set; }
+    [Parameter] public CrudAction Action { get; set; }
+    private MudForm form = default!;
+    private string deletionValidation;
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Validate()
+    {
+        if (Action == CrudAction.Delete)
+        {
+            if (deletionValidation=="Validate")
+            {
+                MudDialog.Close(DialogResult.Ok(Item));
+            }
+        }
+        else
+        {
+            await form.Validate();
+            if (form.IsValid)
+            {
+                MudDialog.Close(DialogResult.Ok(Item));
+            }
+        }
+    }
+}

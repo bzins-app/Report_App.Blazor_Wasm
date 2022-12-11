@@ -4,6 +4,7 @@
 @inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
 @attribute [Authorize]
+@inject HttpClient Http
 
 <MudThemeProvider IsDarkMode="_isDarkMode" Theme="AppTheme"/>
 <MudDialogProvider FullWidth="true"
@@ -44,6 +45,13 @@
 
     private bool _isDarkMode;
     public bool _drawerOpen = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>("ApplicationParameters/ApplicationConstants");
+        ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
+        ApplicationConstants.ApplicationName = values.ApplicationName;
+    }
 
     void DrawerToggle()
     {
