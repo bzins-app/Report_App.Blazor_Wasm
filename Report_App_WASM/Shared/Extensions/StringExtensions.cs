@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Report_App_WASM.Server.Utils.Extensions
+namespace Report_App_WASM.Shared.Extensions
 {
     public static class StringExtensions
     {

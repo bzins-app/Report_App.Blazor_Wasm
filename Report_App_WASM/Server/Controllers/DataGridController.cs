@@ -17,10 +17,7 @@ using Report_App_WASM.Shared.DTO;
 using Microsoft.AspNetCore.SignalR.Protocol;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Report_App_WASM.Server.Utils;
-using System.Net.Http.Headers;
-using System.Web.Http.Results;
-using Duende.IdentityServer.Models;
-using static OfficeOpenXml.ExcelErrorValue;
+
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -49,7 +46,7 @@ namespace Report_App_WASM.Server.Controllers
         [Route("odata/SystemLogs")]
         public IQueryable<ApplicationLogSystem> GetSystemLogs()
         {
-            return _context.ApplicationLogSystem.OrderByDescending(a => a.Id);
+            return _context.ApplicationLogSystem.OrderByDescending(a => a.Id).AsNoTracking();
         }
 
 
@@ -118,46 +115,46 @@ namespace Report_App_WASM.Server.Controllers
         }
 
 
-        [EnableQuery()]
+        [EnableQuery(EnsureStableOrdering = false)]
         [Route("odata/EmailLogs")]
         public IQueryable<ApplicationLogEmailSender> GetEmailLogs()
         {
-            return _context.ApplicationLogEmailSender.AsNoTracking();
+            return _context.ApplicationLogEmailSender.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
-        [EnableQuery()]
+        [EnableQuery(EnsureStableOrdering = false)]
         [Route("odata/QueryExecutionLogs")]
         public IQueryable<ApplicationLogQueryExecution> GetQueryExecutionLogs()
         {
-            return _context.ApplicationLogQueryExecution.AsNoTracking();
+            return _context.ApplicationLogQueryExecution.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
-        [EnableQuery()]
+        [EnableQuery(EnsureStableOrdering = false)]
         [Route("odata/ReportResultLogs")]
         public IQueryable<ApplicationLogReportResult> GetReportResultLogs()
         {
-            return _context.ApplicationLogReportResult.AsNoTracking();
+            return _context.ApplicationLogReportResult.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
-        [EnableQuery()]
+        [EnableQuery(EnsureStableOrdering = false)]
         [Route("odata/TaskLogs")]
         public IQueryable<ApplicationLogTask> GetTaskLogs()
         {
-            return _context.ApplicationLogTask.AsNoTracking();
+            return _context.ApplicationLogTask.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
-        [EnableQuery()]
+        [EnableQuery(EnsureStableOrdering = false)]
         [Route("odata/AuditTrail")]
         public IQueryable<ApplicationAuditTrail> GetAuditTrail()
         {
-            return _context.ApplicationAuditTrail.AsNoTracking();
+            return _context.ApplicationAuditTrail.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
-        [EnableQuery()]
+        [EnableQuery(EnsureStableOrdering = false)]
         [Route("odata/SMTP")]
         public IQueryable<SMTPConfiguration> GetSMTP()
         {
-            return _context.SMTPConfiguration.AsNoTracking();
+            return _context.SMTPConfiguration.OrderByDescending(a => a.Id).AsNoTracking();
         }
 
         [EnableQuery()]
@@ -185,7 +182,7 @@ namespace Report_App_WASM.Server.Controllers
         [Route("odata/Activities")]
         public IQueryable<Activity> GetActivities()
         {
-            return _context.Activity.AsNoTracking();
+            return _context.Activity.Include(a=>a.ActivityDbConnections).AsNoTracking();
         }
     }
 }

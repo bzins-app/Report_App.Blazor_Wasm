@@ -26,6 +26,7 @@ builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredServic
 builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<DataEntityService>();
+builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddMudServices();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "LanguageRessources");

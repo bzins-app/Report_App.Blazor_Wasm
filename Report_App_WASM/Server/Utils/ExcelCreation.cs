@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Report_App_WASM.Shared.SerializedParameters;
+using System.Data;
 
 namespace Report_App_WASM.Server.Utils
 {
@@ -34,16 +35,16 @@ namespace Report_App_WASM.Server.Utils
         }
     }
 
-    public class ExcelTemplate : IDisposable
-    {
-        public string ExcelTabName { get; set; }
-        public string ExcelTemplateCellReference { get; set; } = "A1";
-        public bool UseAnExcelDataTable { get; set; } = false;
-        public string ExcelDataTableName { get; set; }
+    //public class ExcelTemplate : IDisposable
+    //{
+    //    public string ExcelTabName { get; set; }
+    //    public string ExcelTemplateCellReference { get; set; } = "A1";
+    //    public bool UseAnExcelDataTable { get; set; } = false;
+    //    public string ExcelDataTableName { get; set; }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
-    }
+    //    public void Dispose()
+    //    {
+    //        GC.SuppressFinalize(this);
+    //    }
+    //}
 }

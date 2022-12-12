@@ -5,7 +5,7 @@ using OfficeOpenXml.Table;
 using OfficeOpenXml;
 using System.Data;
 using System.Text;
-using Report_App_WASM.Server.Utils.Extensions;
+using Report_App_WASM.Shared.Extensions;
 
 namespace Report_App_WASM.Server.Utils
 {

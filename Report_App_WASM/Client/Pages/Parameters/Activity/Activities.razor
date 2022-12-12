@@ -1,10 +1,8 @@
-﻿@*@page "/Activities"
+﻿@page "/Activities"
 @implements IAsyncDisposable
-@inject DataGridRepository<Activity,ActivityDTO> _rep
-@inject GeneralRepository _repo
+@inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject IBackgroundWorkers _BGW
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@localizer.Get("Activities manager")</PageTitle>
@@ -35,7 +33,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
                             <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
@@ -43,18 +41,22 @@
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ActivityName)" Title="@localizer.Get("Activity name")" Sortable="true" />
-                    <TemplateColumn Title="@localizer.Get("Is activated?")">
+@*                    <TemplateColumn Title="@localizer.Get("Is activated?")">
                         <_ActivityActivate Item="context" />
                     </TemplateColumn>
                     <TemplateColumn Title="@localizer.Get("Is visible?")">
                         <_ActivityVisible Item="context" />
-                    </TemplateColumn>
+                    </TemplateColumn>*@
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
+            @if (rendering)
+            {
+                <MudProgressLinear Color="Color.Info" Indeterminate="@rendering" />
+            }
             <Paginator Value="@pagination" FieldsContent="@Translations" />
         </MudCardContent>
     </MudCard>
@@ -63,10 +65,9 @@
 @code
 {
     #nullable enable
-    IQueryable<ActivityDTO>? Elements;
+    GridItemsProvider<ActivityDTO>? _ItemsProvider;
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     SimpleGridFieldsContent Translations = default!;
-    private bool _processing = false;
     SimpleGrid<ActivityDTO> _grid = default!;
     private string errorMessage = default!;
     private bool rendering = false;
@@ -74,11 +75,44 @@
 
     protected override void OnInitialized()
     {
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        Elements = _rep.GetElements().OrderBy(a=>a.ActivityName);
-        Translations = _repo.GetGridTranslations();
+        _ItemsProvider = async req =>
+        {
+            rendering = true;
+            var response = await GetRemoteData(req);
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<ActivityDTO>(), 0);
+            }
+            rendering = false;
+            return GridItemsProviderResult.From(response.Value, response.Count);
+        };
+        Translations = appService.GetGridTranslations();
     }
 
+    private async Task<ApiResponse<ActivityDTO>?> GetRemoteData(GridItemsProviderRequest<ActivityDTO> req)
+    {
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var OdataQuery = _grid?.GetODataQuery();
+        string url = "odata/Activities?";
+        if (string.IsNullOrEmpty(OdataQuery))
+        {
+            url += $"$count=true&$top=10";
+        }
+        else
+        {
+            url += OdataQuery;
+        }
+        try
+        {
+            return await Http.GetFromJsonAsync<ApiResponse<ActivityDTO>>(url, req.CancellationToken);
+        }
+        catch
+        {
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
+    }
     private async Task OnRefresh()
     {
         rendering = true;
@@ -86,13 +120,6 @@
         rendering = false;
     }
 
-    private async Task ExtractElements()
-    {
-        _processing = true;
-        string fileName = "Activities";
-        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
-        _processing = false;
-    }
     private async Task RemoveFilters()
     {
         rendering = true;
@@ -127,7 +154,7 @@
             value.ActivityLogo = item.ActivityLogo;
             value.ActivityDbConnections = item.ActivityDbConnections;
 
-            var result = await _rep.Update(value);
+            var result = await dataService.HandlePostValues(value,"UpdateActivity");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
@@ -151,8 +178,8 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            await _BGW.SwitchBackgroundTaskAsync(value.ActivityId, false);
-            var result = await _rep.Delete(value);
+            await appService.PostValues("api/BackgroundWorker/ActivatePerActivity", new ApiBackgrounWorkerdPayload { Activate = false, Value = value.ActivityId });
+            var result = await dataService.HandlePostValues(value, "DeleteActivity");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
@@ -168,7 +195,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new ActivityDbConnectionDTO() }, ActivityType = ActivityTypeEnum.SourceDB.ToString() };
+        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new ActivityDbConnectionDTO() }, ActivityType = ActivityType.SourceDB.ToString() };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = DialogService.Show<_ActivityFormDialog>("Create", parameters);
@@ -177,7 +204,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await _rep.Insert(value);
+            var result = await dataService.HandlePostValues(value, "InsertActivity");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);
@@ -192,4 +219,3 @@
     }
 
 }
-*@

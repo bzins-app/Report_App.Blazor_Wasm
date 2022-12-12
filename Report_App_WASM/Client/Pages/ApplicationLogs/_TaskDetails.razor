@@ -1,0 +1,61 @@
+﻿
+<MudCard Style="overflow-y:auto;max-height:70vh">
+    <MudCardContent>
+        <MudTimeline TimelinePosition="TimelinePosition.Start">
+            @foreach (var d in details.OrderByDescending(a => a.TimeStamp))
+            {
+                if (d.Step.Contains("completed"))
+                {
+                    <MudTimelineItem Color="Color.Info">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@d.TimeStamp</MudText>
+                        <MudText Typo="Typo.button">@d.Step</MudText>
+                        <MudText Typo="Typo.body1" Class="mud-text-secondary">@d.Info</MudText>
+                    </MudTimelineItem>
+                }
+                else if (d.Step.Contains("attempt"))
+                {
+                    <MudTimelineItem Color="Color.Warning">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@d.TimeStamp</MudText>
+                        <MudAlert Severity="Severity.Warning">@d.Step</MudAlert>
+                        <MudText Typo="Typo.body1" Class="mud-text-secondary">@d.Info</MudText>
+                    </MudTimelineItem>
+                }
+                else if (d.Step.Contains("Error"))
+                {
+                    <MudTimelineItem Color="Color.Error">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@d.TimeStamp</MudText>
+                        <MudAlert Severity="Severity.Error">@d.Step</MudAlert>
+                        <MudText Typo="Typo.body1" Class="mud-text-secondary">@d.Info</MudText>
+                    </MudTimelineItem>
+                }
+                else if (d.Step.Contains("end"))
+                {
+                    <MudTimelineItem Color="Color.Success">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@d.TimeStamp</MudText>
+                        <MudAlert Severity="Severity.Success">@d.Step</MudAlert>
+                        <MudText Typo="Typo.body1" Class="mud-text-secondary">@d.Info</MudText>
+                    </MudTimelineItem>
+                }
+                else
+                {
+                    <MudTimelineItem TimelineAlign="TimelineAlign.End">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@d.TimeStamp</MudText>
+                        <MudText Typo="Typo.button">@d.Step</MudText>
+                        <MudText Typo="Typo.body1" Class="mud-text-secondary">@d.Info</MudText>
+                    </MudTimelineItem>
+                }
+            }
+        </MudTimeline>
+    </MudCardContent>
+</MudCard>
+
+
+@code {
+    [Parameter] public int taskId { get; set; }
+    private List<ApplicationLogTaskDetailsDTO> details = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        details = await dataService.GetLogTaskDetailsAsync(taskId);
+    }
+}

@@ -1,7 +1,6 @@
-﻿@*@page "/LDAP"
+﻿@page "/LDAP"
 @implements IAsyncDisposable
-@inject DataGridRepository<LDAPConfiguration,LDAPConfigurationDTO> _rep
-@inject GeneralRepository _repo
+@inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
@@ -34,7 +33,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
                             <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
@@ -42,9 +41,9 @@
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@localizer.Get("Configuration name")" Sortable="true" />
-                    <TemplateColumn Title="@localizer.Get("Is activated?")">
+@*                    <TemplateColumn Title="@localizer.Get("Is activated?")">
                         <_LDAPActivate Item="context" />
-                    </TemplateColumn>
+                    </TemplateColumn>*@
                     <PropertyColumn Property="@(p => p.Domain)" Title="@localizer.Get("Domain")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
@@ -52,6 +51,10 @@
                     <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
+            @if (rendering)
+            {
+                <MudProgressLinear Color="Color.Info" Indeterminate="@rendering" />
+            }
             <Paginator Value="@pagination" FieldsContent="@Translations" />
         </MudCardContent>
     </MudCard>
@@ -60,19 +63,52 @@
 @code
 {
     #nullable enable
-    IQueryable<LDAPConfigurationDTO>? Elements;
+    GridItemsProvider<LDAPConfigurationDTO>? _ItemsProvider;
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     SimpleGridFieldsContent Translations = default!;
-    private bool _processing = false;
     SimpleGrid<LDAPConfigurationDTO> _grid = default!;
     private string errorMessage = default!;
     private bool rendering = false;
 
     protected override void OnInitialized()
     {
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        Elements = _rep.GetElements().OrderBy(a=>a.Id);
-        Translations = _repo.GetGridTranslations();
+        _ItemsProvider = async req =>
+        {
+            rendering = true;
+            var response = await GetRemoteData(req);
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<LDAPConfigurationDTO>(), 0);
+            }
+            rendering = false;
+            return GridItemsProviderResult.From(response.Value, response.Count);
+        };
+        Translations = appService.GetGridTranslations();
+    }
+
+    private async Task<ApiResponse<LDAPConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<LDAPConfigurationDTO> req)
+    {
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var OdataQuery = _grid?.GetODataQuery();
+        string url = "odata/LDAP?";
+        if (string.IsNullOrEmpty(OdataQuery))
+        {
+            url += $"$count=true&$top=10";
+        }
+        else
+        {
+            url += OdataQuery;
+        }
+        try
+        {
+            return await Http.GetFromJsonAsync<ApiResponse<LDAPConfigurationDTO>>(url, req.CancellationToken);
+        }
+        catch
+        {
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
     }
 
     private async Task OnRefresh()
@@ -82,13 +118,6 @@
         rendering = false;
     }
 
-    private async Task ExtractElements()
-    {
-        _processing = true;
-        string fileName = "LDAP configuration";
-        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
-        _processing = false;
-    }
     private async Task RemoveFilters()
     {
         rendering = true;
@@ -125,7 +154,7 @@
             value.UserName = item.UserName;
             value.Password = item.Password;
 
-            var result = await _rep.Update(value);
+            var result = await dataService.HandlePostValues(value, "UpdateLDAP");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
@@ -149,7 +178,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await _rep.Delete(value);
+            var result = await dataService.HandlePostValues(value,"DeleteLDAP");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
@@ -174,7 +203,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await _rep.Insert(value);
+            var result = await dataService.HandlePostValues(value,"InsertLDAP");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);
@@ -187,4 +216,4 @@
             }
         }
     }
-    }*@
+    }

@@ -26,6 +26,10 @@ using static MudBlazor.Icons;
 using Microsoft.OData.Edm;
 using Report_App_WASM.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
+using ReportAppWASM.Server.Services.BackgroundWorker;
+using ReportAppWASM.Server.Services.FilesManagement;
+using Report_App_BlazorServ.Services.RemoteDb;
+using ReportAppWASM.Server.Services.EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,8 +80,10 @@ builder.Services.Configure<BaseUser>(builder.Configuration.GetSection("BaseUserD
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddAuthentication()
-//    .AddIdentityServerJwt();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IRemoteDbConnection, RemoteDbConnection>();
+builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
+builder.Services.AddTransient<LocalFilesService>();
 builder.Services.AddTransient<InitializeDatabase>();
 
 builder.Services.Configure<IdentityOptions>(options =>

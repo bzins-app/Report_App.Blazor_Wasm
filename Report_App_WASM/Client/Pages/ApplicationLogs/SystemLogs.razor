@@ -76,7 +76,7 @@
 {
     GridItemsProvider<ApplicationLogSystemDTO>? _ItemsProvider;
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    //SimpleGridFieldsContent Translations;
+    SimpleGridFieldsContent Translations;
     SimpleGrid<ApplicationLogSystemDTO>? _grid = default!;
     private bool rendering = false;
     ErrorDetails values = new();
@@ -102,6 +102,7 @@
             rendering = false;
             return GridItemsProviderResult.From(response.Value, response.Count);           
         };
+        Translations = appService.GetGridTranslations();
     }
 
     private async Task<ApiResponse<ApplicationLogSystemDTO>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogSystemDTO> req)

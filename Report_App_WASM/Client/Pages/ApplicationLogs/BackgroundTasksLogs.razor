@@ -127,7 +127,7 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters { ["taskId"] = taksId };
-        //DialogService.Show<_TaskDetails>(localizer.Get("Job details"), parameters, options);
+        DialogService.Show<_TaskDetails>(localizer.Get("Job details"), parameters, options);
     }
 
     public async ValueTask DisposeAsync()
