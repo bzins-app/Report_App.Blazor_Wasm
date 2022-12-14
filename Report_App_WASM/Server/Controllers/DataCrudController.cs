@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Community.OData.Linq;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,7 @@ using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class DataCrudController : ControllerBase
