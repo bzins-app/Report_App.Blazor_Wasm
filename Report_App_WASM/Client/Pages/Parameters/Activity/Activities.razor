@@ -135,12 +135,13 @@
 
     private async Task OpenEditDialog(ActivityDTO value)
     {
+        string uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
         var item = new ActivityDTO
             {
 
                 ActivityName = value.ActivityName,
                 ActivityLogo = value.ActivityLogo,
-                ActivityDbConnections = value.ActivityDbConnections
+                ActivityDbConnections = await dataService.GetValues<ActivityDbConnectionDTO>(uri)
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -154,7 +155,7 @@
             value.ActivityLogo = item.ActivityLogo;
             value.ActivityDbConnections = item.ActivityDbConnections;
 
-            var result = await dataService.HandlePostValues(value, "ActivityUpdate");
+            var result = await dataService.PostValues(value, "ActivityUpdate");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
@@ -170,6 +171,8 @@
 
     private async Task OpenDeleteDialog(ActivityDTO value)
     {
+        string uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
+        value.ActivityDbConnections = await dataService.GetValues<ActivityDbConnectionDTO>(uri);
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
         var dialog = DialogService.Show<_ActivityFormDialog>("Delete", parameters);
@@ -179,7 +182,7 @@
         {
             errorMessage = string.Empty;
             await appService.PostValues("api/BackgroundWorker/ActivatePerActivity", new ApiBackgrounWorkerdPayload { Activate = false, Value = value.ActivityId });
-            var result = await dataService.HandlePostValues(value, "ActivityDelete");
+            var result = await dataService.PostValues(value, "ActivityDelete");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
@@ -204,7 +207,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await dataService.HandlePostValues(value, "ActivityInsert");
+            var result = await dataService.PostValues(value, "ActivityInsert");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);

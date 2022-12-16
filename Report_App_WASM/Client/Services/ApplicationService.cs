@@ -1,10 +1,7 @@
 ﻿using Blazor.SimpleGrid;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.Services;
-using System.ComponentModel;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Report_App_WASM.Client.Services

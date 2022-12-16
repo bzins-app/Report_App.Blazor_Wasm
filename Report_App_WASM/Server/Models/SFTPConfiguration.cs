@@ -1,6 +1,5 @@
 ﻿using Report_App_WASM.Server.Models.AuditModels;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Server.Models

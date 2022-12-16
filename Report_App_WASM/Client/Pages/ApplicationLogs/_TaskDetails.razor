@@ -56,6 +56,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        details = await dataService.GetLogTaskDetailsAsync(taskId);
+        string uri = $"GetLogTaskDetails?LogTaskHeaderId={taskId}";
+        details = await dataService.GetValues<ApplicationLogTaskDetailsDTO>(uri);
     }
 }

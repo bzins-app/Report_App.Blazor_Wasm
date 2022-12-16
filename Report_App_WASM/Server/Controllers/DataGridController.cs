@@ -1,21 +1,12 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Community.OData.Linq;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Routing;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
-using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiResponse;
-using Report_App_WASM.Shared.DTO;
-using Microsoft.AspNetCore.SignalR.Protocol;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Report_App_WASM.Server.Utils;
 
 

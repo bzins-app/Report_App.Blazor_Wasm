@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
-using Hangfire.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MudBlazor;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.DTO;
 using ReportAppWASM.Server.Services.BackgroundWorker;
 
 namespace Report_App_WASM.Server.Controllers

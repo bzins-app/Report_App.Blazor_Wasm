@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_BlazorServ.Services.RemoteDb;
@@ -12,14 +11,9 @@ using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.SerializedParameters;
 using ReportAppWASM.Server.Services.EmailSender;
 using ReportAppWASM.Server.Services.FilesManagement;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Linq;
 using System.Net.Mail;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ReportAppWASM.Server.Services.BackgroundWorker
 {

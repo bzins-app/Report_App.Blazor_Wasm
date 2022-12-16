@@ -154,7 +154,7 @@
             value.UserName = item.UserName;
             value.Password = item.Password;
 
-            var result = await dataService.HandlePostValues(value, "LDAPUpdate");
+            var result = await dataService.PostValues(value, "LDAPUpdate");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
@@ -178,7 +178,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await dataService.HandlePostValues(value,"LDAPDelete");
+            var result = await dataService.PostValues(value, "LDAPDelete");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
@@ -203,7 +203,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await dataService.HandlePostValues(value, "LDAPInsert");
+            var result = await dataService.PostValues(value, "LDAPInsert");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);

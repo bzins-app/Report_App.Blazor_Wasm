@@ -1,11 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 using Report_App_WASM.Shared.LanguageResources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Report_App_WASM.Shared.Services
 {

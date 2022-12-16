@@ -1,23 +1,10 @@
 ﻿using AutoMapper;
-using Community.OData.Linq;
-using IdentityModel.Client;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Formatter;
-using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI.Common;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiResponse;
-using Report_App_WASM.Shared.DTO;
-using System.Threading.Tasks;
-using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -45,16 +32,16 @@ namespace Report_App_WASM.Server.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("LogTaskDetails")]
+        [HttpGet]
         public async Task<IEnumerable<ApplicationLogTaskDetails>> GetLogTaskDetailsAsync(int LogTaskHeader)
         {
            return  await _context.ApplicationLogTaskDetails.Where(a => a.TaskId == LogTaskHeader).ToArrayAsync();
         }
 
-        [HttpGet("ActivityDbConnection")]
+        [HttpGet]
         public async Task<IEnumerable<ActivityDbConnection>> GetActivityDbConnectionAsync(int ActivityId)
         {
-            return await _context.ActivityDbConnection.Include(a=>a.Activity).Where(a => a.Activity.ActivityId == ActivityId).ToArrayAsync();
+            return await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == ActivityId).ToArrayAsync();
         }
 
         [HttpPost]
