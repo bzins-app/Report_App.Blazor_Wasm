@@ -1,15 +1,8 @@
 ﻿using BlazorDownloadFile;
-using static System.Net.WebRequestMethods;
-using System;
 using System.Net.Http.Json;
 using Report_App_WASM.Shared.ApiResponse;
-using Report_App_WASM.Shared.DTO;
 using Report_App_WASM.Shared;
-using static MudBlazor.Colors;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace Report_App_WASM.Client.Services
 {
@@ -34,9 +27,12 @@ namespace Report_App_WASM.Client.Services
             return (await _AuthenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        private async Task<SubmitResult> PostValues<T>(string uri, T value) where T : class
+
+        public async Task<SubmitResult> PostValues<T>(T value, string ControllerAction, string controller=CrudAPI) where T : class
         {
-            ApiCRUDPayload<T> payload = new ApiCRUDPayload<T> { EntityValue = value, UserName = await GetUserIdAsync() };
+            string uri = $"{controller}{ControllerAction}";
+
+            ApiCRUDPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
             {
                 var response = await _httpClient.PostAsJsonAsync(uri, payload);
@@ -45,7 +41,7 @@ namespace Report_App_WASM.Client.Services
                 if (response.IsSuccessStatusCode)
                 {
 
-                    return new SubmitResult { Success = true};
+                    return new SubmitResult { Success = true };
                 }
                 else
                 {
@@ -56,12 +52,6 @@ namespace Report_App_WASM.Client.Services
             {
                 return new SubmitResult { Success = false, Message = ex.Message };
             }
-        }
-
-        public async Task<SubmitResult> HandlePostValues<T>(T value, string ControllerAction, string Uri=CrudAPI) where T : class
-        {
-            string uri = $"{Uri}{ControllerAction}";
-            return await PostValues(uri, value);
         }
 
         public async Task ExtractGridLogs(ODataExtractPayload Values)
@@ -86,47 +76,28 @@ namespace Report_App_WASM.Client.Services
             }
         }
 
-        public async Task<List<ApplicationLogTaskDetailsDTO>> GetLogTaskDetailsAsync(int LogTaskHeader)
+
+        public async Task<List<T>> GetValues<T>(string ControllerAction, string controller = CrudAPI) where T : class
         {
-            string uri = $"{CrudAPI}LogTaskDetails/{LogTaskHeader}";
+            string uri = $"{controller}{ControllerAction}";
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<ApplicationLogTaskDetailsDTO>>(uri);
+                var response = await _httpClient.GetFromJsonAsync<List<T>>(uri);
                 if (response != null)
                 {
                     return response;
                 }
                 else
                 {
-                    return new List<ApplicationLogTaskDetailsDTO>();
+                    return new List<T>();
                 }
             }
             catch
             {
-                return new List<ApplicationLogTaskDetailsDTO>();
+                return new List<T>();
             }
         }
 
-        public async Task<List<ActivityDbConnectionDTO>> GetActivityDbConnection(int ActivityId)
-        {
-            string uri = $"{CrudAPI}ActivityDbConnection/{ActivityId}";
-            try
-            {
-                var response = await _httpClient.GetFromJsonAsync<List<ActivityDbConnectionDTO>>(uri);
-                if (response != null)
-                {
-                    return response;
-                }
-                else
-                {
-                    return new List<ActivityDbConnectionDTO>();
-                }
-            }
-            catch
-            {
-                return new List<ActivityDbConnectionDTO>();
-            }
-        }
 
     }
 }

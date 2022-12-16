@@ -103,7 +103,7 @@
     private MudForm form = default!;
     private string deletionValidation;
 
-    private ActivityDbConnectionDTO dbCon { get; set; }
+    private ActivityDbConnectionDTO dbCon { get; set; } = new();
     private string connectionTestResult;
     private List<string> dbSelect = new List<string>();
     private string passwordContainer;

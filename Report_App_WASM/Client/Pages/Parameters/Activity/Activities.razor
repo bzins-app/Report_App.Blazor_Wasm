@@ -135,12 +135,13 @@
 
     private async Task OpenEditDialog(ActivityDTO value)
     {
+
         var item = new ActivityDTO
             {
 
                 ActivityName = value.ActivityName,
                 ActivityLogo = value.ActivityLogo,
-                ActivityDbConnections = value.ActivityDbConnections
+                ActivityDbConnections = await dataService.GetActivityDbConnection(value.ActivityId)
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -170,6 +171,7 @@
 
     private async Task OpenDeleteDialog(ActivityDTO value)
     {
+        value.ActivityDbConnections = await dataService.GetActivityDbConnection(value.ActivityId);
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
         var dialog = DialogService.Show<_ActivityFormDialog>("Delete", parameters);

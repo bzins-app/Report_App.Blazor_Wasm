@@ -1,8 +1,5 @@
-﻿using Report_App_BlazorServ.Utils;
-using Report_App_WASM.Shared;
+﻿using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.SerializedParameters;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace ReportAppWASM.Server.Services.BackgroundWorker
 {

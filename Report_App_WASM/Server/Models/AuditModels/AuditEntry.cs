@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace Report_App_WASM.Server.Models.AuditModels
 {

@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Hangfire;
 using Hangfire.Storage;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
@@ -11,15 +9,9 @@ using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.SerializedParameters;
 using ReportAppWASM.Server.Services.EmailSender;
 using ReportAppWASM.Server.Services.FilesManagement;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Linq;
 using System.Net.Mail;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ReportAppWASM.Server.Services.BackgroundWorker
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace Report_App_WASM.Server.Utils.EncryptDecrypt

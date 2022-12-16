@@ -13,14 +13,10 @@ using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.DTO;
 using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.SerializedParameters;
-using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Report_App_BlazorServ.Services.RemoteDb
 {

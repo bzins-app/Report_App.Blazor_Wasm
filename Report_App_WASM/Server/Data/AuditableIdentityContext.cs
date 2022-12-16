@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Models.AuditModels;
 using Report_App_WASM.Server.Models;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
-using Duende.IdentityServer.EntityFramework.Options;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 

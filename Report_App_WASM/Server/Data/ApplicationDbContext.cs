@@ -1,7 +1,4 @@
-﻿using Duende.IdentityServer.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Models;
 using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
