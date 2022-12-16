@@ -21,9 +21,10 @@ using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
-    [Authorize]
-    [Route("api/[controller]/[action]")]
+
     [ApiController]
+    [Route("api/[controller]/[action]")]
+
     public class DataCrudController : ControllerBase
     {
 
@@ -56,54 +57,8 @@ namespace Report_App_WASM.Server.Controllers
             return await _context.ActivityDbConnection.Include(a=>a.Activity).Where(a => a.Activity.ActivityId == ActivityId).ToArrayAsync();
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> InsertSMTP(ApiCRUDPayload<SMTPConfiguration> values)
-        {
-            try
-            {
-                await _context.AddAsync(values.EntityValue);
-                await SaveDbAsync(values.UserName);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-               return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteSMTP(ApiCRUDPayload<SMTPConfiguration> values)
-        {
-            try
-            {
-                _context.Remove(values.EntityValue);
-                await SaveDbAsync(values.UserName);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateSMTP(ApiCRUDPayload<SMTPConfiguration> values)
-        {
-            try
-            {
-                _context.Update(values.EntityValue);
-                await SaveDbAsync(values.UserName);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> InsertLDAP(ApiCRUDPayload<LDAPConfiguration> values)
+        public async Task<IActionResult> SMTPInsert(ApiCRUDPayload<SMTPConfiguration> values)
         {
             try
             {
@@ -118,7 +73,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteLDAP(ApiCRUDPayload<LDAPConfiguration> values)
+        public async Task<IActionResult> SMTPDelete(ApiCRUDPayload<SMTPConfiguration> values)
         {
             try
             {
@@ -132,8 +87,8 @@ namespace Report_App_WASM.Server.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateLDAP(ApiCRUDPayload<LDAPConfiguration> values)
+        [HttpPost("UpdateSMTP")]
+        public async Task<IActionResult> SMTPUpdate(ApiCRUDPayload<SMTPConfiguration> values)
         {
             try
             {
@@ -148,7 +103,52 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertActivity(ApiCRUDPayload<Activity> values)
+        public async Task<IActionResult> LDAPInsert(ApiCRUDPayload<LDAPConfiguration> values)
+        {
+            try
+            {
+                await _context.AddAsync(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LDAPDelete(ApiCRUDPayload<LDAPConfiguration> values)
+        {
+            try
+            {
+                _context.Remove(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LDAPUpdate(ApiCRUDPayload<LDAPConfiguration> values)
+        {
+            try
+            {
+                _context.Update(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActivityInsert(ApiCRUDPayload<Activity> values)
         {
             try
             {
@@ -184,7 +184,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteActivity(ApiCRUDPayload<Activity> values)
+        public async Task<IActionResult> ActivityDelete(ApiCRUDPayload<Activity> values)
         {
             try
             {
@@ -204,7 +204,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateActivity(ApiCRUDPayload<Activity> values)
+        public async Task<IActionResult> ActivityUpdate(ApiCRUDPayload<Activity> values)
         {
             try
             {

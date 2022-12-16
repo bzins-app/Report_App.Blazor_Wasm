@@ -21,9 +21,11 @@
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.0-rc2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.12" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.1" />
     <PackageReference Include="MySql.Data" Version="8.0.31" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.80" />
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.Data.OleDb" Version="7.0.0" />
     <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="6.0.0" />
   </ItemGroup>

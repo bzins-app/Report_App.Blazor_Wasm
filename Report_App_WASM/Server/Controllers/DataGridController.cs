@@ -22,6 +22,7 @@ using Report_App_WASM.Server.Utils;
 namespace Report_App_WASM.Server.Controllers
 {
 
+    [ApiExplorerSettings(IgnoreApi =true)]
     public class DataGridController : ODataController, IDisposable
     {
         private readonly ILogger<DataGridController> _logger;

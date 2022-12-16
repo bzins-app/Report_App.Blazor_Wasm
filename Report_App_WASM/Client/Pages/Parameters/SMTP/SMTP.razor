@@ -166,7 +166,7 @@
             value.fromEmail = item.fromEmail;
             value.fromFullName = item.fromFullName;
 
-            var result = await dataService.HandlePostValues(value, "UpdateSTMP");
+            var result = await dataService.HandlePostValues(value, "SMTPUpdate");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
@@ -190,7 +190,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await dataService.HandlePostValues(value, "DeleteSTMP");
+            var result = await dataService.HandlePostValues(value, "SMTPDelete");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
@@ -215,7 +215,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await dataService.HandlePostValues(value, "InsertSTMP");
+            var result = await dataService.HandlePostValues(value, "SMTPInsert");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);

@@ -40,6 +40,8 @@ namespace Report_App_WASM.Client.Services
             try
             {
                 var response = await _httpClient.PostAsJsonAsync(uri, payload);
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync());
+                response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
 

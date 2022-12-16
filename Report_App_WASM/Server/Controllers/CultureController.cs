@@ -6,6 +6,7 @@ namespace Report_App_WASM.Server.Controllers
     [Route("[controller]/[action]")]
     public class CultureController : Controller
     {
+        [HttpPost]
         public IActionResult SetCulture(string culture, string redirectUri)
         {
             if (culture != null)
