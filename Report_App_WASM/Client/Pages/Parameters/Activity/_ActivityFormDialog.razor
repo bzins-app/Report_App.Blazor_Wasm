@@ -1,5 +1,4 @@
 ﻿@using System.IO
-@inject HttpClient Http
 
 <MudDialog>
     <TitleContent>
@@ -106,7 +105,6 @@
     private ActivityDbConnectionDTO dbCon { get; set; } = new();
     private string connectionTestResult;
     private List<string> dbSelect = new List<string>();
-    private string passwordContainer;
     private string activityDepositName = "";
     private List<SelectItemActivitiesInfo> activities = new();
     private string checkNameResult;
@@ -139,13 +137,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-      //  dbSelect = StaticAppLists.GetListDb;
         if (Item.ActivityDbConnections.Any())
         {
             dbCon = Item.ActivityDbConnections.First();
-            passwordContainer = dbCon.Password;
         }
-        activities = (await Http.GetFromJsonAsync<SelectItemActivitiesInfo[]>("ApplicationParameters/ActivitiesInfo")).ToList();
+        activities = await dataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", "ApplicationParameters/");
         loading = false;
     }
 
@@ -167,16 +163,9 @@
         tryConn.DBType = dbCon.DBType;
         tryConn.Port = dbCon.Port;
         tryConn.UseDbSchema = dbCon.UseDbSchema;
-        if (dbCon.Password == passwordContainer && !string.IsNullOrEmpty(dbCon.Password))
-        {
-           // tryConn.Password = EncryptDecrypt.DecryptString(dbCon.Password);
-        }
-        else
-        {
-            tryConn.Password = dbCon.Password;
-        }
-     //   var result = await _dbConnect.TestConnectionAsync(tryConn);
-     //   connectionTestResult = result.Message;
+        tryConn.Password = dbCon.Password;
+        var result = await dataService.PostValues(tryConn, "TestConnection",ApiControllers.RemoteDbApi);
+        connectionTestResult = result.Message?? "Ok!";
     }
 
     private void checkActivityName()

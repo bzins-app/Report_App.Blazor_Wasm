@@ -51,4 +51,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\docsstorage\" />
+    <Folder Include="wwwroot\upload\" />
+  </ItemGroup>
+
 </Project>

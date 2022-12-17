@@ -10,7 +10,6 @@
 @using Report_App_WASM.Client.Shared
 @using Report_App_WASM.Client.Services.Implementations
 @using Report_App_WASM.Shared
-@using Report_App_WASM.Shared.Services
 @using MudBlazor
 @using Report_App_WASM.Client.Services.States
 @using System.Security.Claims
@@ -19,8 +18,12 @@
 @using Report_App_WASM.Shared.DTO
 @using Report_App_WASM.Shared.ApiResponse
 @using Report_App_WASM.Client.Services
+@using Report_App_WASM.Client.Utils
+@using System.Globalization
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject CommonLocalizationService localizer
-@inject DataEntityService dataService
+@inject DataInteractionService dataService
 @inject ApplicationService appService

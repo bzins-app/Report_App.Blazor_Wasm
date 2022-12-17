@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Common;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared;
 using ReportAppWASM.Server.Services.BackgroundWorker;
+using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -28,52 +30,95 @@ namespace Report_App_WASM.Server.Controllers
 
         private async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, string type)
         {
-            return await _backgroundWorkers.ActivateBackgroundWorkersAsync(activate, type);
+            var result= await _backgroundWorkers.ActivateBackgroundWorkersAsync(activate, type);
+
+            return result;
         }
 
         [HttpPost]
-        public async Task UpdateServicesStatusAsync(ApiCRUDPayload<ServicesStatus> status)
+        public async Task<IActionResult> UpdateServicesStatusAsync(ApiCRUDPayload<ServicesStatus> status)
         {
-            _context.Entry(status.EntityValue).State = EntityState.Modified;
-            await SaveDbAsync(status.UserName);
-            _context.Entry(status.EntityValue).State = EntityState.Detached;
+            try
+            {
+                _context.Entry(status.EntityValue).State = EntityState.Modified;
+                await SaveDbAsync(status.UserName);
+                _context.Entry(status.EntityValue).State = EntityState.Detached;
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        private async Task<SubmitResult> UpdateServicesAsync(ServicesStatus Item, string userName)
+        {
+            try
+            {
+                _context.Entry(Item).State = EntityState.Modified;
+                await SaveDbAsync(userName);
+                _context.Entry(Item).State = EntityState.Detached;
+                return new SubmitResult {Success=true };
+            }
+            catch (Exception ex)
+            {
+                return new SubmitResult { Success = false, Message=ex.Message};
+            }
+        }
+
+        private async Task<ServicesStatus> GetServiceStatusAsync()
+        {
+            return await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync();
         }
 
         [HttpPost]
-        public async Task<IActionResult> ActivateReportService(bool value)
+        public async Task<IActionResult> ActivateReportService(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
-            var result = await ActivateBackgroundWorkersAsync(value, "Report");
-            return Ok();
+            var item = await GetServiceStatusAsync();
+            item.ReportService = value.EntityValue.Activate;
+            var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, "Report");
+             await UpdateServicesAsync(item, value.UserName);
+            return Ok(result);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ActivateAlertService(bool value)
+        public async Task<IActionResult> ActivateAlertService(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
-            var result = await ActivateBackgroundWorkersAsync(value, "Alert");
-            return Ok();
+            var item = await GetServiceStatusAsync();
+            item.AlertService = value.EntityValue.Activate;
+            var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, "Alert");
+             await UpdateServicesAsync(item, value.UserName);
+            return Ok(result);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ActivateDataTransferService(bool value)
+        public async Task<IActionResult> ActivateDataTransferService(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
-            var result = await ActivateBackgroundWorkersAsync(value, "DataTransfer");
-            return Ok();
+            var item = await GetServiceStatusAsync();
+            item.DataTransferService = value.EntityValue.Activate;
+            var result=await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, "DataTransfer");
+            await UpdateServicesAsync(item, value.UserName);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ActivateCleanerService(bool value)
+        public async Task<IActionResult> ActivateCleanerService(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
-            var result = await ActivateBackgroundWorkersAsync(value, "cleaner");
-            return Ok();
+            var item = await GetServiceStatusAsync();
+            item.CleanerService = value.EntityValue.Activate;
+            var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, "cleaner");
+             await UpdateServicesAsync(item, value.UserName);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ActivatePerActivity(ApiBackgrounWorkerdPayload value)
+        public async Task<IActionResult> ActivatePerActivity(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
-            await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.Value, value.Activate);
-            return Ok();
+                await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue.Value, value.EntityValue.Activate);
+                return Ok(new SubmitResult { Success = true });
+           
         }
 
         private async Task SaveDbAsync(string userId = "system")

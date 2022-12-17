@@ -48,7 +48,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>("ApplicationParameters/ApplicationConstants");
+        var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
         ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
         ApplicationConstants.ApplicationName = values.ApplicationName;
     }

@@ -41,9 +41,9 @@
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@localizer.Get("Configuration name")" Sortable="true" />
-@*                    <TemplateColumn Title="@localizer.Get("Is activated?")">
+                    <TemplateColumn Title="@localizer.Get("Is activated?")">
                         <_SMTPActivate Item="context" />
-                    </TemplateColumn>*@
+                    </TemplateColumn>
                     <PropertyColumn Property="@(p => p.smtpHost)" Title="@localizer.Get("SMTP host")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.smtpPort)" Title="@localizer.Get("SMTP port")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.fromEmail)" Title="@localizer.Get("From email")" Sortable="true" />

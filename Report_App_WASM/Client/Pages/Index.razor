@@ -9,7 +9,6 @@
     <h1 class="display-4">@localizer.Get("Welcome")</h1>
     @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
 </div>
-
 <MudCard>
     <MudCardContent>
         @if (activities.Any())
@@ -69,7 +68,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        activities = (await Http.GetFromJsonAsync<SelectItemActivitiesInfo[]>("ApplicationParameters/ActivitiesInfo")).ToList();
-
+        activities = await dataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 }

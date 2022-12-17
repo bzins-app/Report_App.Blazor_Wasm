@@ -41,12 +41,12 @@
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ActivityName)" Title="@localizer.Get("Activity name")" Sortable="true" />
-@*                    <TemplateColumn Title="@localizer.Get("Is activated?")">
+                    <TemplateColumn Title="@localizer.Get("Is activated?")">
                         <_ActivityActivate Item="context" />
                     </TemplateColumn>
                     <TemplateColumn Title="@localizer.Get("Is visible?")">
                         <_ActivityVisible Item="context" />
-                    </TemplateColumn>*@
+                    </TemplateColumn>
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
@@ -181,7 +181,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            await appService.PostValues("api/BackgroundWorker/ActivatePerActivity", new ApiBackgrounWorkerdPayload { Activate = false, Value = value.ActivityId });
+            await dataService.PostValues( new ApiBackgrounWorkerdPayload { Activate = false, Value = value.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/" );
             var result = await dataService.PostValues(value, "ActivityDelete");
             if (result.Success)
             {

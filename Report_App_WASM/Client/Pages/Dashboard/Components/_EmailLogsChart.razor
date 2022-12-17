@@ -1,0 +1,59 @@
+﻿@using ApexCharts
+
+@if (logs == null)
+{
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+<ApexChart TItem="ApplicationLogEmailSenderDTO"
+		   Title="@localizer.Get("Emails")"
+		   XAxisType="XAxisType.Datetime" Height="@Height"
+		   Options="options" @ref="chart">
+
+	<ApexPointSeries TItem="ApplicationLogEmailSenderDTO"
+				Items="logs"
+				Name="@localizer.Get("Nbr of jobs")"
+				SeriesType="SeriesType.Bar"
+				XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+				YAggregate="@(e => e.Count())"
+				OrderBy="e=>e.X" />
+	<ApexPointSeries TItem="ApplicationLogEmailSenderDTO"
+				Items="logs"
+				Name="@localizer.Get("Nbr of errors")"
+				SeriesType="SeriesType.Bar"
+				XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+				YAggregate="@(e => e.Sum(a=>a.Error?1:0))"
+				OrderBy="e=>e.X" />
+
+	<ApexPointSeries TItem="ApplicationLogEmailSenderDTO"
+				Items="logs"
+				Name="@localizer.Get("Job duration")"
+				SeriesType="SeriesType.Bar"
+				XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+				YAggregate="@(e => e.Sum(a=>a.DurationInSeconds/60))"
+				OrderBy="e=>e.X" />
+
+</ApexChart>
+}
+
+
+@code {
+
+	[Parameter] public string Height { get; set; } = null;
+	private List<ApplicationLogEmailSenderDTO>? logs;
+	private ApexChartOptions<ApplicationLogEmailSenderDTO> options = new ApexChartOptions<ApplicationLogEmailSenderDTO>();
+	private ApexChart<ApplicationLogEmailSenderDTO> chart;
+
+	 protected override async Task OnInitializedAsync()
+	{
+		logs = await dataService.GetValues<ApplicationLogEmailSenderDTO>("EmailLogs", "api/Dashboard/");
+		options.Chart.Stacked = true;
+		options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
+		options.Theme = new Theme { Palette = PaletteType.Palette3};
+		options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
+		//Stacked 100% test
+		//options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
+		options.Chart.Toolbar = new Toolbar { Show = false };		
+	}
+}

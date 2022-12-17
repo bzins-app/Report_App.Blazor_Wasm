@@ -1,0 +1,60 @@
+﻿@using ApexCharts
+
+
+@if (TaskLogs == null)
+{
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <ApexChart TItem="ApplicationLogTaskDTO"
+           Title="@localizer.Get("Background taks")"
+           XAxisType="XAxisType.Datetime" Height="@Height"
+           Options="options" @ref="chart">
+
+        <ApexPointSeries TItem="ApplicationLogTaskDTO"
+                     Items="TaskLogs"
+                     Name="@localizer.Get("Nbr of jobs")"
+                     SeriesType="SeriesType.Line"
+                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Count())"
+                     OrderBy="e=>e.X" />
+
+        <ApexPointSeries TItem="ApplicationLogTaskDTO"
+                     Items="TaskLogs"
+                     Name="@localizer.Get("Nbr of errors")"
+                     SeriesType="SeriesType.Line"
+                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.Error?1:0))"
+                     OrderBy="e=>e.X" />
+
+        <ApexPointSeries TItem="ApplicationLogTaskDTO"
+                     Items="TaskLogs"
+                     Name="@localizer.Get("Job duration")"
+                     SeriesType="SeriesType.Line"
+                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.DurationInSeconds/60))"
+                     OrderBy="e=>e.X" />
+    </ApexChart>
+}
+
+
+@code {
+    [Parameter] public string Height { get; set; } = null;
+    private List<ApplicationLogTaskDTO>? TaskLogs;
+    private ApexChartOptions<ApplicationLogTaskDTO> options = new ApexChartOptions<ApplicationLogTaskDTO>();
+    private ApexChart<ApplicationLogTaskDTO> chart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        TaskLogs = await dataService.GetValues<ApplicationLogTaskDTO>("TasksLogs", "api/Dashboard/");
+        //options.Chart.Stacked = true;
+        options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
+        options.Theme = new Theme { Palette = PaletteType.Palette7 };
+        options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
+        options.Stroke=new Stroke { Curve = Curve.Smooth, Width=2 };
+        //Stacked 100% test
+        //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
+        //options.Chart.Toolbar = new Toolbar { Show = false };
+    }
+}

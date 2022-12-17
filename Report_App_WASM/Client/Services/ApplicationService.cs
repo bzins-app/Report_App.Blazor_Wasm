@@ -1,7 +1,6 @@
 ﻿using Blazor.SimpleGrid;
 using Microsoft.AspNetCore.Components.Authorization;
 using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Services;
 using System.Net.Http.Json;
 
 namespace Report_App_WASM.Client.Services
@@ -55,26 +54,6 @@ namespace Report_App_WASM.Client.Services
             return (await _AuthenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        public async Task<SubmitResult> PostValues(string uri, ApiBackgrounWorkerdPayload value)
-        {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync(uri, value);
-                if (response.IsSuccessStatusCode)
-                {
-
-                    return new SubmitResult { Success = true };
-                }
-                else
-                {
-                    return new SubmitResult { Success = false };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new SubmitResult { Success = false, Message = ex.Message };
-            }
-        }
 
     }
 }

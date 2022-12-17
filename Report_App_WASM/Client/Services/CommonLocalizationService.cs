@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Localization;
-using Report_App_WASM.Shared.LanguageResources;
+using Report_App_WASM.Client.Utils.LanguageRessources;
 using System.Reflection;
 
-namespace Report_App_WASM.Shared.Services
+namespace Report_App_WASM.Client.Services
 {
     public class CommonLocalizationService
     {

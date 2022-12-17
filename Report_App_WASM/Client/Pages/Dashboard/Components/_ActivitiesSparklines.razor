@@ -1,0 +1,85 @@
+﻿@using ApexCharts
+
+<MudTable Items="TaskLogs.GroupBy(e => e.ActivityName).OrderByDescending(a=>a.Count())" Height="460px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
+    <HeaderContent>
+        <MudTh>@localizer.Get("Activity")</MudTh>
+        <MudTh>@localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
+        <MudTh>@localizer.Get("Type of tasks")</MudTh>
+        <MudTh>@localizer.Get("Tasks per day")</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Key</MudTd>
+        <MudTd>@context.Count()</MudTd>
+        <MudTd>
+            <ApexChart TItem="ApplicationLogTaskDTO"
+                       Width="30"
+                       Height="30"
+                       Options="GetPieOptions()">
+
+                <ApexPointSeries TItem="ApplicationLogTaskDTO"
+                                 Items="context.ToList()"
+                                 Name="@localizer.Get("Type of tasks")"
+                                 SeriesType="SeriesType.Pie"
+                                 XValue="@(e => e.Type)"
+                                 YAggregate="@(e => e.Count())" />
+
+            </ApexChart>
+        </MudTd>
+        <MudTd>
+            <ApexChart TItem="ApplicationLogTaskDTO"
+                       XAxisType="XAxisType.Datetime"
+                       Options="GetBarOptions()"
+                       Height="30"
+                       Width="150">
+
+                <ApexPointSeries TItem="ApplicationLogTaskDTO"
+                                 Items="context.ToList()"
+                                 Name="@localizer.Get("Tasks per day")"
+                                 SeriesType="SeriesType.Bar"
+                                 XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+                                 YAggregate="@(e => e.Count())"
+                                 OrderBy="e=>e.X" />
+            </ApexChart>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<ApplicationLogTaskDTO>? TaskLogs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        TaskLogs = await dataService.GetValues<ApplicationLogTaskDTO>("TasksLogs", "api/Dashboard/");
+    }
+
+    private ApexChartOptions<ApplicationLogTaskDTO> GetPieOptions()
+    {
+        var options = new ApexChartOptions<ApplicationLogTaskDTO>();
+        options.Stroke = new Stroke { Width = 1 };
+        options.Tooltip = new Tooltip { Fixed = new TooltipFixed { Enabled = false } };
+        options.Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } };
+        options.PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { ExpandOnClick = false } };
+        return options;
+    }
+
+    private ApexChartOptions<ApplicationLogTaskDTO> GetBarOptions()
+    {
+        var options = new ApexChartOptions<ApplicationLogTaskDTO>();
+        options.Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } };
+        options.PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%", } };
+        options.Tooltip = new Tooltip { X = new TooltipX { Format = @" dd \ MM \ yyyy" } };
+
+        return options;
+    }
+
+    //private ApexChartOptions<ApplicationLogTaskDTO> GetBarOptionsHour()
+    //{
+    //	var options = new ApexCharts.ApexChartOptions<ApplicationLogTaskDTO>();
+    //	options.Chart = new Chart { Sparkline = new ChartSparkline(),Animations= new Animations {Enabled=false} };
+    //	options.PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%", } };
+    //	options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:MIN" } };
+
+    //	return options;
+    //}
+
+}

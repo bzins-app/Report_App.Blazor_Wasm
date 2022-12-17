@@ -9,7 +9,6 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
-using Report_App_WASM.Shared.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
@@ -18,30 +17,9 @@ using ReportAppWASM.Server.Services.BackgroundWorker;
 using ReportAppWASM.Server.Services.FilesManagement;
 using Report_App_BlazorServ.Services.RemoteDb;
 using ReportAppWASM.Server.Services.EmailSender;
+using Report_App_WASM.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-static IEdmModel GetEdmModel()
-{
-    ODataConventionModelBuilder builder = new();
-    builder.EntitySet<ApplicationLogSystem>("SystemLogs");
-    builder.EntitySet<ApplicationLogEmailSender>("EmailLogs");
-    builder.EntitySet<ApplicationLogQueryExecution>("QueryExecutionLogs");
-    builder.EntitySet<ApplicationLogReportResult>("ReportResultLogs");
-    builder.EntitySet<ApplicationLogTask>("TaskLogs");
-    builder.EntitySet<ApplicationAuditTrail>("AuditTrail");
-
-
-    builder.EntitySet<LDAPConfiguration>("LDAP");
-    builder.EntitySet<SMTPConfiguration>("SMTP");
-    builder.EntitySet<SFTPConfiguration>("SFTP");
-    builder.EntitySet<FileDepositPathConfiguration>("DepositPath");
-    builder.EntitySet<Activity>("Activities");
-
-
-    builder.Action("ExtractLogs");
-    return builder.GetEdmModel();
-}
 
 builder.Host.ConfigureLogging((hostingContext, logging) =>
 {
@@ -120,7 +98,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.AddControllersWithViews().AddOData(
 options => options.AddRouteComponents(
-"odata",GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
+"odata",OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 
 builder.Services.AddRazorPages();
 
@@ -179,6 +157,7 @@ IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
+var env = builder.Environment;
 
 using (var scope = app.Services.CreateScope())
 {
@@ -215,6 +194,15 @@ else
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/docsstorage")))
+{
+    Directory.CreateDirectory(Path.Combine(env.ContentRootPath, "wwwroot/docsstorage"));
+}
+if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/upload")))
+{
+    Directory.CreateDirectory(Path.Combine(env.ContentRootPath, "wwwroot/upload"));
 }
 
 app.UseSwagger();

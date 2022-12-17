@@ -1,0 +1,38 @@
+﻿@using ApexCharts
+
+@if (logs == null)
+{
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <ApexChart TItem="DbLinesQuery"
+           Title="@localizer.Get("Nbr of rows fetched from databases")"
+           Height="@Height"
+           XAxisType="XAxisType.Datetime" Options="options"
+           @ref=chart>
+
+        <ApexPointSeries TItem="DbLinesQuery"
+                     Items="logs"
+                     Name="@localizer.Get("Nbr of rows")"
+                     SeriesType="SeriesType.Line"
+                     XValue="@(e => e.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.NbrOfRows))"
+                     Stroke="@(new SeriesStroke { Width = 2, Color="#1F15E5"})" />
+    </ApexChart>
+}
+
+
+@code {
+    [Parameter] public string Height { get; set; } = null;
+
+    private List<DbLinesQuery>? logs;
+    private ApexChartOptions<DbLinesQuery> options = new ApexChartOptions<DbLinesQuery>();
+    private ApexChart<DbLinesQuery> chart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        logs = await dataService.GetValues<DbLinesQuery>("DbFetchMetrics", "api/Dashboard/");
+        options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
+    }
+}

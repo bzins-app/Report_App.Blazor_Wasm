@@ -1,38 +1,23 @@
-﻿@*@using AutoMapper
-@using AutoMapper.QueryableExtensions
-@inject IMapper _mapper
-@inject ApplicationDbContext _context
-@inject ISnackbar Snackbar
-@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿@inject ISnackbar Snackbar
 
-<MudSwitch Checked="@Item.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))"  />
+<MudSwitch Checked="@Item.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
 
-    @code {
-	[Parameter]
-	public LDAPConfigurationDTO Item { get; set; }
+@code {
+    [Parameter]
+    public LDAPConfigurationDTO Item { get; set; }
 
-	private async Task ChangeStatusAsync(bool value)
-	{
-		Item.IsActivated = value ;
-		if (Item.IsActivated)
-		{
-			var otherLDAP = await _context.LDAPConfiguration.Where(a => a.Id != Item.Id && a.IsActivated).ToListAsync();
-			if (otherLDAP != null)
-			{
-				foreach (var t in otherLDAP)
-				{
-					t.IsActivated = false;
-					_context.Update(t);
-				}
-			}
-		}
-		
-		var ItemUpdate = _mapper.Map<LDAPConfiguration>(Item);
-		_context.Update(ItemUpdate);
-		var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-		await _context.SaveChangesAsync(currentUser.Identity.Name);
-		_context.Entry(ItemUpdate).State = EntityState.Detached;
+    private async Task ChangeStatusAsync(bool value)
+    {
+        Item.IsActivated = value;
+        var result = await dataService.PostValues(Item, "LDAPActivate");
 
-		Snackbar.Add(Item.IsActivated  ? "LDAP " + localizer.Get("enabled") :"lDAP " + localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
-	}
-    }*@
+        if (result.Success)
+        {
+            Snackbar.Add(Item.IsActivated ? "LDAP " + localizer.Get("enabled") : "lDAP " + localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+        }
+        else
+        {
+            Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+        }
+    }
+    }

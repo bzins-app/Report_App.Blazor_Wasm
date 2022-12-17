@@ -3,17 +3,19 @@ using System.Net.Http.Json;
 using Report_App_WASM.Shared.ApiResponse;
 using Report_App_WASM.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Text.Json;
+using Report_App_WASM.Client.Utils;
 
 namespace Report_App_WASM.Client.Services
 {
-    public class DataEntityService
+    public class DataInteractionService
     {
         private readonly HttpClient _httpClient;
         private readonly IBlazorDownloadFileService BlazorDownloadFileService;
         private readonly AuthenticationStateProvider _AuthenticationStateProvider;
-        private const string CrudAPI = "api/DataCrud/";
+        private const string CrudAPI = ApiControllers.CrudDataApi;
 
-        public DataEntityService(HttpClient httpClient,
+        public DataInteractionService(HttpClient httpClient,
             IBlazorDownloadFileService blazorDownloadFileService, AuthenticationStateProvider AuthenticationStateProvider)
         {
             _httpClient = httpClient;
@@ -40,8 +42,7 @@ namespace Report_App_WASM.Client.Services
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
-
-                    return new SubmitResult { Success = true };
+                    return await response.Content.ReadFromJsonAsync<SubmitResult>();
                 }
                 else
                 {
@@ -98,6 +99,25 @@ namespace Report_App_WASM.Client.Services
             }
         }
 
-
+        public async Task<T> GetUniqueValue<T>( T value,string ControllerAction, string controller = CrudAPI) where T : class
+        {
+            string uri = $"{controller}{ControllerAction}";
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<T>(uri);
+                if (response != null)
+                {
+                    return response;
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            catch
+            {
+                return value;
+            }
+        }
     }
 }

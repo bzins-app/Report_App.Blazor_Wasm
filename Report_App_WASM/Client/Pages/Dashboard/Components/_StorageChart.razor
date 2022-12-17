@@ -1,0 +1,39 @@
+﻿@using ApexCharts
+
+@if (logs == null)
+{
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <ApexChart TItem="ApplicationLogReportResultDTO"
+           Title="@(localizer.Get("Storage per report")+":"+localizer.Get("Total size in MB"))"
+           Height="@Height"
+           Options="options"
+           @ref=chart>
+
+        <ApexPointSeries TItem="ApplicationLogReportResultDTO"
+                     Items="logs"
+                     Name="@localizer.Get("Total size in MB")"
+                     SeriesType="SeriesType.Treemap"
+                     XValue="@(e => e.ReportName)"
+                     YAggregate="@(e => (decimal)e.Sum(a=>Math.Round( a.FileSizeInMB,2)))" OrderByDescending="@(e=>e.Y)"/>
+    </ApexChart>
+}
+
+
+
+@code {
+    [Parameter] public string Height { get; set; } = null;
+    private double sizeFilesStoredLocally;
+    private int nbrOfFilesStored;
+
+    private List<ApplicationLogReportResultDTO>? logs;
+    private ApexChartOptions<ApplicationLogReportResultDTO> options = new ApexChartOptions<ApplicationLogReportResultDTO>();
+    private ApexChart<ApplicationLogReportResultDTO> chart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        logs = await dataService.GetValues<ApplicationLogReportResultDTO>("StorageInfo", "api/Dashboard/");
+    }
+}

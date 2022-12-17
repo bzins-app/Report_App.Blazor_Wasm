@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Report_App_WASM.Server.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("[controller]/[action]")]
     public class CultureController : Controller
     {

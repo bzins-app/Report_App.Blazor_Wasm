@@ -1,11 +1,4 @@
-﻿@*@using AutoMapper
-@using AutoMapper.QueryableExtensions
-@inject IMapper _mapper
-@inject ApplicationDbContext _context
-@inject ISnackbar Snackbar
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@using Report_App_BlazorServ.Services.BackgroundWorker
-@inject IBackgroundWorkers _BGW
+﻿@inject ISnackbar Snackbar
 
 
 <MudSwitch Checked="@Item.IsActivated" Color="Color.Primary"  ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
@@ -17,14 +10,9 @@
     private async Task ChangeStatusAsync(bool value)
     {
         Item.IsActivated = value;
-        await _BGW.SwitchBackgroundTasksPerActivityAsync(Item.ActivityId, Item.IsActivated);
-
-        var ItemUpdate = _mapper.Map<Activity>(Item);
-        _context.Entry(ItemUpdate).State = EntityState.Modified;
-        var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        await _context.SaveChangesAsync(currentUser.Identity.Name);
-        _context.Entry(ItemUpdate).State = EntityState.Detached;
+        await dataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/");
+        var result = await dataService.PostValues(Item, "ActivityUpdate");
 
         Snackbar.Add(Item.IsActivated ? Item.ActivityName + " " + localizer.Get("enabled") : Item.ActivityName + " " + localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
     }
-}*@
+}

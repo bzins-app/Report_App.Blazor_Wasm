@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
+using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ApplicationParametersController : ControllerBase
     {
         private readonly ILogger<ApplicationParametersController> _logger;
@@ -32,6 +35,18 @@ namespace Report_App_WASM.Server.Controllers
         {
             ApplicationConstantsValues values = new() { ApplicationLogo = ApplicationConstants.ApplicationLogo, ApplicationName = ApplicationConstants.ApplicationName };
             return values;
+        }
+
+        [HttpGet("CheckSMTPConfiguration")]
+        public async Task<bool> CheckSMTPConfigurationAsync()
+        {
+            return await _context.SMTPConfiguration.Where(a => a.IsActivated).AnyAsync();
+        }
+
+        [HttpGet("GetApplicationParameters")]
+        public async Task<ApplicationParameters> GetApplicationParametersAsync()
+        {
+            return await _context.ApplicationParameters.OrderBy(a => a.Id).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync();
         }
     }
 }

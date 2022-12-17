@@ -3,7 +3,6 @@
 @using Report_App_WASM.Client.Utils
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
-@inject HttpClient Http
 
 <MudNavMenu Color="Color.Info" Bordered="true" Margin="Margin.Normal">
     <MudText Typo="Typo.h6" Class="px-4">
@@ -93,7 +92,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        activities = (await Http.GetFromJsonAsync<SelectItemActivitiesInfo[]>("ApplicationParameters/ActivitiesInfo")).ToList();
+        activities = await dataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 
 }

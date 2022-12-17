@@ -1,0 +1,107 @@
+﻿@page "/Services"
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+<PageTitle>@localizer.Get("Services status")</PageTitle>
+
+<MudCard Elevation="6">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@localizer.Get("Services status")</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudSwitch Checked="@status.ReportService" Color="Color.Primary" 
+                   Label="@localizer.Get("Report service")"
+                   ThumbIcon="@(status.ReportService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                   ThumbIconColor="@(status.ReportService ? Color.Success : Color.Error)"
+                   Disabled="switchDisabled" CheckedChanged="((bool value)=>ActivateReportService(value))" />
+        <MudSwitch Checked="@status.AlertService" Color="Color.Primary" 
+                   Label="@localizer.Get("Alert service")"
+                   ThumbIcon="@(status.AlertService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                   ThumbIconColor="@(status.AlertService ? Color.Success : Color.Error)"
+                   Disabled="switchDisabled" CheckedChanged="((bool value)=>ActivateAlertService(value))" />
+        <MudSwitch Checked="@status.DataTransferService" Color="Color.Primary" 
+                   Label="@localizer.Get("Data transfer service")"
+                   ThumbIcon="@(status.DataTransferService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                   ThumbIconColor="@(status.DataTransferService ? Color.Success : Color.Error)"
+                   Disabled="switchDisabled" CheckedChanged="((bool value)=>ActivateDataTransferService(value))" />
+        <MudSwitch Checked="@status.EmailService"
+                   Label="@localizer.Get("Email service")" Color="Color.Primary" 
+                   ThumbIcon="@(status.EmailService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                   ThumbIconColor="@(status.EmailService ? Color.Success : Color.Error)"
+                   Disabled="switchDisabled" CheckedChanged="((bool value)=>ActivateEmailService(value))" />
+        <MudSwitch Checked="@status.CleanerService"
+                   Label="@localizer.Get("Cleaner service")" Color="Color.Primary" 
+                   ThumbIcon="@(status.CleanerService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                   ThumbIconColor="@(status.CleanerService ? Color.Success : Color.Error)"
+                   Disabled="switchDisabled" CheckedChanged="((bool value)=>ActivateCleanerService(value))" />
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private ServicesStatusDTO status = new();
+    private bool switchDisabled = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+        if (user.IsInRole("Admin"))
+        {
+            switchDisabled = false;
+        }
+        status = await dataService.GetUniqueValue(status, "GetServiceStatus");
+    }
+
+    private async Task ActivateReportService(bool value)
+    {
+        status.ReportService = value;
+        ApiBackgrounWorkerdPayload payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var result = await dataService.PostValues(payload, "ActivateReportService", ApiControllers.BackgroudWorkerApi);
+        Snackbar.Add(result.Success ? localizer.Get("Report service") + " " + localizer.Get("Service up") : localizer.Get("Report service") + " " + localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
+    }
+
+    private async Task ActivateAlertService(bool value)
+    {
+        status.AlertService = value;
+        ApiBackgrounWorkerdPayload payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var result = await dataService.PostValues(payload, "ActivateAlertService", ApiControllers.BackgroudWorkerApi);
+        Snackbar.Add(result.Success ? localizer.Get("Alert service") + " " + localizer.Get("Service up") : localizer.Get("Alert service") + " " + localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
+    }
+
+    private async Task ActivateDataTransferService(bool value)
+    {
+        status.DataTransferService = value;
+        ApiBackgrounWorkerdPayload payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var result = await dataService.PostValues(payload, "ActivateDataTransferService", ApiControllers.BackgroudWorkerApi);
+        Snackbar.Add(result.Success ? localizer.Get("Data transfer service") + " " + localizer.Get("Service up") : localizer.Get("Data transfer service") + " " + localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
+    }
+
+    private async Task ActivateCleanerService(bool value)
+    {
+        status.CleanerService = value;
+        ApiBackgrounWorkerdPayload payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var result = await dataService.PostValues(payload, "ActivateCleanerService", ApiControllers.BackgroudWorkerApi);
+        Snackbar.Add(result.Success ? localizer.Get("Cleaner service") + " " + localizer.Get("Service up") : localizer.Get("Cleaner service") + " " + localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
+    }
+
+    private async Task ActivateEmailService(bool value)
+    {
+        if (value)
+        {
+            if (!await Http.GetFromJsonAsync<bool>($"{ApiControllers.ApplicationParametersApi}CheckSMTPConfiguration"))
+            {
+                status.EmailService = false;
+
+                Snackbar.Add(localizer.Get("Email service") + " " + localizer.Get("cannot be enabled because no SMTP configuration has been activated"), Severity.Error);
+                return;
+            }
+        }
+        status.EmailService = value;
+        await dataService.PostValues(status, "UpdateServicesStatus", ApiControllers.BackgroudWorkerApi);
+
+        Snackbar.Add(value ? localizer.Get("Email service") + " " + localizer.Get("Service up") : localizer.Get("Email service") + " " + localizer.Get("Service down"), value ? Severity.Success : Severity.Warning);
+    }
+}

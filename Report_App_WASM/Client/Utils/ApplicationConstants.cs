@@ -5,4 +5,13 @@
         public static string ApplicationName { get; set; } = default!;
         public static string ApplicationLogo { get; set; } = default!;
     }
+
+    public static class ApiControllers
+    {
+        public const string CrudDataApi = "api/DataCrud/";
+        public const string DashboardApi = "api/Dashboard/";
+        public const string BackgroudWorkerApi = "api/BackgroundWorker/";
+        public const string ApplicationParametersApi = "api/ApplicationParameters/";
+        public const string RemoteDbApi = "api/RemoteDb/";
+    }
 }

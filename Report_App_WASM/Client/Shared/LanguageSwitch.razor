@@ -3,19 +3,20 @@
 @using Microsoft.Extensions.Options
 @inject NavigationManager NavigationManager
 @inject IOptions<RequestLocalizationOptions> LocOptions
+@inject IJSRuntime JSRuntime
 
 <MudTooltip Text="@localizer.Get("Language")">
     <MudMenu Class="mx-1" Icon="@Icons.Material.Outlined.Translate" Color="Color.Default" Direction="Direction.Bottom" OffsetY="true" AnchorOrigin="Origin.BottomLeft"
              Dense="true">
-        @foreach (var language in LocOptions.Value.SupportedUICultures)
+        @foreach (var culture in supportedCultures)
         {
-            if (language.Name == _language)
+            if (culture.Name == _language)
             {
-                <MudMenuItem style="background:var(--mud-palette-primary); color:white">@language.DisplayName</MudMenuItem>
+                <MudMenuItem style="background:var(--mud-palette-primary); color:white">@culture.DisplayName</MudMenuItem>
             }
             else
             {
-                <MudMenuItem OnClick="(()=>SetLanguage(language.Name))">@language.DisplayName</MudMenuItem>
+                <MudMenuItem OnClick="(()=>SetLanguage(culture))">@culture.DisplayName</MudMenuItem>
             }
         }
     </MudMenu>
@@ -23,20 +24,36 @@
 
 @code {
     private string _language;
+    private CultureInfo[] supportedCultures = new[]
+    {
+                    new CultureInfo("fr"),
+                    new CultureInfo("en"),
+                    new CultureInfo("de"),
+                    new CultureInfo("nl"),
+    };
 
     protected override void OnInitialized()
     {
         _language = CultureInfo.CurrentCulture.Name;
     }
 
-    private void SetLanguage(string value)
+    private void SetLanguage(CultureInfo value)
     {
-        var culture = value;
-        var uri = new Uri(NavigationManager.Uri)
-            .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
-        var query = $"?culture={Uri.EscapeDataString(culture)}&" +
-            $"redirectUri={Uri.EscapeDataString(uri)}";
+        Culture = value;
+    }
 
-        NavigationManager.NavigateTo("/Culture/SetCulture" + query, forceLoad: true);
+    private CultureInfo Culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+            if (CultureInfo.CurrentCulture != value)
+            {
+                var js = (IJSInProcessRuntime)JSRuntime;
+                js.InvokeVoid("cultureInfo.set", value.Name);
+
+                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+            }
+        }
     }
 }
