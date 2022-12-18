@@ -1,4 +1,5 @@
 ﻿using Report_App_WASM.Server.Models.AuditModels;
+using Report_App_WASM.Shared;
 using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Server.Models
@@ -17,18 +18,22 @@ namespace Report_App_WASM.Server.Models
         [Required]
         [MaxLength(60)]
         public string ActivityName { get; set; }
+        public int IdActivity { get; set; }
         [MaxLength(60)]
-        public string TaskNamePrefix { get; set; }
-        [Required]
+        public string? TaskNamePrefix { get; set; }
+        public TaskType Type { get; set; }
+        private string? _typeName;
         [MaxLength(20)]
-        public string Type { get; set; }
+        public string? TypeName { get=> _typeName; set { _typeName=Type.ToString(); } }  
+        public FileType TypeFile { get; set; }
+        private string? _typeFileName;
         [MaxLength(20)]
-        public string TypeFile { get; set; }
+        public string? TypeFileName { get=> _typeFileName; set { _typeFileName=TypeFile.ToString(); } }
         public bool IsActivated { get; set; } = false;
         public bool SendByEmail { get; set; } = false;
         public int ReportsRetentionInDays { get; set; } = 90;
-        public string Comment { get; set; }
-        public string TaskHeaderParameters { get; set; }
+        public string? Comment { get; set; }
+        public string TaskHeaderParameters { get; set; } = "[]";
         public string CronParameters { get; set; } = "[]";
         public bool UseGlobalQueryParameters { get; set; } = false;
         public string QueryParameters { get; set; } = "[]";

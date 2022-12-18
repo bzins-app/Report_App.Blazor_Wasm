@@ -8,7 +8,8 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared.ApiResponse;
 using Report_App_WASM.Server.Utils;
-
+using Microsoft.AspNetCore.OData.Formatter;
+using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -35,15 +36,14 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [Route("odata/SystemLogs")]
+        [HttpGet("odata/SystemLogs")]
         public IQueryable<ApplicationLogSystem> GetSystemLogs()
         {
             return _context.ApplicationLogSystem.OrderByDescending(a => a.Id).AsNoTracking();
         }
 
 
-        [Route("odata/ExtractLogs")]
-        [HttpPost]
+        [HttpPost("odata/ExtractLogs")]
         public async Task<FileResult?> ExtractLogsAsync([FromBody] ODataExtractPayload Values)
         {
             if (Values.FunctionName == "EmailLogs")
@@ -108,14 +108,14 @@ namespace Report_App_WASM.Server.Controllers
 
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [Route("odata/EmailLogs")]
+        [HttpGet("odata/EmailLogs")]
         public IQueryable<ApplicationLogEmailSender> GetEmailLogs()
         {
             return _context.ApplicationLogEmailSender.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [Route("odata/QueryExecutionLogs")]
+        [HttpGet("odata/QueryExecutionLogs")]
         public IQueryable<ApplicationLogQueryExecution> GetQueryExecutionLogs()
         {
             return _context.ApplicationLogQueryExecution.OrderByDescending(a=>a.Id).AsNoTracking();
@@ -129,52 +129,87 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [Route("odata/TaskLogs")]
+        [HttpGet("odata/TaskLogs")]
         public IQueryable<ApplicationLogTask> GetTaskLogs()
         {
             return _context.ApplicationLogTask.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [Route("odata/AuditTrail")]
+        [HttpGet("odata/AuditTrail")]
         public IQueryable<ApplicationAuditTrail> GetAuditTrail()
         {
             return _context.ApplicationAuditTrail.OrderByDescending(a=>a.Id).AsNoTracking();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [Route("odata/SMTP")]
+        [HttpGet("odata/SMTP")]
         public IQueryable<SMTPConfiguration> GetSMTP()
         {
             return _context.SMTPConfiguration.OrderByDescending(a => a.Id).AsNoTracking();
         }
 
         [EnableQuery()]
-        [Route("odata/LDAP")]
+        [HttpGet("odata/LDAP")]
         public IQueryable<LDAPConfiguration> GetLDAP()
         {
             return _context.LDAPConfiguration.AsNoTracking();
         }
 
         [EnableQuery()]
-        [Route("odata/SFTP")]
+        [HttpGet("odata/SFTP")]
         public IQueryable<SFTPConfiguration> GetSFTP()
         {
             return _context.SFTPConfiguration.AsNoTracking();
         }
 
         [EnableQuery()]
-        [Route("odata/DepositPath")]
+        [HttpGet("odata/DepositPath")]
         public IQueryable<FileDepositPathConfiguration> GetDepositPath()
         {
             return _context.FileDepositPathConfiguration.AsNoTracking();
         }
 
         [EnableQuery()]
-        [Route("odata/Activities")]
+        [HttpGet("odata/Activities")]
         public IQueryable<Activity> GetActivities()
         {
             return _context.Activity.Include(a=>a.ActivityDbConnections).AsNoTracking();
+        }
+
+        [EnableQuery(EnsureStableOrdering = false)]
+        [HttpGet("odata/TaskHeader")]
+        public IQueryable<TaskHeader> GetTaskHeader()
+        {
+            return _context.TaskHeader.OrderByDescending(a => a.TaskHeaderId).AsNoTracking();
+        }
+
+        [EnableQuery(EnsureStableOrdering = false)]
+        [HttpGet("odata/Report")]
+        public IQueryable<TaskHeader> GetTaskHeaderReport()
+        {
+            return _context.TaskHeader.Where(a=>a.Type==TaskType.Report).OrderByDescending(a => a.TaskHeaderId).AsNoTracking();
+        }
+
+        [EnableQuery(EnsureStableOrdering = false)]
+        [HttpGet("odata/Report({activityId})")]
+        public IQueryable<TaskHeader> GetTaskHeaderReport(int activityId)
+        {
+            return _context.TaskHeader.Where(a => a.Type == TaskType.Report&&a.Activity.ActivityId==activityId).OrderByDescending(a => a.TaskHeaderId).AsNoTracking();
+        }
+
+        [EnableQuery(EnsureStableOrdering = false)]
+        [HttpGet("odata/Alert")]
+        public IQueryable<TaskHeader> GetTaskHeaderAlert()
+        {
+            return _context.TaskHeader.Where(a => a.Type == TaskType.Alert).OrderByDescending(a => a.TaskHeaderId).AsNoTracking();
+        }
+
+        [EnableQuery(EnsureStableOrdering = false)]
+        [HttpGet("odata/DataTransfer")]
+        public IQueryable<TaskHeader> GetTaskHeaderDataTransfer()
+        {
+            return _context.TaskHeader.Where(a => a.Type == TaskType.DataTransfer).OrderByDescending(a => a.TaskHeaderId).AsNoTracking();
         }
     }
 }

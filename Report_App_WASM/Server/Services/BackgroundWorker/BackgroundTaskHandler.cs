@@ -67,7 +67,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
             try
             {
-                if (header.Type != TaskType.DataTransfer.ToString())
+                if (header.Type != TaskType.DataTransfer)
                 {
                     if (header.SendByEmail && header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]")
                     {
@@ -82,7 +82,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         await FetchData(detail);
                         await _context.SaveChangesAsync("backgroundworker");
                     }
-                    if (header.Type == TaskType.Alert.ToString())
+                    if (header.Type == TaskType.Alert)
                     {
                         await HandleTaskAlertAsync();
                     }
@@ -207,7 +207,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 TaskHeaderId = header.TaskHeaderId,
                 ReportName = header.TaskName,
                 SubName = subName ?? "",
-                FileType = header.TypeFile,
+                FileType = header.TypeFile.ToString(),
                 ReportPath = "/docsstorage/" + fName,
                 FileName = fName,
                 IsAvailable = true,
@@ -263,7 +263,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     TaskHeaderId = header.TaskHeaderId,
                     ReportName = header.TaskName,
                     SubName = subName ?? "",
-                    FileType = header.TypeFile,
+                    FileType = header.TypeFile.ToString(),
                     ReportPath = completePath,
                     FileName = fName,
                     IsAvailable = false,
@@ -430,7 +430,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     fName = $"{detailParam.FileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HH_mm_ss}";
                 }
 
-                if (header.TypeFile == FileType.Excel.ToString())
+                if (header.TypeFile == FileType.Excel)
                 {
                     if (detailParam.SeparateExcelFile)
                     {
@@ -470,13 +470,13 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         continue;
                     }
                 }
-                else if (header.TypeFile == FileType.Json.ToString())
+                else if (header.TypeFile == FileType.Json)
                 {
                     fExtension = ".json";
                     fName += fExtension;
                     fileCreated = CreateFile.JsonFromDatable(fName, d.Value, detailParam.EncodingType ?? "UTF8");
                 }
-                else if (header.TypeFile == FileType.CSV.ToString())
+                else if (header.TypeFile == FileType.CSV)
                 {
                     fExtension = ".csv";
                     fName += fExtension;

@@ -31,7 +31,7 @@
                     }
                     @if (context.User.IsInRole("Supervisor"))
                     {
-                        <MudNavLink Href=@("TasksPerActivity/Report/"+t.ActivityName) Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Manage reports")</MudNavLink>
+                        <MudNavLink Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}") Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Manage reports")</MudNavLink>
                     }
                     <MudNavLink Href="@("RetrieveReports/" + t.ActivityName + "/" + t.ActivityId)">@localizer.Get("Retrieve reports")</MudNavLink>
                 </MudNavGroup>

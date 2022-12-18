@@ -173,12 +173,12 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
         private RemoteConnectionParameter CreateConnectionString(ActivityDbConnectionDTO parameter)
         {
-            RemoteConnectionParameter value = new() { Schema = parameter.DbSchema, UseDbSchema = parameter.UseDbSchema, DbType = parameter.DBType, CommandFetchSize = parameter.CommandFetchSize, CommandTimeOut = parameter.CommandTimeOut };
-            if (parameter.DBType == DBType.Oracle.ToString())
+            RemoteConnectionParameter value = new() { Schema = parameter.DbSchema, UseDbSchema = parameter.UseDbSchema, TypeDb = parameter.TypeDb, CommandFetchSize = parameter.CommandFetchSize, CommandTimeOut = parameter.CommandTimeOut };
+            if (parameter.TypeDb == TypeDb.Oracle)
             {
                 value.ConnnectionString = $"User ID={parameter.ConnectionLogin};Password={parameter.Password}; Data Source={parameter.ConnectionPath};";
             }
-            else if (parameter.DBType == DBType.SQLServer.ToString())
+            else if (parameter.TypeDb == TypeDb.SQLServer)
             {
                 string windowsAuthentication = ";Integrated Security=SSPI";
                 string connectionString;
@@ -204,7 +204,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                 connectionString += "Encrypt=False;";
                 value.ConnnectionString = connectionString;
             }
-            else if (parameter.DBType == DBType.DB2.ToString())
+            else if (parameter.TypeDb == TypeDb.DB2)
             {
                 parameter.UseDbSchema = true;
                 string databaseInfo = "";
@@ -237,19 +237,19 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             return CreateConnectionString(conValue);
         }
 
-        private async Task TryConnectAsync(string dbType, string connectionString)
+        private async Task TryConnectAsync(TypeDb TypeDb, string connectionString)
         {
             DbConnection conn;
 
-            if (dbType == DBType.Oracle.ToString())
+            if (TypeDb == TypeDb.Oracle)
             {
                 conn = new OracleConnection(connectionString);
             }
-            else if (dbType == DBType.SQLServer.ToString())
+            else if (TypeDb == TypeDb.SQLServer)
             {
                 conn = new SqlConnection(connectionString);
             }
-            else if (dbType == DBType.DB2.ToString())
+            else if (TypeDb == TypeDb.DB2)
             {
                 conn = new OleDbConnection(connectionString);
             }
@@ -304,7 +304,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             try
             {
                 var conParam = CreateConnectionString(parameter);
-                await TryConnectAsync(conParam.DbType, conParam.ConnnectionString);
+                await TryConnectAsync(conParam.TypeDb, conParam.ConnnectionString);
                 return new SubmitResult { Success = true, Message = "OK" };
             }
             catch (Exception e)
@@ -347,7 +347,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                     _fillTimeStamp = DateTime.Now;
                     DbGenericParameters dbConnector = new();
 
-                    if (connectionInfo.DbType == DBType.Oracle.ToString())
+                    if (connectionInfo.TypeDb == TypeDb.Oracle)
                     {
                         dbConnector.DbConnection = new OracleConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new OracleDataAdapter();
@@ -409,7 +409,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                         }
                         dbConnector.IntializationQueries.Add("alter session set nls_date_format = 'DD/MM/YYYY HH24:MI:SS'  ");
                     }
-                    else if (connectionInfo.DbType == DBType.SQLServer.ToString())
+                    else if (connectionInfo.TypeDb == TypeDb.SQLServer)
                     {
                         dbConnector.DbConnection = new SqlConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new SqlDataAdapter();
@@ -462,7 +462,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
                         dbConnector.DbCommand = cmd;
                     }
-                    else if (connectionInfo.DbType == DBType.DB2.ToString())
+                    else if (connectionInfo.TypeDb == TypeDb.DB2)
                     {
                         dbConnector.DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new OleDbDataAdapter();
@@ -540,7 +540,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                         {
                             ActivityId = run.ActivityId,
                             Database = connectionInfo.Schema,
-                            DBType = connectionInfo.DbType,
+                            TypeDb = connectionInfo.TypeDb.ToString(),
                             CommandTimeOut = connectionInfo.CommandTimeOut,
                             StartDateTime = start,
                             TotalDuration = end - start,

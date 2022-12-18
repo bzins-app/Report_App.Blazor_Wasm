@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ReportAppWASM.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class intialDB : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -78,7 +79,7 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DBType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TypeDb = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Database = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CommandTimeOut = table.Column<int>(type: "int", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: false),
@@ -282,7 +283,7 @@ namespace ReportAppWASM.Server.Migrations
                     ConfigurationName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     Domain = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActivated = table.Column<bool>(type: "bit", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -300,7 +301,7 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DBType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TypeDb = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Typoplogy = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Area = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     QueryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -350,7 +351,7 @@ namespace ReportAppWASM.Server.Migrations
                     Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Port = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -368,13 +369,13 @@ namespace ReportAppWASM.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConfigurationName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    smtpUserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    smtpPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    smtpHost = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    smtpPort = table.Column<int>(type: "int", nullable: false),
-                    smtpSSL = table.Column<bool>(type: "bit", nullable: false),
-                    fromEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    fromFullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SmtpUserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    SmtpPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SmtpHost = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmtpPort = table.Column<int>(type: "int", nullable: false),
+                    SmtpSSL = table.Column<bool>(type: "bit", nullable: false),
+                    FromEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FromFullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsActivated = table.Column<bool>(type: "bit", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -393,7 +394,8 @@ namespace ReportAppWASM.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConnectionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    DBType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TypeDb = table.Column<int>(type: "int", nullable: false),
+                    TypeDbName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     ConnectionPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Port = table.Column<int>(type: "int", nullable: false),
                     ConnectionLogin = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -430,13 +432,16 @@ namespace ReportAppWASM.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ActivityName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    TaskNamePrefix = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    TypeFile = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    IdActivity = table.Column<int>(type: "int", nullable: false),
+                    TaskNamePrefix = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    TypeName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    TypeFile = table.Column<int>(type: "int", nullable: false),
+                    TypeFileName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     IsActivated = table.Column<bool>(type: "bit", nullable: false),
                     SendByEmail = table.Column<bool>(type: "bit", nullable: false),
                     ReportsRetentionInDays = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TaskHeaderParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CronParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UseGlobalQueryParameters = table.Column<bool>(type: "bit", nullable: false),

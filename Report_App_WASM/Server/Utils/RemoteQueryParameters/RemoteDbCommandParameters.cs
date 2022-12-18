@@ -1,4 +1,5 @@
-﻿using Report_App_WASM.Shared.SerializedParameters;
+﻿using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.SerializedParameters;
 using System.Data.Common;
 
 namespace Report_App_WASM.Server.Utils.RemoteQueryParameters
@@ -21,7 +22,7 @@ namespace Report_App_WASM.Server.Utils.RemoteQueryParameters
     public class RemoteConnectionParameter
     {
         public string ConnnectionString { get; set; }
-        public string DbType { get; set; }
+        public TypeDb TypeDb { get; set; }
         public string Schema { get; set; }
         public bool UseDbSchema { get; set; }
         public int CommandTimeOut { get; set; } = 300;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace Report_App_WASM.Shared.DTO
 {
@@ -56,9 +57,9 @@ namespace Report_App_WASM.Shared.DTO
         public int Id { get; set; }
         [MaxLength(20)]
         public string ConnectionType { get; set; } = "SQL";
-        [Required]
+        public TypeDb TypeDb { get; set; }
         [MaxLength(20)]
-        public string? DBType { get; set; }
+        public string? TypeDbName { get; set; }
         [Required]
         public string? ConnectionPath { get; set; }
         public int Port { get; set; }
@@ -108,19 +109,19 @@ namespace Report_App_WASM.Shared.DTO
         [MaxLength(60)]
         public string? ConfigurationName { get; set; }
         [MaxLength(100)]
-        public string? smtpUserName { get; set; }
-        public string? smtpPassword { get; set; }
+        public string? SmtpUserName { get; set; }
+        public string? SmtpPassword { get; set; }
         [Required]
-        public string? smtpHost { get; set; }
+        public string? SmtpHost { get; set; }
         [Required]
-        public int smtpPort { get; set; }
-        public bool smtpSSL { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string? fromEmail { get; set; }
+        public int SmtpPort { get; set; }
+        public bool SmtpSSL { get; set; }
         [Required]
         [MaxLength(100)]
-        public string? fromFullName { get; set; }
+        public string? FromEmail { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string? FromFullName { get; set; }
         public bool IsActivated { get; set; }
     }
 
@@ -176,18 +177,20 @@ namespace Report_App_WASM.Shared.DTO
         [Required]
         [MaxLength(60)]
         public string ActivityName { get; set; }
+        public int IdActivity { get; set; }
         [MaxLength(60)]
-        public string TaskNamePrefix { get; set; }
-        [Required]
+        public string? TaskNamePrefix { get; set; }
+        public TaskType Type { get; set; }
         [MaxLength(20)]
-        public string Type { get; set; }
+        public string? TypeName { get; set; }
+        public FileType TypeFile { get; set; }
         [MaxLength(20)]
-        public string TypeFile { get; set; }
+        public string? TypeFileName { get; set; }
         public bool IsActivated { get; set; } = false;
         public bool SendByEmail { get; set; } = false;
         public int ReportsRetentionInDays { get; set; } = 90;
-        public string Comment { get; set; }
-        public string TaskHeaderParameters { get; set; }
+        public string? Comment { get; set; } 
+        public string TaskHeaderParameters { get; set; } = "[]";
         public string CronParameters { get; set; } = "[]";
         public bool UseGlobalQueryParameters { get; set; } = false;
         public string QueryParameters { get; set; } = "[]";
@@ -201,7 +204,7 @@ namespace Report_App_WASM.Shared.DTO
     public class ApplicationLogQueryExecutionDTO : IDTO
     {
         public int Id { get; set; }
-        public string? DBType { get; set; }
+        public string? TypeDb { get; set; }
         public string? Database { get; set; }
         public int CommandTimeOut { get; set; }
         public int ActivityId { get; set; }

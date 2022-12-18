@@ -60,17 +60,17 @@ namespace ReportAppWASM.Server.Services.EmailSender
                         message = message + Environment.NewLine + string.Format("The size of the attachment is too high: {0}MB. Maximum is {1} ", Math.Round(size, 2), 20);
                     }
 
-                    ProcessEmailAsync(Smtp.fromEmail,
-                                                 Smtp.fromFullName,
+                    ProcessEmailAsync(Smtp.FromEmail,
+                                                 Smtp.FromFullName,
                                                  subject,
                                                  message,
                                                  email,
                                                  email,
-                                                 Smtp.smtpUserName,
-                                                 EncryptDecrypt.DecryptString(Smtp.smtpPassword),
-                                                 Smtp.smtpHost,
-                                                 Smtp.smtpPort,
-                                                 Smtp.smtpSSL,
+                                                 Smtp.SmtpUserName,
+                                                 EncryptDecrypt.DecryptString(Smtp.SmtpPassword),
+                                                 Smtp.SmtpHost,
+                                                 Smtp.SmtpPort,
+                                                 Smtp.SmtpSSL,
                                                  Attachment)
                                                  .Wait();
 

@@ -15,7 +15,7 @@ namespace Report_App_WASM.Server.Models
         [MaxLength(100)]
         public string? UserName { get; set; }
         private string? _password;
-        public string Password
+        public string? Password
         {
             get => _password;
             set
@@ -26,7 +26,7 @@ namespace Report_App_WASM.Server.Models
                 }
                 else
                 {
-                    _password = EncryptDecrypt.EncryptString(value);
+                    _password = EncryptDecrypt.EncryptString(value!);
                 }
             }
         }

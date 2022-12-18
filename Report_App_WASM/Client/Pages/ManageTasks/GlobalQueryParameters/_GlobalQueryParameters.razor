@@ -1,0 +1,104 @@
+﻿@inject IDialogService DialogService
+
+<MudCard>
+    <MudCardContent>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small" OnClick="OpenCreateDialog">@localizer.Get("Add a parameter")</MudButton>
+    </MudCardContent>
+    <MudCardContent>
+        <MudGrid Spacing="1">
+            @foreach (var element in parameters)
+            {
+                <MudItem xs="6" md="3" xl="2">
+                    <MudCard Elevation="4" Style="height:290px">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">@element.ParameterIdentifier</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Default" OnClick="() => delete(element)" />
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudField Label="@localizer.Get("Data type")"> @localizer.Get(element.ValueType.ToString())</MudField>
+                            @if (element.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
+                            {
+                                <MudSelect @bind-Value="element.DateOption" Label="@localizer.Get("Select a date calculation")" @bind-Value:after="updateParameters">
+                                    @foreach (CalulatedDateOption item in Enum.GetValues(typeof(CalulatedDateOption)))
+                                    {
+                                        <MudSelectItem Value="@item">@localizer.Get(item.ToString())</MudSelectItem>
+                                    }
+                                </MudSelect>
+                                @if (element.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
+                                {
+                                    var valueDateTime = (element.DateOption == CalulatedDateOption.Now ? DateTime.Now : Item.LastRunDateTime ?? DateTime.Now);
+                                    <MudField Label="@localizer.Get("Calculated date")">@(element.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date : valueDateTime)</MudField>
+                                }
+                                else
+                                {
+                                    <MudField Label="@localizer.Get("Calculated date")">@(element.ValueType == QueryCommandParameterValueType.Date ? element.DateOption.GetCalculateDateTime().Date.ToString("d") : element.DateOption.GetCalculateDateTime())</MudField>
+                                }
+                            }
+                            @if (element.ValueType == QueryCommandParameterValueType.String)
+                            {
+                                <MudTextField Label="@localizer.Get("Enter value")" @bind-Value="@element.value" TextChanged="updateParameters" Text="@element.value" />
+                            }
+                            @if (element.ValueType == QueryCommandParameterValueType.Number)
+                            {
+                                <MudNumericField Label="@localizer.Get("Enter value")" @bind-Value="@(element.value)" TextChanged="updateParameters" Text="@element.value" />
+                            }
+                            <MudSwitch @bind-Checked="element.Required" Label="@localizer.Get("Required")" Color="Color.Primary" @onclick="updateParameters" />
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudCardContent>
+</MudCard>
+
+@code {
+
+    [Parameter] public TaskHeaderDTO Item { get; set; }
+    [Parameter] public EventCallback<bool> changePendingChanged { get; set; }
+    [Parameter] public bool changePending { get; set; }
+    List<QueryCommandParameter> parameters = new();
+
+    protected override void OnInitialized()
+    {
+        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        {
+            parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var dialog = DialogService.Show<_QueryParametersFormDialog>("Create");
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            parameters.Add((QueryCommandParameter)feedback.Data);
+            await updateParameters();
+        }
+    }
+
+    private async Task delete(QueryCommandParameter element)
+    {
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        bool? result = await DialogService.ShowMessageBox(localizer.Get("Warning"), localizer.Get("Are you sure?"), localizer.Get("Delete"), null, cancelText: localizer.Get("Cancel"), dialogOptions);
+
+        if (result != null)
+        {
+            parameters.Remove(parameters.FirstOrDefault(a => a.ParameterIdentifier == element.ParameterIdentifier));
+            await updateParameters();
+        }
+
+    }
+
+    private async Task updateParameters()
+    {
+        Item.QueryParameters = JsonSerializer.Serialize(parameters);
+        changePending = true;
+        await changePendingChanged.InvokeAsync(changePending);
+    }
+}

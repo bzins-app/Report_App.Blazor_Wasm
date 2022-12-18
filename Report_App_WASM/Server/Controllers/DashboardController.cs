@@ -33,9 +33,9 @@ namespace Report_App_WASM.Server.Controllers
             metrics.NbrOfFilesStored = await reportsToday.CountAsync();
 
             var activeTask = _context.TaskHeader.Where(a => a.IsActivated);
-            metrics.NbrOfActiveReports = await activeTask.Where(a => a.Type == TaskType.Report.ToString()).CountAsync();
-            metrics.NbrOfActiveAlerts = await activeTask.Where(a => a.Type == TaskType.Alert.ToString()).CountAsync();
-            metrics.NbrOfActiveDataTransfer = await activeTask.Where(a => a.Type == TaskType.DataTransfer.ToString()).CountAsync();
+            metrics.NbrOfActiveReports = await activeTask.Where(a => a.Type == TaskType.Report).CountAsync();
+            metrics.NbrOfActiveAlerts = await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync();
+            metrics.NbrOfActiveDataTransfer = await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync();
 
             metrics.NbrOfActiveQueries = await _context.TaskDetail.Where(a => a.TaskHeader.IsActivated).CountAsync();
             return metrics;

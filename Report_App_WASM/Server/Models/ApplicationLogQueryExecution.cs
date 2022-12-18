@@ -6,7 +6,7 @@ namespace Report_App_WASM.Server.Models
     public class ApplicationLogQueryExecution : IExcludeAuditTrail
     {
         public int Id { get; set; }
-        public string? DBType { get; set; }
+        public string? TypeDb { get; set; }
         public string? Database { get; set; }
         public int CommandTimeOut { get; set; }
         public int ActivityId { get; set; }

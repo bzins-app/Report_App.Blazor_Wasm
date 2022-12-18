@@ -1,0 +1,39 @@
+﻿@*@using AutoMapper
+@using AutoMapper.QueryableExtensions
+@inject IMapper _mapper
+@using Report_App_BlazorServ.Services.BackgroundWorker
+@inject ApplicationDbContext _context
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudSwitch Checked="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))"/>
+
+    @code {
+	[Parameter]
+	public TaskHeaderDTO Item { get; set; }
+
+	private async Task ChangeStatusAsync(bool value)
+	{
+		Item.SendByEmail = value;
+
+		if (Item.SendByEmail )
+		{
+			if (await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).Select(a => a.Email).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync()=="[]"||!await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AnyAsync())
+			{
+				Item.SendByEmail = false;
+                Snackbar.Add( Item.TaskName + " " + localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
+
+				return;
+			}
+		}
+
+		var ItemUpdate = await _context.TaskHeader.Include(a => a.Activity).Where(a => a.TaskHeaderId == Item.TaskHeaderId).FirstOrDefaultAsync();
+		ItemUpdate.SendByEmail = Item.SendByEmail;
+		_context.Entry(ItemUpdate).State = EntityState.Modified;
+        var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        await _context.SaveChangesAsync(currentUser.Identity.Name);
+        _context.Entry(ItemUpdate).State = EntityState.Detached;
+
+		Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " +localizer.Get("send by email") +" "  +localizer.Get("enabled") : Item.TaskName + " " +localizer.Get("send by email") +" "+ localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
+	}
+    }*@

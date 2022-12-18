@@ -10,15 +10,15 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@form">
             <MudTextField @bind-Value="Item.ActivityName" Label="@localizer.Get("Activity name")" Required RequiredError="@localizer.Get("Required")" Validation="checkNameResult" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudSelect T="string" Label="@localizer.Get("Type of Database")" @bind-Value="@dbCon.DBType" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@localizer.Get("Please select a Db type")" HelperText="@localizer.Get("Please select a Db type")" Disabled="Action==CrudAction.Delete?true:false">
-                @foreach (DBType item in Enum.GetValues(typeof(DBType)))
+            <MudSelect Label="@localizer.Get("Type of Database")" @bind-Value="@dbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@localizer.Get("Please select a Db type")" HelperText="@localizer.Get("Please select a Db type")" Disabled="Action==CrudAction.Delete?true:false">
+                @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
                 {
-                    <MudSelectItem Value="@item.ToString()">@item</MudSelectItem>
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
                 }
             </MudSelect>
-            @if (!string.IsNullOrEmpty(dbCon.DBType) &&Action!=CrudAction.Delete)
+            @if (dbCon.TypeDb>0 &&Action!=CrudAction.Delete)
             {
-                @if (dbCon.DBType == DBType.Oracle.ToString())
+                @if (dbCon.TypeDb == TypeDb.Oracle)
                 {
                     <MudTextField @bind-Value="dbCon.ConnectionPath" Label="@localizer.Get("Connection path")" Required RequiredError="@localizer.Get("Required")" Placeholder="IP or Hostname:Port /Instance" />
                     <MudSwitch @bind-Checked="dbCon.UseDbSchema" Label="@localizer.Get("Use a DB schema?")" Color="Color.Primary" />
@@ -27,7 +27,7 @@
                     <MudTextField @bind-Value="dbCon.Password" Label="@localizer.Get("Password")" InputType="InputType.Password" />
                     <MudNumericField @bind-Value="dbCon.CommandFetchSize" Label="@localizer.Get("Command fetch size")" />
                 }
-                else if (dbCon.DBType == DBType.SQLServer.ToString())
+                else if (dbCon.TypeDb == TypeDb.SQLServer)
                 {
 
                     <MudTextField @bind-Value="dbCon.ConnectionPath" Label="@localizer.Get("Connection path")" Required RequiredError="@localizer.Get("Required")" Placeholder="IP or Hostname" />
@@ -38,7 +38,7 @@
                     <MudTextField @bind-Value="dbCon.ConnectionLogin" Label="@localizer.Get("Connection login")" Disabled="dbCon.ADAuthentication" />
                     <MudTextField @bind-Value="dbCon.Password" Label="@localizer.Get("Password")" InputType="InputType.Password" Disabled="dbCon.ADAuthentication" />
                 }
-                else if (dbCon.DBType == DBType.DB2.ToString())
+                else if (dbCon.TypeDb == TypeDb.DB2)
                 {
                     <MudTextField @bind-Value="dbCon.ConnectionPath" Label="@localizer.Get("IP or Servername")" Required RequiredError="@localizer.Get("Required")" Placeholder="IP or Hostname:Port" />
                     <MudTextField @bind-Value="dbCon.DbSchema" Label="@localizer.Get("Database name")" Required RequiredError="@localizer.Get("Required")" />
@@ -160,7 +160,7 @@
         tryConn.ConnectionPath = dbCon.ConnectionPath;
         tryConn.IntentReadOnly = dbCon.IntentReadOnly;
         tryConn.DbSchema = dbCon.DbSchema;
-        tryConn.DBType = dbCon.DBType;
+        tryConn.TypeDb = dbCon.TypeDb;
         tryConn.Port = dbCon.Port;
         tryConn.UseDbSchema = dbCon.UseDbSchema;
         tryConn.Password = dbCon.Password;

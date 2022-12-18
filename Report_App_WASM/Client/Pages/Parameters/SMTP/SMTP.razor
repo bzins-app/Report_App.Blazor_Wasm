@@ -24,7 +24,7 @@
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")"  Disabled="rendering"/>
+                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="rendering" />
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
@@ -44,11 +44,11 @@
                     <TemplateColumn Title="@localizer.Get("Is activated?")">
                         <_SMTPActivate Item="context" />
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.smtpHost)" Title="@localizer.Get("SMTP host")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.smtpPort)" Title="@localizer.Get("SMTP port")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.fromEmail)" Title="@localizer.Get("From email")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.fromFullName)" Title="@localizer.Get("From full name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.smtpSSL)" Title="@localizer.Get("SSL Activated?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpHost)" Title="@localizer.Get("SMTP host")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpPort)" Title="@localizer.Get("SMTP port")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FromEmail)" Title="@localizer.Get("From email")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FromFullName)" Title="@localizer.Get("From full name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpSSL)" Title="@localizer.Get("SSL Activated?")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
@@ -66,7 +66,7 @@
 
 @code
 {
-    #nullable enable
+#nullable enable
     GridItemsProvider<SMTPConfigurationDTO>? _ItemsProvider;
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     SimpleGridFieldsContent Translations = default!;
@@ -138,17 +138,16 @@
     private async Task OpenEditDialog(SMTPConfigurationDTO value)
     {
         var item = new SMTPConfigurationDTO
-        {
-
-            ConfigurationName = value.ConfigurationName,
-            smtpHost = value.smtpHost,
-            smtpPort = value.smtpPort,
-            smtpSSL = value.smtpSSL,
-            smtpUserName = value.smtpUserName,
-            smtpPassword = value.smtpPassword,
-            fromEmail = value.fromEmail,
-            fromFullName = value.fromFullName
-        };
+            {
+                ConfigurationName = value.ConfigurationName,
+                SmtpHost = value.SmtpHost,
+                SmtpPort = value.SmtpPort,
+                SmtpSSL = value.SmtpSSL,
+                SmtpUserName = value.SmtpUserName,
+                SmtpPassword = value.SmtpPassword,
+                FromEmail = value.FromEmail,
+                FromFullName = value.FromFullName
+            };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
         var dialog = DialogService.Show<_SMTPFormDialog>("Edit", parameters);
@@ -158,19 +157,19 @@
         {
             errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
-            value.smtpHost = item.smtpHost;
-            value.smtpPort = item.smtpPort;
-            value.smtpSSL = item.smtpSSL;
-            value.smtpUserName = item.smtpUserName;
-            value.smtpPassword = item.smtpPassword;
-            value.fromEmail = item.fromEmail;
-            value.fromFullName = item.fromFullName;
+            value.SmtpHost = item.SmtpHost;
+            value.SmtpPort = item.SmtpPort;
+            value.SmtpSSL = item.SmtpSSL;
+            value.SmtpUserName = item.SmtpUserName;
+            value.SmtpPassword = item.SmtpPassword;
+            value.FromEmail = item.FromEmail;
+            value.FromFullName = item.FromFullName;
 
             var result = await dataService.PostValues(value, "SMTPUpdate");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
-                 await OnRefresh();
+                await OnRefresh();
             }
             else
             {
@@ -229,4 +228,3 @@
         }
     }
 }
- 

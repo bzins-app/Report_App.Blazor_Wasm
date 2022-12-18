@@ -181,7 +181,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            await dataService.PostValues( new ApiBackgrounWorkerdPayload { Activate = false, Value = value.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/" );
+            await dataService.PostValues( new ApiBackgrounWorkerdPayload { Activate = false, Value = value.ActivityId }, "ActivatePerActivity", ApiControllers.BackgroudWorkerApi );
             var result = await dataService.PostValues(value, "ActivityDelete");
             if (result.Success)
             {

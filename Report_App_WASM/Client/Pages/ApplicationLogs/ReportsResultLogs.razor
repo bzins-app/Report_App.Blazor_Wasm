@@ -27,7 +27,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid BuildInFilter="true" FieldsContent="@Translations" ItemsProvider="@_ItemsProvider" Pagination="@pagination" @ref="_grid">
                     <PropertyColumn Property="@(p => p.ActivityName)" Title="@localizer.Get("Activity name")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreatedAt)" Title="@localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ReportName)" Title="@localizer.Get("Report name")" Sortable="true" />

@@ -291,6 +291,52 @@ namespace Report_App_WASM.Server.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> TaskHeaderInsert(ApiCRUDPayload<TaskHeader> values)
+        {
+            try
+            {
+                _context.Entry(values.EntityValue).State = EntityState.Added;
+                await SaveDbAsync(values.UserName);
+                _context.Entry(values.EntityValue).State = EntityState.Detached;
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TaskHeaderDelete(ApiCRUDPayload<TaskHeader> values)
+        {
+            try
+            {
+                _context.Entry(values.EntityValue).State = EntityState.Deleted;
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TaskHeaderUpdate(ApiCRUDPayload<TaskHeader> values)
+        {
+            try
+            {
+                _context.Entry(values.EntityValue).State = EntityState.Modified;
+                await SaveDbAsync(values.UserName);
+                _context.Entry(values.EntityValue).State = EntityState.Detached;
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
         private async Task SaveDbAsync(string userId="system")
         {
             await _context.SaveChangesAsync(userId);

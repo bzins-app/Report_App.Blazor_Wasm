@@ -1,0 +1,140 @@
+﻿@inject IDialogService DialogService
+
+<ErrorBoundary>
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@localizer.Get("Queries")</MudText>
+            <MudSpacer />
+            <MudStack Row="true">
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OpenCreateDialog)"
+                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" />
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow:auto">
+                <SimpleGrid Items="@Elements.AsQueryable()" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                    <TemplateColumn>
+                        <MudStack Row=true>
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                        </MudStack>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(p => p.QueryName)" Title="@localizer.Get("Query name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.DetailSequence)" Title="@localizer.Get("Query sequence")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                </SimpleGrid>
+            </div>
+            <Paginator Value="@pagination" FieldsContent="@Translations" />
+        </MudCardContent>
+    </MudCard>
+</ErrorBoundary>
+
+@code {
+    [Parameter] public TaskHeaderDTO Item { get; set; }
+    [Parameter] public List<TaskDetailDTO> itemToDelete { get; set; }
+    [Parameter] public bool changePending { get; set; }
+    [Parameter] public EventCallback<bool> changePendingChanged { get; set; }
+    IEnumerable<TaskDetailDTO> Elements = new List<TaskDetailDTO>();
+    SimpleGrid<TaskDetailDTO> _grid;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    SimpleGridFieldsContent Translations = default!;
+    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
+    private bool disable;
+
+    protected override void OnParametersSet()
+    {
+        UpdateElements();
+        Translations = appService.GetGridTranslations();
+    }
+
+    private void UpdateElements()
+    {
+        Elements = Item.TaskDetails.ToList();
+    }
+
+    private async Task OpenEditDialog(TaskDetailDTO value)
+    {
+        disable = true;
+        TaskDetailDTO itemUpdate = new TaskDetailDTO()
+            {
+                Query = value.Query,
+                QueryName = value.QueryName,
+                QueryParameters = value.QueryParameters,
+                DetailSequence = value.DetailSequence,
+                TaskDetailParameters = value.TaskDetailParameters,
+                LastRunDateTime=value.LastRunDateTime
+            };
+        var parameters = new DialogParameters { ["Item"] = itemUpdate, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Update };
+
+        var dialog = DialogService.Show<_TaskDetailsFormDialog>("Edit", parameters, maxWidth);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            var result = (TaskDetailDTO)feedback.Data;
+            var toUpdate = Item.TaskDetails.Where(a => a.TaskDetailId == value.TaskDetailId).First();
+            toUpdate.Query = result.Query;
+            toUpdate.QueryName = result.QueryName;
+            toUpdate.QueryParameters = result.QueryParameters;
+            toUpdate.DetailSequence = result.DetailSequence;
+            toUpdate.TaskDetailParameters = result.TaskDetailParameters;
+            changePending = true;
+            await changePendingChanged.InvokeAsync(changePending);
+        }
+        disable = false;
+    }
+
+    private async Task OpenDeleteDialog(TaskDetailDTO value)
+    {
+        disable = true;
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        bool? result = await DialogService.ShowMessageBox(localizer.Get("Warning"),localizer.Get("Are you sure?"), localizer.Get("Delete"),null, cancelText: localizer.Get("Cancel"), dialogOptions);
+
+        if (result!=null)
+        {
+            itemToDelete.Add(value);
+            Item.TaskDetails.Remove(value);
+            changePending = true;
+            await changePendingChanged.InvokeAsync(changePending);
+            UpdateElements();
+        }
+        disable = false;
+    }
+
+
+    private async Task OpenCreateDialog()
+    {
+        var value = new TaskDetailDTO();
+        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
+
+        var dialog = DialogService.Show<_TaskDetailsFormDialog>("Create", parameters, maxWidth);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Cancelled)
+        {
+            Item.TaskDetails.Add((TaskDetailDTO)feedback.Data);
+            changePending = true;
+            await changePendingChanged.InvokeAsync(changePending);
+            UpdateElements();
+        }
+    }
+    private void OnRefresh()
+    {
+        StateHasChanged();
+    }
+
+    private void RemoveFilters()
+    {
+        _grid.RefreshDataAsync();
+        UpdateElements();
+    }
+}

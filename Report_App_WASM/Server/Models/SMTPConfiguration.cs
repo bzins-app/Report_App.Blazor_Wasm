@@ -11,9 +11,9 @@ namespace Report_App_WASM.Server.Models
         [MaxLength(60)]
         public string? ConfigurationName { get; set; }
         [MaxLength(100)]
-        public string? smtpUserName { get; set; }
+        public string? SmtpUserName { get; set; }
         private string? _password;
-        public string smtpPassword
+        public string? SmtpPassword
         {
             get => _password;
             set
@@ -24,21 +24,21 @@ namespace Report_App_WASM.Server.Models
                 }
                 else
                 {
-                    _password = EncryptDecrypt.EncryptString(value);
+                    _password = EncryptDecrypt.EncryptString(value!);
                 }
             }
         }
         [Required]
-        public string? smtpHost { get; set; }
+        public string? SmtpHost { get; set; }
         [Required]
-        public int smtpPort { get; set; }
-        public bool smtpSSL { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string? fromEmail { get; set; }
+        public int SmtpPort { get; set; }
+        public bool SmtpSSL { get; set; }
         [Required]
         [MaxLength(100)]
-        public string? fromFullName { get; set; }
+        public string? FromEmail { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string? FromFullName { get; set; }
         public bool IsActivated { get; set; }
     }
 }

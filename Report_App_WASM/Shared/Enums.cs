@@ -1,6 +1,8 @@
-﻿namespace Report_App_WASM.Shared
+﻿using System.Text.Json.Serialization;
+
+namespace Report_App_WASM.Shared
 {
-    public enum DBType
+    public enum TypeDb
     {
         Oracle=1,
         SQLServer=2,       
@@ -9,6 +11,7 @@
         DB2=5
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FileType
     {
         Excel=1,
@@ -17,6 +20,7 @@
         XML=4
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TaskType
     {
         Report=0,

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.SerializedParameters;
 using ReportAppWASM.Server.Services.EmailSender;
@@ -85,19 +86,19 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                             Cts = CancellationToken.None,
                             GenerateFiles = true
                         };
-                        if (taskHeader.Type == TaskType.Report.ToString() && services.ReportService)
+                        if (taskHeader.Type == TaskType.Report && services.ReportService)
                         {
                             string queueName = "report";
                             options.QueueName = queueName;
                             RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
-                        if (taskHeader.Type == TaskType.Alert.ToString() && services.AlertService)
+                        if (taskHeader.Type == TaskType.Alert && services.AlertService)
                         {
                             string queueName = "alert";
                             options.QueueName = queueName;
                             RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
-                        if (taskHeader.Type == TaskType.DataTransfer.ToString() && services.DataTransferService)
+                        if (taskHeader.Type == TaskType.DataTransfer && services.DataTransferService)
                         {
                             string queueName = "datatransfer";
                             options.QueueName = queueName;//to remove in version 2.0
@@ -119,9 +120,9 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             }
         }
 
-        public async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, string type)
+        public async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type)
         {
-            string queueName = type.ToLower();
+            string queueName = type.ToString().ToLower();
             var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local, QueueName = queueName };
             SubmitResult result = new();
             if (activate)
@@ -133,7 +134,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 }
                 else
                 {
-                    await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == type && a.Activity.IsActivated).ForEachAsync(
+                    await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type.ToString().ToLower() == type.ToString().ToLower() && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
                             string JobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;

@@ -17,7 +17,7 @@ namespace ReportAppWASM.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -246,11 +246,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("DBType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<string>("DbConnectionParameters")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -275,6 +270,14 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<int>("Port")
                         .HasColumnType("int");
+
+                    b.Property<int>("TypeDb")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeDbName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool>("UseDbSchema")
                         .HasColumnType("bit");
@@ -391,9 +394,6 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<int>("CommandTimeOut")
                         .HasColumnType("int");
 
-                    b.Property<string>("DBType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Database")
                         .HasColumnType("nvarchar(max)");
 
@@ -426,6 +426,9 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<DateTime>("TransferBeginDateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TypeDb")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeJob")
                         .HasColumnType("nvarchar(max)");
@@ -903,7 +906,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -933,9 +935,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("DBType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("LastRun")
                         .HasColumnType("datetime2");
 
@@ -957,6 +956,9 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<string>("QueryParameters")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeDb")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Typoplogy")
@@ -1000,7 +1002,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Port")
@@ -1037,6 +1038,16 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("FromEmail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FromFullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<bool>("IsActivated")
                         .HasColumnType("bit");
 
@@ -1047,31 +1058,20 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("fromEmail")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("fromFullName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("smtpHost")
+                    b.Property<string>("SmtpHost")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("smtpPassword")
-                        .IsRequired()
+                    b.Property<string>("SmtpPassword")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("smtpPort")
+                    b.Property<int>("SmtpPort")
                         .HasColumnType("int");
 
-                    b.Property<bool>("smtpSSL")
+                    b.Property<bool>("SmtpSSL")
                         .HasColumnType("bit");
 
-                    b.Property<string>("smtpUserName")
+                    b.Property<string>("SmtpUserName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -1235,7 +1235,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateDateTime")
@@ -1250,6 +1249,9 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FileDepositPathConfigurationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdActivity")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActivated")
@@ -1285,17 +1287,20 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TaskNamePrefix")
-                        .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeFile")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeFileName")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("TypeFile")
-                        .IsRequired()
+                    b.Property<string>("TypeName")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 

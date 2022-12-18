@@ -1,0 +1,66 @@
+﻿@*@using AutoMapper
+@using AutoMapper.QueryableExtensions
+@inject IMapper _mapper
+@using Report_App_BlazorServ.Services.BackgroundWorker
+@inject ApplicationDbContext _context
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IBackgroundWorkers _BGW
+
+<MudSwitch Checked="@Item.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+
+@code {
+    [Parameter]
+    public TaskHeaderDTO Item { get; set; }
+
+    private async Task ChangeStatusAsync(bool value)
+    {
+        Item.IsActivated = value;
+
+        if (Item.IsActivated)
+        {
+            var activityActivated = await _context.TaskHeader.Include(a => a.Activity).AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == Item.TaskHeaderId).Select(a => new {Activated= a.Activity.IsActivated, ActivityName=a.ActivityName }).FirstOrDefaultAsync();
+            if (!activityActivated.Activated)
+            {
+                Item.IsActivated = false;
+                Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because the related activity is not enabled") + " :" + activityActivated.ActivityName, Severity.Error);
+
+                return;
+            }
+
+            if (string.IsNullOrEmpty(Item.CronParameters) && Item.CronParameters != "[]")
+            {
+                Item.IsActivated = false;
+                Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because the scheduler value is not defined"), Severity.Error);
+
+                return;
+            }
+            if (string.IsNullOrEmpty(Item.CronParameters) && Item.CronParameters!="[]")
+            {
+                Item.IsActivated = false;
+                Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because the scheduler value is not defined"), Severity.Error);
+
+                return;
+            }
+            var reportDetailsExists = await _context.TaskDetail.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AsNoTracking().AnyAsync();
+            if (!reportDetailsExists)
+            {
+                Item.IsActivated = false;
+                Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because no query is attached to this report"), Severity.Error);
+
+                return;
+            }
+        }
+        await _BGW.SwitchBackgroundTaskAsync(Item.TaskHeaderId, Item.IsActivated);
+        Item.IsActivated = Item.IsActivated;
+
+        var ItemUpdate = await _context.TaskHeader.Include(a => a.Activity).Where(a => a.TaskHeaderId == Item.TaskHeaderId).FirstOrDefaultAsync();
+        ItemUpdate.IsActivated = Item.IsActivated;
+        _context.Entry(ItemUpdate).State = EntityState.Modified;
+        var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        await _context.SaveChangesAsync(currentUser.Identity.Name);
+        _context.Entry(ItemUpdate).State = EntityState.Detached;
+
+        Snackbar.Add(Item.IsActivated ? Item.TaskName + " " + localizer.Get("enabled") : Item.TaskName + " " + localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+    }
+    }*@

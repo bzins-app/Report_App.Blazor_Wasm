@@ -16,7 +16,7 @@
     </MudCardHeader>
     <MudCardContent>
         <MudTextField @bind-Value="targetInfo.ActivityName" Label="@localizer.Get("Activity name")" ReadOnly />
-        @if (!string.IsNullOrEmpty(dbCon.DBType))
+        @if (!string.IsNullOrEmpty(dbCon.TypeDb))
         {
 
             <MudTextField @bind-Value="dbCon.ConnectionPath" Label="@localizer.Get("Connection path")" Required Placeholder="IP or Hostname" />
@@ -74,7 +74,7 @@
             List<ActivityDbConnection> connections = new List<ActivityDbConnection>();
             targetInfo = new Activity { ActivityName = "Data transfer", ActivityType = ActivityTypeEnum.TargetDB.ToString() };
             targetInfo.ActivityDbConnections = connections;
-            dbCon = new ActivityDbConnection { Activity = targetInfo, DBType = DBTypeEnum.SQLServer.ToString() };
+            dbCon = new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDbEnum.SQLServer.ToString() };
         }
         else
         {
@@ -111,7 +111,7 @@
         tryConn.ConnectionPath = dbCon.ConnectionPath;
         tryConn.IntentReadOnly = dbCon.IntentReadOnly;
         tryConn.DbSchema = dbCon.DbSchema;
-        tryConn.DBType = dbCon.DBType;
+        tryConn.TypeDb = dbCon.TypeDb;
         tryConn.Port = dbCon.Port;
         tryConn.UseDbSchema = dbCon.UseDbSchema;
         if (dbCon.Password == passwordContainer)

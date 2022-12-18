@@ -1,0 +1,109 @@
+﻿@*@inject IDialogService DialogService
+
+<MudTextField @bind-Value="Item.DataTransferTargetTableName" Label="@localizer.Get("Target table name")" Required />
+<MudSwitch @bind-Checked="Item.DataTransferCreateTable" Label="@localizer.Get("Create target table?")" Color="Color.Primary" />
+<MudSwitch @bind-Checked="Item.DataTransferUsePK" Label="@localizer.Get("Use primary keys?")" Color="Color.Primary" @onclick="ResetCommandBehaviour" />
+
+@if (Item.DataTransferUsePK)
+{
+    <MudSelect T="string" Label="@localizer.Get("Command behaviour")"
+           AnchorOrigin="Origin.BottomCenter" @bind-Value="Item.DataTransferCommandBehaviour"
+           Required>
+        @foreach (var value in commandBehaviourAdvanced)
+        {
+            <MudSelectItem Value="@value">@localizer.Get(@value)</MudSelectItem>
+        }
+    </MudSelect>
+    <MudTextField T="string" Label="@localizer.Get("Enter the primary key column")" @bind-Value="@pKName" />
+    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
+           Class="ml-auto mt-3 mb-3" OnClick="@(()=>Add())">@localizer.Get("Add the primary key")</MudButton>
+    <MudTable Items="@pKs" Hover="true" Dense="true">
+        <HeaderContent>
+            <MudTh>@localizer.Get("Column name")</MudTh>
+            <MudTh>@localizer.Get("Action")</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@localizer.Get("Primary key")">@context</MudTd>
+            <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="()=>Delete(context)"></MudIconButton></MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
+           Class="ml-auto mt-3 mb-3" OnClick="@(()=>DeleteTableConfirmation())">@localizer.Get("Delete the target table")</MudButton>
+}
+else
+{
+    <MudSelect T="string" Label="@localizer.Get("Command behaviour")"
+           AnchorOrigin="Origin.BottomCenter" @bind-Value="Item.DataTransferCommandBehaviour"
+           Required>
+        @foreach (var value in commandBehaviourBasic)
+        {
+            <MudSelectItem Value="@value">@localizer.Get(@value)</MudSelectItem>
+        }
+    </MudSelect>
+}
+
+
+@code {
+    [Parameter] public TaskDetailDTO Item { get; set; }
+    private List<string> pKs = new();
+    private string pKName;
+    List<string> commandBehaviourBasic = new();
+    List<string> commandBehaviourAdvanced = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        PopulateSlectList();
+        commandBehaviourAdvanced = StaticAppLists.GetDataTransferAdvancedBehaviour;
+        commandBehaviourBasic = StaticAppLists.GetDataTransferBasicBehaviour;
+        pKs = JsonSerializer.Deserialize<List<string>>(Item.DataTransferPK);
+    }
+
+    private void PopulateSlectList()
+    {
+        if (Item.DataTransferUsePK)
+        {
+            commandBehaviourAdvanced = StaticAppLists.GetDataTransferAdvancedBehaviour;
+        }
+        else
+        {
+            commandBehaviourBasic = StaticAppLists.GetDataTransferBasicBehaviour;
+        }
+    }
+
+    private void Delete(string value)
+    {
+        pKs.Remove(value);
+        Item.DataTransferPK = JsonSerializer.Serialize(pKs);
+    }
+
+    private void Add()
+    {
+        if (!string.IsNullOrEmpty(pKName))
+        {
+            if (!pKs.Contains(pKName))
+            {
+                pKs.Add(pKName);
+            }
+            pKName = "";
+            Item.DataTransferPK = JsonSerializer.Serialize(pKs);
+        }
+    }
+
+    private async Task DeleteTableConfirmation()
+    {
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        bool? result = await DialogService.ShowMessageBox(localizer.Get("Warning"), localizer.Get("Deleting can not be undone!"), localizer.Get("Confirm"), null, cancelText: localizer.Get("Cancel"), dialogOptions);
+
+        if (result != null)
+        {
+            await _dbReader.DeleteTable(Item.DataTransferTargetTableName);
+        }
+    }
+
+    private void ResetCommandBehaviour()
+    {
+        Item.DataTransferCommandBehaviour = null;
+    }
+}
+*@
