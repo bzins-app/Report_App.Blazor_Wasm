@@ -18,6 +18,7 @@ using ReportAppWASM.Server.Services.FilesManagement;
 using Report_App_BlazorServ.Services.RemoteDb;
 using ReportAppWASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -96,7 +97,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = supportedCultures;
 });
 
-builder.Services.AddControllersWithViews().AddOData(
+builder.Services.AddControllersWithViews().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddOData(
 options => options.AddRouteComponents(
 "odata",OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 

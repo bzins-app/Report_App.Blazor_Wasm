@@ -77,13 +77,11 @@
     {
         _ItemsProvider = async req =>
         {
-            rendering = true;
             var response = await GetRemoteData(req);
             if (response is null)
             {
                 return GridItemsProviderResult.From(Array.Empty<ActivityDTO>(), 0);
             }
-            rendering = false;
             return GridItemsProviderResult.From(response.Value, response.Count);
         };
         Translations = appService.GetGridTranslations();

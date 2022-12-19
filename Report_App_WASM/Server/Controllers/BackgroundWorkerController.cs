@@ -118,8 +118,14 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IActionResult> ActivatePerActivity(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
                 await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue.Value, value.EntityValue.Activate);
-                return Ok(new SubmitResult { Success = true });
-           
+                return Ok(new SubmitResult { Success = true });          
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActivatePerTask(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
+        {
+            await _backgroundWorkers.SwitchBackgroundTaskAsync(value.EntityValue.Value, value.EntityValue.Activate);
+            return Ok(new SubmitResult { Success = true });
         }
 
         private async Task SaveDbAsync(string userId = "system")

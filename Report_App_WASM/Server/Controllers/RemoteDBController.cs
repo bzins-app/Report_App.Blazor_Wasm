@@ -39,9 +39,9 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload values)
+        public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload values, CancellationToken ct)
         {
-            var data =await _remoteDb.RemoteDbToDatableAsync(values.values, values.Ct);
+            var data =await _remoteDb.RemoteDbToDatableAsync(values.values, ct);
             return Ok(data.ToDictionnary());
         }
     }

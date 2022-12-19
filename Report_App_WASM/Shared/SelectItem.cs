@@ -7,5 +7,6 @@
         public string LogoPath { get; set; }
         public bool HasALogo { get; set; }
         public bool IsVisible { get; set; }
+        public bool IsActivated { get; set; }
     }
 }

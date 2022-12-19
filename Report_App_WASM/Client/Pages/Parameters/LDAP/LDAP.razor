@@ -41,9 +41,9 @@
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@localizer.Get("Configuration name")" Sortable="true" />
-@*                    <TemplateColumn Title="@localizer.Get("Is activated?")">
+                    <TemplateColumn Title="@localizer.Get("Is activated?")">
                         <_LDAPActivate Item="context" />
-                    </TemplateColumn>*@
+                    </TemplateColumn>
                     <PropertyColumn Property="@(p => p.Domain)" Title="@localizer.Get("Domain")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
@@ -74,13 +74,11 @@
     {
         _ItemsProvider = async req =>
         {
-            rendering = true;
             var response = await GetRemoteData(req);
             if (response is null)
             {
                 return GridItemsProviderResult.From(Array.Empty<LDAPConfigurationDTO>(), 0);
             }
-            rendering = false;
             return GridItemsProviderResult.From(response.Value, response.Count);
         };
         Translations = appService.GetGridTranslations();

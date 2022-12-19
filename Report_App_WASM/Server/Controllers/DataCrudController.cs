@@ -34,9 +34,9 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ApplicationLogTaskDetails>> GetLogTaskDetailsAsync(int LogTaskHeader)
+        public async Task<IEnumerable<ApplicationLogTaskDetails>> GetLogTaskDetailsAsync(int LogTaskHeaderId)
         {
-           return  await _context.ApplicationLogTaskDetails.Where(a => a.TaskId == LogTaskHeader).ToArrayAsync();
+            return await _context.ApplicationLogTaskDetails.Where(a => a.TaskId == LogTaskHeaderId).ToArrayAsync();
         }
 
         [HttpGet]
@@ -58,11 +58,11 @@ namespace Report_App_WASM.Server.Controllers
             {
                 _context.Update(values.EntityValue);
                 await SaveDbAsync(values.UserName);
-                return Ok(new SubmitResult { Success=true});
+                return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
             {
-                return Ok(new SubmitResult { Success = false, Message=ex.Message });
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
             }
         }
 
@@ -143,10 +143,10 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 var updateValues = values.EntityValue;
-                if(updateValues.IsActivated)
+                if (updateValues.IsActivated)
                 {
                     var others = await _context.LDAPConfiguration.Where(a => a.Id != updateValues.Id).OrderBy(a => a.Id).ToListAsync();
-                    foreach(var item in others)
+                    foreach (var item in others)
                     {
                         item.IsActivated = false;
                         _context.Entry(item).State = EntityState.Modified;
@@ -170,11 +170,11 @@ namespace Report_App_WASM.Server.Controllers
             {
                 await _context.AddAsync(values.EntityValue);
                 await SaveDbAsync(values.UserName);
-                return Ok(new SubmitResult { Success=true});
+                return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
             {
-                return Ok(new SubmitResult { Success = false, Message=ex.Message });
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
             }
         }
 
@@ -264,6 +264,8 @@ namespace Report_App_WASM.Server.Controllers
             }
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> ActivityUpdate(ApiCRUDPayload<Activity> values)
         {
@@ -289,6 +291,12 @@ namespace Report_App_WASM.Server.Controllers
             {
                 return Ok(new SubmitResult { Success = false, Message = ex.Message });
             }
+        }
+
+        [HttpGet]
+        public async Task<TaskHeader> GetTaskHeaderAsync(int taskHeaderId)
+        {
+            return await _context.TaskHeader.Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Include(a => a.Activity).Where(a => a.TaskHeaderId == taskHeaderId).OrderBy(a => a).FirstOrDefaultAsync();
         }
 
         [HttpPost]
@@ -327,7 +335,10 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+                values.EntityValue.Activity = await _context.Activity.Where(a => a.ActivityId == values.EntityValue.IdActivity).FirstOrDefaultAsync();
                 _context.Entry(values.EntityValue).State = EntityState.Modified;
+                _context.UpdateRange(values.EntityValue.TaskDetails);
+                _context.UpdateRange(values.EntityValue.TaskEmailRecipients);
                 await SaveDbAsync(values.UserName);
                 _context.Entry(values.EntityValue).State = EntityState.Detached;
                 return Ok(new SubmitResult { Success = true });
@@ -337,7 +348,23 @@ namespace Report_App_WASM.Server.Controllers
                 return Ok(new SubmitResult { Success = false, Message = ex.Message });
             }
         }
-        private async Task SaveDbAsync(string userId="system")
+
+        [HttpPost]
+        public async Task<IActionResult> TaskDetailDelete(ApiCRUDPayload<TaskDetail> values)
+        {
+            try
+            {
+                _context.Entry(values.EntityValue).State = EntityState.Deleted;
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        private async Task SaveDbAsync(string userId = "system")
         {
             await _context.SaveChangesAsync(userId);
         }

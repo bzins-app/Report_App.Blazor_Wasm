@@ -134,7 +134,8 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 }
                 else
                 {
-                    await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type.ToString().ToLower() == type.ToString().ToLower() && a.Activity.IsActivated).ForEachAsync(
+                    var typeTask = type == BackgroundTaskType.DataTransfer ? TaskType.DataTransfer : type == BackgroundTaskType.Alert ? TaskType.Alert : TaskType.Report;
+                    await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type== typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
                             string JobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;

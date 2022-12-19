@@ -71,8 +71,8 @@ namespace Report_App_WASM.Server.Controllers
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
                 UserName = User.Identity.Name,
-                AppTheme = userData.ApplicationTheme,
-                Culture = userData.Culture,
+                AppTheme = userData?.ApplicationTheme?? "Light",
+                Culture = userData?.Culture?? "en",
                 ExposedClaims = User.Claims
                     //Optionally: filter the claims you want to expose to the client
                     //.Where(c => c.Type == "role")

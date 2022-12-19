@@ -5,6 +5,7 @@ using Report_App_WASM.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Text.Json;
 using Report_App_WASM.Client.Utils;
+using System.Text.Json.Serialization;
 
 namespace Report_App_WASM.Client.Services
 {
@@ -37,7 +38,9 @@ namespace Report_App_WASM.Client.Services
             ApiCRUDPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
             {
-                var response = await _httpClient.PostAsJsonAsync(uri, payload);
+                JsonSerializerOptions options = new();
+                options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                var response = await _httpClient.PostAsJsonAsync(uri, payload, options);
                 if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync());
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)

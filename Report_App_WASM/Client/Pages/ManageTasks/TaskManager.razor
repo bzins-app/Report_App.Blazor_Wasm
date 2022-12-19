@@ -58,11 +58,11 @@
                     }
                     @*                    <TemplateColumn Title="@localizer.Get("Run manually")">
                     <_TaskRunForm Item="context" />
-                    </TemplateColumn>
+                    </TemplateColumn>*@
                     <TemplateColumn Title="@localizer.Get("Is activated?")">
                     <_TaskActivate Item="context" />
                     </TemplateColumn>
-                    @if (typeTask == TaskType.Report.ToString())
+                    @*    @if (typeTask == TaskType.Report.ToString())
                     {
                     <TemplateColumn Title="@localizer.Get("Send by email?")">
                     <_TaskEmailActivate Item="context" />
