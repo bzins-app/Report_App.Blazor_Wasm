@@ -4,6 +4,7 @@
     {
         public static string ApplicationName { get; set; } = default!;
         public static string ApplicationLogo { get; set; } = default!;
+        public static bool LDAPLogin { get; set; }
     }
 
     public static class ApiControllers

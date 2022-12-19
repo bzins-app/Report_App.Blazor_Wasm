@@ -1,0 +1,149 @@
+﻿@*@using Microsoft.AspNetCore.Identity
+@inject CommonLocalizationService localizer
+@inject RoleManager<IdentityRole> _roleManager
+@inject UserManager<ApplicationUser> _userManager
+@inject ApplicationDbContext _context
+@inject ISnackbar Snackbar
+@inject UserRepository userService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
+            @localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="Item.UserName" Label="@localizer.Get("Name")" Disabled />
+        <MudTextField @bind-Value="Item.Email" Label="@localizer.Get("Email")" Disabled />
+        <MudCard Elevation=0>
+            <MudCardContent>
+                <MudGrid Style="min-height:300px">
+                    <MudItem xs=5 sm=5 md=5>
+                        <MudText Typo="Typo.h5">@localizer.Get("Roles available")</MudText>
+                        <MudTable Items="@rolesAvailable" Dense="true" MultiSelection="true" @bind-SelectedItems="rolesToAssign" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
+                            <HeaderContent>
+                                <MudTh>@localizer.Get("Name")</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Nr">@context</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                    <MudItem xs=2 sm=2 md=1>
+                        <MudContainer Style="height:100%">
+                            <MudButtonGroup Variant="Variant.Outlined" VerticalAlign="true" Class="d-flex flex-column align-center justify-center mud-width-full py-8">
+                                <AuthorizeView Roles="Admin">
+                                    <Authorized>
+                                        <MudIconButton Icon="@Icons.Filled.KeyboardDoubleArrowRight" aria-label="add" OnClick="AssignRoles"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Filled.KeyboardDoubleArrowLeft" aria-label="remove" OnClick="RemoveRoles"></MudIconButton>
+                                    </Authorized>
+                                    <NotAuthorized>
+                                        <MudIconButton Icon="@Icons.Filled.KeyboardDoubleArrowRight" aria-label="add" Disabled></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Filled.KeyboardDoubleArrowLeft" aria-label="remove" Disabled></MudIconButton>
+                                    </NotAuthorized>
+                                </AuthorizeView>
+                            </MudButtonGroup>
+                        </MudContainer>
+                    </MudItem>
+                    <MudItem xs=5 sm=5 md=5>
+                        <MudText Typo="Typo.h5">@localizer.Get("Roles assigned")</MudText>
+                        <MudTable Items="@rolesAssigned" Dense="true" MultiSelection="true" @bind-SelectedItems="rolesToRemove" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
+                            <HeaderContent>
+                                <MudTh>@localizer.Get("Name")</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Nr">@context</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Back")</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public ApplicationUser Item { get; set; }
+    [Parameter] public CrudAction Action { get; set; }
+    private MudForm form = default!;
+    private HashSet<string> rolesToAssign = new HashSet<string>();
+    private readonly List<string> rolesAvailable = new List<string>();
+
+    private HashSet<string> rolesToRemove = new HashSet<string>();
+    private readonly List<string> rolesAssigned = new List<string>();
+
+    //private List<TransferItem> dataSource = new List<TransferItem>();
+    private List<string> targetKeys = new List<string>();
+    private string[] selectedKeys = Array.Empty<string>();
+    private string[] titles;
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    protected override void OnInitialized()
+    {
+        var roles = _roleManager.Roles.Select(a => a.Name).ToList();
+
+        foreach (var r in roles)
+        {
+            rolesAvailable.Add(r);
+        }
+
+        var userRoles = _context.UserRoles.Where(a => a.UserId == Item.Id).Select(a => a.RoleId).ToList();
+
+        foreach (var ur in userRoles)
+        {
+            rolesAssigned.Add(_roleManager.Roles.Where(a => a.Id == ur).Select(a => a.Name).FirstOrDefault());
+            rolesAvailable.Remove(_roleManager.Roles.Where(a => a.Id == ur).Select(a => a.Name).FirstOrDefault());
+        }
+
+        titles = new string[] { localizer.Get("Roles available"), localizer.Get("Roles assigned") };
+        base.OnInitialized();
+    }
+
+    private async Task AssignRoles()
+    {
+        if (rolesToAssign != null)
+        {
+            var result = await userService.AddRolesAsync(Item.UserName, rolesToAssign.ToList());
+            if (result)
+            {
+                Snackbar.Add(localizer.Get("Roles :") + string.Join(", ", rolesToAssign.Select(x => x)) + " " + localizer.Get("Role added"), Severity.Success);
+                foreach (var t in rolesToAssign)
+                {
+                    rolesAvailable.Remove(t);
+                    rolesAssigned.Add(t);
+                }
+                rolesToAssign = null;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private async Task RemoveRoles()
+    {
+        if (rolesToRemove != null)
+        {
+            var result = await userService.RemoveRolesAsync(Item.UserName, rolesToRemove.ToList());
+            if (result)
+            {
+                Snackbar.Add(localizer.Get("Roles :") + string.Join(", ", rolesToRemove.Select(x => x)) + " " + localizer.Get("Role removed"), Severity.Info);
+                foreach (var t in rolesToRemove)
+                {
+                    rolesAssigned.Remove(t);
+                    rolesAvailable.Add(t);
+                }
+                rolesToRemove = null;
+            }
+            StateHasChanged();
+        }
+    }
+}
+*@

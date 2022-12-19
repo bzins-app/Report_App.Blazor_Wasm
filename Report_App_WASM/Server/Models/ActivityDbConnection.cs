@@ -2,7 +2,6 @@
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Shared;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 
 namespace Report_App_WASM.Server.Models
 {
@@ -15,7 +14,7 @@ namespace Report_App_WASM.Server.Models
         private string? _typeDbName;
 
         [MaxLength(20)]
-        public string? TypeDbName { get=> _typeDbName; set { _typeDbName = TypeDb.ToString(); } }
+        public string? TypeDbName { get => _typeDbName; set { _typeDbName = TypeDb.ToString(); } }
         [Required]
         public string? ConnectionPath { get; set; }
         public int Port { get; set; }

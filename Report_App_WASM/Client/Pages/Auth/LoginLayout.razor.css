@@ -1,0 +1,114 @@
+﻿body {
+    margin: 0;
+    font-family: var(--bs-body-font-family);
+    font-size: var(--bs-body-font-size);
+    font-weight: var(--bs-body-font-weight);
+    line-height: var(--bs-body-line-height);
+    color: var(--bs-body-color);
+    text-align: var(--bs-body-text-align);
+    background-color: var(--bs-body-bg);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+.authentication-bg.enlarged {
+    min-height: 100px;
+}
+
+.bg-pattern {
+    background-image: url("../images/bg-pattern-2.png");
+    background-size: cover;
+}
+
+body.authentication-bg {
+    background-color: #6658dd;
+    background-size: cover;
+    background-position: center;
+}
+
+body.authentication-bg-pattern {
+    background-image: url("../images/bg-pattern.png");
+}
+
+.logout-icon {
+    width: 140px;
+}
+
+.auth-fluid {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: row;
+    align-items: stretch;
+    /*background: url("../images/bg-auth.jpg") center;*/
+    background-size: cover;
+}
+
+    .auth-fluid .auth-fluid-form-box {
+        max-width: 480px;
+        border-radius: 0;
+        z-index: 2;
+        padding: 3rem 2rem;
+        background-color: #ffffff;
+        position: relative;
+        width: 100%;
+    }
+
+    .auth-fluid .auth-fluid-right {
+        padding: 6rem 3rem;
+        flex: 1;
+        position: relative;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+.auth-brand {
+    margin-bottom: 2rem;
+}
+
+.auth-user-testimonial {
+    position: absolute;
+    margin: 0 auto;
+    padding: 0 1.75rem;
+    bottom: 3rem;
+    left: 0;
+    right: 0;
+}
+
+    .auth-user-testimonial p.lead {
+        font-size: 1.125rem;
+        margin: 0 auto 20px auto;
+        max-width: 700px;
+    }
+
+@media (min-width: 992px) {
+    .auth-brand {
+        position: absolute;
+        top: 3rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .auth-fluid {
+        display: block;
+    }
+
+        .auth-fluid .auth-fluid-form-box {
+            max-width: 100%;
+            min-height: 100vh;
+        }
+
+        .auth-fluid .auth-fluid-right {
+            display: none;
+        }
+}
+
+.auth-logo .logo-light {
+    display: none;
+}
+
+.auth-logo .logo-dark {
+    display: block;
+}

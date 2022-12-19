@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -184,7 +184,12 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 _context.Remove(values.EntityValue);
+                if (values.EntityValue.IsActivated)
+                {
+                    ApplicationConstants.LDAPLogin = false;
+                }
                 await SaveDbAsync(values.UserName);
+
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -200,6 +205,7 @@ namespace Report_App_WASM.Server.Controllers
             {
                 _context.Update(values.EntityValue);
                 await SaveDbAsync(values.UserName);
+                ApplicationConstants.LDAPLogin = values.EntityValue.IsActivated;
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -355,6 +361,96 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 _context.Entry(values.EntityValue).State = EntityState.Deleted;
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SFTPInsert(ApiCRUDPayload<SFTPConfiguration> values)
+        {
+            try
+            {
+                await _context.AddAsync(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SFTPDelete(ApiCRUDPayload<SFTPConfiguration> values)
+        {
+            try
+            {
+                _context.Remove(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SFTPUpdate(ApiCRUDPayload<SFTPConfiguration> values)
+        {
+            try
+            {
+                _context.Update(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DepositPathInsert(ApiCRUDPayload<FileDepositPathConfiguration> values)
+        {
+            try
+            {
+                await _context.AddAsync(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DepositPathDelete(ApiCRUDPayload<FileDepositPathConfiguration> values)
+        {
+            try
+            {
+                _context.Remove(values.EntityValue);
+                await SaveDbAsync(values.UserName);
+                return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DepositPathUpdate(ApiCRUDPayload<FileDepositPathConfiguration> values)
+        {
+            try
+            {
+                _context.Update(values.EntityValue);
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }

@@ -1,7 +1,5 @@
-﻿@*@using Report_App_BlazorServ.Services.Repository
+﻿@inject HttpClient Http
 @implements IAsyncDisposable
-@inject DataGridRepository<FileDepositPathConfiguration,FileDepositPathConfigurationDTO> _rep
-@inject GeneralRepository _repo
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
@@ -34,7 +32,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
                             <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
@@ -60,7 +58,7 @@
 @code
 {
     #nullable enable
-    IQueryable<FileDepositPathConfigurationDTO>? Elements;
+    GridItemsProvider<FileDepositPathConfigurationDTO>? _ItemsProvider;
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     SimpleGridFieldsContent Translations = default!;
     private bool _processing = false;
@@ -70,9 +68,41 @@
 
     protected override void OnInitialized()
     {
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        Elements = _rep.GetElements().OrderBy(a=>a.FileDepositPathConfigurationId);
-        Translations = _repo.GetGridTranslations();
+        _ItemsProvider = async req =>
+        {
+            var response = await GetRemoteData(req);
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<FileDepositPathConfigurationDTO>(), 0);
+            }
+            return GridItemsProviderResult.From(response.Value, response.Count);
+        };
+        Translations = appService.GetGridTranslations();
+    }
+
+    private async Task<ApiResponse<FileDepositPathConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<FileDepositPathConfigurationDTO> req)
+    {
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var OdataQuery = _grid?.GetODataQuery();
+        string url = "odata/DepositPath?";
+        if (string.IsNullOrEmpty(OdataQuery))
+        {
+            url += $"$count=true&$top=10";
+        }
+        else
+        {
+            url += OdataQuery;
+        }
+        try
+        {
+            return await Http.GetFromJsonAsync<ApiResponse<FileDepositPathConfigurationDTO>>(url, req.CancellationToken);
+        }
+        catch
+        {
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
     }
 
     private async Task OnRefresh()
@@ -82,13 +112,6 @@
         rendering = false;
     }
 
-    private async Task ExtractElements()
-    {
-        _processing = true;
-        string fileName = "SFTP configuration";
-        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
-        _processing = false;
-    }
     private async Task RemoveFilters()
     {
         rendering = true;
@@ -126,7 +149,7 @@
             value.UseSFTPProtocol = item.UseSFTPProtocol;
             value.SFTPConfiguration = item?.SFTPConfiguration;
 
-            var result = await _rep.Update(value);
+            var result = await dataService.PostValues(value, "DepositPathUpdate");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
@@ -150,7 +173,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await _rep.Delete(value);
+            var result = await dataService.PostValues(value, "DepositPathDelete");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
@@ -175,7 +198,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await _rep.Insert(value);
+            var result = await dataService.PostValues(value, "DepositPathInsert");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);
@@ -188,4 +211,4 @@
             }
         }
     }
-}*@
+}

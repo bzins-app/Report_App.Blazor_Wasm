@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.1" />
     <PackageReference Include="MudBlazor" Version="6.1.6" />
   </ItemGroup>

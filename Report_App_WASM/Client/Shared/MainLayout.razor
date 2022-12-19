@@ -3,7 +3,6 @@
 @inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
-@attribute [Authorize]
 @inject HttpClient Http
 
 <MudThemeProvider IsDarkMode="_isDarkMode" Theme="AppTheme"/>
@@ -51,6 +50,7 @@
         var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
         ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
         ApplicationConstants.ApplicationName = values.ApplicationName;
+        ApplicationConstants.LDAPLogin = values.LDAPLogin;
     }
 
     void DrawerToggle()

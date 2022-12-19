@@ -8,7 +8,7 @@
 
     public class ApiBackgrounWorkerdPayload
     {
-        public bool Activate { get; set; } 
+        public bool Activate { get; set; }
         public int Value { get; set; }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI.Common;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using ReportAppWASM.Server.Services.BackgroundWorker;
-using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -31,7 +29,7 @@ namespace Report_App_WASM.Server.Controllers
 
         private async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type)
         {
-            var result= await _backgroundWorkers.ActivateBackgroundWorkersAsync(activate, type);
+            var result = await _backgroundWorkers.ActivateBackgroundWorkersAsync(activate, type);
 
             return result;
         }
@@ -59,11 +57,11 @@ namespace Report_App_WASM.Server.Controllers
                 _context.Entry(Item).State = EntityState.Modified;
                 await SaveDbAsync(userName);
                 _context.Entry(Item).State = EntityState.Detached;
-                return new SubmitResult {Success=true };
+                return new SubmitResult { Success = true };
             }
             catch (Exception ex)
             {
-                return new SubmitResult { Success = false, Message=ex.Message};
+                return new SubmitResult { Success = false, Message = ex.Message };
             }
         }
 
@@ -78,7 +76,7 @@ namespace Report_App_WASM.Server.Controllers
             var item = await GetServiceStatusAsync();
             item.ReportService = value.EntityValue.Activate;
             var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.Report);
-             await UpdateServicesAsync(item, value.UserName);
+            await UpdateServicesAsync(item, value.UserName);
             return Ok(result);
         }
 
@@ -89,7 +87,7 @@ namespace Report_App_WASM.Server.Controllers
             var item = await GetServiceStatusAsync();
             item.AlertService = value.EntityValue.Activate;
             var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.Alert);
-             await UpdateServicesAsync(item, value.UserName);
+            await UpdateServicesAsync(item, value.UserName);
             return Ok(result);
         }
 
@@ -99,7 +97,7 @@ namespace Report_App_WASM.Server.Controllers
         {
             var item = await GetServiceStatusAsync();
             item.DataTransferService = value.EntityValue.Activate;
-            var result=await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.DataTransfer);
+            var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.DataTransfer);
             await UpdateServicesAsync(item, value.UserName);
             return Ok(result);
         }
@@ -110,15 +108,15 @@ namespace Report_App_WASM.Server.Controllers
             var item = await GetServiceStatusAsync();
             item.CleanerService = value.EntityValue.Activate;
             var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.Cleaner);
-             await UpdateServicesAsync(item, value.UserName);
+            await UpdateServicesAsync(item, value.UserName);
             return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> ActivatePerActivity(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
-                await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue.Value, value.EntityValue.Activate);
-                return Ok(new SubmitResult { Success = true });          
+            await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue.Value, value.EntityValue.Activate);
+            return Ok(new SubmitResult { Success = true });
         }
 
         [HttpPost]

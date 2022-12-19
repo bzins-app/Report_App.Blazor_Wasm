@@ -1,10 +1,10 @@
 ﻿using BlazorDownloadFile;
-using System.Net.Http.Json;
-using Report_App_WASM.Shared.ApiResponse;
-using Report_App_WASM.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Text.Json;
 using Report_App_WASM.Client.Utils;
+using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.ApiResponse;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Report_App_WASM.Client.Services
@@ -31,7 +31,7 @@ namespace Report_App_WASM.Client.Services
         }
 
 
-        public async Task<SubmitResult> PostValues<T>(T value, string ControllerAction, string controller=CrudAPI) where T : class
+        public async Task<SubmitResult> PostValues<T>(T value, string ControllerAction, string controller = CrudAPI) where T : class
         {
             string uri = $"{controller}{ControllerAction}";
 
@@ -61,10 +61,10 @@ namespace Report_App_WASM.Client.Services
         public async Task ExtractGridLogs(ODataExtractPayload Values)
         {
             try
-            {              
+            {
                 string url = "odata/ExtractLogs";
                 var response = await _httpClient.PostAsJsonAsync(url, Values);
-                if(response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
                     var downloadresult = await BlazorDownloadFileService.DownloadFile(Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
                     if (downloadresult.Succeeded)
@@ -102,7 +102,7 @@ namespace Report_App_WASM.Client.Services
             }
         }
 
-        public async Task<T> GetUniqueValue<T>( T value,string ControllerAction, string controller = CrudAPI) where T : class
+        public async Task<T> GetUniqueValue<T>(T value, string ControllerAction, string controller = CrudAPI) where T : class
         {
             string uri = $"{controller}{ControllerAction}";
             try

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Data;
 
 namespace Report_App_WASM.Shared.DTO
 {
@@ -189,7 +188,7 @@ namespace Report_App_WASM.Shared.DTO
         public bool IsActivated { get; set; } = false;
         public bool SendByEmail { get; set; } = false;
         public int ReportsRetentionInDays { get; set; } = 90;
-        public string? Comment { get; set; } 
+        public string? Comment { get; set; }
         public string TaskHeaderParameters { get; set; } = "[]";
         public string CronParameters { get; set; } = "[]";
         public bool UseGlobalQueryParameters { get; set; } = false;

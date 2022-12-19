@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
@@ -44,7 +43,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("TasksLogs")]
         public async Task<List<ApplicationLogTask>> GetTasksLogsAsync()
         {
-            return await _context.ApplicationLogTask.AsNoTracking().Where(a => !string.IsNullOrEmpty(a.ActivityName)&& a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt")).ToListAsync();
+            return await _context.ApplicationLogTask.AsNoTracking().Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt")).ToListAsync();
         }
 
         [HttpGet("SystemLogs")]

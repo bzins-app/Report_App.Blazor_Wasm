@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Report_App_BlazorServ.Services.RemoteDb;
-using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
@@ -41,7 +38,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload values, CancellationToken ct)
         {
-            var data =await _remoteDb.RemoteDbToDatableAsync(values.values, ct);
+            var data = await _remoteDb.RemoteDbToDatableAsync(values.values, ct);
             return Ok(data.ToDictionnary());
         }
     }

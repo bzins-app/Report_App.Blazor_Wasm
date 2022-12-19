@@ -11,7 +11,6 @@ using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Server.Utils.RemoteQueryParameters;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.DTO;
-using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.RemoteQueryParameters;
 using Report_App_WASM.Shared.SerializedParameters;
 using System.Data;

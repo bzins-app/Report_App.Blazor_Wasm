@@ -24,11 +24,11 @@ namespace Report_App_WASM.Server.Models
         public TaskType Type { get; set; }
         private string? _typeName;
         [MaxLength(20)]
-        public string? TypeName { get=> _typeName; set { _typeName=Type.ToString(); } }  
+        public string? TypeName { get => _typeName; set { _typeName = Type.ToString(); } }
         public FileType TypeFile { get; set; }
         private string? _typeFileName;
         [MaxLength(20)]
-        public string? TypeFileName { get=> _typeFileName; set { _typeFileName=TypeFile.ToString(); } }
+        public string? TypeFileName { get => _typeFileName; set { _typeFileName = TypeFile.ToString(); } }
         public bool IsActivated { get; set; } = false;
         public bool SendByEmail { get; set; } = false;
         public int ReportsRetentionInDays { get; set; } = 90;

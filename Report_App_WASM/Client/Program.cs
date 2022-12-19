@@ -1,18 +1,15 @@
-using Microsoft.AspNetCore.Builder;
+using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.Localization;
+using Microsoft.JSInterop;
 using MudBlazor.Services;
 using Report_App_WASM.Client;
+using Report_App_WASM.Client.Services;
 using Report_App_WASM.Client.Services.Contracts;
 using Report_App_WASM.Client.Services.Implementations;
 using Report_App_WASM.Client.Services.States;
 using System.Globalization;
-using BlazorDownloadFile;
-using Report_App_WASM.Client.Services;
-using Microsoft.JSInterop;
-using Report_App_WASM.Client.Pages.Parameters;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

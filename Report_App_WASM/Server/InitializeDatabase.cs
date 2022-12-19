@@ -33,22 +33,22 @@ namespace Report_App_WASM.Server
                 _context.Database.Migrate();
                 _context.Database.EnsureCreated();
 
-               // check for users
+                // check for users
                 if (_context.ApplicationUser.Any())
-                    {
-                        await InitAppRoles();
-                        return; //if user is not empty, DB has been seed
-                    }
-                    else
-                    {
+                {
+                    await InitAppRoles();
+                    return; //if user is not empty, DB has been seed
+                }
+                else
+                {
 
-                        //init app with super admin user
-                        await CreateHashKey();
-                        await InitAppRoles();
-                        await CreateDefaultSuperAdmin();
-                        await ApplicationParameters();
-                        await DefaultServiceStatus();
-                    }
+                    //init app with super admin user
+                    await CreateHashKey();
+                    await InitAppRoles();
+                    await CreateDefaultSuperAdmin();
+                    await ApplicationParameters();
+                    await DefaultServiceStatus();
+                }
             }
             catch (Exception)
             {

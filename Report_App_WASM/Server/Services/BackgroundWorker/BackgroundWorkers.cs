@@ -135,7 +135,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 else
                 {
                     var typeTask = type == BackgroundTaskType.DataTransfer ? TaskType.DataTransfer : type == BackgroundTaskType.Alert ? TaskType.Alert : TaskType.Report;
-                    await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type== typeTask && a.Activity.IsActivated).ForEachAsync(
+                    await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
                             string JobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
@@ -175,7 +175,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
         public void RunManuallyTask(int taskHeaderId, string runBy, List<EmailRecipient> emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
         {
-            BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters { TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles, CustomEmails = emails?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters, ManualRun = true, RunBy = runBy }));
+            BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters { TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles, CustomEmails = emails ?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters, ManualRun = true, RunBy = runBy }));
         }
 
         public async Task RunTaskJobAsync(TaskJobParameters parameters)
@@ -196,7 +196,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             GC.Collect();
         }
-        
+
         void IDisposable.Dispose()
         {
             GC.Collect();

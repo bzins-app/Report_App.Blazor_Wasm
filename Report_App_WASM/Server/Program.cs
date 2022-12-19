@@ -2,22 +2,17 @@ using AutoMapper;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
-using System.Globalization;
-using Microsoft.AspNetCore.OData;
-using Microsoft.OData.ModelBuilder;
-using Microsoft.OData.Edm;
 using ReportAppWASM.Server.Services.BackgroundWorker;
-using ReportAppWASM.Server.Services.FilesManagement;
-using Report_App_BlazorServ.Services.RemoteDb;
 using ReportAppWASM.Server.Services.EmailSender;
-using Report_App_WASM.Server.Services;
+using ReportAppWASM.Server.Services.FilesManagement;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -81,26 +76,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Utils/LanguageRessources");
-builder.Services.AddSingleton<CommonLocalizationService>();
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    var supportedCultures = new[]
-     {
-                    new CultureInfo("fr"),
-                    new CultureInfo("en"),
-                    new CultureInfo("de"),
-                    new CultureInfo("nl"),
-                 };
-    options.DefaultRequestCulture = new RequestCulture("en");
-    options.SupportedCultures = supportedCultures;
-    options.SupportedUICultures = supportedCultures;
-});
-
 builder.Services.AddControllersWithViews().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddOData(
 options => options.AddRouteComponents(
-"odata",OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
+"odata", OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 
 builder.Services.AddRazorPages();
 
@@ -177,6 +156,8 @@ using (var scope = app.Services.CreateScope())
         var parameters = context.ApplicationParameters.FirstOrDefault();
         ApplicationConstants.ApplicationName = parameters.ApplicationName!;
         ApplicationConstants.ApplicationLogo = parameters.ApplicationLogo!;
+        var LdapParameters = context.LDAPConfiguration.Where(a => a.IsActivated).Any();
+        ApplicationConstants.LDAPLogin = LdapParameters!;
     }
     catch (Exception ex)
     {

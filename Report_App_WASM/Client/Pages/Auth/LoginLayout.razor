@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+
+<MudThemeProvider/>
+<body class="loading auth-fluid-pages pb-0">
+
+    <div class="auth-fluid" style="background: url('/images/LoginBase.jpg');   background-position: center;background-repeat: no-repeat;background-size: cover">
+        <div class="auth-fluid-form-box">
+            <div class="text-center">
+                <img src="@ApplicationConstants.ApplicationLogo" alt="" style="max-width: 95%; max-height: 150px;">
+                <br />
+                <span class="b-title" style="font-size:30px">@ApplicationConstants.ApplicationName</span>
+            </div>
+            <div class="align-items-center d-flex h-75">
+                <div class="card-body">
+                    @Body
+                </div>
+            </div>
+        </div>
+        <div class="auth-fluid-right text-center">
+        </div>
+    </div>
+</body>

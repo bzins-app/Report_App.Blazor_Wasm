@@ -36,6 +36,7 @@
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.Data.OleDb" Version="7.0.0" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.0" />
     <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="6.0.0" />
   </ItemGroup>
 

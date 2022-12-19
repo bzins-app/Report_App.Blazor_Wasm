@@ -1,7 +1,5 @@
-﻿@*@using Report_App_BlazorServ.Services.Repository
-@implements IAsyncDisposable
-@inject DataGridRepository<SFTPConfiguration,SFTPConfigurationDTO> _rep
-@inject GeneralRepository _repo
+﻿@implements IAsyncDisposable
+@inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
@@ -34,7 +32,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
                             <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
@@ -58,19 +56,50 @@
 @code
 {
     #nullable enable
-    IQueryable<SFTPConfigurationDTO>? Elements;
+    GridItemsProvider<SFTPConfigurationDTO>? _ItemsProvider;
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     SimpleGridFieldsContent Translations = default!;
-    private bool _processing = false;
     SimpleGrid<SFTPConfigurationDTO> _grid = default!;
     private string errorMessage = default!;
     private bool rendering = false;
 
     protected override void OnInitialized()
     {
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        Elements = _rep.GetElements().OrderBy(a=>a.SFTPConfigurationId);
-        Translations = _repo.GetGridTranslations();
+        _ItemsProvider = async req =>
+        {
+            var response = await GetRemoteData(req);
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<SFTPConfigurationDTO>(), 0);
+            }
+            return GridItemsProviderResult.From(response.Value, response.Count);
+        };
+        Translations = appService.GetGridTranslations();
+    }
+
+    private async Task<ApiResponse<SFTPConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<SFTPConfigurationDTO> req)
+    {
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var OdataQuery = _grid?.GetODataQuery();
+        string url = "odata/SFTP?";
+        if (string.IsNullOrEmpty(OdataQuery))
+        {
+            url += $"$count=true&$top=10";
+        }
+        else
+        {
+            url += OdataQuery;
+        }
+        try
+        {
+            return await Http.GetFromJsonAsync<ApiResponse<SFTPConfigurationDTO>>(url, req.CancellationToken);
+        }
+        catch
+        {
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
     }
 
     private async Task OnRefresh()
@@ -80,13 +109,7 @@
         rendering = false;
     }
 
-    private async Task ExtractElements()
-    {
-        _processing = true;
-        string fileName = "SFTP configuration";
-        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
-        _processing = false;
-    }
+
     private async Task RemoveFilters()
     {
         rendering = true;
@@ -127,7 +150,7 @@
             value.Password = item.Password;
             value.UseFTPProtocol = item.UseFTPProtocol;
 
-            var result = await _rep.Update(value);
+            var result = await dataService.PostValues(value, "SFTPUpdate");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
@@ -151,7 +174,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await _rep.Delete(value);
+            var result = await dataService.PostValues(value, "SFTPDelete");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
@@ -176,7 +199,7 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-            var result = await _rep.Insert(value);
+            var result = await dataService.PostValues(value, "SFTPInsert");
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);
@@ -190,4 +213,4 @@
         }
     }
 
-}*@
+}

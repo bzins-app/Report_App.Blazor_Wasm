@@ -1,7 +1,6 @@
 ﻿using Blazor.SimpleGrid;
-using Microsoft.AspNetCore.Components.Authorization;
 using Report_App_WASM.Client.Services.States;
-using Report_App_WASM.Shared;
+using Report_App_WASM.Client.Utils;
 using System.Net.Http.Json;
 
 namespace Report_App_WASM.Client.Services
@@ -48,7 +47,24 @@ namespace Report_App_WASM.Client.Services
             };
         }
 
+        private string GetUniqueName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                   + "_" + Guid.NewGuid().ToString()[..4]
+                   + Path.GetExtension(fileName);
+        }
 
+        public async Task<Tuple<string, string>> GetFilePath(string fileNameToUrl, bool unique = true)
+        {
+            string fileName = fileNameToUrl;
+            if (unique)
+            {
+                fileName = GetUniqueName(fileNameToUrl);
+            }
+            string uri = $"{ApiControllers.ApplicationParametersApi}GetUploadedFilePath?fileName={fileName}";
+            return await _httpClient.GetFromJsonAsync<Tuple<string, string>>(uri);
+        }
 
         private async Task<string> GetUserIdAsync()
         {

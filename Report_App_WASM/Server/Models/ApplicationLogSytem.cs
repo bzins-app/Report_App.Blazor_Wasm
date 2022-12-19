@@ -31,15 +31,15 @@ namespace Report_App_WASM.Server.Models
         [MaxLength(600)]
         public string? Browser { get; set; }
         [MaxLength(600)]
-        public string? Platform { get; set; } 
+        public string? Platform { get; set; }
         [MaxLength(600)]
         public string? FullVersion { get; set; }
         [MaxLength(600)]
-        public string? Host { get; set; } 
+        public string? Host { get; set; }
         [MaxLength(600)]
-        public string? Path { get; set; } 
+        public string? Path { get; set; }
         [MaxLength(200)]
-        public string? User { get; set; } 
+        public string? User { get; set; }
 
     }
 }

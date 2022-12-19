@@ -326,10 +326,10 @@
         loading = true;
         foreach (var file in e.GetMultipleFiles())
         {
-            //var fileUrl = _repo.GetFilePath(file.Name, false);
-            //await using FileStream fs = new(fileUrl.Item2, FileMode.Create);
-            //await file.OpenReadStream(10097152).CopyToAsync(fs);
-            //param.ExcelTemplatePath = fileUrl.Item1;
+            var fileUrl = await appService.GetFilePath(file.Name, false);
+            await using FileStream fs = new(fileUrl.Item2, FileMode.Create);
+            await file.OpenReadStream(10097152).CopyToAsync(fs);
+            param.ExcelTemplatePath = fileUrl.Item1;
         }
         changesToSave = true;
         loading = false;

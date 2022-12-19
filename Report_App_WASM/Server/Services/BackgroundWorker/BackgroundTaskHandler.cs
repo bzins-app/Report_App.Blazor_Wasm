@@ -5,7 +5,6 @@ using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
-using Report_App_WASM.Server.Utils.RemoteQueryParameters;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.RemoteQueryParameters;
@@ -49,7 +48,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             jobParameters = parameters;
             header = await _context.TaskHeader.Where(a => a.TaskHeaderId == parameters.TaskHeaderId).Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).FirstOrDefaultAsync();
-            ApplicationLogTask logTask = new() { ActivityId = header.Activity.ActivityId, ActivityName = header.ActivityName, StartDateTime = DateTime.Now, JobDescription = header.TaskName, Type = header.Type + " service", Result = "Ok", RunBy = jobParameters.RunBy , EndDateTime=DateTime.Now};
+            ApplicationLogTask logTask = new() { ActivityId = header.Activity.ActivityId, ActivityName = header.ActivityName, StartDateTime = DateTime.Now, JobDescription = header.TaskName, Type = header.Type + " service", Result = "Ok", RunBy = jobParameters.RunBy, EndDateTime = DateTime.Now };
 
             if (!header.TaskDetails.Any())
             {
