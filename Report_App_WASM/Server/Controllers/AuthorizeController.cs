@@ -57,19 +57,22 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet]
-        public UserInfo UserInfo()
+        public async Task<UserInfo> UserInfoAsync()
         {
             //var user = await _userManager.GetUserAsync(HttpContext.User);
-            return BuildUserInfo();
+            return await BuildUserInfoAsync();
         }
 
 
-        private UserInfo BuildUserInfo()
+        private async Task<UserInfo> BuildUserInfoAsync()
         {
+            var userData= await _userManager.GetUserAsync(User);
             return new UserInfo
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
                 UserName = User.Identity.Name,
+                AppTheme = userData.ApplicationTheme,
+                Culture = userData.Culture,
                 ExposedClaims = User.Claims
                     //Optionally: filter the claims you want to expose to the client
                     //.Where(c => c.Type == "role")

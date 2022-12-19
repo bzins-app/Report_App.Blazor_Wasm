@@ -1,6 +1,4 @@
-﻿@using System.Data
-@using Report_App_WASM.Shared.Extensions
-
+﻿
 <div class="form-group">
     <p style="color:red">@queryTestResult</p>
 </div>
@@ -34,7 +32,7 @@
 
 @code {
 
-    [Parameter] public DataTable data { get; set; }
+    [Parameter] public List<Dictionary<string, object>> data { get; set; }
     [Parameter] public string queryTestResult { get; set; }
     [Parameter] public bool testResult { get; set; }
     private List<Dictionary<string, object>> values = new();
@@ -44,7 +42,7 @@
     {
         if (testResult)
         {
-            values = data.ToDictionnary();
+            values = data;
         }
     }
 }

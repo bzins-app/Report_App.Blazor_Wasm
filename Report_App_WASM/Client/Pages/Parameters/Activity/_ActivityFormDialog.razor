@@ -141,7 +141,7 @@
         {
             dbCon = Item.ActivityDbConnections.First();
         }
-        activities = await dataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", "ApplicationParameters/");
+        activities = await dataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         loading = false;
     }
 

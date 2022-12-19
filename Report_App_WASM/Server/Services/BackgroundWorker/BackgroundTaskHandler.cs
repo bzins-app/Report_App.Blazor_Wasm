@@ -8,6 +8,7 @@ using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.RemoteQueryParameters;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.Extensions;
+using Report_App_WASM.Shared.RemoteQueryParameters;
 using Report_App_WASM.Shared.SerializedParameters;
 using ReportAppWASM.Server.Services.EmailSender;
 using ReportAppWASM.Server.Services.FilesManagement;

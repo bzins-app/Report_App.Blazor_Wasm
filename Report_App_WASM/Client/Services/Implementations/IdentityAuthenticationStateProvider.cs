@@ -34,7 +34,7 @@ namespace Report_App_WASM.Client.Services.States
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
-        private async Task<UserInfo> GetUserInfo()
+        public async Task<UserInfo> GetUserInfo()
         {
             if (_userInfoCache != null && _userInfoCache.IsAuthenticated) return _userInfoCache;
             _userInfoCache = await _authorizeApi.GetUserInfo();

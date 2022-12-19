@@ -1,5 +1,6 @@
 ﻿using Blazor.SimpleGrid;
 using Microsoft.AspNetCore.Components.Authorization;
+using Report_App_WASM.Client.Services.States;
 using Report_App_WASM.Shared;
 using System.Net.Http.Json;
 
@@ -9,9 +10,9 @@ namespace Report_App_WASM.Client.Services
     {
         private readonly CommonLocalizationService _localizer;
         private readonly HttpClient _httpClient;
-        private readonly AuthenticationStateProvider _AuthenticationStateProvider;
+        private readonly IdentityAuthenticationStateProvider _AuthenticationStateProvider;
 
-        public ApplicationService(CommonLocalizationService localizer, HttpClient httpClient, AuthenticationStateProvider AuthenticationStateProvider)
+        public ApplicationService(CommonLocalizationService localizer, HttpClient httpClient, IdentityAuthenticationStateProvider AuthenticationStateProvider)
         {
             _localizer = localizer;
             _httpClient = httpClient;
@@ -54,6 +55,16 @@ namespace Report_App_WASM.Client.Services
             return (await _AuthenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-
+        public async Task<bool> GetUserTheme()
+        {
+            var user = await _AuthenticationStateProvider.GetUserInfo();
+            if (user == null)
+            {
+                if (user.AppTheme == "Dark")
+                    return true;
+                else return false;
+            }
+            else return false;
+        }
     }
 }
