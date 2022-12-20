@@ -12,7 +12,7 @@ using Report_App_WASM.Shared.ApiResponse;
 namespace Report_App_WASM.Server.Controllers
 {
 
-    [ApiExplorerSettings(IgnoreApi = true)]
+    //[ApiExplorerSettings(IgnoreApi = true)]
     public class DataGridController : ODataController, IDisposable
     {
         private readonly ILogger<DataGridController> _logger;
@@ -120,7 +120,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [Route("odata/ReportResultLogs")]
+        [HttpGet("odata/ReportResultLogs")]
         public IQueryable<ApplicationLogReportResult> GetReportResultLogs()
         {
             return _context.ApplicationLogReportResult.OrderByDescending(a => a.Id).AsNoTracking();

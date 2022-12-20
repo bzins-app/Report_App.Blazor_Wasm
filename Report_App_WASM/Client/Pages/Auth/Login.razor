@@ -45,7 +45,15 @@
         error = null;
         try
         {
-            await authStateProvider.Login(loginParameters);
+            if(ApplicationConstants.LDAPLogin)
+            {
+                await authStateProvider.LoginLDAP(loginParameters);
+            }
+            else
+            {
+                await authStateProvider.Login(loginParameters);
+            }
+            
             navigationManager.NavigateTo("");
         }
         catch (Exception ex)

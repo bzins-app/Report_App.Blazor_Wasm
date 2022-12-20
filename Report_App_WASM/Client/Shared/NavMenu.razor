@@ -53,6 +53,7 @@
                 <MudNavLink Href="SMTP" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("SMTP configuration")</MudNavLink>
                 <MudNavLink Href="LDAP" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("LDAP configuration")</MudNavLink>
                 <MudNavLink Href="DepositPath" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Deposit path")</MudNavLink>
+                <MudNavLink Href="/swagger" Target="_blank" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Swagger")</MudNavLink>
             </MudNavGroup>
             <MudNavGroup Title="@localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
                 <MudNavLink Href="AuditTrail" Style="@(_isDarkMode?"background:#0e1824cc;":"background:#000c17;")">@localizer.Get("Audit Trail")</MudNavLink>
@@ -70,11 +71,11 @@
         <Authorized>
             @if (context.User.IsInRole("Admin"))
             {
-                <MudNavLink Href="/Hangfire" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@localizer.Get("Tasks manager")</MudNavLink>
+                <MudNavLink Href="/Hangfire" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@localizer.Get("HangFire")</MudNavLink>
             }
             else
             {
-                <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@localizer.Get("Tasks manager")</MudNavLink>
+                <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@localizer.Get("HangFire")</MudNavLink>
             }
         </Authorized>
     </AuthorizeView>
@@ -82,7 +83,7 @@
 <MudDivider Class="mt-auto"></MudDivider>
 <MudNavMenu Class="d-flex justify-space-between pa-4">
     <MudLink Href="#" Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">@@2022</MudLink>
-    <MudText Class="" Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">version 0.9.5</MudText>
+    <MudText Class="" Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">version 0.9.6</MudText>
 </MudNavMenu>
 
 @code {

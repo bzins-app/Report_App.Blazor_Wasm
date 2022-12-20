@@ -14,5 +14,6 @@
         public const string BackgroudWorkerApi = "api/BackgroundWorker/";
         public const string ApplicationParametersApi = "api/ApplicationParameters/";
         public const string RemoteDbApi = "api/RemoteDb/";
+        public const string UserManagerApi = "api/UserManager/";
     }
 }

@@ -1,6 +1,5 @@
-﻿@*@using Report_App_BlazorServ.Pages.UserAccount
+﻿@using Report_App_WASM.Client.Pages.UserAccount
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<ApplicationUser> _userManager
 
 <MudDialog>
     <TitleContent>
@@ -44,9 +43,9 @@
 
     protected override void OnInitialized()
     {
-        model.Options = _userManager.Options;
+        model.Options = new();
         model.UserName = Item.UserName;
-        model.Id = Item.Id;
+        model.Id = Item.Id.ToString();
         model.Email = Item.Email;
     }
 
@@ -66,15 +65,24 @@
         }
         else
         {
-            await form.Validate();
-            if (form.IsValid)
-            {
-                Item.Email = model.Email;
-                Item.UserName = model.UserName;
-                Item.PasswordHash = model.Password;
-                Item.Email = model.Email;
-                MudDialog.Close(DialogResult.Ok(Item));
-            }
+            //await form.Validate();
+            //if (form.IsValid)
+            //{
+            //    Item.Email = model.Email;
+            //    Item.UserName = model.UserName;
+            //    Item.PasswordHash = model.Password;
+            //    Item.Email = model.Email;
+            //    MudDialog.Close(DialogResult.Ok(Item));
+            //}
+
+            Item.Email = model.Email;
+            Item.UserName = model.UserName;
+            Item.PasswordHash = model.Password;
+            Item.Email = model.Email;
+            Item.CreateDateTime = DateTime.Now;
+            Item.ModDateTime = DateTime.Now;
+
+            MudDialog.Close(DialogResult.Ok(Item));
         }
     }
-}*@
+}

@@ -1,0 +1,35 @@
+﻿@*@using Report_App_BlazorServ.Services.BackgroundWorker
+@using Report_App_BlazorServ.Models
+@using Microsoft.AspNetCore.Identity
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> _userManager
+@inject IBackgroundWorkers _BGW
+@inject IDialogService DialogService
+
+<MudIconButton Icon="@Icons.Outlined.FileDownload" OnClick="(()=>OpenRunConfirmationComponent())"  Disabled="Item.FileDepositPathConfigurationId == 0 ? true : false"><MudText>@localizer.Get("Drop file")</MudText> </MudIconButton>
+
+@code {
+    [Parameter]
+    public TaskHeaderDTO Item { get; set; }
+
+    private async Task OpenRunConfirmationComponent()
+    {
+        bool result = false;
+        var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var user = await _userManager.GetUserAsync(currentUser);
+
+        bool? feedback = await DialogService.ShowMessageBox(
+        localizer.Get("Confirm manual job"),
+        localizer.Get("Caution !") + " " + localizer.Get("Are you sure you want to create a file to the directory? It could interfer with other processes"),
+        yesText: localizer.Get("Validate"), cancelText: localizer.Get("Cancel"));
+        result = feedback != null;
+        if (result)
+        {
+            _BGW.RunManuallyTask(Item.TaskHeaderId, user.Email,null, new List<QueryCommandParameter>(),true);
+            Snackbar.Add(localizer.Get(Item.Type) + " " + localizer.Get("Job on going"), Severity.Success);
+        }
+        StateHasChanged();
+
+    }
+}*@

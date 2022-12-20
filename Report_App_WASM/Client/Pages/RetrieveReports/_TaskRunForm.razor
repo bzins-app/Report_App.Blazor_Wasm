@@ -1,0 +1,69 @@
+﻿@*@using Report_App_BlazorServ.Services.BackgroundWorker
+@using Report_App_BlazorServ.Models
+@using Microsoft.AspNetCore.Identity
+@using Pages.SharedComponents.RunManually
+@inject ApplicationDbContext _context
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> _userManager
+@inject IBackgroundWorkers _BGW
+@inject IDialogService DialogService
+
+<MudIconButton Icon="@Icons.Outlined.Sync" OnClick="(()=>OpenRunConfirmationComponent())" ><MudText>@localizer.Get("Run")</MudText></MudIconButton>
+
+@code {
+    [Parameter]
+    public TaskHeaderDTO Item { get; set; }
+
+    private string email;
+
+    private async Task OpenRunConfirmationComponent()
+    {
+        bool sendForReportRecipients = false;
+        List<string> userEmail = new();
+        List<string> recipientsEmails = new();
+
+        var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var user = await _userManager.GetUserAsync(currentUser);
+        userEmail.Add(user.Email);
+        email = user.Email;
+
+        var recipients = await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
+        if (Item != null && recipients!=null)
+        {
+            if (!string.IsNullOrEmpty(recipients.Email))
+            {
+                var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
+                recipientsEmails.AddRange(emails.Where(a => a.BCC == false).Select(a => a.Email).ToList());
+            }
+        }
+        var queryParameters = new List<QueryCommandParameter>();
+        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        {
+            queryParameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
+        }
+
+        var parameters = new DialogParameters { ["userEmail"] = userEmail, ["recipientsEmails"] = recipientsEmails, ["queryParameters"] = queryParameters };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = DialogService.Show<_ManualRun>(localizer.Get("Confirm manual job"), parameters, dialogOptions);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            List<EmailRecipient> emails = new();
+            var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data;
+            bool resultValidation = feedback.Item1;
+            queryParameters = feedback.Item2;
+            if (resultValidation)
+            {
+                var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
+                _BGW.RunManuallyTask(Item.TaskHeaderId,user.Email, emailsRecipients, queryParameters);
+            }
+            else
+            {
+                emails.Add(new EmailRecipient { Email = email, BCC = false });
+                _BGW.RunManuallyTask(Item.TaskHeaderId, user.Email, emails, queryParameters);
+            }
+            Snackbar.Add(localizer.Get("Alert") + " " + localizer.Get("Job on going"), Severity.Success);
+        }
+    }
+}*@

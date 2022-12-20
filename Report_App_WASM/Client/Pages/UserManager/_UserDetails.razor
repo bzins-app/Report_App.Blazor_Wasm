@@ -1,10 +1,5 @@
-﻿@*@using Microsoft.AspNetCore.Identity
-@inject CommonLocalizationService localizer
-@inject RoleManager<IdentityRole> _roleManager
-@inject UserManager<ApplicationUser> _userManager
-@inject ApplicationDbContext _context
-@inject ISnackbar Snackbar
-@inject UserRepository userService
+﻿@inject ISnackbar Snackbar
+@inject HttpClient Http
 
 <MudDialog>
     <TitleContent>
@@ -87,21 +82,23 @@
         MudDialog.Cancel();
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var roles = _roleManager.Roles.Select(a => a.Name).ToList();
+        string uri = $"{ApiControllers.UserManagerApi}GetRolesList";
+        var roles = await Http.GetFromJsonAsync<List<string>>(uri);
 
         foreach (var r in roles)
         {
             rolesAvailable.Add(r);
         }
 
-        var userRoles = _context.UserRoles.Where(a => a.UserId == Item.Id).Select(a => a.RoleId).ToList();
+        string uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item.UserName}";
+        var userRoles = await Http.GetFromJsonAsync<List<string>>(uriUser);
 
         foreach (var ur in userRoles)
         {
-            rolesAssigned.Add(_roleManager.Roles.Where(a => a.Id == ur).Select(a => a.Name).FirstOrDefault());
-            rolesAvailable.Remove(_roleManager.Roles.Where(a => a.Id == ur).Select(a => a.Name).FirstOrDefault());
+            rolesAssigned.Add(ur);
+            rolesAvailable.Remove(ur);
         }
 
         titles = new string[] { localizer.Get("Roles available"), localizer.Get("Roles assigned") };
@@ -112,8 +109,9 @@
     {
         if (rolesToAssign != null)
         {
-            var result = await userService.AddRolesAsync(Item.UserName, rolesToAssign.ToList());
-            if (result)
+            ChangeRolePayload values = new ChangeRolePayload { UserName = Item.UserName, Roles = rolesToAssign.ToList() };
+            var result = await dataService.PostValues(values, "AddRoles", ApiControllers.UserManagerApi);
+            if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Roles :") + string.Join(", ", rolesToAssign.Select(x => x)) + " " + localizer.Get("Role added"), Severity.Success);
                 foreach (var t in rolesToAssign)
@@ -131,8 +129,9 @@
     {
         if (rolesToRemove != null)
         {
-            var result = await userService.RemoveRolesAsync(Item.UserName, rolesToRemove.ToList());
-            if (result)
+            ChangeRolePayload values = new ChangeRolePayload { UserName = Item.UserName, Roles = rolesToRemove.ToList() };
+            var result = await dataService.PostValues(values, "RemoveRoles", ApiControllers.UserManagerApi);
+            if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Roles :") + string.Join(", ", rolesToRemove.Select(x => x)) + " " + localizer.Get("Role removed"), Severity.Info);
                 foreach (var t in rolesToRemove)
@@ -146,4 +145,3 @@
         }
     }
 }
-*@

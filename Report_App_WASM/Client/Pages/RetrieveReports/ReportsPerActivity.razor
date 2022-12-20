@@ -1,0 +1,113 @@
+﻿@page "/ReportsPerActivity/{ActivityName}/{ActivityId:int}"
+@*@implements IAsyncDisposable
+@inject NavigationManager uriHelper
+@inject DataGridRepository<TaskHeader,TaskHeaderDTO> _rep
+@inject GeneralRepository _repo
+@attribute [Authorize]
+
+<PageTitle>@localizer.Get("Run reports manually"): @ActivityName</PageTitle>
+
+<ErrorBoundary>
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@localizer.Get("Run reports manually"): @ActivityName</MudText>
+            <MudSpacer />
+            <MudStack Row="true">
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering"/>
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering" />
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow:auto">
+                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+
+                    <PropertyColumn Property="@(p => p.TaskName)" Title="@localizer.Get("Report title")" Sortable="true" />
+                    @if (typeTask == TaskTypeEnum.Report.ToString())
+                    {
+                        <PropertyColumn Property="@(p => p.TypeFile)" Title="@localizer.Get("Type of file")" Sortable="true" />
+                    }
+                    <TemplateColumn Title="@localizer.Get("Run manually")">
+                        <_TaskRunForm Item="context" />
+                    </TemplateColumn>
+                    @if (typeTask == TaskTypeEnum.Report.ToString())
+                    {
+                        <TemplateColumn Title="@localizer.Get("Create file manually")">
+                            <_TaskDropFileForm Item="context" />
+                        </TemplateColumn>
+                        <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@localizer.Get("Archiving duration in days")" Sortable="true" />
+                    }
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                </SimpleGrid>
+            </div>
+            <Paginator Value="@pagination" FieldsContent="@Translations" />
+        </MudCardContent>
+    </MudCard>
+</ErrorBoundary>
+
+@code
+{
+    #nullable enable
+    [Parameter] public int ActivityId { get; set; } = default!;
+    [Parameter] public string ActivityName { get; set; } = default!;
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }=default!;
+    private readonly string typeTask = TaskTypeEnum.Report.ToString();
+    IQueryable<TaskHeaderDTO>? Elements;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    SimpleGridFieldsContent Translations = default!;
+    SimpleGrid<TaskHeaderDTO> _grid = default!;
+    private bool _processing = false;
+    private bool rendering = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
+        if (!user.IsInRole(ActivityName) && !user.IsInRole("Admin"))
+        {
+            uriHelper.NavigateTo("/403");
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        Elements = _rep.GetElements().Where(a => a.Type == typeTask && a.ActivityName == ActivityName).OrderBy(a=>a.TaskHeaderId);
+        Translations = _repo.GetGridTranslations();
+    }
+
+    private async Task OnRefresh()
+    {
+        rendering = true;
+        await _grid.RefreshDataAsync();
+        rendering = false;
+    }
+
+    private async Task ExtractElements()
+    {
+        _processing = true;
+        string fileName = "Reports";
+        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
+        _processing = false;
+    }
+    private async Task RemoveFilters()
+    {
+        rendering = true;
+        await _grid.RemoveFilters();
+        rendering = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _grid.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
+}
+*@

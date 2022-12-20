@@ -120,17 +120,18 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-           // var result = await userService.Delete(value);
-            //if (result.Success)
-            //{
-            //    Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
-            //    await OnRefresh();
-            //}
-            //else
-            //{
-            //    Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-            //    errorMessage = result.Message;
-            //}
+            UserPayload valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };
+            var result = await dataService.PostValues(valueUser, "UserDelete", ApiControllers.UserManagerApi);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
         }
     }
 
@@ -145,17 +146,18 @@
         if (!feedback.Cancelled)
         {
             errorMessage = string.Empty;
-        //    var result = await userService.Insert(value);
-            //if (result.Success)
-            //{
-            //    Snackbar.Add(localizer.Get("Object added" ), Severity.Success );
-            //    await OnRefresh();
-            //}
-            //else
-            //{
-            //    Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-            //    errorMessage = result.Message;
-            //}
+            UserPayload valueUser = new UserPayload {UserMail=value.Email, Password=value.PasswordHash, UserName=value.UserName };
+            var result = await dataService.PostValues(valueUser, "UserInsert", ApiControllers.UserManagerApi);
+            if (result.Success)
+            {
+                Snackbar.Add(localizer.Get("Object added" ), Severity.Success );
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+                errorMessage = result.Message;
+            }
         }
     }
 
