@@ -23,7 +23,7 @@ namespace Report_App_WASM.Client.Services.States
 
         public async Task LoginLDAP(LoginParameters loginParameters)
         {
-            await _authorizeApi.Login(loginParameters);
+            await _authorizeApi.LoginLDAP(loginParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 

@@ -71,20 +71,21 @@ namespace Report_App_WASM.Server.Controllers
                     }
                     else
                     {
+                        List<string> errors = new List<string>();
                         var userNew = new ApplicationUser { UserName = parameters.UserName, Email = userAD.EmailAddress, CreateUser = "AD screen", ModDateTime = DateTime.Now, ModificationUser = "Register screen", Culture = CultureInfo.CurrentCulture.Name, EmailConfirmed = true };
-                        var result = await _userManager.CreateAsync(userNew, parameters.Password).ConfigureAwait(true);
+                        var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
                         if (result.Succeeded)
                         {
-                            var resultUser = await _signInManager.PasswordSignInAsync(userNew.UserName, parameters.Password, RememberMe, lockoutOnFailure: true); ;
-                            if (resultUser.Succeeded)
-                            {
-                                _logger.LogInformation("User logged in:" + parameters.UserName);
-                                return Ok();
-                            }
+                            await _signInManager.SignInAsync(userNew, RememberMe);
+                            return Ok();
                         }
                         foreach (var error in result.Errors)
                         {
-                            ModelState.AddModelError(string.Empty, error.Description);
+                            errors.Add(error.Description);
+                        }
+                        if (!result.Succeeded)
+                        {
+                            return BadRequest(string.Join(',', errors));
                         }
                     }
                 }
