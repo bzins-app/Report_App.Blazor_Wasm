@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Community.OData.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -12,7 +13,8 @@ using Report_App_WASM.Shared.ApiResponse;
 namespace Report_App_WASM.Server.Controllers
 {
 
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize]
     public class DataGridController : ODataController, IDisposable
     {
         private readonly ILogger<DataGridController> _logger;

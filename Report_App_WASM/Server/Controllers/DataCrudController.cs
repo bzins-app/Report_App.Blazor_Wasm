@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,8 @@ using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Server.Controllers
 {
-
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
 
@@ -58,6 +60,8 @@ namespace Report_App_WASM.Server.Controllers
             {
                 _context.Update(values.EntityValue);
                 await SaveDbAsync(values.UserName);
+                ApplicationConstants.ApplicationName= values.EntityValue.ApplicationName;
+                ApplicationConstants.ApplicationLogo = values.EntityValue.ApplicationLogo;
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)

@@ -188,12 +188,6 @@ if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/upload")))
     Directory.CreateDirectory(Path.Combine(env.ContentRootPath, "wwwroot/upload"));
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-});
-
 //app.UseResponseCompression();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
@@ -213,6 +207,12 @@ app.UseHangfireDashboard("/HangfireRead", new DashboardOptions
 {
     IsReadOnlyFunc = (context) => true,
     Authorization = new[] { new HangfireAuthorizationFilterRead() }
+});
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
 });
 
 app.MapRazorPages();

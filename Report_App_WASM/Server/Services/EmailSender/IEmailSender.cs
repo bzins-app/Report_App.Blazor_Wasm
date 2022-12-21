@@ -12,7 +12,7 @@ namespace ReportAppWASM.Server.Services.EmailSender
 {
     public interface IEmailSender
     {
-        Task<Task> SendEmailAsync(List<EmailRecipient> email, string subject, string message, List<Attachment> Attachment = null);
+        Task<SubmitResult> SendEmailAsync(List<EmailRecipient> email, string subject, string message, List<Attachment> Attachment = null);
         Task GenerateErrorEmailAsync(string errorMessage, string subjectSuffix);
     }
     public class EmailSender : IEmailSender
@@ -35,10 +35,12 @@ namespace ReportAppWASM.Server.Services.EmailSender
             }
         }
 
-        public async Task<Task> SendEmailAsync(List<EmailRecipient> email, string subject, string message, List<Attachment> Attachment = null)
+        public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient> email, string subject, string message, List<Attachment> Attachment = null)
         {
             var Smtp = await _context.SMTPConfiguration.Where(a => a.IsActivated == true).FirstOrDefaultAsync();
             var emailservice = await _context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
+
+            SubmitResult result= new SubmitResult();
             //smtp is become default
             if (Smtp != null && email.Any() && emailservice)
             {
@@ -81,16 +83,24 @@ namespace ReportAppWASM.Server.Services.EmailSender
                 {
                     log.Result = ex.Message.ToString();
                     log.Error = true;
+                    result.Success = false;
+                    result.Message = ex.Message;
                 }
                 log.EndDateTime = DateTime.Now;
                 log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
                 await _context.AddAsync(log);
                 await _context.SaveChangesAsync();
+                result.Success = true;
+            }
+            else
+            {
+                result.Success = false;
+                result.Message= "SMTP not configured or is not activated";
             }
 
 
 
-            return Task.CompletedTask;
+            return result;
         }
 
         private async Task ProcessEmailAsync(string fromEmail, string fromFullName, string subject, string messageBody, List<EmailRecipient> toEmail, List<EmailRecipient> toFullName, string smtpUser, string smtpPassword, string smtpHost, int smtpPort, bool smtpSSL, List<Attachment> Attachment = null)

@@ -1,0 +1,113 @@
+﻿@using System.Runtime.InteropServices.ComTypes
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="@form">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">@localizer.Get("Emails")</MudText>
+                    @if (recipientsEmails.Count > 0)
+                    {
+                        <MudStack Row="true">
+                            <p>@localizer.Get("Send for me")</p>
+                            <MudSwitch @bind-Checked="@sendForReportRecipients" Color="Color.Primary" />
+                            <p>@localizer.Get("Send for all recipients")</p>
+                        </MudStack>
+                    }
+                    @if (!sendForReportRecipients)
+                    {
+                        foreach (string str in userEmail)
+                        {
+                            <MudTextField Value="str" Label="@localizer.Get("Email")" Disabled />
+                        }
+                    }
+                    else
+                    {
+                        foreach (string str in recipientsEmails)
+                        {
+                            <MudTextField Value="str" Label="@localizer.Get("Email")" Disabled />
+                        }
+                    }
+                </MudCardContent>
+            </MudCard>
+            @if (queryParameters.Any())
+            {
+                <MudCard>
+                    <MudCardContent>
+                        <MudText Typo="Typo.body2">@localizer.Get("Query parameters")</MudText>
+                        @foreach (QueryCommandParameter t in queryParameters)
+                        {
+                            @if (t.ValueType == QueryCommandParameterValueType.Date)
+                            {
+                                <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.value" Label="@t.ParameterIdentifier" />
+                            }
+                            @if (t.ValueType == QueryCommandParameterValueType.DateTime)
+                            {
+                                <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.value" Label="@t.ParameterIdentifier" />
+                            }
+                            @if (t.ValueType == QueryCommandParameterValueType.Number)
+                            {
+                                <MudTextField InputType="InputType.Number" @bind-Value="t.value" Required="@t.Required" Label="@t.ParameterIdentifier" />
+                            }
+                            @if (t.ValueType == QueryCommandParameterValueType.String)
+                            {
+                                <MudTextField InputType="InputType.Text" @bind-Value="t.value" Required="@t.Required" Label="@t.ParameterIdentifier" />
+                            }
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@localizer.Get("Validate")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    public bool sendForReportRecipients { get; set; }
+    private MudForm form = default!;
+    [Parameter]
+    public List<string> userEmail { get; set; }
+    [Parameter]
+    public List<QueryCommandParameter> queryParameters { get; set; }
+    [Parameter]
+    public List<string> recipientsEmails { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        foreach (var t in queryParameters.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
+        {
+            if (t.ValueType == QueryCommandParameterValueType.Date)
+            {
+                t.value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
+            }
+            if (t.ValueType == QueryCommandParameterValueType.DateTime)
+            {
+                t.value = t.DateOption.GetCalculateDateTime().ToString("s");
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+
+    private async Task ConfirmText()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            Tuple<bool, List<QueryCommandParameter>> payload = new Tuple<bool, List<QueryCommandParameter>>(sendForReportRecipients, queryParameters);
+            MudDialog.Close(DialogResult.Ok(payload));
+        }
+    }
+}

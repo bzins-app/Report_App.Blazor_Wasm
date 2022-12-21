@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Shared;
@@ -10,6 +11,8 @@ using Report_App_WASM.Shared.Extensions;
 
 namespace Report_App_WASM.Server.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
     public class RemoteDBController : ControllerBase

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
@@ -9,6 +10,8 @@ using ReportAppWASM.Server.Services.BackgroundWorker;
 
 namespace Report_App_WASM.Server.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class BackgroundWorkerController : ControllerBase
@@ -123,6 +126,13 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IActionResult> ActivatePerTask(ApiCRUDPayload<ApiBackgrounWorkerdPayload> value)
         {
             await _backgroundWorkers.SwitchBackgroundTaskAsync(value.EntityValue.Value, value.EntityValue.Activate);
+            return Ok(new SubmitResult { Success = true });
+        }
+
+        [HttpPost]
+        public IActionResult RunManually(ApiCRUDPayload<RunTaskManually> value)
+        {
+            _backgroundWorkers.RunManuallyTask(value.EntityValue.TaskHeaderId, value.UserName, value.EntityValue.Emails, value.EntityValue.CustomQueryParameters, value.EntityValue.GenerateFiles);
             return Ok(new SubmitResult { Success = true });
         }
 

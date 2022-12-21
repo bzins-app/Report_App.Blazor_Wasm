@@ -42,8 +42,9 @@ if (result != null)
 }
 else
 {
-    culture = new CultureInfo("en");
-    await jsInterop.InvokeVoidAsync("cultureInfo.set", "en");
+    var browserLanguage = await jsInterop.InvokeAsync<string>("getBrowserLanguage");
+    culture = new CultureInfo(browserLanguage.Substring(0,2));
+    await jsInterop.InvokeVoidAsync("cultureInfo.set", browserLanguage.Substring(0, 2));
 }
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;

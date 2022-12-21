@@ -1,11 +1,14 @@
 ﻿using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Report_App_WASM.Client.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiResponse;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static System.Net.WebRequestMethods;
 
 namespace Report_App_WASM.Client.Services
 {
@@ -121,6 +124,31 @@ namespace Report_App_WASM.Client.Services
             {
                 return value;
             }
+        }
+
+        public async Task<SubmitResult> PostFile(IBrowserFile file)
+        {
+            try
+            {
+                long maxFileSize = 1024 * 15;
+                using var content = new MultipartFormDataContent();
+                var fileContent =
+                            new StreamContent(file.OpenReadStream(maxFileSize));
+
+                fileContent.Headers.ContentType =
+                    new MediaTypeHeaderValue(file.ContentType);
+                content.Add(
+                            content: fileContent,
+                            name: "\"file\"",
+                            fileName: file.Name);
+                var response = await _httpClient.PostAsync($"{ApiControllers.FilesApi}Upload", content);
+                return await response.Content.ReadFromJsonAsync<SubmitResult>();
+            }
+            catch (Exception ex)
+            {
+                return new SubmitResult { Success = false, Message = ex.Message };
+            }
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
@@ -8,6 +9,7 @@ using Report_App_WASM.Shared;
 namespace Report_App_WASM.Server.Controllers
 {
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
     public class ApplicationParametersController : ControllerBase
@@ -24,6 +26,7 @@ namespace Report_App_WASM.Server.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        [Authorize]
         [HttpGet("ActivitiesInfo")]
         public async Task<IEnumerable<SelectItemActivitiesInfo>> GetActivitiesInfo()
         {
@@ -37,13 +40,14 @@ namespace Report_App_WASM.Server.Controllers
             return values;
         }
 
+        [Authorize]
         [HttpGet("CheckSMTPConfiguration")]
         public async Task<bool> CheckSMTPConfigurationAsync()
         {
             return await _context.SMTPConfiguration.Where(a => a.IsActivated).AnyAsync();
         }
 
-
+        [Authorize]
         [HttpGet("GetUploadedFilePath")]
         public Tuple<string, string> GetUploadedFilePath(string fileName)
         {
@@ -54,6 +58,7 @@ namespace Report_App_WASM.Server.Controllers
             return result;
         }
 
+        [Authorize]
         [HttpGet("GetApplicationParameters")]
         public async Task<ApplicationParameters> GetApplicationParametersAsync()
         {

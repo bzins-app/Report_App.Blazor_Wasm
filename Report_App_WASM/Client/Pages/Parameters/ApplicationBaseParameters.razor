@@ -100,17 +100,13 @@
     {
         foreach (var file in e.GetMultipleFiles())
         {
-            //var fileUrl = _repo.GetFilePath(file.Name);
-            //await using FileStream fs = new(fileUrl.Item2, FileMode.Create);
-            //await file.OpenReadStream().CopyToAsync(fs);
-            //param.ApplicationLogo = fileUrl.Item1;
-            //if (!string.IsNullOrEmpty(completeLogoPath))
-            //{
-            //    filesToDelete.Add(completeLogoPath);
-            //}
-            //completeLogoPath = "/" + fileUrl.Item2;
+            var result = await dataService.PostFile(file);
+            if (result.Success)
+            {
+                param.ApplicationLogo ="/"+result.Message;
+                success = true;
+            }
         }
-
     }
 
 

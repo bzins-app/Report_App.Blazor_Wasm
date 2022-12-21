@@ -10,6 +10,7 @@ using System.Globalization;
 
 namespace Report_App_WASM.Server.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthorizeController : ControllerBase
@@ -100,7 +101,7 @@ namespace Report_App_WASM.Server.Controllers
             return Ok();
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterParameters parameters)
         {
@@ -139,6 +140,7 @@ namespace Report_App_WASM.Server.Controllers
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
                 UserName = User.Identity.Name,
+                UserMail= userData?.Email,
                 AppTheme = userData?.ApplicationTheme ?? "Light",
                 Culture = userData?.Culture ?? "en",
                 ExposedClaims = User.Claims

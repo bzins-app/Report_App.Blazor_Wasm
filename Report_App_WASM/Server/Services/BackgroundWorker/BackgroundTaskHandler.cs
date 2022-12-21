@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Common;
 using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
@@ -569,8 +570,16 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                             }
                         }
 
-                        await _emailSender.SendEmailAsync(emails, subject, message, listAttach);
-                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email sent", Info = subject });
+                       var result= await _emailSender.SendEmailAsync(emails, subject, message, listAttach);
+                        if(result.Success)
+                        {
+                            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email sent", Info = subject });
+                        }
+                        else
+                        {
+                            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email not sent", Info = result.Message });
+                        }
+                        
                         listAttach.Clear();
                     }
 
@@ -607,8 +616,16 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 string message = header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
                 if (listAttach.Any())
                 {
-                    await _emailSender.SendEmailAsync(emails, subject, message, listAttach);
-                    await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email sent", Info = subject });
+                    var result=await _emailSender.SendEmailAsync(emails, subject, message, listAttach);
+                    if (result.Success)
+                    {
+                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email sent", Info = subject });
+                    }
+                    else
+                    {
+                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email not sent", Info = result.Message });
+                    }
+
                 }
             }
         }

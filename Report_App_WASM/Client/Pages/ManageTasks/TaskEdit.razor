@@ -262,7 +262,7 @@
             {
                 await dataService.PostValues(detail, "TaskDetailDelete");
             }
-           
+
             if (Item.IsActivated)
             {
                 await dataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = true, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
@@ -326,10 +326,11 @@
         loading = true;
         foreach (var file in e.GetMultipleFiles())
         {
-            var fileUrl = await appService.GetFilePath(file.Name, false);
-            await using FileStream fs = new(fileUrl.Item2, FileMode.Create);
-            await file.OpenReadStream(10097152).CopyToAsync(fs);
-            param.ExcelTemplatePath = fileUrl.Item1;
+            var result = await dataService.PostFile(file);
+            if(result.Success)
+            {
+                param.ExcelTemplatePath = result.Message;
+            }
         }
         changesToSave = true;
         loading = false;

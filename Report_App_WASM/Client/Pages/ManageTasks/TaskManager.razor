@@ -56,11 +56,11 @@
                     {
                         <PropertyColumn Property="@(p => p.TypeFileName)" Title="@localizer.Get("Type of file")" Sortable="true" />
                     }
-                    @*                    <TemplateColumn Title="@localizer.Get("Run manually")">
-                    <_TaskRunForm Item="context" />
-                    </TemplateColumn>*@
+                    <TemplateColumn Title="@localizer.Get("Run manually")">
+                        <_TaskRunForm Item="context" />
+                    </TemplateColumn>
                     <TemplateColumn Title="@localizer.Get("Is activated?")">
-                    <_TaskActivate Item="context" />
+                        <_TaskActivate Item="context" />
                     </TemplateColumn>
                     @*    @if (typeTask == TaskType.Report.ToString())
                     {
@@ -94,7 +94,7 @@
 
 @code
 {
-    #nullable enable
+#nullable enable
     [Parameter] public string typeTask { get; set; } = default!;
     [Parameter] public string activityName { get; set; } = default!;
     [Parameter] public int? activityId { get; set; }
@@ -186,7 +186,7 @@
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
-        var OdataSort= _grid?.GetODataSortValues();
+        var OdataSort = _grid?.GetODataSortValues();
         var OdataPagination = _grid?.GetODataPaginationValues();
         var OdataFilters = _grid?.GetODataFilterValues();
         string url = $"odata/TaskHeader?";
@@ -201,11 +201,11 @@
         url += $"$count=true";
         if (!string.IsNullOrEmpty(OdataPagination))
         {
-            url +="&"+ OdataPagination;
+            url += "&" + OdataPagination;
         }
         if (!string.IsNullOrEmpty(OdataSort))
         {
-            url += "&"+OdataSort;
+            url += "&" + OdataSort;
         }
         if (!string.IsNullOrEmpty(OdataFilters))
         {
@@ -230,7 +230,7 @@
     private async Task OnRefresh()
     {
         rendering = true;
-            await _grid.RefreshDataAsync();
+        await _grid.RefreshDataAsync();
         rendering = false;
     }
 

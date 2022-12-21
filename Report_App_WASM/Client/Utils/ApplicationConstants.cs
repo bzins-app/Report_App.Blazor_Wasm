@@ -15,5 +15,6 @@
         public const string ApplicationParametersApi = "api/ApplicationParameters/";
         public const string RemoteDbApi = "api/RemoteDb/";
         public const string UserManagerApi = "api/UserManager/";
+        public const string FilesApi = "api/Files/";
     }
 }

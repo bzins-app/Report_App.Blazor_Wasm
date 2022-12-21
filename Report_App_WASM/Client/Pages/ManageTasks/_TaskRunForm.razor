@@ -1,13 +1,6 @@
-﻿@*@using Report_App_BlazorServ.Services.BackgroundWorker
-@using Report_App_BlazorServ.Models
-@using Microsoft.AspNetCore.Identity
-@using Pages.SharedComponents.RunManually
-@inject ApplicationDbContext _context
-@inject ISnackbar Snackbar
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject UserManager<ApplicationUser> _userManager
-@inject IBackgroundWorkers _BGW
+﻿@inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject IdentityAuthenticationStateProvider IdentityProvider
 
 <MudIconButton Icon="@Icons.Outlined.Sync" OnClick="(()=>OpenRunConfirmationComponent())"><MudText>@localizer.Get("Run")</MudText></MudIconButton>
 
@@ -23,20 +16,19 @@
         List<string> userEmail = new();
         List<string> recipientsEmails = new();
 
-        var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        var user = await _userManager.GetUserAsync(currentUser);
-        userEmail.Add(user.Email);
-        email = user.Email;
+        var currentUserEmail = (await IdentityProvider.GetUserInfo()).UserMail;
+        userEmail.Add(currentUserEmail);
+        email = currentUserEmail;
 
-        var recipients = await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
-        if (Item != null&&recipients!=null)
-        {
-            if (!string.IsNullOrEmpty(recipients.Email))
-            {
-                var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
-                recipientsEmails.AddRange(emails.Where(a => a.BCC == false).Select(a => a.Email).ToList());
-            }
-        }
+        //var recipients = await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
+        //if (Item != null&&recipients!=null)
+        //{
+        //    if (!string.IsNullOrEmpty(recipients.Email))
+        //    {
+        //        var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
+        //        recipientsEmails.AddRange(emails.Where(a => a.BCC == false).Select(a => a.Email).ToList());
+        //    }
+        //}
 
         var queryParameters = new List<QueryCommandParameter>();
         if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
@@ -56,15 +48,16 @@
             queryParameters = feedback.Item2;
             if (resultValidation)
             {
-                var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
-                _BGW.RunManuallyTask(Item.TaskHeaderId, user.Email, emailsRecipients, queryParameters);
+                // var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
+                // _BGW.RunManuallyTask(Item.TaskHeaderId, user.Email, emailsRecipients, queryParameters);
             }
             else
             {
                 emails.Add(new EmailRecipient { Email = email, BCC = false });
-                _BGW.RunManuallyTask(Item.TaskHeaderId, user.Email, emails, queryParameters);
+                RunTaskManually payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
+                await dataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
             Snackbar.Add(localizer.Get("Alert") + " " + localizer.Get("Job on going"), Severity.Success);
         }
     }
-}*@
+}

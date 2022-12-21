@@ -13,9 +13,12 @@ using System.Text;
 using ReportAppWASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Client.Pages.UserManager;
 using static MudBlazor.CategoryTypes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Report_App_WASM.Server.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
     public class UserManagerController : ControllerBase
