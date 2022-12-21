@@ -2,6 +2,7 @@
 @layout LoginLayout
 @inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
+@inject HttpClient Http
 
 <PageTitle>@localizer.Get("Log in")</PageTitle>
 
@@ -34,10 +35,10 @@
         </div>
         <div>
             <button type="submit" class="btn btn-primary shadow-2 mb-4">@localizer.Get("Login")</button>
-            <p class="mb-2 text-muted">@localizer.Get("Need to connect locally?") <buttton id="local-login" @onclick="changeTypeLogin">@localizer.Get("Local login")</buttton></p>
+            <p class="mb-2 text-muted">@localizer.Get("Need to connect locally?") <MudLink id="local-login" OnClick="changeTypeLogin">@localizer.Get("Local login")</MudLink></p>
         </div>
 
-        <label class="text-danger">@localizer.Get(error)</label>
+        <label class="text-danger">@error</label>
     </EditForm>
 }
 else
@@ -65,11 +66,8 @@ else
         </div>
 
 
-        <label class="text-danger">@localizer.Get(error)</label>
+        <label class="text-danger">@error</label>
 
-        @*    <NavLink href="register">
-    <h6 class="font-weight-normal text-center">Create account</h6>
-    </NavLink>*@
     </EditForm>
 }
 
@@ -79,10 +77,11 @@ else
     string error { get; set; }
     bool LDAP = true;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        LDAP = ApplicationConstants.LDAPLogin;
-        StateHasChanged();
+        var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
+       LDAP = values.LDAPLogin;
+       // StateHasChanged();
     }
 
     void changeTypeLogin()
@@ -97,6 +96,7 @@ else
         {
             if (LDAP)
             {
+              //  await authStateProvider.Login(loginParameters);
                 await authStateProvider.LoginLDAP(loginParameters);
             }
             else
