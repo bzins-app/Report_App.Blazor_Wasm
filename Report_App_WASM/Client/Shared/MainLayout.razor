@@ -4,8 +4,10 @@
 @inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
 @inject HttpClient Http
+@inject IJSRuntime jsInterop
+@attribute [Authorize]
 
-<MudThemeProvider IsDarkMode="_isDarkMode" Theme="AppTheme"/>
+<MudThemeProvider IsDarkMode="_isDarkMode" Theme="AppTheme" />
 <MudDialogProvider FullWidth="true"
                    MaxWidth="MaxWidth.Small"
                    CloseButton="true"
@@ -20,7 +22,7 @@
         <img src="@ApplicationConstants.ApplicationLogo" alt="@ApplicationConstants.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />
         <MudSpacer />
         <MudTooltip Duration="1000" Text="@(_isDarkMode ? localizer.Get("Switch to Light Theme") : localizer.Get("Switch to Dark Theme"))">
-            <MudIconButton Icon="@(_isDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@DarkModeChange" />
+            <MudIconButton Icon="@(_isDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(()=>DarkModeChange(!UserAppTheme.DarkTheme))" />
         </MudTooltip>
         <LanguageSwitch />
         <LoginDisplay />
@@ -51,6 +53,7 @@
         ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
         ApplicationConstants.ApplicationName = values.ApplicationName;
         ApplicationConstants.LDAPLogin = values.LDAPLogin;
+        _isDarkMode=UserAppTheme.DarkTheme;
     }
 
     void DrawerToggle()
@@ -58,8 +61,17 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    private async Task DarkModeChange()
+    private async Task DarkModeChange(bool dark)
     {
-        _isDarkMode = !_isDarkMode;
+        _isDarkMode = dark;
+        UserAppTheme.DarkTheme = dark;
+        if (!dark)
+        {
+            await jsInterop.InvokeVoidAsync("AppTheme.set", "Light");
+        }
+        else
+        {
+            await jsInterop.InvokeVoidAsync("AppTheme.set", "Dark");
+        }
     }
 }

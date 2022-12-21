@@ -2,8 +2,8 @@
 {
     public static class ApplicationConstants
     {
-        public static string ApplicationName { get; set; }
-        public static string ApplicationLogo { get; set; }
+        public static string? ApplicationName { get; set; }
+        public static string? ApplicationLogo { get; set; }
         public static bool LDAPLogin { get; set; }
     }
 }

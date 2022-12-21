@@ -67,7 +67,7 @@
                     <TemplateColumn Title="@localizer.Get("Send by email?")">
                     <_TaskEmailActivate Item="context" />
                     </TemplateColumn>
-                    }
+                    }*@
                     @if (typeTask == TaskType.Report.ToString())
                     {
                     <PropertyColumn Property="@(p => p.FileDepositPathConfigurationId)" Title="@localizer.Get("File deposit path")" Sortable="true" />
@@ -76,7 +76,7 @@
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@localizer.Get("Archiving duration in days")" Sortable="true" />
                     }
-                    <TemplateColumn Title="@localizer.Get("Duplicate")">
+@*                    <TemplateColumn Title="@localizer.Get("Duplicate")">
                     <CascadingValue Value="@_grid">
                     <_TaskDuplicateForm Item="context" />
                     </CascadingValue>

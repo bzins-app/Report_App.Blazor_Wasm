@@ -1,4 +1,6 @@
-﻿using Report_App_WASM.Shared.SerializedParameters;
+﻿using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.SerializedParameters;
+using System.Data.Common;
 
 namespace Report_App_WASM.Shared.RemoteQueryParameters
 {
@@ -6,7 +8,7 @@ namespace Report_App_WASM.Shared.RemoteQueryParameters
     {
         public int ActivityId { get; set; }
         public string? FileName { get; set; }
-        public string QueryToRun { get; set; }
+        public string? QueryToRun { get; set; }
         public List<QueryCommandParameter> QueryCommandParameters { get; set; } = new();
         public string? QueryInfo { get; set; }
         public bool FillDatatableSchema { get; set; } = false;

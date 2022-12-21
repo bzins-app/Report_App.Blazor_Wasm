@@ -47,6 +47,18 @@ namespace Report_App_WASM.Server.Controllers
             return await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == ActivityId).ToArrayAsync();
         }
 
+		[HttpGet]
+		public async Task<SFTPConfiguration> GetSTFPConfigurationAsync(int SFTPConfigurationId)
+		{
+			return await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).FirstOrDefaultAsync();
+		}
+
+        [HttpGet]
+        public async Task<Activity> GetDataTransferInfoAsync()
+        {
+            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB.ToString()).Include(a=>a.ActivityDbConnections).FirstOrDefaultAsync();
+        }
+
         [HttpGet]
         public async Task<ServicesStatus> GetServiceStatusAsync()
         {

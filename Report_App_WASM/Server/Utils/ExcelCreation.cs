@@ -24,10 +24,10 @@ namespace Report_App_WASM.Server.Utils
 
     public class ExcelCreationData : IDisposable
     {
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
         public bool ValidationSheet { get; set; }
-        public string ValidationText { get; set; }
-        public IList<ExcelCreationDatatable> Data { get; set; }
+        public string? ValidationText { get; set; }
+        public IList<ExcelCreationDatatable>? Data { get; set; }
 
         public void Dispose()
         {

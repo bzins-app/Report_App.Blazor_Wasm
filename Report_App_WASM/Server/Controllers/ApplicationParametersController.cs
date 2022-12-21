@@ -33,6 +33,20 @@ namespace Report_App_WASM.Server.Controllers
             return await _context.Activity.AsNoTracking().Select(a => new SelectItemActivitiesInfo { ActivityId = a.ActivityId, ActivityName = a.ActivityName, HasALogo = !string.IsNullOrEmpty(a.ActivityLogo), IsVisible = a.Display, LogoPath = a.ActivityLogo, IsActivated = a.IsActivated }).ToArrayAsync();
         }
 
+		[Authorize]
+		[HttpGet("SFTPInfo")]
+		public async Task<IEnumerable<SelectItem>> GetSFTPInfo()
+		{
+			return await _context.SFTPConfiguration.Select(a => new SelectItem { Id = a.SFTPConfigurationId, Name = a.ConfigurationName }).ToListAsync();
+		}
+
+        [Authorize]
+        [HttpGet("DepositPathInfo")]
+        public async Task<IEnumerable<SelectItem>> GetDepositPathInfo()
+        {
+            return await _context.FileDepositPathConfiguration.Select(a => new SelectItem { Id = a.FileDepositPathConfigurationId, Name = a.ConfigurationName }).ToListAsync();
+        }
+
         [HttpGet("ApplicationConstants")]
         public ApplicationConstantsValues GetApplicationConstants()
         {

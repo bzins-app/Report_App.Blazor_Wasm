@@ -6,6 +6,9 @@
         public static string ApplicationLogo { get; set; } = default!;
         public static bool LDAPLogin { get; set; }
     }
+    public static class UserAppTheme {
+        public static bool DarkTheme { get; set; } = false;
+    }
 
     public static class ApiControllers
     {

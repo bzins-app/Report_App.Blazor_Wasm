@@ -17,7 +17,7 @@ namespace Report_App_WASM.Client.Pages.UserAccount
         public string? Password { get; set; }
         public string? ConfirmPassword { get; set; }
         public DateTimeOffset? LockoutEnd { get; set; }
-        public IdentityOptions Options { get; set; }
+        public IdentityOptions? Options { get; set; }
     }
 
     public class UserFormModelValidator : AbstractValidator<UserFormModel>

@@ -31,8 +31,14 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
         window.cultureInfo = {
-            get: () => window.localStorage['BlazorCulture'],
-            set: (value) => window.localStorage['BlazorCulture'] = value
+            get: () => window.localStorage['ReportApp_Culture'],
+            set: (value) => window.localStorage['ReportApp_Culture'] = value
+        };
+    </script>
+    <script>
+        window.AppTheme = {
+            get: () => window.localStorage['ReportApp_Theme'],
+            set: (value) => window.localStorage['ReportApp_Theme'] = value
         };
     </script>
     <script>

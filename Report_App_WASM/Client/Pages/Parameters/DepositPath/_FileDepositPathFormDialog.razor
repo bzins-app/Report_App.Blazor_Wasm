@@ -1,10 +1,4 @@
-﻿@*@using AutoMapper
-@using AutoMapper.QueryableExtensions
-@using Report_App_BlazorServ.Services.FilesManagement
-@inject ApplicationDbContext _context
-@inject IMapper _mapper
-@inject LocalFilesService _fileDeposit
-
+﻿
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
@@ -23,7 +17,7 @@
                        Required>
                 @foreach (var value in listConfigs)
                 {
-                    <MudSelectItem Value="@value.Id" se>@value.ValueName</MudSelectItem>
+                    <MudSelectItem Value="@value.Id" >@value.Name</MudSelectItem>
                 }
             </MudSelect>
         </MudForm>
@@ -47,7 +41,7 @@
 
     [Parameter] public FileDepositPathConfigurationDTO Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
-    private List<SelectItemIntString> listConfigs = new();
+    private List<SelectItem> listConfigs = new();
     private MudForm form = default!;
     private string deletionValidation;
     private int SFTPConfigurationId;
@@ -61,11 +55,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        listConfigs = await _context.SFTPConfiguration.Select(a => new SelectItemIntString { Id = a.SFTPConfigurationId, ValueName = a.ConfigurationName }).ToListAsync();
+        string controllerActionListConfigs = "SFTPInfo";
+        listConfigs = await dataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
         Item.SFTPConfiguration = new();
-        if(Action!=CrudAction.Create)
+        if (Action != CrudAction.Create && Item.FileDepositPathConfigurationId>0)
         {
-            var config = await _context.FileDepositPathConfiguration.Where(a => a.FileDepositPathConfigurationId == Item.FileDepositPathConfigurationId&&a.SFTPConfiguration!=null).Include(a => a.SFTPConfiguration).ProjectTo<FileDepositPathConfigurationDTO>(_mapper.ConfigurationProvider).Select(a=>a.SFTPConfiguration).FirstOrDefaultAsync();
+            string ContollerSFTPConfig = $"GetSTFPConfiguration?SFTPConfigurationId={Item.FileDepositPathConfigurationId}";
+            SFTPConfigurationDTO config = new();
+            config= await dataService.GetUniqueValue(config, ContollerSFTPConfig);
             if (config != null)
             {
                 Item.SFTPConfiguration = config;
@@ -91,7 +88,10 @@
             {
                 if (SFTPConfigurationId != null || SFTPConfigurationId>0)
                 {
-                    Item.SFTPConfiguration = await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).ProjectTo<SFTPConfigurationDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    string ContollerSFTPConfig = $"GetSTFPConfiguration?SFTPConfigurationId={SFTPConfigurationId}";
+                    SFTPConfigurationDTO config = new();
+                    config = await dataService.GetUniqueValue(config, ContollerSFTPConfig);
+                    Item.SFTPConfiguration = config;
                 }
                 MudDialog.Close(DialogResult.Ok(Item));
             }
@@ -100,27 +100,27 @@
 
     private async Task TestConfiguration()
     {
-        if (Item.UseSFTPProtocol)
-        {
-            var config = await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).Select(a => a.UseFTPProtocol).FirstOrDefaultAsync();
-            if (config)
-            {
-                using var deposit = new FtpService(_context);
-                var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
-                directoryTestResult = result.Message;
-            }
-            else
-            {
-                using var deposit = new SftpService(_context);
-                var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
-                directoryTestResult = result.Message;
-            }
-        }
-        else
-        {
-            var result = await _fileDeposit.TestDirectory( Item.FilePath, Item.TryToCreateFolder);
-            directoryTestResult = result.Message;
-        }
+        //if (Item.UseSFTPProtocol)
+        //{
+        //    var config = await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).Select(a => a.UseFTPProtocol).FirstOrDefaultAsync();
+        //    if (config)
+        //    {
+        //        using var deposit = new FtpService(_context);
+        //        var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
+        //        directoryTestResult = result.Message;
+        //    }
+        //    else
+        //    {
+        //        using var deposit = new SftpService(_context);
+        //        var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
+        //        directoryTestResult = result.Message;
+        //    }
+        //}
+        //else
+        //{
+        //    var result = await _fileDeposit.TestDirectory( Item.FilePath, Item.TryToCreateFolder);
+        //    directoryTestResult = result.Message;
+        //}
 
     }
-}*@
+}

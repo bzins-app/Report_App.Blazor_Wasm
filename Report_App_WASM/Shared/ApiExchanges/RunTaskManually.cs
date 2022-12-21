@@ -10,8 +10,8 @@ namespace Report_App_WASM.Shared
     public class RunTaskManually
     {
         public int TaskHeaderId { get; set; }
-        public List<EmailRecipient> Emails { get; set; }
-        public List<QueryCommandParameter> CustomQueryParameters { get; set; }
+        public List<EmailRecipient>? Emails { get; set; }
+        public List<QueryCommandParameter>? CustomQueryParameters { get; set; }
         public bool GenerateFiles { get; set; } = false;
     }
 }

@@ -5,7 +5,7 @@
                 <NotAuthorized>
                     @if (context.User.Identity?.IsAuthenticated == true)
                     {
-                        <p role="alert">You are not authorized to access this resource.</p>
+                        <_403 />
                     }
                     else
                     {
@@ -16,9 +16,9 @@
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
-            <PageTitle>Not found</PageTitle>
+            <PageTitle>@localizer.Get("Not found")</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <_404 />
             </LayoutView>
         </NotFound>
     </Router>

@@ -110,7 +110,7 @@
                         <MudNumericField @bind-Value="param.NbrOFMinutesBeforeResendAlertEmail" Label="@localizer.Get("Nbr of minutes between occcurences")" />
                         <MudNumericField @bind-Value="param.NbrOfOccurencesBeforeResendAlertEmail" Label="@localizer.Get("Nbr of occurences before to resubmit alert")" />
                     }
-@*                    @if (Item.Type == TaskType.Report)
+                    @if (Item.Type == TaskType.Report)
                     {
                         <AuthorizeView Roles="Admin">
                             <Authorized>
@@ -123,7 +123,7 @@
                                     }
                                     @foreach (var value in depositPathSelect)
                                     {
-                                        <MudSelectItem Value="@value.Id">@value.ValueName</MudSelectItem>
+                                        <MudSelectItem Value="@value.Id">@value.Name</MudSelectItem>
                                     }
                                 </MudSelect>
                             </Authorized>
@@ -137,12 +137,12 @@
                                     }
                                     @foreach (var value in depositPathSelect)
                                     {
-                                        <MudSelectItem Value="@value.Id">@value.ValueName</MudSelectItem>
+                                        <MudSelectItem Value="@value.Id">@value.Name</MudSelectItem>
                                     }
                                 </MudSelect>
                             </NotAuthorized>
                         </AuthorizeView>
-                    }*@
+                    }
                 </MudItem>
             </MudGrid>
         </MudForm>
@@ -181,7 +181,7 @@
 
     private TaskHeaderDTO Item { get; set; } = new();
     private List<SelectItemActivitiesInfo> activities = new();
-    // private List<SelectItemIntString> depositPathSelect = new();
+    private List<SelectItem> depositPathSelect = new();
     private FileDepositPathConfigurationDTO depositPathConf = new();
     private int activityId;
     private string errorMessage;
@@ -204,7 +204,8 @@
     private async Task UpdateValues()
     {
         activities = await dataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        // depositPathSelect = await Context.FileDepositPathConfiguration.Select(a => new SelectItemIntString { Id = a.FileDepositPathConfigurationId, ValueName = a.ConfigurationName }).ToListAsync();
+        string controllerActionDepositPath = "DepositPathInfo";
+        depositPathSelect = await dataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
         string uriAction = $"GetTaskHeader?taskHeaderId={taskHeaderId}";
         Item = await dataService.GetUniqueValue(Item, uriAction);
         if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters!="[]")
@@ -216,7 +217,7 @@
         {
             if (Item.FileDepositPathConfigurationId != 0)
             {
-                // reportDepositName = await Context.FileDepositPathConfiguration.Where(a => a.FileDepositPathConfigurationId == Item.FileDepositPathConfigurationId).Select(a => a.ConfigurationName).FirstOrDefaultAsync();
+                reportDepositName = depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault(); 
             }
             activityId = Item.Activity.ActivityId;
         }
