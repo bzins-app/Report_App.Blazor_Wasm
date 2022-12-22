@@ -37,7 +37,7 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             try
             {
                 var filePath = Path.Combine(storagePath, fileName);
-                bool checkAcces = Directory.Exists(storagePath);
+                var checkAcces = Directory.Exists(storagePath);
 
                 if (!checkAcces && tryCreateFolder)
                 {
@@ -73,7 +73,7 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             var direct = new DirectoryInfo(StoragePath);
             if (direct.Exists)
             {
-                foreach (FileInfo fi in direct.EnumerateFiles())
+                foreach (var fi in direct.EnumerateFiles())
                 {
                     if (filesInfo.Any(a => a.FileName == fi.Name))
                     {

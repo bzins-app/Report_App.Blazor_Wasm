@@ -41,8 +41,8 @@ else
 
     [Parameter] public string Height { get; set; } = null;
     private List<ApplicationLogSystemDTO>? _logs;
-    private ApexChartOptions<ApplicationLogSystemDTO> _options = new ApexChartOptions<ApplicationLogSystemDTO>();
-    private ApexChart<ApplicationLogSystemDTO> _chart;
+    private ApexChartOptions<ApplicationLogSystemDTO> _options = new();
+    private ApexChart<ApplicationLogSystemDTO>? _chart;
 
     protected override async Task OnInitializedAsync()
     {

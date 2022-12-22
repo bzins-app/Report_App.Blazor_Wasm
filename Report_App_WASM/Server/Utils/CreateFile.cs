@@ -21,12 +21,12 @@ namespace Report_App_WASM.Server.Utils
             excel.Workbook.Properties.Created = DateTime.Now;
             excel.Workbook.Properties.LastModifiedBy = "Report Service";
 
-            ExcelWorksheet workSheet = excel.Workbook.Worksheets.Add(value.TabName);
+            var workSheet = excel.Workbook.Worksheets.Add(value.TabName);
             if (value.Data.Rows.Count > 0)
             {
                 value.Data.TableName = value.TabName.RemoveSpecialCharacters();
                 workSheet.Cells[1, 1].LoadFromDataTable(value.Data, true, TableStyles.Light13);
-                int colNumber = 1;
+                var colNumber = 1;
 
                 foreach (DataColumn col in value.Data.Columns)
                 {
@@ -63,7 +63,7 @@ namespace Report_App_WASM.Server.Utils
 
             foreach (var value in dataExcel.Data)
             {
-                ExcelWorksheet workSheet = excel.Workbook.Worksheets[value.TabName];
+                var workSheet = excel.Workbook.Worksheets[value.TabName];
                 if (value.Data.Rows.Count > 0)
                 {
                     if (value.ExcelTemplate.UseAnExcelDataTable)
@@ -121,23 +121,23 @@ namespace Report_App_WASM.Server.Utils
             excel.Workbook.Properties.Created = DateTime.Now;
             excel.Workbook.Properties.LastModifiedBy = "Report Service";
 
-            ExcelWorksheet workSheetValidation = excel.Workbook.Worksheets.Add("Report information");
+            var workSheetValidation = excel.Workbook.Worksheets.Add("Report information");
             workSheetValidation.Cells["A1"].Value = dataExcel.ValidationText;
             workSheetValidation.Cells["A4"].Value = "Report title";
             workSheetValidation.Cells["B4"].Value = "Created at (UTC Time)";
             workSheetValidation.Cells["C4"].Value = "Created by";
             workSheetValidation.Cells["D4"].Value = "Nbr of lines with header";
 
-            int excelLine = 5;
+            var excelLine = 5;
             foreach (var value in dataExcel.Data)
             {
-                ExcelWorksheet workSheet = excel.Workbook.Worksheets.Add(value.TabName);
+                var workSheet = excel.Workbook.Worksheets.Add(value.TabName);
                 if (value.Data.Rows.Count > 0)
                 {
                     value.Data.TableName = ExcelAddressUtil.GetValidName(value.TabName.RemoveSpecialCharacters());
 
                     workSheet.Cells[1, 1].LoadFromDataTable(value.Data, true, TableStyles.Light13);
-                    int colNumber = 1;
+                    var colNumber = 1;
 
                     foreach (DataColumn col in value.Data.Columns)
                     {
@@ -167,19 +167,19 @@ namespace Report_App_WASM.Server.Utils
 
             if (dataExcel.ValidationSheet)
             {
-                int firstRow = 4;
-                int lastRow = workSheetValidation.Dimension.End.Row;
-                int firstColumn = 1;
-                int lastColumn = workSheetValidation.Dimension.End.Column;
-                ExcelRange rg = workSheetValidation.Cells[firstRow, firstColumn, lastRow, lastColumn];
-                string tableName = "TableValidation";
+                var firstRow = 4;
+                var lastRow = workSheetValidation.Dimension.End.Row;
+                var firstColumn = 1;
+                var lastColumn = workSheetValidation.Dimension.End.Column;
+                var rg = workSheetValidation.Cells[firstRow, firstColumn, lastRow, lastColumn];
+                var tableName = "TableValidation";
                 workSheetValidation.Column(2).Style.Numberformat.Format = "dd/MM/yyyy HH:mm:ss";
                 workSheetValidation.Cells["A1:A1"].Style.Font.Size = 13;
                 workSheetValidation.Cells["A1:A1"].Style.Font.Name = "Calibri";
                 workSheetValidation.Cells["A1:A1"].Style.Font.Bold = true;
 
                 //Ading a table to a Range
-                ExcelTable tab = workSheetValidation.Tables.Add(rg, tableName);
+                var tab = workSheetValidation.Tables.Add(rg, tableName);
 
                 //Formating the table style
                 tab.TableStyle = TableStyles.Light8;
@@ -220,7 +220,7 @@ namespace Report_App_WASM.Server.Utils
         public static FileContentResult JsonFromDatable(string FileName, DataTable data, string encoding)
         {
             var strJson = JsonConvert.SerializeObject(data);
-            string cleaned = strJson.Replace("\n", "").Replace("\r", "");
+            var cleaned = strJson.Replace("\n", "").Replace("\r", "");
             byte[] bytes;
             switch (encoding)
             {
@@ -252,7 +252,7 @@ namespace Report_App_WASM.Server.Utils
 
         public static FileContentResult CsvFromDatable(string FileName, DataTable data, string encoding, string delimiter = ";", bool removeHeader = false)
         {
-            string delimitervalue = delimiter;
+            var delimitervalue = delimiter;
 
             StringBuilder sb = new();
 
@@ -343,13 +343,13 @@ namespace Report_App_WASM.Server.Utils
         {
             MemoryStream outputStream = new();
             ExcelPackage excel = new();
-            ExcelWorksheet workSheet = excel.Workbook.Worksheets.Add(TabName);
+            var workSheet = excel.Workbook.Worksheets.Add(TabName);
             workSheet.Cells[1, 1].LoadFromCollection(Data, true, TableStyles.Light13);
             if (Data.Any())
             {
                 var ValueType = Data[0].GetType().GetProperties().Select(p => new { data = p.Name, type = p.PropertyType.Name.StartsWith("String") ? "text" : p.PropertyType.Name.StartsWith("Date") ? "date" : "numeric" }).ToList();
 
-                int colNumber = 1;
+                var colNumber = 1;
                 foreach (var t in ValueType)
                 {
                     if (t.type == "date")
@@ -363,7 +363,7 @@ namespace Report_App_WASM.Server.Utils
                     workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
             }
             excel.Save();
-            string fName = string.Format(FileName + "-{0}", DateTime.Now.ToString("s") + ".xlsx");
+            var fName = string.Format(FileName + "-{0}", DateTime.Now.ToString("s") + ".xlsx");
             outputStream.Position = 0;
 
             return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")

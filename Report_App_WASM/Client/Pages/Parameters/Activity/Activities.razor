@@ -66,11 +66,11 @@
 {
     #nullable enable
     GridItemsProvider<ActivityDTO>? _itemsProvider;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = default!;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations;
     SimpleGrid<ActivityDTO> _grid = default!;
     private string _errorMessage = default!;
-    private bool _rendering = false;
+    private bool _rendering;
 
 
     protected override void OnInitialized()
@@ -92,7 +92,7 @@
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        string url = "odata/Activities?";
+        var url = "odata/Activities?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top=10";
@@ -133,7 +133,7 @@
 
     private async Task OpenEditDialog(ActivityDTO value)
     {
-        string uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
+        var uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
         var item = new ActivityDTO
             {
 
@@ -143,7 +143,7 @@
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_ActivityFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -169,11 +169,11 @@
 
     private async Task OpenDeleteDialog(ActivityDTO value)
     {
-        string uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
+        var uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
         value.ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDTO>(uri);
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = DialogService.Show<_ActivityFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -196,10 +196,10 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new ActivityDbConnectionDTO() }, ActivityType = ActivityType.SourceDB };
+        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new() }, ActivityType = ActivityType.SourceDB };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_ActivityFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)

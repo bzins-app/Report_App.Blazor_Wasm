@@ -13,7 +13,7 @@ namespace Report_App_WASM.Client.Services
             _Localizer = factory.Create(nameof(CommonResources), assemblyName.Name);
         }
 
-        public string Get(string key)
+        public string Get(string? key)
         {
             if (!string.IsNullOrEmpty(key))
             {
@@ -21,7 +21,7 @@ namespace Report_App_WASM.Client.Services
             }
             else
             {
-                string defaultkey = "en";
+                var defaultkey = "en";
                 return _Localizer[defaultkey];
             }
         }

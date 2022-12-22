@@ -18,7 +18,7 @@ namespace Report_App_WASM.Client.Services
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-        public SimpleGridFieldsContent GetGridTranslations()
+        public SimpleGridFieldsContent? GetGridTranslations()
         {
             return new SimpleGridFieldsContent
             {
@@ -57,12 +57,12 @@ namespace Report_App_WASM.Client.Services
 
         public async Task<Tuple<string, string>> GetFilePath(string fileNameToUrl, bool unique = true)
         {
-            string fileName = fileNameToUrl;
+            var fileName = fileNameToUrl;
             if (unique)
             {
                 fileName = GetUniqueName(fileNameToUrl);
             }
-            string uri = $"{ApiControllers.ApplicationParametersApi}GetUploadedFilePath?fileName={fileName}";
+            var uri = $"{ApiControllers.ApplicationParametersApi}GetUploadedFilePath?fileName={fileName}";
             return await _httpClient.GetFromJsonAsync<Tuple<string, string>>(uri);
         }
 

@@ -4,8 +4,18 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
-            @Localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+            <MudIcon Icon="@(Action switch
+                           {
+                               CrudAction.Update => Icons.Material.Filled.Edit,
+                               CrudAction.Create => Icons.Material.Filled.Create,
+                               _ => Icons.Material.Filled.DeleteForever
+                               } )" Class="mr-3 mb-n1" />
+            @Localizer.Get(Action switch
+            {
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+                })
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -66,14 +76,14 @@
     [Parameter] public ApplicationUser Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
-    private HashSet<string> _rolesToAssign = new HashSet<string>();
-    private readonly List<string> _rolesAvailable = new List<string>();
+    private HashSet<string> _rolesToAssign = new();
+    private readonly List<string> _rolesAvailable = new();
 
-    private HashSet<string> _rolesToRemove = new HashSet<string>();
-    private readonly List<string> _rolesAssigned = new List<string>();
+    private HashSet<string> _rolesToRemove = new();
+    private readonly List<string> _rolesAssigned = new();
 
     //private List<TransferItem> dataSource = new List<TransferItem>();
-    private List<string> _targetKeys = new List<string>();
+    private List<string> _targetKeys = new();
     private string[] _selectedKeys = Array.Empty<string>();
     private string[] _titles;
 
@@ -84,7 +94,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string uri = $"{ApiControllers.UserManagerApi}GetRolesList";
+        var uri = $"{ApiControllers.UserManagerApi}GetRolesList";
         var roles = await Http.GetFromJsonAsync<List<string>>(uri);
 
         foreach (var r in roles)
@@ -92,7 +102,7 @@
             _rolesAvailable.Add(r);
         }
 
-        string uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item.UserName}";
+        var uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item.UserName}";
         var userRoles = await Http.GetFromJsonAsync<List<string>>(uriUser);
 
         foreach (var ur in userRoles)
@@ -102,14 +112,14 @@
         }
 
         _titles = new string[] { Localizer.Get("Roles available"), Localizer.Get("Roles assigned") };
-        base.OnInitialized();
+        await base.OnInitializedAsync();
     }
 
     private async Task AssignRoles()
     {
         if (_rolesToAssign != null)
         {
-            ChangeRolePayload values = new ChangeRolePayload { UserName = Item.UserName, Roles = _rolesToAssign.ToList() };
+            var values = new ChangeRolePayload { UserName = Item.UserName, Roles = _rolesToAssign.ToList() };
             var result = await DataService.PostValues(values, "AddRoles", ApiControllers.UserManagerApi);
             if (result.Success)
             {
@@ -129,7 +139,7 @@
     {
         if (_rolesToRemove != null)
         {
-            ChangeRolePayload values = new ChangeRolePayload { UserName = Item.UserName, Roles = _rolesToRemove.ToList() };
+            var values = new ChangeRolePayload { UserName = Item.UserName, Roles = _rolesToRemove.ToList() };
             var result = await DataService.PostValues(values, "RemoveRoles", ApiControllers.UserManagerApi);
             if (result.Success)
             {

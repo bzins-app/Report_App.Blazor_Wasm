@@ -91,7 +91,7 @@ namespace Report_App_WASM.Shared.Extensions
 
             static string NetType2SqlType(string netType, int maxLength)
             {
-                String sqlType = "";
+                var sqlType = "";
 
                 // Map the .NET type to the data source type.
                 // This is not perfect because mappings are not always one-to-one.

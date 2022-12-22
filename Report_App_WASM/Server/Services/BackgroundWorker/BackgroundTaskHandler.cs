@@ -175,7 +175,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         }
                     }
                 }
-                DataTable table = await remoteDb.RemoteDbToDatableAsync(new RemoteDbCommandParameters() { ActivityId = header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, jobParameters.Cts, taskId);
+                var table = await remoteDb.RemoteDbToDatableAsync(new RemoteDbCommandParameters() { ActivityId = header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, jobParameters.Cts, taskId);
                 await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data completed", Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count });
 
                 if (detailParam.GenerateIfEmpty || table.Rows.Count > 0)
@@ -221,7 +221,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
             if (header.FileDepositPathConfigurationId != 0 && useDepositConfiguration && localFileResult.Success)
             {
-                string completePath = "";
+                var completePath = "";
                 SubmitResult resultDeposit;
                 var config = await _context.FileDepositPathConfiguration.Include(a => a.SFTPConfiguration).AsNoTracking().FirstAsync(a => a.FileDepositPathConfigurationId == header.FileDepositPathConfigurationId);
                 if (config.SFTPConfiguration != null && config.UseSFTPProtocol)
@@ -281,7 +281,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             if (data.Rows.Count > 0)
             {
                 var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(a.TaskDetailParameters);
-                string checkTableQuery = $@"IF (EXISTS (SELECT *
+                var checkTableQuery = $@"IF (EXISTS (SELECT *
                                                        FROM INFORMATION_SCHEMA.TABLES
                                                        WHERE TABLE_SCHEMA = 'dbo'
                                                        AND TABLE_NAME = '{detailParam.DataTransferTargetTableName}'))
@@ -326,7 +326,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 {
                     var tempTable = "tmp_" + detailParam.DataTransferTargetTableName + DateTime.Now.ToString("yyyyMMddHHmmss");
                     var columnNames = new HashSet<string>(data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
-                    string queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true, detailParam.DataTransferPK);
+                    var queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true, detailParam.DataTransferPK);
 
                     await _dbReader.CreateTable(queryCreate);
                     try
@@ -414,7 +414,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             string fName;
             string fExtension;
-            bool informationSheet = false;
+            var informationSheet = false;
             List<ExcelCreationDatatable> excelMultipleTabs = new();
             var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(header.TaskHeaderParameters);
 
@@ -522,7 +522,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(header.TaskHeaderParameters);
             if (fetchedData.Any())
             {
-                bool sendEmail = false;
+                var sendEmail = false;
                 var a = fetchedData.Select(a => a.Key).FirstOrDefault();
                 if (!headerParam.AlertOccurenceByTime && a.NbrOFCumulativeOccurences > headerParam.NbrOfOccurencesBeforeResendAlertEmail - 1 || a.NbrOFCumulativeOccurences == 0)
                 {
@@ -538,11 +538,11 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     var emailPrefix = await _context.ApplicationParameters.Select(a => a.AlertEmailPrefix).FirstOrDefaultAsync();
                     if ((header.SendByEmail && header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]"))
                     {
-                        string subject = emailPrefix + " - " + a.TaskHeader.ActivityName + ": " + a.TaskHeader.TaskName;
-                        string preMessage = a.TaskHeader.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
-                        string message = "";
+                        var subject = emailPrefix + " - " + a.TaskHeader.ActivityName + ": " + a.TaskHeader.TaskName;
+                        var preMessage = a.TaskHeader.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
+                        var message = "";
                         List<Attachment> listAttach = new();
-                        int counter = 0;
+                        var counter = 0;
                         foreach (var table in fetchedData.Where(a => a.Value.Rows.Count > 0))
                         {
                             if (table.Value.Rows.Count < 101)
@@ -602,7 +602,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             if (emails.Any() && fileResults.Any())
             {
                 var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
-                string subject = emailPrefix + " - " + header.ActivityName + ": " + header.TaskName;
+                var subject = emailPrefix + " - " + header.ActivityName + ": " + header.TaskName;
 
                 List<Attachment> listAttach = new();
                 listAttach.AddRange(fileResults.Select(a => new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
@@ -613,7 +613,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     subject = header.TaskName;
                 }
                 //
-                string message = header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
+                var message = header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
                 if (listAttach.Any())
                 {
                     var result=await _emailSender.SendEmailAsync(emails, subject, message, listAttach);

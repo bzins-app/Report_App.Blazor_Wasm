@@ -4,7 +4,7 @@
     {
         public string? FileName { get; set; }
         public string EncodingType { get; set; } = "UTF8";
-        public ExcelTemplate ExcelTemplate { get; set; } = new ExcelTemplate();
+        public ExcelTemplate ExcelTemplate { get; set; } = new();
         public bool SeparateExcelFile { get; set; } = false;
         public bool RemoveHeader { get; set; } = false;
         public bool GenerateIfEmpty { get; set; } = false;
@@ -14,6 +14,6 @@
         public bool DataTransferCreateTable { get; set; } = false;
         public bool DataTransferUsePK { get; set; } = false;
         public string? DataTransferCommandBehaviour { get; set; }
-        public List<string> DataTransferPK { get; set; } = new List<string>();
+        public List<string> DataTransferPK { get; set; } = new();
     }
 }

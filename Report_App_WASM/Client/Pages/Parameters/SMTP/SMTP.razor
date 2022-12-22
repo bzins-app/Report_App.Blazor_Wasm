@@ -68,11 +68,11 @@
 {
 #nullable enable
     GridItemsProvider<SMTPConfigurationDTO>? _itemsProvider;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = default!;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations;
     SimpleGrid<SMTPConfigurationDTO> _grid = default!;
     private string _errorMessage = default!;
-    private bool _rendering = false;
+    private bool _rendering;
 
     protected override void OnInitialized()
     {
@@ -93,7 +93,7 @@
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        string url = "odata/SMTP?";
+        var url = "odata/SMTP?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top=10";
@@ -148,7 +148,7 @@
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_SMTPFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_SMTPFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -181,7 +181,7 @@
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = DialogService.Show<_SMTPFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_SMTPFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -206,7 +206,7 @@
         var value = new SMTPConfigurationDTO();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_SMTPFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_SMTPFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)

@@ -29,7 +29,7 @@ else
     private int _nbrOfFilesStored;
 
     private List<ApplicationLogReportResultDTO>? _logs;
-    private ApexChartOptions<ApplicationLogReportResultDTO> _options = new ApexChartOptions<ApplicationLogReportResultDTO>();
+    private ApexChartOptions<ApplicationLogReportResultDTO> _options = new();
     private ApexChart<ApplicationLogReportResultDTO> _chart;
 
     protected override async Task OnInitializedAsync()

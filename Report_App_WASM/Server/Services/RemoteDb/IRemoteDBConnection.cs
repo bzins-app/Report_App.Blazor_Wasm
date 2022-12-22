@@ -152,12 +152,12 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             {
                 bulkCopy.DestinationTableName = "dbo." + targetTable;
 
-                int totalRows = data.Rows.Count;
+                var totalRows = data.Rows.Count;
 
                 if (totalRows > 1000000)
                 {
-                    int batchsize = 1000000;
-                    for (int i = 0; i <= totalRows; i += batchsize)
+                    var batchsize = 1000000;
+                    for (var i = 0; i <= totalRows; i += batchsize)
                     {
                         await bulkCopy.WriteToServerAsync(data.AsEnumerable().Skip(i).Take(batchsize).CopyToDataTable());
                     }
@@ -180,9 +180,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             }
             else if (parameter.TypeDb == TypeDb.SQLServer)
             {
-                string windowsAuthentication = ";Integrated Security=SSPI";
+                var windowsAuthentication = ";Integrated Security=SSPI";
                 string connectionString;
-                string databaseInfo = "";
+                var databaseInfo = "";
                 if (parameter.UseDbSchema)
                 {
                     databaseInfo = $";Database={parameter.DbSchema}";
@@ -207,7 +207,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             else if (parameter.TypeDb == TypeDb.DB2)
             {
                 parameter.UseDbSchema = true;
-                string databaseInfo = "";
+                var databaseInfo = "";
                 if (parameter.UseDbSchema)
                 {
                     databaseInfo = $";Initial Catalog={parameter.DbSchema}";
@@ -217,7 +217,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             else
             {
                 parameter.UseDbSchema = true;
-                string databaseInfo = "";
+                var databaseInfo = "";
                 if (parameter.UseDbSchema)
                 {
                     databaseInfo = $";database={parameter.DbSchema}";
@@ -271,7 +271,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                 await dbConnector.DbCommand.ExecuteReaderAsync(cts);
             }
 
-            using CancellationTokenRegistration ctr = cts.Register(() => dbConnector.DbCommand.Cancel());
+            using var ctr = cts.Register(() => dbConnector.DbCommand.Cancel());
             dbConnector.DbDataAdapter.SelectCommand = dbConnector.DbCommand;
             using (dbConnector.DbDataAdapter)
             {
@@ -333,7 +333,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             }
             do
             {
-                string activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId).Select(a => a.ActivityName).FirstOrDefaultAsync();
+                var activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId).Select(a => a.ActivityName).FirstOrDefaultAsync();
                 // ApplicationLogTask logTask = new() { ActivityId = run.ActivityId, ActivityName = activityName, StartDateTime = DateTime.Now, JobDescription = run.QueryInfo, Type = "Attempt" };
                 var logTask = new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
                 try
@@ -342,7 +342,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                     var connectionInfo = GetConnectionString(run.ActivityId);
                     DataTable dataTable = new();
                     dataTable.RowChanged += OnInitialized;
-                    DateTime start = DateTime.Now;
+                    var start = DateTime.Now;
                     _first = true;
                     _fillTimeStamp = DateTime.Now;
                     DbGenericParameters dbConnector = new();
@@ -533,7 +533,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                     {
                         fill = _fillTimeStamp;
                     }
-                    DateTime end = DateTime.Now;
+                    var end = DateTime.Now;
                     if (!run.Test)
                     {
                         ApplicationLogQueryExecution logQuery = new()

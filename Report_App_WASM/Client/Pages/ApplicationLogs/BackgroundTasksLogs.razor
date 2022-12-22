@@ -56,10 +56,10 @@
 {
     #nullable enable
     GridItemsProvider<ApplicationLogTaskDTO>? _itemsProvider;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent _translations = new();
     SimpleGrid<ApplicationLogTaskDTO> _grid = default!;
-    private bool _rendering = false;
+    private bool _rendering;
 
 
     protected override void OnInitialized()
@@ -80,7 +80,7 @@
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        string url = "odata/TaskLogs?";
+        var url = "odata/TaskLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top=10";
@@ -110,7 +110,7 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        ODataExtractPayload values = new ODataExtractPayload { FunctionName = "TaskLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Background tasks logs" };
+        var values = new ODataExtractPayload { FunctionName = "TaskLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Background tasks logs" };
         await DataService.ExtractGridLogs(values);
         _rendering = false;
     }

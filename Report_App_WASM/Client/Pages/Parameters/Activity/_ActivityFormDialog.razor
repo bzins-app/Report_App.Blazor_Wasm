@@ -3,8 +3,18 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
-            @Localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+            <MudIcon Icon="@(Action switch
+                           {
+                               CrudAction.Update => Icons.Material.Filled.Edit,
+                               CrudAction.Create => Icons.Material.Filled.Create,
+                               _ => Icons.Material.Filled.DeleteForever
+                               } )" Class="mr-3 mb-n1" />
+            @Localizer.Get(Action switch
+            {
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+                })
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -95,19 +105,19 @@
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public ActivityDTO Item { get; set; }
+    [Parameter] public ActivityDTO? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
-    private string _deletionValidation;
+    private string _deletionValidation = null!;
 
     private ActivityDbConnectionDTO DbCon { get; set; } = new();
-    private string _connectionTestResult;
-    private List<string> _dbSelect = new List<string>();
+    private string _connectionTestResult = null!;
+    private List<string> _dbSelect = new();
     private string _activityDepositName = "";
     private List<SelectItemActivitiesInfo> _activities = new();
-    private string _checkNameResult;
+    private string _checkNameResult = null!;
     private bool _loading;
 
     private void Cancel()
@@ -154,7 +164,7 @@
 
     private async Task ConnectionTest()
     {
-        ActivityDbConnectionDTO tryConn = new ActivityDbConnectionDTO();
+        var tryConn = new ActivityDbConnectionDTO();
         tryConn.ADAuthentication = DbCon.ADAuthentication;
         tryConn.ConnectionLogin = DbCon.ConnectionLogin;
         tryConn.ConnectionPath = DbCon.ConnectionPath;

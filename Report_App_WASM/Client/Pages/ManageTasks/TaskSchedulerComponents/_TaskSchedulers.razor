@@ -35,21 +35,21 @@
 </ErrorBoundary>
 
 @code {
-    [Parameter] public TaskHeaderDTO Item { get; set; }
+    [Parameter] public TaskHeaderDTO? Item { get; set; }
     [Parameter] public bool ChangePending { get; set; }
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
-    private List<CronParameters> _crons = new List<CronParameters>();
+    private List<CronParameters>? _crons = new();
     SimpleGrid<CronEditView> _grid;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = default!;
-    private List<CronEditView> _elements = new List<CronEditView>();
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = default!;
+    private List<CronEditView> _elements = new();
     DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Large, FullWidth = true };
     private bool _disable;
 
     private class CronEditView
     {
-        public string CronValue { get; set; }
-        public string CronDescription { get; set; }
+        public string? CronValue { get; set; }
+        public string? CronDescription { get; set; }
     }
 
 
@@ -61,11 +61,9 @@
 
     private void UpdateElements()
     {
-        if (!string.IsNullOrEmpty(Item.CronParameters))
-        {
-            _crons = JsonSerializer.Deserialize<List<CronParameters>>(Item.CronParameters);
-            PopulateCronsItems();
-        }
+        if (string.IsNullOrEmpty(Item?.CronParameters)) return;
+        _crons = JsonSerializer.Deserialize<List<CronParameters>>(Item.CronParameters);
+        PopulateCronsItems();
     }
 
     private void PopulateCronsItems()
@@ -83,13 +81,16 @@
         var dataBefore = value.CronValue;
         var parameters = new DialogParameters { ["Value"] = value.CronValue };
 
-        var dialog = DialogService.Show<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
+        var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            var toUpdate = _crons.FirstOrDefault(a => a.CronValue == dataBefore);
-            toUpdate.CronValue = feedback.Data.ToString();
+            if (_crons != null)
+            {
+                var toUpdate = _crons.FirstOrDefault(a => a.CronValue == dataBefore);
+                if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
+            }
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
@@ -102,12 +103,12 @@
     {
         _disable = true;
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        bool? result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
         {
-            var toRemove = _crons.FirstOrDefault(a => a.CronValue == value.CronValue);
-            _crons.Remove(toRemove);
+            var toRemove = _crons!.FirstOrDefault(a => a.CronValue == value.CronValue);
+             _crons.Remove(toRemove);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
@@ -122,7 +123,7 @@
         string value = null;
         var parameters = new DialogParameters { ["Value"] = value };
 
-        var dialog = DialogService.Show<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
+        var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)

@@ -108,7 +108,7 @@ namespace Report_App_WASM.Server
                     , _baseUser.Password);
 
                 //loop all the roles and then fill to SuperAdmin so he become powerfull
-                ApplicationUser selectedUser = await _userManager.FindByEmailAsync(_baseUser.Email).ConfigureAwait(true);
+                var selectedUser = await _userManager.FindByEmailAsync(_baseUser.Email).ConfigureAwait(true);
                 List<string> roles = new();
                 if (selectedUser != null)
                 {

@@ -36,7 +36,7 @@
 
                 return;
             }
-            string uri = $"{ApiControllers.CrudDataApi}GetTaskHeader?taskHeaderId={Item.TaskHeaderId}";
+            var uri = $"{ApiControllers.CrudDataApi}GetTaskHeader?taskHeaderId={Item.TaskHeaderId}";
             var reportDetailsExists = await Http.GetFromJsonAsync<bool>(uri);
             if (!reportDetailsExists)
             {

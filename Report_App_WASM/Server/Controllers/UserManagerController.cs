@@ -76,7 +76,7 @@ namespace Report_App_WASM.Server.Controllers
                 appUser.ModificationUser = item.UserName;
                 appUser.Email = item.EntityValue.UserMail;
                 appUser.UserName = item.EntityValue.UserName;
-                string password = item.EntityValue.Password;
+                var password = item.EntityValue.Password;
                 appUser.PasswordHash = "";
                 var result = await _userManager.CreateAsync(appUser, password);
                 if (result.Succeeded)
@@ -91,8 +91,8 @@ namespace Report_App_WASM.Server.Controllers
                     List<EmailRecipient> ListEmail = new();
                     var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                     ListEmail.Add(new EmailRecipient { Email = appUser.Email });
-                    string Title = emailPrefix + " - Confirm your email";
-                    string Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+                    var Title = emailPrefix + " - Confirm your email";
+                    var Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
                     _backgroundWorker.SendEmail(ListEmail, Title, Body);
                 }
 

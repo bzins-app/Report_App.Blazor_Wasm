@@ -72,7 +72,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var dialog = DialogService.Show<_QueryParametersFormDialog>("Create");
+        var dialog = await DialogService.ShowAsync<_QueryParametersFormDialog>("Create");
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -85,7 +85,7 @@
     private async Task Delete(QueryCommandParameter element)
     {
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        bool? result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
         {

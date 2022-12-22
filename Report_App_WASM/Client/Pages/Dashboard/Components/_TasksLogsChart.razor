@@ -42,7 +42,7 @@ else
 @code {
     [Parameter] public string Height { get; set; } = null;
     private List<ApplicationLogTaskDTO>? _taskLogs;
-    private ApexChartOptions<ApplicationLogTaskDTO> _options = new ApexChartOptions<ApplicationLogTaskDTO>();
+    private ApexChartOptions<ApplicationLogTaskDTO> _options = new();
     private ApexChart<ApplicationLogTaskDTO> _chart;
 
     protected override async Task OnInitializedAsync()

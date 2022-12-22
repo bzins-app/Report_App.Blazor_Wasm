@@ -51,7 +51,7 @@ namespace Report_App_WASM.Server.Data
                 auditEntries.Add(auditEntry);
                 foreach (var property in entry.Properties.Where(a => a.Metadata.Name != "ModDateTime" && a.Metadata.Name != "ModificationUser"))
                 {
-                    string propertyName = property.Metadata.Name;
+                    var propertyName = property.Metadata.Name;
                     if (property.Metadata.IsPrimaryKey())
                     {
                         auditEntry.KeyValues[propertyName] = property.CurrentValue;

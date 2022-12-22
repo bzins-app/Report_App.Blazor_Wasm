@@ -29,8 +29,8 @@ namespace ReportAppWASM.Server.Services.EmailSender
             if (emailInfos != null && emailInfos.AdminEmails != "[]")
             {
                 List<EmailRecipient> emails = JsonSerializer.Deserialize<List<EmailRecipient>>(emailInfos.AdminEmails);
-                string subject = $@"{emailInfos.ErrorEmailPrefix}-{subjectSuffix}";
-                string messageMail = string.Format(emailInfos.ErrorEMailMessage, errorMessage);
+                var subject = $@"{emailInfos.ErrorEmailPrefix}-{subjectSuffix}";
+                var messageMail = string.Format(emailInfos.ErrorEMailMessage, errorMessage);
                 await SendEmailAsync(emails, subject, messageMail);
             }
         }
@@ -40,7 +40,7 @@ namespace ReportAppWASM.Server.Services.EmailSender
             var Smtp = await _context.SMTPConfiguration.Where(a => a.IsActivated == true).FirstOrDefaultAsync();
             var emailservice = await _context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
 
-            SubmitResult result= new SubmitResult();
+            var result= new SubmitResult();
             //smtp is become default
             if (Smtp != null && email.Any() && emailservice)
             {

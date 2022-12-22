@@ -10,16 +10,16 @@
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string Value { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [Parameter] public string? Value { get; set; }
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private void Validate()
     {
-        MudDialog.Close(DialogResult.Ok(Value));
+        MudDialog?.Close(DialogResult.Ok(Value));
     }
 }

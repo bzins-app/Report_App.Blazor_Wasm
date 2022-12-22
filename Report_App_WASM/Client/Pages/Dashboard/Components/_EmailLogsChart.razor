@@ -42,7 +42,7 @@ else
 
 	[Parameter] public string Height { get; set; } = null;
 	private List<ApplicationLogEmailSenderDTO>? _logs;
-	private ApexChartOptions<ApplicationLogEmailSenderDTO> _options = new ApexChartOptions<ApplicationLogEmailSenderDTO>();
+	private ApexChartOptions<ApplicationLogEmailSenderDTO> _options = new();
 	private ApexChart<ApplicationLogEmailSenderDTO> _chart;
 
 	 protected override async Task OnInitializedAsync()

@@ -69,14 +69,14 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             var services = await _context.ServicesStatus.Select(a => new { a.AlertService, a.ReportService, a.DataTransferService }).FirstOrDefaultAsync();
             var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == taskHeaderId).Select(a => new { a.TaskName, a.Type, a.Activity.ActivityName, a.CronParameters }).FirstOrDefaultAsync();
-            string JobName = taskHeader.Type + ":" + taskHeader.ActivityName + ":" + taskHeader.TaskName + " Id:" + taskHeaderId;
+            var JobName = taskHeader.Type + ":" + taskHeader.ActivityName + ":" + taskHeader.TaskName + " Id:" + taskHeaderId;
             if (activate)
             {
                 var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
                 if (!string.IsNullOrEmpty(taskHeader.CronParameters) || taskHeader.CronParameters != "[]")
                 {
                     var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);
-                    int cronId = 0;
+                    var cronId = 0;
                     foreach (var cron in crons)
                     {
                         var jobID = JobName + "_" + cronId;
@@ -88,19 +88,19 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         };
                         if (taskHeader.Type == TaskType.Report && services.ReportService)
                         {
-                            string queueName = "report";
+                            var queueName = "report";
                             options.QueueName = queueName;
                             RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
                         if (taskHeader.Type == TaskType.Alert && services.AlertService)
                         {
-                            string queueName = "alert";
+                            var queueName = "alert";
                             options.QueueName = queueName;
                             RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
                         if (taskHeader.Type == TaskType.DataTransfer && services.DataTransferService)
                         {
-                            string queueName = "datatransfer";
+                            var queueName = "datatransfer";
                             options.QueueName = queueName;//to remove in version 2.0
                             RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
@@ -122,7 +122,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
         public async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type)
         {
-            string queueName = type.ToString().ToLower();
+            var queueName = type.ToString().ToLower();
             var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local, QueueName = queueName };
             SubmitResult result = new();
             if (activate)
@@ -134,15 +134,20 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 }
                 else
                 {
-                    var typeTask = type == BackgroundTaskType.DataTransfer ? TaskType.DataTransfer : type == BackgroundTaskType.Alert ? TaskType.Alert : TaskType.Report;
+                    var typeTask = type switch
+                    {
+                        BackgroundTaskType.DataTransfer => TaskType.DataTransfer,
+                        BackgroundTaskType.Alert => TaskType.Alert,
+                        _ => TaskType.Report
+                    };
                     await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
-                            string JobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
+                            var JobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
-                                int cronId = 0;
+                                var cronId = 0;
                                 foreach (var cron in crons)
                                 {
                                     var jobParam = new TaskJobParameters

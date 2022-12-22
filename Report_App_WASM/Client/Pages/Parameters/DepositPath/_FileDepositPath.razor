@@ -59,8 +59,8 @@
 {
     #nullable enable
     GridItemsProvider<FileDepositPathConfigurationDTO>? _itemsProvider;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = default!;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = default!;
     private bool _processing = false;
     SimpleGrid<FileDepositPathConfigurationDTO> _grid = default!;
     private string _errorMessage = default!;
@@ -85,7 +85,7 @@
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        string url = "odata/DepositPath?";
+        var url = "odata/DepositPath?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top=10";
@@ -137,7 +137,7 @@
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_FileDepositPathFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -167,7 +167,7 @@
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = DialogService.Show<_FileDepositPathFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -192,7 +192,7 @@
         var value = new FileDepositPathConfigurationDTO();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_FileDepositPathFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)

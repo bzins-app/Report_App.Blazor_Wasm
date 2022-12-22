@@ -6,6 +6,6 @@
         public bool DataTransferCreateTable { get; set; } = false;
         public bool DataTransferUsePK { get; set; } = false;
         public string? DataTransferCommandBehaviour { get; set; }
-        public List<string> DataTransferPK { get; set; } = new List<string>();
+        public List<string> DataTransferPK { get; set; } = new();
     }
 }

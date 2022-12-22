@@ -9,8 +9,18 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
-            @Localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+            <MudIcon Icon="@(Action switch
+                           {
+                               CrudAction.Update => Icons.Material.Filled.Edit,
+                               CrudAction.Create => Icons.Material.Filled.Create,
+                               _ => Icons.Material.Filled.DeleteForever
+                               } )" Class="mr-3 mb-n1" />
+            @Localizer.Get(Action switch
+            {
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+                })
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -101,7 +111,7 @@
                             </MudSelect>
                             <MudTextField T="string" Label="@Localizer.Get("Enter the primary key column")" @bind-Value="@_pKName" />
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
-                               Class="ml-auto mt-3 mb-3" OnClick="@(()=>Add())">@Localizer.Get("Add the primary key")</MudButton>
+                               Class="ml-auto mt-3 mb-3" OnClick="@(Add)">@Localizer.Get("Add the primary key")</MudButton>
                             <MudTable Items="@_param.DataTransferPK" Hover="true" Dense="true">
                                 <HeaderContent>
                                     <MudTh>@Localizer.Get("Column name")</MudTh>
@@ -113,7 +123,7 @@
                                 </RowTemplate>
                             </MudTable>
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
-                               Class="ml-auto mt-3 mb-3" OnClick="@(()=>DeleteTableConfirmation())">@Localizer.Get("Delete the target table")</MudButton>
+                               Class="ml-auto mt-3 mb-3" OnClick="@(DeleteTableConfirmation)">@Localizer.Get("Delete the target table")</MudButton>
                         }
                         else
                         {
@@ -161,30 +171,30 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public TaskDetailDTO Item { get; set; }
-    [Parameter] public TaskHeaderDTO Header { get; set; }
+    [Parameter] public TaskDetailDTO? Item { get; set; }
+    [Parameter] public TaskHeaderDTO? Header { get; set; }
     [Parameter] public int ActivityId { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
-    private string _deletionValidation;
-    private _QueryParameters _refQuery;
+    private string? _deletionValidation;
+    private _QueryParameters? _refQuery;
 
-    private TaskDetailParameters _param = new TaskDetailParameters();
-    private TaskHeaderParameters _paramHeader = new TaskHeaderParameters();
+    private TaskDetailParameters? _param = new();
+    private TaskHeaderParameters _paramHeader = new();
     private TypeDb _typeDbActivity;
-    private string _taskType;
-    private string _fileType;
+    private string _taskType = null!;
+    private string _fileType = null!;
     private bool _useExcelTemplate;
     private bool _useSpecificFileNaming;
     private bool _loading;
-    private List<Dictionary<string,object>> _data;
-    private string _queryTestResult;
+    private List<Dictionary<string,object>> _data = null!;
+    private string _queryTestResult = null!;
     private bool _testResult;
     private CancellationTokenSource _cts;
     private List<string> _encodingType;
-    private bool _isDarkMode = false;
+    private bool _isDarkMode;
     private AceEditorOptions _opt;
 
     private string _pKName;
@@ -209,7 +219,7 @@
 
         _useExcelTemplate = _paramHeader.UseAnExcelTemplate;
         _useSpecificFileNaming = _paramHeader.UseASpecificFileNaming;
-        string uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
+        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDTO>(uri);
         if(response.Any())
         {
@@ -217,7 +227,13 @@
         }      
         _encodingType = StaticAppLists.GetEncodingType;
         _loading = false;
-        _opt = new() { IsReadOnly = false, Language = _typeDbActivity == TypeDb.MySQL ? AceLanguage.mysql : _typeDbActivity == TypeDb.MariaDB ? AceLanguage.mysql : _typeDbActivity == TypeDb.SQLServer ? AceLanguage.sqlserver : AceLanguage.sql, Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver };
+        _opt = new() { IsReadOnly = false, Language = _typeDbActivity switch
+        {
+            TypeDb.MySQL => AceLanguage.mysql,
+            TypeDb.MariaDB => AceLanguage.mysql,
+            TypeDb.SQLServer => AceLanguage.sqlserver,
+            _ => AceLanguage.sql
+            }, Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver };
     }
 
     private void Cancel()
@@ -271,8 +287,8 @@
                 }
             }
             var run = new RemoteDbCommandParameters() { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20 , LastRunDateTime = Item.LastRunDateTime?? DateTime.Now, QueryCommandParameters = param};
-            RemoteDataPayload remoteDataPayload = new RemoteDataPayload {values=run};
-            string uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
+            var remoteDataPayload = new RemoteDataPayload {values=run};
+            var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
             var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
             if(response.IsSuccessStatusCode)
             {
@@ -301,7 +317,7 @@
         _loading = false;
         var parameters = new DialogParameters { ["data"] = _data, ["queryTestResult"] = _queryTestResult, ["testResult"] = _testResult };
 
-        var dialog = DialogService.Show<_QueryResultDialog>("Create", parameters, _dialogOptions);
+        var dialog = await DialogService.ShowAsync<_QueryResultDialog>("Create", parameters, _dialogOptions);
     }
 
     void CancelTest()
@@ -330,11 +346,11 @@
     private async Task DeleteTableConfirmation()
     {
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        bool? result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Deleting can not be undone!"), Localizer.Get("Confirm"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Deleting can not be undone!"), Localizer.Get("Confirm"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
         {
-            string uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";;
+            var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";;
             await Http.PostAsJsonAsync(uri, _param.DataTransferTargetTableName);
         }
     }

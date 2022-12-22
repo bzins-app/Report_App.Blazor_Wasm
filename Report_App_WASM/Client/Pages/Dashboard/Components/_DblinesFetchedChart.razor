@@ -27,7 +27,7 @@ else
     [Parameter] public string Height { get; set; } = null;
 
     private List<DbLinesQuery>? _logs;
-    private ApexChartOptions<DbLinesQuery> _options = new ApexChartOptions<DbLinesQuery>();
+    private ApexChartOptions<DbLinesQuery> _options = new();
     private ApexChart<DbLinesQuery> _chart;
 
     protected override async Task OnInitializedAsync()

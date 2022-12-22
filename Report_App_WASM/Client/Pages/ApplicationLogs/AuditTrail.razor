@@ -70,18 +70,18 @@
 {
 #nullable enable
     GridItemsProvider<ApplicationAuditTrailDTO>? _itemsProvider;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = new();
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = new();
     SimpleGrid<ApplicationAuditTrailDTO> _grid = default!;
-    private bool _rendering = false;
+    private bool _rendering;
 
     private AuditTrailValuesChanged _values = new();
 
     private class AuditTrailValuesChanged
     {
-        public string AffectedColumns { get; set; } = default!;
-        public string OldValues { get; set; } = default!;
-        public string NewValues { get; set; } = default!;
+        public string? AffectedColumns { get; set; }
+        public string? OldValues { get; set; }
+        public string? NewValues { get; set; }
     }
 
     protected override void OnInitialized()
@@ -103,7 +103,7 @@
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        string url = "odata/AuditTrail?";
+        var url = "odata/AuditTrail?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top=10";
@@ -133,7 +133,7 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        ODataExtractPayload values = new ODataExtractPayload { FunctionName = "AuditTrail", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Audit Trail" };
+        var values = new ODataExtractPayload { FunctionName = "AuditTrail", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Audit Trail" };
         await DataService.ExtractGridLogs(values);
         _rendering = false;
     }

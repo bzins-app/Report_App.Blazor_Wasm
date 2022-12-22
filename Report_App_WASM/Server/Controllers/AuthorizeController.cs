@@ -52,7 +52,7 @@ namespace Report_App_WASM.Server.Controllers
             {
                 var RememberMe = true;
                 using var context = new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
-                UserPrincipal userAD = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName);
+                var userAD = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName);
                 var userMail = await _userManager.FindByEmailAsync(userAD.EmailAddress);
                 if (userMail != null)
                 {

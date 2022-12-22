@@ -14,7 +14,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
         {
             if (string.IsNullOrEmpty(text))
             {
-                string empty = "";
+                var empty = "";
                 return empty;
             }
             //only for PKCS7 and AES. Don't change the configuration without change this check
@@ -22,7 +22,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
             {
                 return text;
             }
-            string GetKey = Secretkey();
+            var GetKey = Secretkey();
             var key = Encoding.UTF8.GetBytes(GetKey);
 
             using var aesAlg = Aes.Create();
@@ -51,7 +51,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
         {
             if (string.IsNullOrEmpty(cipherText))
             {
-                string empty = "";
+                var empty = "";
                 return empty;
             }
             try
@@ -63,7 +63,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
 
                 Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
                 Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, iv.Length);
-                string GetKey = Secretkey();
+                var GetKey = Secretkey();
                 var key = Encoding.UTF8.GetBytes(GetKey);
 
                 using var aesAlg = Aes.Create();

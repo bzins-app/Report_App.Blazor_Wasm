@@ -105,16 +105,16 @@
 
 
     GridItemsProvider<TaskHeaderDTO>? _itemsProvider;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = default!;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations;
     SimpleGrid<TaskHeaderDTO> _grid;
     private string _errorMessage = default!;
     private string _pageTitle = default!;
-    private bool _rendering = false;
+    private bool _rendering;
 
     private string? _sortDef;
-    private readonly List<String> _filters = new List<string>();
-    bool _empty = false;
+    private readonly List<String> _filters = new();
+    bool _empty;
 
 
     protected override async Task OnParametersSetAsync()
@@ -185,10 +185,10 @@
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
-        string url = $"odata/TaskHeader?";
+        var url = $"odata/TaskHeader?";
 
 
-        string customFilters = $"TypeName eq '{TypeTask}'";
+        var customFilters = $"TypeName eq '{TypeTask}'";
         if (ActivityId.HasValue)
         {
             customFilters += $" and  ActivityName eq tolower('{ActivityName}')";
@@ -247,7 +247,7 @@
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_TaskManagerFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -272,7 +272,7 @@
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = DialogService.Show<_TaskManagerFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -310,7 +310,7 @@
         var value = new TaskHeaderDTO() { TypeName = TypeTask };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_TaskManagerFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)

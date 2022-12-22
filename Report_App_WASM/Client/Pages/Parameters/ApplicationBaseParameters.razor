@@ -72,9 +72,9 @@
 
 @code {
     private ApplicationParametersDTO _param = new();
-    bool _success = false;
+    bool _success;
     MudForm _form;
-    private List<EmailRecipient> _emails = new List<EmailRecipient>();
+    private List<EmailRecipient> _emails = new();
     readonly List<EmailRecipient> _emailItems = new();
     private string _email = "";
     private bool _emailNotValidated;
@@ -82,7 +82,7 @@
     private readonly List<string> _filesToDelete = new();
     private string _initialAppName;
     private string _initialAppLogo;
-    EmailAddressAttribute _checkEmail = new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" };
+    EmailAddressAttribute _checkEmail = new() { ErrorMessage = "The email address is invalid" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -195,10 +195,10 @@
     private async Task OpenTextEditorComponent()
     {
         _htmlText = _param.ErrorEMailMessage;
-        DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
         var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
 
-        var dialog = DialogService.Show<_TextEditor>(@Localizer.Get("Edit error email template"), parameters, maxWidth);
+        var dialog = await DialogService.ShowAsync<_TextEditor>(@Localizer.Get("Edit error email template"), parameters, maxWidth);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {

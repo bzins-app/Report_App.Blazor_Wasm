@@ -59,11 +59,11 @@
 @code {
     #nullable enable
     GridItemsProvider<ApplicationUser>? _itemsProvider;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = default!;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations;
     SimpleGrid<ApplicationUser> _grid = default!;
     private string _errorMessage = default!;
-    private bool _rendering = false;
+    private bool _rendering;
 
     protected override void OnInitialized()
     {
@@ -84,7 +84,7 @@
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        string url = "odata/Users?";
+        var url = "odata/Users?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top=10";
@@ -103,7 +103,7 @@
             return null;
         }
     }
-    readonly DialogOptions _maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Large, FullWidth = true };
+    readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Large, FullWidth = true };
     private void OpenEditDialog(ApplicationUser value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Update };
@@ -114,13 +114,13 @@
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = DialogService.Show<_UserDialogForm>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_UserDialogForm>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
-            UserPayload valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };
+            var valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };
             var result = await DataService.PostValues(valueUser, "UserDelete", ApiControllers.UserManagerApi);
             if (result.Success)
             {
@@ -140,13 +140,13 @@
         var value = new ApplicationUser();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_UserDialogForm>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_UserDialogForm>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
-            UserPayload valueUser = new UserPayload {UserMail=value.Email, Password=value.PasswordHash, UserName=value.UserName };
+            var valueUser = new UserPayload {UserMail=value.Email, Password=value.PasswordHash, UserName=value.UserName };
             var result = await DataService.PostValues(valueUser, "UserInsert", ApiControllers.UserManagerApi);
             if (result.Success)
             {

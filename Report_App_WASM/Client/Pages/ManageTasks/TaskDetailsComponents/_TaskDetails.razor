@@ -45,9 +45,9 @@
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
     IEnumerable<TaskDetailDTO> _elements = new List<TaskDetailDTO>();
     SimpleGrid<TaskDetailDTO> _grid;
-    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = default!;
-    DialogOptions _maxWidth = new DialogOptions() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = default!;
+    DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
     private bool _disable;
 
     protected override void OnParametersSet()
@@ -64,7 +64,7 @@
     private async Task OpenEditDialog(TaskDetailDTO value)
     {
         _disable = true;
-        TaskDetailDTO itemUpdate = new TaskDetailDTO()
+        var itemUpdate = new TaskDetailDTO()
             {
                 Query = value.Query,
                 QueryName = value.QueryName,
@@ -75,7 +75,7 @@
             };
         var parameters = new DialogParameters { ["Item"] = itemUpdate, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_TaskDetailsFormDialog>("Edit", parameters, _maxWidth);
+        var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Edit", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -97,7 +97,7 @@
     {
         _disable = true;
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        bool? result = await DialogService.ShowMessageBox(Localizer.Get("Warning"),Localizer.Get("Are you sure?"), Localizer.Get("Delete"),null, cancelText: Localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"),Localizer.Get("Are you sure?"), Localizer.Get("Delete"),null, cancelText: Localizer.Get("Cancel"), dialogOptions);
 
         if (result!=null)
         {
@@ -116,7 +116,7 @@
         var value = new TaskDetailDTO();
         var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
+        var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)

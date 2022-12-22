@@ -67,7 +67,7 @@ namespace Report_App_WASM.Server.Controllers
         {
             var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "upload");
             var filePath = Path.Combine(uploads, fileName);
-            string savePath = "upload/" + fileName;
+            var savePath = "upload/" + fileName;
             Tuple<string, string> result = new(savePath, filePath);
             return result;
         }

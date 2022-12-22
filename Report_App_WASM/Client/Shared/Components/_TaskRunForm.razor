@@ -12,7 +12,7 @@
 
     private async Task OpenRunConfirmationComponent()
     {
-        bool sendForReportRecipients = false;
+        var sendForReportRecipients = false;
         List<string> userEmail = new();
         List<string> recipientsEmails = new();
 
@@ -38,13 +38,13 @@
 
         var parameters = new DialogParameters { ["userEmail"] = userEmail, ["recipientsEmails"] = recipientsEmails, ["queryParameters"] = queryParameters };
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        var dialog = DialogService.Show<_ManualRun>(Localizer.Get("Confirm manual job"), parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<_ManualRun>(Localizer.Get("Confirm manual job"), parameters, dialogOptions);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
             List<EmailRecipient> emails = new();
             var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data;
-            bool resultValidation = feedback.Item1;
+            var resultValidation = feedback.Item1;
             queryParameters = feedback.Item2;
             if (resultValidation)
             {
@@ -54,7 +54,7 @@
             else
             {
                 emails.Add(new EmailRecipient { Email = _email, BCC = false });
-                RunTaskManually payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
+                var payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
             Snackbar.Add(Localizer.Get("Alert") + " " + Localizer.Get("Job on going"), Severity.Success);

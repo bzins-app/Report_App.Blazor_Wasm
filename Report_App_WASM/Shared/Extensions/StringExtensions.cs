@@ -7,7 +7,7 @@ namespace Report_App_WASM.Shared.Extensions
         public static string RemoveSpecialCharacters(this string str)
         {
             StringBuilder sb = new();
-            foreach (char c in str)
+            foreach (var c in str)
             {
                 if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == 'é' || c == 'è' || c == 'à' || c == 'ù')
                 {
@@ -20,7 +20,7 @@ namespace Report_App_WASM.Shared.Extensions
         public static string RemoveSpecialExceptSpaceCharacters(this string str)
         {
             StringBuilder sb = new();
-            foreach (char c in str)
+            foreach (var c in str)
             {
                 if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == 'é' || c == 'è' || c == 'à' || c == 'ù' || c == ' ' || c == '-')
                 {
@@ -33,7 +33,7 @@ namespace Report_App_WASM.Shared.Extensions
         public static string RemoveDigits(this string str)
         {
             StringBuilder sb = new();
-            foreach (char c in str)
+            foreach (var c in str)
             {
                 if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_')
                 {

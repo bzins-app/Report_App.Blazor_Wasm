@@ -6,13 +6,13 @@ namespace Report_App_WASM.Shared
     {
         public static DateTime GetFisrtDayOfWeek(this DateTime dt, DayOfWeek startOfWeek)
         {
-            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            var diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
             return dt.AddDays(-1 * diff).Date;
         }
 
         public static DateTime GetLastDayOfWeek(this DateTime dt, DayOfWeek firstDay)
         {
-            DateTime firstDayInWeek = GetFisrtDayOfWeek(dt, firstDay);
+            var firstDayInWeek = GetFisrtDayOfWeek(dt, firstDay);
             return firstDayInWeek.AddDays(7);
         }
 
@@ -28,13 +28,13 @@ namespace Report_App_WASM.Shared
 
         public static DateTime GetFirstDayOfQuarter(this DateTime dt)
         {
-            int currentQuarter = (dt.Month - 1) / 3 + 1;
+            var currentQuarter = (dt.Month - 1) / 3 + 1;
             return new DateTime(dt.Year, (currentQuarter - 1) * 3 + 1, 1);
         }
 
         public static DateTime GetLastDayOfQuarter(this DateTime dt)
         {
-            int currentQuarter = (dt.Month - 1) / 3 + 1;
+            var currentQuarter = (dt.Month - 1) / 3 + 1;
             DateTime firstDayOfQuarter = new(dt.Year, (currentQuarter - 1) * 3 + 1, 1);
             return firstDayOfQuarter.AddMonths(3).AddDays(-1);
         }

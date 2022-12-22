@@ -17,13 +17,13 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
     [Parameter]
-    public string HtmlText { get; set; }
+    public string? HtmlText { get; set; }
     [Parameter]
     public bool DisplayTagMessage { get; set; }
-    private DotNetObjectReference<_TextEditor> _objRef;
-    string _id;
+    private DotNetObjectReference<_TextEditor>? _objRef;
+    string? _id;
 
     readonly string _uid = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 
@@ -44,7 +44,7 @@
     }
 
     [JSInvokable]
-    public void EditorDataChanged(string data)
+    public void EditorDataChanged(string? data)
     {
         HtmlText = data;
     }

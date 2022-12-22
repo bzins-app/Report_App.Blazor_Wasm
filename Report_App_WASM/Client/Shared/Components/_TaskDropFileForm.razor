@@ -9,16 +9,16 @@
 
     private async Task OpenRunConfirmationComponent()
     {
-        bool result = false;
+        var result = false;
 
-        bool? feedback = await DialogService.ShowMessageBox(
+        var feedback = await DialogService.ShowMessageBox(
         Localizer.Get("Confirm manual job"),
         Localizer.Get("Caution !") + " " + Localizer.Get("Are you sure you want to create a file to the directory? It could interfer with other processes"),
         yesText: Localizer.Get("Validate"), cancelText: Localizer.Get("Cancel"));
         result = feedback == null ? false : true;
         if (result)
         {
-            RunTaskManually payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = new List<EmailRecipient>(), CustomQueryParameters = new List<QueryCommandParameter>(), GenerateFiles=true };
+            var payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = new List<EmailRecipient>(), CustomQueryParameters = new List<QueryCommandParameter>(), GenerateFiles=true };
             await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             Snackbar.Add(Localizer.Get(Item.TypeName) + " " + Localizer.Get("Job on going"), Severity.Success);
         }

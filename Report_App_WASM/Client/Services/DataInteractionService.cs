@@ -36,7 +36,7 @@ namespace Report_App_WASM.Client.Services
 
         public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{controllerAction}";
+            var uri = $"{controller}{controllerAction}";
 
             ApiCRUDPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
@@ -65,7 +65,7 @@ namespace Report_App_WASM.Client.Services
         {
             try
             {
-                string url = "odata/ExtractLogs";
+                var url = "odata/ExtractLogs";
                 var response = await _httpClient.PostAsJsonAsync(url, values);
                 if (response.IsSuccessStatusCode)
                 {
@@ -86,7 +86,7 @@ namespace Report_App_WASM.Client.Services
 
         public async Task<List<T>> GetValues<T>(string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{controllerAction}";
+            var uri = $"{controller}{controllerAction}";
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<List<T>>(uri);
@@ -107,7 +107,7 @@ namespace Report_App_WASM.Client.Services
 
         public async Task<T> GetUniqueValue<T>(T value, string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{controllerAction}";
+            var uri = $"{controller}{controllerAction}";
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<T>(uri);

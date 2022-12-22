@@ -17,14 +17,14 @@
                     }
                     @if (!SendForReportRecipients)
                     {
-                        foreach (string str in UserEmail)
+                        foreach (var str in UserEmail)
                         {
                             <MudTextField Value="str" Label="@Localizer.Get("Email")" Disabled />
                         }
                     }
                     else
                     {
-                        foreach (string str in RecipientsEmails)
+                        foreach (var str in RecipientsEmails)
                         {
                             <MudTextField Value="str" Label="@Localizer.Get("Email")" Disabled />
                         }
@@ -36,7 +36,7 @@
                 <MudCard>
                     <MudCardContent>
                         <MudText Typo="Typo.body2">@Localizer.Get("Query parameters")</MudText>
-                        @foreach (QueryCommandParameter t in QueryParameters)
+                        @foreach (var t in QueryParameters)
                         {
                             @if (t.ValueType == QueryCommandParameterValueType.Date)
                             {

@@ -81,7 +81,7 @@
     private class SelectItem
     {
         public int Value { get; set; }
-        public string DisplayValue { get; set; }
+        public string? DisplayValue { get; set; }
         public bool Selected { get; set; }
     }
 
@@ -91,25 +91,25 @@
     string _cronMonth = "*";
     string _cronDayOfWeek = "*";
 
-    string _cronValue;
-    string _cronDescription;
+    string _cronValue = null!;
+    string _cronDescription = null!;
 
     private double _everyMinute = 1;
     private bool _listMinutesEmpty = true;
-    List<SelectItem> _listMinutesSelect = new List<SelectItem>();
+    List<SelectItem> _listMinutesSelect = new();
 
     private double _everyHour = 1;
     private bool _listHoursEmpty = true;
-    List<SelectItem> _listHoursSelect = new List<SelectItem>();
-    List<SelectItem> _listDayOfMonthSelect = new List<SelectItem>();
-    List<SelectItem> _listMonthSelect = new List<SelectItem>();
-    List<SelectItem> _listDayOfWeekSelect = new List<SelectItem>();
+    List<SelectItem> _listHoursSelect = new();
+    List<SelectItem> _listDayOfMonthSelect = new();
+    List<SelectItem> _listMonthSelect = new();
+    List<SelectItem> _listDayOfWeekSelect = new();
 
-    MudChip[] _selectedMinutes;
-    MudChip[] _selectedHours;
-    MudChip[] _selectedDayOfMonth;
-    MudChip[] _selectedMonth;
-    MudChip[] _selectedDayOfWeek;
+    MudChip[] _selectedMinutes = null!;
+    MudChip[] _selectedHours = null!;
+    MudChip[] _selectedDayOfMonth = null!;
+    MudChip[] _selectedMonth = null!;
+    MudChip[] _selectedDayOfWeek = null!;
 
     private List<string> TransfromToArray(string val)
     {
@@ -173,43 +173,43 @@
         }
 
         await GenerateCronValue();
-        for (int i = 0; i < 60; i++)
+        for (var i = 0; i < 60; i++)
         {
             _listMinutesSelect.Add(new SelectItem { Value = i, DisplayValue = i < 10 ? "0" + i.ToString() : i.ToString() });
         }
-        for (int i = 0; i < 24; i++)
+        for (var i = 0; i < 24; i++)
         {
             _listHoursSelect.Add(new SelectItem { Value = i, DisplayValue = i < 10 ? "0" + i.ToString() : i.ToString() });
         }
-        for (int i = 1; i < 32; i++)
+        for (var i = 1; i < 32; i++)
         {
             _listDayOfMonthSelect.Add(new SelectItem { Value = i, DisplayValue = i < 10 ? "0" + i.ToString() : i.ToString() });
         }
 
         _listMonthSelect = new List<SelectItem>()
         {
-        new SelectItem { Value = 1, DisplayValue ="Jan"},
-        new SelectItem { Value = 2, DisplayValue ="Feb"},
-        new SelectItem { Value = 3, DisplayValue ="Mar"},
-        new SelectItem { Value = 4, DisplayValue ="Apr"},
-        new SelectItem { Value = 5, DisplayValue ="May"},
-        new SelectItem { Value = 6, DisplayValue ="Jun"},
-        new SelectItem { Value = 7, DisplayValue ="Jul"},
-        new SelectItem { Value = 8, DisplayValue ="Aug"},
-        new SelectItem { Value = 9, DisplayValue ="Sep"},
-        new SelectItem { Value = 10, DisplayValue ="Oct"},
-        new SelectItem { Value = 11, DisplayValue ="Nov"},
-        new SelectItem { Value = 12, DisplayValue ="Dec"}
+        new() { Value = 1, DisplayValue ="Jan"},
+        new() { Value = 2, DisplayValue ="Feb"},
+        new() { Value = 3, DisplayValue ="Mar"},
+        new() { Value = 4, DisplayValue ="Apr"},
+        new() { Value = 5, DisplayValue ="May"},
+        new() { Value = 6, DisplayValue ="Jun"},
+        new() { Value = 7, DisplayValue ="Jul"},
+        new() { Value = 8, DisplayValue ="Aug"},
+        new() { Value = 9, DisplayValue ="Sep"},
+        new() { Value = 10, DisplayValue ="Oct"},
+        new() { Value = 11, DisplayValue ="Nov"},
+        new() { Value = 12, DisplayValue ="Dec"}
         };
         _listDayOfWeekSelect = new List<SelectItem>()
         {
-        new SelectItem { Value = 0, DisplayValue ="Sunday"},
-        new SelectItem { Value = 1, DisplayValue ="Monday"},
-        new SelectItem { Value = 2, DisplayValue ="Tuesday"},
-        new SelectItem { Value = 3, DisplayValue ="Wednesday"},
-        new SelectItem { Value = 4, DisplayValue ="Thursday"},
-        new SelectItem { Value = 5, DisplayValue ="Friday"},
-        new SelectItem { Value = 6, DisplayValue ="Saturday"}
+        new() { Value = 0, DisplayValue ="Sunday"},
+        new() { Value = 1, DisplayValue ="Monday"},
+        new() { Value = 2, DisplayValue ="Tuesday"},
+        new() { Value = 3, DisplayValue ="Wednesday"},
+        new() { Value = 4, DisplayValue ="Thursday"},
+        new() { Value = 5, DisplayValue ="Friday"},
+        new() { Value = 6, DisplayValue ="Saturday"}
         };
 
         foreach (var t in minutesArr)
@@ -299,8 +299,8 @@
         }
         else
         {
-            int i = 0;
-            string cronConstruct = "";
+            var i = 0;
+            var cronConstruct = "";
             foreach (var t in m)
             {
                 if (i == 0)
@@ -370,8 +370,8 @@
         }
         else
         {
-            int i = 0;
-            string cronConstruct = "";
+            var i = 0;
+            var cronConstruct = "";
             foreach (var t in m)
             {
                 if (i == 0)
@@ -435,8 +435,8 @@
         }
         else
         {
-            int i = 0;
-            string cronConstruct = "";
+            var i = 0;
+            var cronConstruct = "";
             foreach (var t in m)
             {
                 if (i == 0)
@@ -485,8 +485,8 @@
         }
         else
         {
-            int i = 0;
-            string cronConstruct = "";
+            var i = 0;
+            var cronConstruct = "";
             foreach (var t in m)
             {
                 if (i == 0)
@@ -535,8 +535,8 @@
         }
         else
         {
-            int i = 0;
-            string cronConstruct = "";
+            var i = 0;
+            var cronConstruct = "";
             foreach (var t in m)
             {
                 if (i == 0)

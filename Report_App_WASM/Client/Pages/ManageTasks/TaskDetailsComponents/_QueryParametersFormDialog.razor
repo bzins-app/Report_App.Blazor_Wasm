@@ -38,14 +38,14 @@
 
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
     QueryCommandParameter _param = new();
     private MudForm _form = default!;
 
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private async Task Validate()
@@ -53,7 +53,7 @@
         await _form.Validate();
         if (_form.IsValid)
         {
-            MudDialog.Close(DialogResult.Ok(_param));
+            MudDialog?.Close(DialogResult.Ok(_param));
         }
     }
 }

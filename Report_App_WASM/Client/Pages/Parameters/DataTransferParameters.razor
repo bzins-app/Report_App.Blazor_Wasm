@@ -52,7 +52,7 @@
 
     private string _connectionTestResult = string.Empty;
     private bool _validateButtonDisabled = true;
-    private ActivityDbConnectionDTO _dbCon = new ActivityDbConnectionDTO();
+    private ActivityDbConnectionDTO _dbCon = new();
     private bool _loading;
 
     protected override async Task OnInitializedAsync()
@@ -82,7 +82,7 @@
 
     private async Task ConnectionTest()
     {
-        ActivityDbConnectionDTO tryConn = new ActivityDbConnectionDTO();
+        var tryConn = new ActivityDbConnectionDTO();
         tryConn.ADAuthentication = _dbCon.ADAuthentication;
         tryConn.ConnectionLogin = _dbCon.ConnectionLogin;
         tryConn.ConnectionPath = _dbCon.ConnectionPath;

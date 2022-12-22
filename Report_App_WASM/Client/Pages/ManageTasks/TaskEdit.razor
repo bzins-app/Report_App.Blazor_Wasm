@@ -10,7 +10,12 @@
         <CardHeaderContent>
             <MudText Typo="Typo.h6">
                 <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
-                @Localizer.Get(Item.Type == TaskType.Report ? "Edit a report" : Item.Type == TaskType.Alert? "Edit an alert" : "Edit a data transfer")
+                @Localizer.Get(Item.Type switch
+                {
+                    TaskType.Report => "Edit a report",
+                    TaskType.Alert => "Edit an alert",
+                    _ => "Edit a data transfer"
+                    })
             </MudText>
         </CardHeaderContent>
         <CardHeaderActions>
@@ -190,10 +195,10 @@
 
     private string _cronDescription;
     private string _reportDepositName = "";
-    private bool _loading = false;
+    private bool _loading;
     private TypeDb _typeDbTask;
 
-    private bool _changesToSave = false;
+    private bool _changesToSave;
     MudForm _form;
 
     protected override async Task OnInitializedAsync()
@@ -204,9 +209,9 @@
     private async Task UpdateValues()
     {
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        string controllerActionDepositPath = "DepositPathInfo";
+        var controllerActionDepositPath = "DepositPathInfo";
         _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
-        string uriAction = $"GetTaskHeader?taskHeaderId={TaskHeaderId}";
+        var uriAction = $"GetTaskHeader?taskHeaderId={TaskHeaderId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
         if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters!="[]")
         {
@@ -221,7 +226,7 @@
             }
             _activityId = Item.Activity.ActivityId;
         }
-        string uri = $"GetActivityDbConnection?ActivityId={Item.Activity.ActivityId}";
+        var uri = $"GetActivityDbConnection?ActivityId={Item.Activity.ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDTO>(uri);
         if (response.Any())
         {
@@ -303,7 +308,7 @@
         if (_changesToSave)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-            bool? result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?") + Environment.NewLine + Localizer.Get("There are changes pending"), Localizer.Get("Confirm"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
+            var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?") + Environment.NewLine + Localizer.Get("There are changes pending"), Localizer.Get("Confirm"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
 
             if (result != null)
             {
