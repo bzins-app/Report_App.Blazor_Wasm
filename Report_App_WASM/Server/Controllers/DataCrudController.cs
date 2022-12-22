@@ -407,7 +407,7 @@ namespace Report_App_WASM.Server.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+                return Ok(new SubmitResult { Success = true, Message = ex.Message });
             }
         }
 

@@ -284,7 +284,7 @@
         string uri;
         if (FromTaskManager.HasValue && FromTaskManager.Value)
         {
-            uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.Activity.ActivityName}",
+            uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.Activity.ActivityId}/{Item.Activity.ActivityName}",
                 new Dictionary<string, object>
                 {
                     ["Page"] = Page,
