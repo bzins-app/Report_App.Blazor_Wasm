@@ -1,0 +1,127 @@
+﻿@page "/help"
+<PageTitle>@localizer.Get("Help")</PageTitle>
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">@localizer.Get("Help") !!! Work in progress</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="12" md="10">
+        <MudPaper Class="px-4 pb-3 mb-8">
+            <MudTextField T="string" Placeholder="Search" DisableUnderLine="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search"></MudTextField>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="2"></MudItem>
+    <MudItem xs="12" sm="12" md="10">
+        <MudText Typo="Typo.h6" GutterBottom="true">General</MudText>
+        <MudExpansionPanels>
+            <MudExpansionPanel Text="@localizer.Get("understand what is this application")">
+                <MudText Typo="Typo.body2">@localizer.Get("The purpose of this application is to easily create reports or alerts in selecting data from several types of database. Each task can be scheduled with a dedicated tool and results can be monitored via logs or the task manager.")</MudText>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@localizer.Get("understand what is a report")">
+                <MudText Typo="Typo.body2">@localizer.Get("A report is a process that creates a file based on one or several queries against the database settings configured at the activity level. A report must be scheduled. The file format can be choosen and if need the a deposit path can be defined. A report can be also sent by email.")</MudText>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@localizer.Get("understand what is an alert")">
+                <MudText Typo="Typo.body2">@localizer.Get("An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined")</MudText>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@localizer.Get("understand what is an activity")">
+                <MudText Typo="Typo.body2">@localizer.Get("An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background")</MudText>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+
+        <MudText Typo="Typo.h6" GutterBottom="true" Class="mt-8">How to</MudText>
+        <MudExpansionPanels>
+            <MudExpansionPanel Text="@localizer.Get("create a report")">
+                <ol>
+                    <li>@localizer.Get("Check if the activity exists")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Base parameters\" and \"Manage activities\" and check if your activity exists. If not ask to the application admin")</p>
+                    </div>
+                    <li>@localizer.Get("Create the report")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Modifity tasks\" and \"Reports\" then select create a new report")</p>
+                    </div>
+                    <li>@localizer.Get("Choose first parameters")</li>
+                    <div>
+                        <p>@localizer.Get("Enter a report title, select an activity then the type of file you want to generate and validate")</p>
+                    </div>
+                    <li>@localizer.Get("Configure the scheduler and deposit path")</li>
+                    <div>
+                        <p>@localizer.Get("To manage the scheduler select \"Configure scheduler\" then choose. If you want to define a specific deposit path, click on the corresponding button. When you have finished, validate the changes")</p>
+                    </div>
+                    <li>@localizer.Get("Add query")</li>
+                    <div>
+                        <p>@localizer.Get("When you are editing the report, click on the \"Report details\" tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button")</p>
+                    </div>
+                    <li>@localizer.Get("Optional: Add email recipient")</li>
+                    <div>
+                        <p>@localizer.Get("When you are editing the report, click on the \"Manage recipients\" tab. Enter an emsail adress then click on \"Add recipients\" button. You can also customize the message of the email with teh button \"Edit email message\" ")</p>
+                    </div>
+                    <li>@localizer.Get("Activate report and email")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Modifity tasks\" and \"Reports\" and switch on the report and if needed the \"Send by email\" button. If something goes wrong you will get an error with the reason")</p>
+                    </div>
+                </ol>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="@localizer.Get("create an alert")">
+                <ol>
+                    <li>@localizer.Get("Check if the activity exists")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Base parameters\" and \"Manage activities\" and check if your activity exists. If not ask to the application admin")</p>
+                    </div>
+                    <li>@localizer.Get("Create the alert")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Modifity tasks\" and \"Alerts\" then select create a new alert")</p>
+                    </div>
+                    <li>@localizer.Get("Choose first parameters")</li>
+                    <div>
+                        <p>@localizer.Get("Enter an alert title, select an activity and validate")</p>
+                    </div>
+                    <li>@localizer.Get("Configure the scheduler and deposit path")</li>
+                    <div>
+                        <p>@localizer.Get("To manage the scheduler select \"Configure scheduler\" then choose. When you have finished, validate the changes")</p>
+                    </div>
+                    <li>@localizer.Get("Add query")</li>
+                    <div>
+                        <p>@localizer.Get("When you are editing the report, click on the \"Report details\" tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button")</p>
+                    </div>
+                    <li>@localizer.Get("Optional: Add email recipient")</li>
+                    <div>
+                        <p>@localizer.Get("When you are editing the report, click on the \"Manage recipients\" tab. Enter an emsail adress then click on \"Add recipients\" button. You can also customize the message of the email with teh button \"Edit email message\" ")</p>
+                    </div>
+                    <li>@localizer.Get("Activate report and email")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Modifity tasks\" and \"Reports\" and switch on the report and if needed the \"Send by email\" button. If something goes wrong you will get an error with the reason")</p>
+                    </div>
+                </ol>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+
+        <MudText Typo="Typo.h6" GutterBottom="true" Class="mt-8">Troubleshoot</MudText>
+        <MudExpansionPanels>
+            <MudExpansionPanel Text="@localizer.Get("check if a report or an alert will be correctly sent by email")">
+                <ol>
+                    <li>@localizer.Get("Check SMTP configuration")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Base parameters\" and \"SMTP configuration\" and check if one is active. If not ask to the application admin")</p>
+                    </div>
+                    <li>@localizer.Get("Check if service is active")</li>
+                    <div>
+                        <p>@localizer.Get("Navigate to \"Services status\" and check if the email service is active. If not ask to the application admin")</p>
+                    </div>
+                    <li>@localizer.Get("Check task")</li>
+                    <div>
+                        <p>@localizer.Get("Chek if your report or alert is active and for report if the \"Send by email\" button is on")</p>
+                    </div>
+                </ol>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="2">
+        <MudText Typo="Typo.h6" GutterBottom="true">Categorys</MudText>
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" Class="d-flex">General</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" Class="d-flex">How to</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" Class="d-flex">Troubleshoot</MudButton>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+}

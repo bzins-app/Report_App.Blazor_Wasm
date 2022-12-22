@@ -196,7 +196,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new ActivityDbConnectionDTO() }, ActivityType = ActivityType.SourceDB.ToString() };
+        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new ActivityDbConnectionDTO() }, ActivityType = ActivityType.SourceDB };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = DialogService.Show<_ActivityFormDialog>("Create", parameters);

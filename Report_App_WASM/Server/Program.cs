@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Report_App_BlazorServ.Services.RemoteDb;
+using Report_App_WASM.Client.Pages.Parameters;
 using Report_App_WASM.Server;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
@@ -13,6 +14,7 @@ using Report_App_WASM.Server.Utils.SettingsConfiguration;
 using ReportAppWASM.Server.Services.BackgroundWorker;
 using ReportAppWASM.Server.Services.EmailSender;
 using ReportAppWASM.Server.Services.FilesManagement;
+using System.Configuration;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +41,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.Configure<BaseUser>(builder.Configuration.GetSection("BaseUserDefaultOptions"));
 
+IConfigurationSection identityDefaultOptionsConfigurationSection = builder.Configuration.GetSection("IdentityDefaultOptions");
+builder.Services.Configure<IdentityDefaultOptions>(identityDefaultOptionsConfigurationSection);
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpContextAccessor();
@@ -48,22 +52,27 @@ builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
 builder.Services.AddTransient<LocalFilesService>();
 builder.Services.AddTransient<InitializeDatabase>();
 
+var identityDefaultOptions = identityDefaultOptionsConfigurationSection.Get<IdentityDefaultOptions>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireLowercase = false;
+    options.Password.RequireDigit = identityDefaultOptions.PasswordRequireDigit;
+    options.Password.RequiredLength = identityDefaultOptions.PasswordRequiredLength;
+    options.Password.RequireNonAlphanumeric = identityDefaultOptions.PasswordRequireNonAlphanumeric;
+    options.Password.RequireUppercase = identityDefaultOptions.PasswordRequireUppercase;
+    options.Password.RequireLowercase = identityDefaultOptions.PasswordRequireLowercase;
+    options.Password.RequiredUniqueChars = identityDefaultOptions.PasswordRequiredUniqueChars;
 
     // Lockout settings
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-    options.Lockout.MaxFailedAccessAttempts = 10;
-    options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);
+    options.Lockout.MaxFailedAccessAttempts = identityDefaultOptions.LockoutMaxFailedAccessAttempts;
+    options.Lockout.AllowedForNewUsers = identityDefaultOptions.LockoutAllowedForNewUsers;
 
     // User settings
-    options.User.RequireUniqueEmail = false;
+    options.User.RequireUniqueEmail = identityDefaultOptions.UserRequireUniqueEmail;
+
+    // email confirmation require
+    options.SignIn.RequireConfirmedEmail = identityDefaultOptions.SignInRequireConfirmedEmail;
 });
 
 builder.Services.ConfigureApplicationCookie(options =>

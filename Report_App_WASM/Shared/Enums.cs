@@ -37,6 +37,7 @@ namespace Report_App_WASM.Shared
         DataTransfer = 2
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ActivityType
     {
         SourceDB = 0,

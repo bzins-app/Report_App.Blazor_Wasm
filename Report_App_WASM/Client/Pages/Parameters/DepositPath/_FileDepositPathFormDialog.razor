@@ -100,27 +100,15 @@
 
     private async Task TestConfiguration()
     {
-        //if (Item.UseSFTPProtocol)
-        //{
-        //    var config = await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).Select(a => a.UseFTPProtocol).FirstOrDefaultAsync();
-        //    if (config)
-        //    {
-        //        using var deposit = new FtpService(_context);
-        //        var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
-        //        directoryTestResult = result.Message;
-        //    }
-        //    else
-        //    {
-        //        using var deposit = new SftpService(_context);
-        //        var result = await deposit.TestDirectoryAsync(SFTPConfigurationId, Item.FilePath, Item.TryToCreateFolder);
-        //        directoryTestResult = result.Message;
-        //    }
-        //}
-        //else
-        //{
-        //    var result = await _fileDeposit.TestDirectory( Item.FilePath, Item.TryToCreateFolder);
-        //    directoryTestResult = result.Message;
-        //}
-
+        DepositPathTest payload = new DepositPathTest { UseSFTPProtocol = Item.UseSFTPProtocol, SFTPConfigurationId = SFTPConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
+        var result = await dataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi);
+        if(result.Success)
+        {
+            directoryTestResult = "OK!";
+        }
+        else
+        {
+            directoryTestResult = result.Message;
+        }
     }
 }

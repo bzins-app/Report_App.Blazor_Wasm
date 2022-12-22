@@ -177,7 +177,10 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
-                    b.Property<string>("ActivityType")
+                    b.Property<int>("ActivityType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ActivityTypeName")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -275,7 +278,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TypeDbName")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 

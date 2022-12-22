@@ -60,6 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="wwwroot\docsstorage\" />
     <Folder Include="wwwroot\upload\" />
   </ItemGroup>

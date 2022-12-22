@@ -40,8 +40,9 @@ namespace Report_App_WASM.Shared.DTO
         [Required]
         [MaxLength(60)]
         public string? ActivityName { get; set; }
+        public ActivityType ActivityType { get; set; } = ActivityType.SourceDB;
         [MaxLength(20)]
-        public string? ActivityType { get; set; }
+        public string? ActivityTypeName { get; set; }
         public bool IsActivated { get; set; }
         public bool Display { get; set; }
         public string? ActivityLogo { get; set; }

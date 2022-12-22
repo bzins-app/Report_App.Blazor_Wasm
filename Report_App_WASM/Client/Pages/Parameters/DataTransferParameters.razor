@@ -1,9 +1,5 @@
-﻿@*@page "/DataTransferParameters"
-@using Report_App_BlazorServ.Utils.EncryptDecrypt
-@inject IRemoteDbConnection _dbConnect
+﻿@page "/DataTransferParameters"
 @inject NavigationManager NavManager
-@inject ApplicationDbContext _context
-@inject GeneralRepository _repo
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@localizer.Get("Data transfer parameters")</PageTitle>
@@ -16,7 +12,7 @@
     </MudCardHeader>
     <MudCardContent>
         <MudTextField @bind-Value="targetInfo.ActivityName" Label="@localizer.Get("Activity name")" ReadOnly />
-        @if (!string.IsNullOrEmpty(dbCon.TypeDb))
+        @if (dbCon.TypeDb>0)
         {
 
             <MudTextField @bind-Value="dbCon.ConnectionPath" Label="@localizer.Get("Connection path")" Required Placeholder="IP or Hostname" />
@@ -25,7 +21,7 @@
             <MudSwitch @bind-Checked="dbCon.IntentReadOnly" Label="@localizer.Get("Application intent read only?")" Color="Color.Primary" />
             <MudSwitch @bind-Checked="dbCon.ADAuthentication" Label="@localizer.Get("Use Windows authentication?")" Color="Color.Primary" />
             <MudTextField @bind-Value="dbCon.ConnectionLogin" Label="@localizer.Get("Connection login")" Disabled="dbCon.ADAuthentication" />
-            <MudTextField @bind-Value="passwordContainer" Label="@localizer.Get("Password")" InputType="InputType.Password" Disabled="dbCon.ADAuthentication" />
+            <MudTextField @bind-Value="dbCon.Password" Label="@localizer.Get("Password")" InputType="InputType.Password" Disabled="dbCon.ADAuthentication" />
 
             <MudNumericField @bind-Value="dbCon.CommandTimeOut" Label="@localizer.Get("Command timeout")" />
             <MudButton Disabled="@loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
@@ -52,47 +48,28 @@
 </MudCard>
 
 @code {
-    private Activity targetInfo = new();
+    private ActivityDTO targetInfo = new();
 
-    private string connectionTestResult;
+    private string connectionTestResult = string.Empty;
     private bool ValidateButtonDisabled = true;
-    private ActivityDbConnection dbCon = new ActivityDbConnection();
-    private List<string> dbSelect = new List<string>();
-    private string passwordContainer;
-    private string activityDepositName = "";
-    private List<string> activitiesList = new();
-    private string checkNameResult;
+    private ActivityDbConnectionDTO dbCon = new ActivityDbConnectionDTO();
     private bool loading;
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-        targetInfo = await _context.Activity.Include(a => a.ActivityDbConnections).AsNoTracking().Where(a => a.ActivityType == ActivityTypeEnum.TargetDB.ToString()).FirstOrDefaultAsync();
-
-        if (targetInfo == null)
-        {
-            List<ActivityDbConnection> connections = new List<ActivityDbConnection>();
-            targetInfo = new Activity { ActivityName = "Data transfer", ActivityType = ActivityTypeEnum.TargetDB.ToString() };
-            targetInfo.ActivityDbConnections = connections;
-            dbCon = new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDbEnum.SQLServer.ToString() };
-        }
-        else
-        {
-            dbCon = targetInfo.ActivityDbConnections.First();
-            passwordContainer = dbCon.Password;
-        }
+        targetInfo = await dataService.GetUniqueValue(targetInfo, "GetDataTransferInfo");
+        dbCon = targetInfo.ActivityDbConnections.First();
     }
 
 
     private async Task ValidateActivity()
     {
-        if (dbCon.Password != passwordContainer)
+
+        var result = await dataService.PostValues(targetInfo, "ActivityUpdate");
+        if (result.Success)
         {
-            dbCon.Password = EncryptDecrypt.EncryptString(passwordContainer);
+            NavManager.NavigateTo("/");
         }
-        targetInfo.ActivityDbConnections.Add(dbCon);
-        await _repo.UpdateDataTransferDB(targetInfo);
-        NavManager.NavigateTo("/");
     }
 
 
@@ -114,24 +91,9 @@
         tryConn.TypeDb = dbCon.TypeDb;
         tryConn.Port = dbCon.Port;
         tryConn.UseDbSchema = dbCon.UseDbSchema;
-        if (dbCon.Password == passwordContainer)
-        {
-            tryConn.Password = EncryptDecrypt.DecryptString(dbCon.Password);
-        }
-        else
-        {
-            tryConn.Password = passwordContainer;
-        }
-        var result = await _dbConnect.TestConnectionAsync(tryConn);
-        if (result.Success)
-        {
-            ValidateButtonDisabled = false;
-        }
-        else
-        {
-            ValidateButtonDisabled = true;
-        }
-        connectionTestResult = result.Message;
+        tryConn.Password = dbCon.Password;
+        var result = await dataService.PostValues(tryConn, "TestConnection", ApiControllers.RemoteDbApi);
+        connectionTestResult = result.Message ?? "Ok!";
     }
 
 
@@ -141,4 +103,3 @@
     }
 
 }
-*@

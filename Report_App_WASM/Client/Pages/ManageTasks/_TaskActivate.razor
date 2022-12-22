@@ -1,4 +1,4 @@
-﻿
+﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
 
 <MudSwitch Checked="@Item.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
@@ -36,14 +36,15 @@
 
                 return;
             }
-            //var reportDetailsExists = await _context.TaskDetail.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AsNoTracking().AnyAsync();
-            //if (!reportDetailsExists)
-            //{
-            //    Item.IsActivated = false;
-            //    Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because no query is attached to this report"), Severity.Error);
+            string uri = $"{ApiControllers.CrudDataApi}GetTaskHeader?taskHeaderId={Item.TaskHeaderId}";
+            var reportDetailsExists = await Http.GetFromJsonAsync<bool>(uri);
+            if (!reportDetailsExists)
+            {
+                Item.IsActivated = false;
+                Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because no query is attached to this report"), Severity.Error);
 
-            //    return;
-            //}
+                return;
+            }
         }
 
         await dataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);

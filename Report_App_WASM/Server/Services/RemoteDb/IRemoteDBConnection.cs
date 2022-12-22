@@ -46,7 +46,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
         private async Task<int> GetDataTransferActivity()
         {
-            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB.ToString()).Select(a => a.ActivityId).FirstOrDefaultAsync();
+            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB).Select(a => a.ActivityId).FirstOrDefaultAsync();
         }
 
         public async Task<bool> CkeckTableExists(string query)

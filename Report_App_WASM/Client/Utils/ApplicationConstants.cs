@@ -19,5 +19,6 @@
         public const string RemoteDbApi = "api/RemoteDb/";
         public const string UserManagerApi = "api/UserManager/";
         public const string FilesApi = "api/Files/";
+        public const string DepositPathApi = "api/DepositPath/";
     }
 }

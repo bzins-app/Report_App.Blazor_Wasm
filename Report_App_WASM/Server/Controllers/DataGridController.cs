@@ -175,7 +175,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("odata/Activities")]
         public IQueryable<Activity> GetActivities()
         {
-            return _context.Activity.Where(a=>a.ActivityType==ActivityType.SourceDB.ToString()).Include(a => a.ActivityDbConnections).AsNoTracking();
+            return _context.Activity.Where(a=>a.ActivityType==ActivityType.SourceDB).Include(a => a.ActivityDbConnections).AsNoTracking();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]

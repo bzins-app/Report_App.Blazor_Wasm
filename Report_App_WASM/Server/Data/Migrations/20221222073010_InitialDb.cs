@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,7 +18,8 @@ namespace ReportAppWASM.Server.Migrations
                     ActivityId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ActivityName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    ActivityType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    ActivityType = table.Column<int>(type: "int", nullable: false),
+                    ActivityTypeName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     IsActivated = table.Column<bool>(type: "bit", nullable: false),
                     Display = table.Column<bool>(type: "bit", nullable: false),
                     ActivityLogo = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -394,7 +396,7 @@ namespace ReportAppWASM.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConnectionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     TypeDb = table.Column<int>(type: "int", nullable: false),
-                    TypeDbName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TypeDbName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     ConnectionPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Port = table.Column<int>(type: "int", nullable: false),
                     ConnectionLogin = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),

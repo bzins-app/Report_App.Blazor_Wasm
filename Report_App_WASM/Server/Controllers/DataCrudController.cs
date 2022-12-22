@@ -56,7 +56,15 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<Activity> GetDataTransferInfoAsync()
         {
-            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB.ToString()).Include(a=>a.ActivityDbConnections).FirstOrDefaultAsync();
+            var targetInfo= await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB).Include(a=>a.ActivityDbConnections).FirstOrDefaultAsync();
+            if (targetInfo == null)
+            {
+                List<ActivityDbConnection> connections = new List<ActivityDbConnection>();
+                targetInfo = new Activity { ActivityName = "Data transfer", ActivityType = ActivityType.TargetDB };
+                connections.Add( new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDb.SQLServer});
+                targetInfo.ActivityDbConnections = connections;
+            }
+            return targetInfo;
         }
 
         [HttpGet]
@@ -319,6 +327,12 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<TaskHeader> GetTaskHeaderAsync(int taskHeaderId)
         {
             return await _context.TaskHeader.Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Include(a => a.Activity).Where(a => a.TaskHeaderId == taskHeaderId).OrderBy(a => a).FirstOrDefaultAsync();
+        }
+
+        [HttpGet]
+        public async Task<bool> GetTaskHasDetailsAsync(int taskHeaderId)
+        {
+            return await _context.TaskHeader.Include(a => a.TaskDetails).OrderBy(a => a).Select(a=>a.TaskDetails).AnyAsync();
         }
 
         [HttpPost]

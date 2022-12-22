@@ -1,10 +1,6 @@
 ﻿@page "/Profile"
-@*@using Microsoft.AspNetCore.Identity
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject UserManager<ApplicationUser> _userManager
-@inject SignInManager<ApplicationUser> _signInManager
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager uriHelper
-@inject GeneralRepository _generalRepo
 @inject ISnackbar Snackbar
 
 <PageTitle>@localizer.Get("Manage your account")</PageTitle>
@@ -118,7 +114,7 @@
     private readonly UserProfileEditValidator userValidator = new();
     private ChangePasswordModel changepassword { get; set; } = new();
     private ChangePasswordModelValidator passwordValidator;
-    private readonly ApplicationUser user = new();
+    private readonly UserInfo user = new();
 
     private bool LdapSignin;
     private string passwordForDeletion;
@@ -145,69 +141,68 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var currentUser = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        var user = await _userManager.GetUserAsync(currentUser);
-        model.Options = _userManager.Options;
-        changepassword.Options = _userManager.Options;
+        var user = await AuthenticationStateProvider.GetUserInfo();
+       // model.Options = _userManager.Options;
+      //  changepassword.Options = _userManager.Options;
         model.UserName = user.UserName;
-        model.Id = user.Id;
-        model.Email = user.Email;
-        LdapSignin = await _generalRepo.LdapSignIn();
+        //model.Id = user.Id;
+        model.Email = user.UserMail;
+        LdapSignin = ApplicationConstants.LDAPLogin;
         passwordValidator = new(localizer);
     }
 
 
     private async Task Submit()
     {
-        await form.Validate();
-        if (form.IsValid)
-        {
-            var user = await _userManager.FindByIdAsync(model.Id);
-            await _userManager.UpdateAsync(user);
+        //await form.Validate();
+        //if (form.IsValid)
+        //{
+        //    var user = await _userManager.FindByIdAsync(model.Id);
+        //    await _userManager.UpdateAsync(user);
 
-            //   Snackbar.Add($"{ToastText.UPDATESUCCESS}", MudBlazor.Severity.Info);
-        }
+        //    //   Snackbar.Add($"{ToastText.UPDATESUCCESS}", MudBlazor.Severity.Info);
+        //}
 
     }
     private async Task ChangePassword()
     {
-        await passwordform.Validate();
-        if (passwordform.IsValid)
-        {
-            var user = await _userManager.FindByIdAsync(model.Id);
-            var result = await _userManager.ChangePasswordAsync(user, changepassword.CurrentPassword, changepassword.NewPassword);
-            if (result.Succeeded)
-            {
-                Snackbar.Add($"{localizer.Get("Changed password successfully")}", Severity.Info);
-            }
-            else
-            {
-                Snackbar.Add($"{string.Join(",", result.Errors.Select(x => x.Description).ToArray())}", Severity.Error);
-            }
-        }
+        //await passwordform.Validate();
+        //if (passwordform.IsValid)
+        //{
+        //    var user = await _userManager.FindByIdAsync(model.Id);
+        //    var result = await _userManager.ChangePasswordAsync(user, changepassword.CurrentPassword, changepassword.NewPassword);
+        //    if (result.Succeeded)
+        //    {
+        //        Snackbar.Add($"{localizer.Get("Changed password successfully")}", Severity.Info);
+        //    }
+        //    else
+        //    {
+        //        Snackbar.Add($"{string.Join(",", result.Errors.Select(x => x.Description).ToArray())}", Severity.Error);
+        //    }
+        //}
     }
 
     private async Task DeleteAccount()
     {
-        if (string.IsNullOrEmpty(passwordForDeletion))
-        {
-            deletionPasswordResult = localizer.Get("Incorrect password");
-            return;
-        }
-        if (!await _userManager.CheckPasswordAsync(user, passwordForDeletion))
-        {
-            deletionPasswordResult = localizer.Get("Incorrect password");
-            return;
-        }
-        deletionPasswordResult = "";
-        var result = await _userManager.DeleteAsync(user);
-        var userId = await _userManager.GetUserIdAsync(user);
-        if (!result.Succeeded)
-        {
-            deletionPasswordResult = $"Unexpected error occurred deleting user with ID '{userId}'.";
-        }
+        //if (string.IsNullOrEmpty(passwordForDeletion))
+        //{
+        //    deletionPasswordResult = localizer.Get("Incorrect password");
+        //    return;
+        //}
+        //if (!await _userManager.CheckPasswordAsync(user, passwordForDeletion))
+        //{
+        //    deletionPasswordResult = localizer.Get("Incorrect password");
+        //    return;
+        //}
+        //deletionPasswordResult = "";
+        //var result = await _userManager.DeleteAsync(user);
+        //var userId = await _userManager.GetUserIdAsync(user);
+        //if (!result.Succeeded)
+        //{
+        //    deletionPasswordResult = $"Unexpected error occurred deleting user with ID '{userId}'.";
+        //}
 
-        await _signInManager.SignOutAsync().ConfigureAwait(true);
-        uriHelper.NavigateTo("/");
+        //await _signInManager.SignOutAsync().ConfigureAwait(true);
+        //uriHelper.NavigateTo("/");
     }
-}*@
+}
