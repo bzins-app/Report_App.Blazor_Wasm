@@ -320,12 +320,12 @@
             if (result.Success)
             {
                 Snackbar.Add(localizer.Get("Object added"), Severity.Success);
-                //if (result.Value != null)
-                //{
-                //    var item = (TaskHeaderDTO)Convert.ChangeType(result.Value, typeof(TaskHeaderDTO));
-                //    uriHelper.NavigateTo("TaskEdit/" + item.TaskHeaderId);
-                //}
-                //else
+                if (result.Value != null)
+                {
+                    var item = (TaskHeaderDTO)Convert.ChangeType(result.Value, typeof(TaskHeaderDTO));
+                    uriHelper.NavigateTo("TaskEdit/" + item.TaskHeaderId);
+                }
+                else
                 await OnRefresh();
             }
             else

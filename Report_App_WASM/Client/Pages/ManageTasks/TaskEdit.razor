@@ -4,6 +4,7 @@
 @inject NavigationManager UriHelper
 @using System.IO
 @using MudBlazor.Utilities
+@attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <MudCard Elevation="6">
     <MudCardHeader>

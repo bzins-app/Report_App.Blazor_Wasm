@@ -92,12 +92,12 @@ namespace Report_App_WASM.Server.Controllers
 
             try
             {
-                _logger.LogInformation("Grid extraction: Start ", Values.FunctionName);
+                _logger.LogInformation("Grid extraction: Start "+ Values.FunctionName, Values.FunctionName);
                 var items = await FinalQ.AsQueryable().Take(Values.MaxResult).ToListAsync();
                 var fileName = Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
                 var file = CreateFile.ExcelFromCollection(fileName, Values.TabName, items);
-                _logger.LogInformation($"Grid extraction: End", $" {fileName} {items.Count} lines");
+                _logger.LogInformation($"Grid extraction: End {fileName} {items.Count} lines", $" {fileName} {items.Count} lines");
                 return File(file.FileContents, contentType: file.ContentType, file.FileDownloadName);
             }
             catch (Exception e)
