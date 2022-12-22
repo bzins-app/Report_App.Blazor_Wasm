@@ -43,10 +43,18 @@ namespace Report_App_WASM.Server.Controllers
             return metrics;
         }
 
+        //[HttpGet("TasksLogs")]
+        //public async Task<List<ApplicationLogTask>> GetTasksLogsAsync()
+        //{
+        //    return await _context.ApplicationLogTask.AsNoTracking().Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt")).ToListAsync();
+        //}
+
         [HttpGet("TasksLogs")]
-        public async Task<List<ApplicationLogTask>> GetTasksLogsAsync()
+        public async Task<List<TaksLogsValues>> GetTasksLogsAsync()
         {
-            return await _context.ApplicationLogTask.AsNoTracking().Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt")).ToListAsync();
+           return await _context.ApplicationLogTask.AsNoTracking()
+               .Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt"))
+               .GroupBy(a => new { a.Type, a.ActivityName, a.EndDateTime.Date }).Select(a => new TaksLogsValues { Date = a.Key.Date, ActivityName = a.Key.ActivityName, TypeTask = a.Key.Type, TotalDuration = a.Sum(a => a.DurationInSeconds), NbrTasks = a.Count(), NbrErrors= a.Sum(a => a.Error ? 1 : 0) }).ToListAsync();
         }
 
         [HttpGet("SystemLogs")]

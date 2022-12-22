@@ -1,28 +1,29 @@
 ﻿@inject ISnackbar Snackbar
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient Http
 
-<MudSwitch Checked="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))"/>
+<MudSwitch Checked="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
 
-    @code {
-	[Parameter]
-	public TaskHeaderDTO Item { get; set; }
+@code {
+    [Parameter]
+    public TaskHeaderDTO Item { get; set; }
 
-	private async Task ChangeStatusAsync(bool value)
-	{
-		Item.SendByEmail = value;
+    private async Task ChangeStatusAsync(bool value)
+    {
+        Item.SendByEmail = value;
 
-		if (Item.SendByEmail )
-		{
-			//if (await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).Select(a => a.Email).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync()=="[]"||!await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AnyAsync())
-			//{
-			//	Item.SendByEmail = false;
-   //             Snackbar.Add( Item.TaskName + " " + localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
+        if (Item.SendByEmail)
+        {
+            string uri = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
+            var emailsConfigured = await Http.GetFromJsonAsync<bool>(uri);
+            if (!emailsConfigured)
+            {
+                Item.SendByEmail = false;
+                Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
+                return;
+            }
+        }
+        await dataService.PostValues(Item, "TaskHeaderUpdate");
 
-			//	return;
-			//}
-		}
-		await dataService.PostValues(Item, "TaskHeaderUpdate");
-
-		Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " +localizer.Get("send by email") +" "  +localizer.Get("enabled") : Item.TaskName + " " +localizer.Get("send by email") +" "+ localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
-	}
+        Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " + localizer.Get("send by email") + " " + localizer.Get("enabled") : Item.TaskName + " " + localizer.Get("send by email") + " " + localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
+    }
     }

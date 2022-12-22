@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,21 +48,21 @@ namespace Report_App_WASM.Server.Controllers
             return await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == ActivityId).ToArrayAsync();
         }
 
-		[HttpGet]
-		public async Task<SFTPConfiguration> GetSTFPConfigurationAsync(int SFTPConfigurationId)
-		{
-			return await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).FirstOrDefaultAsync();
-		}
+        [HttpGet]
+        public async Task<SFTPConfiguration> GetSTFPConfigurationAsync(int SFTPConfigurationId)
+        {
+            return await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).FirstOrDefaultAsync();
+        }
 
         [HttpGet]
         public async Task<Activity> GetDataTransferInfoAsync()
         {
-            var targetInfo= await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB).Include(a=>a.ActivityDbConnections).FirstOrDefaultAsync();
+            var targetInfo = await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB).Include(a => a.ActivityDbConnections).FirstOrDefaultAsync();
             if (targetInfo == null)
             {
                 List<ActivityDbConnection> connections = new List<ActivityDbConnection>();
                 targetInfo = new Activity { ActivityName = "Data transfer", ActivityType = ActivityType.TargetDB };
-                connections.Add( new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDb.SQLServer});
+                connections.Add(new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDb.SQLServer });
                 targetInfo.ActivityDbConnections = connections;
             }
             return targetInfo;
@@ -80,7 +81,7 @@ namespace Report_App_WASM.Server.Controllers
             {
                 _context.Update(values.EntityValue);
                 await SaveDbAsync(values.UserName);
-                ApplicationConstants.ApplicationName= values.EntityValue.ApplicationName;
+                ApplicationConstants.ApplicationName = values.EntityValue.ApplicationName;
                 ApplicationConstants.ApplicationLogo = values.EntityValue.ApplicationLogo;
                 return Ok(new SubmitResult { Success = true });
             }
@@ -332,7 +333,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<bool> GetTaskHasDetailsAsync(int taskHeaderId)
         {
-            return await _context.TaskHeader.Include(a => a.TaskDetails).OrderBy(a => a).Select(a=>a.TaskDetails).AnyAsync();
+            return await _context.TaskHeader.Include(a => a.TaskDetails).OrderBy(a => a).Select(a => a.TaskDetails).AnyAsync();
         }
 
         [HttpPost]
@@ -359,6 +360,50 @@ namespace Report_App_WASM.Server.Controllers
                 _context.Entry(values.EntityValue).State = EntityState.Deleted;
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TaskClone(ApiCRUDPayload<DuplicateTask> values)
+        {
+            try
+            {
+                var DbItem = await _context.TaskHeader.Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Where(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
+                if (DbItem != null)
+                {
+                    DbItem.TaskName = values.EntityValue.Name;
+                    DbItem.IsActivated = false;
+                    DbItem.SendByEmail = false;
+                    DbItem.FileDepositPathConfigurationId = 0;
+                    DbItem.TaskHeaderId = 0;
+
+                    if (DbItem.TaskDetails != null)
+                    {
+                        foreach (var t in DbItem.TaskDetails)
+                        {
+                            t.TaskDetailId = 0;
+                        }
+                    }
+                    if (DbItem.TaskEmailRecipients != null)
+                    {
+                        foreach (var t in DbItem.TaskEmailRecipients)
+                        {
+                            t.TaskEmailRecipientId = 0;
+                        }
+                    }
+                    _context.Update(DbItem);
+                    await SaveDbAsync(values.UserName);
+                    _context.Entry(DbItem).State = EntityState.Detached;
+                    _context.Entry(values.EntityValue).State = EntityState.Deleted;
+
+
+                    return Ok(new SubmitResult { Success = true });
+                }
+                return NotFound(new SubmitResult { Success = false, Message = "Item not found" });
             }
             catch (Exception ex)
             {

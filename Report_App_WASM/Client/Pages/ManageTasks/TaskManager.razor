@@ -58,25 +58,25 @@
                     <TemplateColumn Title="@localizer.Get("Is activated?")">
                         <_TaskActivate Item="context" />
                     </TemplateColumn>
-                    @*    @if (typeTask == TaskType.Report.ToString())
-                    {
-                    <TemplateColumn Title="@localizer.Get("Send by email?")">
-                    <_TaskEmailActivate Item="context" />
-                    </TemplateColumn>
-                    }*@
                     @if (typeTask == TaskType.Report.ToString())
                     {
-                    <PropertyColumn Property="@(p => p.FileDepositPathConfigurationId)" Title="@localizer.Get("File deposit path")" Sortable="true" />
-                    <TemplateColumn Title="@localizer.Get("Create file manually")">
-                    <_TaskDropFileForm Item="context" />
-                    </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@localizer.Get("Archiving duration in days")" Sortable="true" />
+                        <TemplateColumn Title="@localizer.Get("Send by email?")">
+                            <_TaskEmailActivate Item="context" />
+                        </TemplateColumn>
                     }
-@*                    <TemplateColumn Title="@localizer.Get("Duplicate")">
-                    <CascadingValue Value="@_grid">
-                    <_TaskDuplicateForm Item="context" />
-                    </CascadingValue>
-                    </TemplateColumn>*@
+                    @if (typeTask == TaskType.Report.ToString())
+                    {
+                        <PropertyColumn Property="@(p => p.FileDepositPathConfigurationId)" Title="@localizer.Get("File deposit path")" Sortable="true" />
+                        <TemplateColumn Title="@localizer.Get("Create file manually")">
+                            <_TaskDropFileForm Item="context" />
+                        </TemplateColumn>
+                        <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@localizer.Get("Archiving duration in days")" Sortable="true" />
+                    }
+                    <TemplateColumn Title="@localizer.Get("Duplicate")">
+                        <CascadingValue Value="@_grid">
+                            <_TaskDuplicateForm Item="context" />
+                        </CascadingValue>
+                    </TemplateColumn>
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
@@ -326,7 +326,7 @@
                     uriHelper.NavigateTo("TaskEdit/" + item.TaskHeaderId);
                 }
                 else
-                await OnRefresh();
+                    await OnRefresh();
             }
             else
             {
