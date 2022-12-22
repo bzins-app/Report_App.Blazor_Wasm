@@ -72,10 +72,11 @@
                             <MudSelect T="string" Label="@localizer.Get("Encoding type")" @bind-Value="@param.EncodingType"
                                AnchorOrigin="Origin.BottomCenter"
                                Required>
-                                @foreach (var value in EncodingType)
+                                @foreach (EncodingType item in Enum.GetValues(typeof(EncodingType)))
                                 {
-                                    <MudSelectItem Value="@value">@value</MudSelectItem>
+                                    <MudSelectItem Value="@item.ToString()">@localizer.Get(@item.ToString())</MudSelectItem>
                                 }
+  
                             </MudSelect>
                         }
                         @if (fileType == FileType.CSV.ToString())
@@ -94,9 +95,9 @@
                             <MudSelect T="string" Label="@localizer.Get("Command behaviour")"
                                AnchorOrigin="Origin.BottomCenter" @bind-Value="param.DataTransferCommandBehaviour"
                                Required>
-                                @foreach (var value in commandBehaviourAdvanced)
+                                @foreach (DataTransferAdvancedBehaviour item in Enum.GetValues(typeof(DataTransferAdvancedBehaviour)))
                                 {
-                                    <MudSelectItem Value="@value">@localizer.Get(@value)</MudSelectItem>
+                                    <MudSelectItem Value="@item.ToString()">@localizer.Get(@item.ToString())</MudSelectItem>
                                 }
                             </MudSelect>
                             <MudTextField T="string" Label="@localizer.Get("Enter the primary key column")" @bind-Value="@pKName" />
@@ -120,9 +121,9 @@
                             <MudSelect T="string" Label="@localizer.Get("Command behaviour")"
                                AnchorOrigin="Origin.BottomCenter" @bind-Value="param.DataTransferCommandBehaviour"
                                Required>
-                                @foreach (var value in commandBehaviourBasic)
+                                @foreach (DataTransferBasicBehaviour item in Enum.GetValues(typeof(DataTransferBasicBehaviour)))
                                 {
-                                    <MudSelectItem Value="@value">@localizer.Get(@value)</MudSelectItem>
+                                    <MudSelectItem Value="@item.ToString()">@localizer.Get(@item.ToString())</MudSelectItem>
                                 }
                             </MudSelect>
                         }
@@ -161,7 +162,7 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
     [Parameter] public TaskDetailDTO Item { get; set; }
     [Parameter] public TaskHeaderDTO Header { get; set; }
