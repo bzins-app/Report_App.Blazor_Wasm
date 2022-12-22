@@ -9,8 +9,8 @@
     private async Task ChangeStatusAsync(bool value)
     {
         Item.Display = value;
-        var result = await dataService.PostValues(Item, "ActivityUpdate");
+        var result = await DataService.PostValues(Item, "ActivityUpdate");
 
-        Snackbar.Add(Item.Display ? Item.ActivityName + " " + localizer.Get("is diplayed") : Item.ActivityName + " " + localizer.Get("is not displayed"), Item.Display ? Severity.Success : Severity.Normal);
+        Snackbar.Add(Item.Display ? Item.ActivityName + " " + Localizer.Get("is diplayed") : Item.ActivityName + " " + Localizer.Get("is not displayed"), Item.Display ? Severity.Success : Severity.Normal);
     }
  }

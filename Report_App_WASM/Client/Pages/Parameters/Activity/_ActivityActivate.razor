@@ -10,9 +10,9 @@
     private async Task ChangeStatusAsync(bool value)
     {
         Item.IsActivated = value;
-        await dataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/");
-        var result = await dataService.PostValues(Item, "ActivityUpdate");
+        await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/");
+        var result = await DataService.PostValues(Item, "ActivityUpdate");
 
-        Snackbar.Add(Item.IsActivated ? Item.ActivityName + " " + localizer.Get("enabled") : Item.ActivityName + " " + localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+        Snackbar.Add(Item.IsActivated ? Item.ActivityName + " " + Localizer.Get("enabled") : Item.ActivityName + " " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
     }
 }

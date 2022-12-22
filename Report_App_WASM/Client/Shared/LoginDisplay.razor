@@ -25,7 +25,7 @@
                         <div class="d-flex">
                             <MudIcon Class="mx-2"
                                      Icon="@Icons.Material.Filled.Person" />
-                            <MudText>@localizer.Get("Profile")</MudText>
+                            <MudText>@Localizer.Get("Profile")</MudText>
                         </div>
                     </MudMenuItem>
                     <div class="mt-4 mx-4">
@@ -33,7 +33,7 @@
                                    FullWidth="true" OnClick="BeginLogOut"
                                    StartIcon="@Icons.Material.Filled.Logout"
                                    Variant="Variant.Outlined">
-                            @localizer.Get("Logout")
+                            @Localizer.Get("Logout")
                         </MudButton>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
 @code{
     private async Task BeginLogOut()
     {
-        await authStateProvider.Logout();
-        navigationManager.NavigateTo("/login");
+        await AuthStateProvider.Logout();
+        NavigationManager.NavigateTo("/login");
     }
 }

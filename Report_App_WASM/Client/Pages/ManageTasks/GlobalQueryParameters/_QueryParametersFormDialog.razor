@@ -5,42 +5,42 @@
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
-            @localizer.Get( "Add")
+            @Localizer.Get( "Add")
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm Model="@Param" @ref="@form">
-            <MudTextField @bind-Value="Param.ParameterIdentifier" Label="@localizer.Get("Parameter identifier")" Variant="Variant.Text" Required></MudTextField>
-            <MudSelect @bind-Value="Param.ValueType" Label="@localizer.Get("Select a data type")" Required>
+        <MudForm Model="@_param" @ref="@_form">
+            <MudTextField @bind-Value="_param.ParameterIdentifier" Label="@Localizer.Get("Parameter identifier")" Variant="Variant.Text" Required></MudTextField>
+            <MudSelect @bind-Value="_param.ValueType" Label="@Localizer.Get("Select a data type")" Required>
                 @foreach (QueryCommandParameterValueType item in Enum.GetValues(typeof(QueryCommandParameterValueType)))
                 {
                     <MudSelectItem Value="@item">@item</MudSelectItem>
                 }
             </MudSelect>
-            @if (Param.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
+            @if (_param.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
             {
-                <MudSelect @bind-Value="Param.DateOption" Label="@localizer.Get("Select a date calculation")" Required>
+                <MudSelect @bind-Value="_param.DateOption" Label="@Localizer.Get("Select a date calculation")" Required>
                     @foreach (CalulatedDateOption item in Enum.GetValues(typeof(CalulatedDateOption)))
                     {
-                        <MudSelectItem Value="@item">@localizer.Get(item.ToString())</MudSelectItem>
+                        <MudSelectItem Value="@item">@Localizer.Get(item.ToString())</MudSelectItem>
                     }
                 </MudSelect>
-                <MudField Label="@localizer.Get("Calculated date")">@(Param.ValueType == QueryCommandParameterValueType.Date ? Param.DateOption.GetCalculateDateTime().Date.ToString("d") : Param.DateOption.GetCalculateDateTime())</MudField>
+                <MudField Label="@Localizer.Get("Calculated date")">@(_param.ValueType == QueryCommandParameterValueType.Date ? _param.DateOption.GetCalculateDateTime().Date.ToString("d") : _param.DateOption.GetCalculateDateTime())</MudField>
             }
-            <MudSwitch @bind-Checked="Param.Required" Label="@localizer.Get("Required")" Color="Color.Primary" />
+            <MudSwitch @bind-Checked="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" />
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Validate">@localizer.Get("Validate")</MudButton>
+        <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Validate">@Localizer.Get("Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    QueryCommandParameter Param = new();
-    private MudForm form = default!;
+    QueryCommandParameter _param = new();
+    private MudForm _form = default!;
 
 
     private void Cancel()
@@ -50,10 +50,10 @@
 
     private async Task Validate()
     {
-        await form.Validate();
-        if (form.IsValid)
+        await _form.Validate();
+        if (_form.IsValid)
         {
-            MudDialog.Close(DialogResult.Ok(Param));
+            MudDialog.Close(DialogResult.Ok(_param));
         }
     }
 }

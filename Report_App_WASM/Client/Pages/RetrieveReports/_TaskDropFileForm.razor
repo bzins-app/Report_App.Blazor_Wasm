@@ -7,7 +7,7 @@
 @inject IBackgroundWorkers _BGW
 @inject IDialogService DialogService
 
-<MudIconButton Icon="@Icons.Outlined.FileDownload" OnClick="(()=>OpenRunConfirmationComponent())"  Disabled="Item.FileDepositPathConfigurationId == 0 ? true : false"><MudText>@localizer.Get("Drop file")</MudText> </MudIconButton>
+<MudIconButton Icon="@Icons.Outlined.FileDownload" OnClick="(()=>OpenRunConfirmationComponent())"  Disabled="Item.FileDepositPathConfigurationId == 0 ? true : false"><MudText>@Localizer.Get("Drop file")</MudText> </MudIconButton>
 
 @code {
     [Parameter]
@@ -20,14 +20,14 @@
         var user = await _userManager.GetUserAsync(currentUser);
 
         bool? feedback = await DialogService.ShowMessageBox(
-        localizer.Get("Confirm manual job"),
-        localizer.Get("Caution !") + " " + localizer.Get("Are you sure you want to create a file to the directory? It could interfer with other processes"),
-        yesText: localizer.Get("Validate"), cancelText: localizer.Get("Cancel"));
+        Localizer.Get("Confirm manual job"),
+        Localizer.Get("Caution !") + " " + Localizer.Get("Are you sure you want to create a file to the directory? It could interfer with other processes"),
+        yesText: Localizer.Get("Validate"), cancelText: Localizer.Get("Cancel"));
         result = feedback != null;
         if (result)
         {
             _BGW.RunManuallyTask(Item.TaskHeaderId, user.Email,null, new List<QueryCommandParameter>(),true);
-            Snackbar.Add(localizer.Get(Item.Type) + " " + localizer.Get("Job on going"), Severity.Success);
+            Snackbar.Add(Localizer.Get(Item.Type) + " " + Localizer.Get("Job on going"), Severity.Success);
         }
         StateHasChanged();
 

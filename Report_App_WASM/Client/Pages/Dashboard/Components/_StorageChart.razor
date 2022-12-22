@@ -1,20 +1,20 @@
 ﻿@using ApexCharts
 
-@if (logs == null)
+@if (_logs == null)
 {
     <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
     <ApexChart TItem="ApplicationLogReportResultDTO"
-           Title="@(localizer.Get("Storage per report")+":"+localizer.Get("Total size in MB"))"
+           Title="@(Localizer.Get("Storage per report")+":"+Localizer.Get("Total size in MB"))"
            Height="@Height"
-           Options="options"
-           @ref=chart>
+           Options="_options"
+           @ref=_chart>
 
         <ApexPointSeries TItem="ApplicationLogReportResultDTO"
-                     Items="logs"
-                     Name="@localizer.Get("Total size in MB")"
+                     Items="_logs"
+                     Name="@Localizer.Get("Total size in MB")"
                      SeriesType="SeriesType.Treemap"
                      XValue="@(e => e.ReportName)"
                      YAggregate="@(e => (decimal)e.Sum(a=>Math.Round( a.FileSizeInMB,2)))" OrderByDescending="@(e=>e.Y)"/>
@@ -25,15 +25,15 @@ else
 
 @code {
     [Parameter] public string Height { get; set; } = null;
-    private double sizeFilesStoredLocally;
-    private int nbrOfFilesStored;
+    private double _sizeFilesStoredLocally;
+    private int _nbrOfFilesStored;
 
-    private List<ApplicationLogReportResultDTO>? logs;
-    private ApexChartOptions<ApplicationLogReportResultDTO> options = new ApexChartOptions<ApplicationLogReportResultDTO>();
-    private ApexChart<ApplicationLogReportResultDTO> chart;
+    private List<ApplicationLogReportResultDTO>? _logs;
+    private ApexChartOptions<ApplicationLogReportResultDTO> _options = new ApexChartOptions<ApplicationLogReportResultDTO>();
+    private ApexChart<ApplicationLogReportResultDTO> _chart;
 
     protected override async Task OnInitializedAsync()
     {
-        logs = await dataService.GetValues<ApplicationLogReportResultDTO>("StorageInfo", "api/Dashboard/");
+        _logs = await DataService.GetValues<ApplicationLogReportResultDTO>("StorageInfo", "api/Dashboard/");
     }
 }

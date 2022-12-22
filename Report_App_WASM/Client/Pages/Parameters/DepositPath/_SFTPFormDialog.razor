@@ -2,29 +2,29 @@
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
-            @localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+            @Localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm Model="@Item" @ref="@form">
-            <MudTextField @bind-Value="Item.ConfigurationName" Label="@localizer.Get("Configuration name")" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudSwitch @bind-Checked="Item.UseFTPProtocol" Label="@localizer.Get("FTP?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudTextField @bind-Value="Item.Host" Label="@localizer.Get("Host")" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+        <MudForm Model="@Item" @ref="@_form">
+            <MudTextField @bind-Value="Item.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudSwitch @bind-Checked="Item.UseFTPProtocol" Label="@Localizer.Get("FTP?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.Host" Label="@Localizer.Get("Host")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
             @if (!Item.UseFTPProtocol)
             {
-                <MudNumericField @bind-Value="Item.Port" Label="@localizer.Get("SFTP port")" Disabled="Action==CrudAction.Delete?true:false" />
+                <MudNumericField @bind-Value="Item.Port" Label="@Localizer.Get("SFTP port")" Disabled="Action==CrudAction.Delete?true:false" />
             }
-            <MudTextField @bind-Value="Item.UserName" Label="@localizer.Get("User name")" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudTextField @bind-Value="Item.Password" Label="@localizer.Get("Password")" InputType="InputType.Password" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.UserName" Label="@Localizer.Get("User name")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="Action==CrudAction.Delete?true:false" />
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-            <MudTextField @bind-Value="deletionValidation" Label="@(localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@localizer.Get("Required")" />
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
         }
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+        <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@Localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
@@ -32,8 +32,8 @@
 
     [Parameter] public SFTPConfigurationDTO Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
-    private MudForm form = default!;
-    private string deletionValidation;
+    private MudForm _form = default!;
+    private string _deletionValidation;
 
     private void Cancel()
     {
@@ -44,15 +44,15 @@
     {
         if (Action == CrudAction.Delete)
         {
-            if (deletionValidation == "Validate")
+            if (_deletionValidation == "Validate")
             {
                 MudDialog.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
-            await form.Validate();
-            if (form.IsValid)
+            await _form.Validate();
+            if (_form.IsValid)
             {
                 MudDialog.Close(DialogResult.Ok(Item));
             }

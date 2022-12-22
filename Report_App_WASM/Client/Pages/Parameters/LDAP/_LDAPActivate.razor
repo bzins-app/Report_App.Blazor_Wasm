@@ -9,15 +9,15 @@
     private async Task ChangeStatusAsync(bool value)
     {
         Item.IsActivated = value;
-        var result = await dataService.PostValues(Item, "LDAPActivate");
+        var result = await DataService.PostValues(Item, "LDAPActivate");
 
         if (result.Success)
         {
-            Snackbar.Add(Item.IsActivated ? "LDAP " + localizer.Get("enabled") : "lDAP " + localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+            Snackbar.Add(Item.IsActivated ? "LDAP " + Localizer.Get("enabled") : "lDAP " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
         }
         else
         {
-            Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
         }
     }
     }

@@ -1,18 +1,18 @@
 ﻿@using ApexCharts
 
-@if (logs == null)
+@if (_logs == null)
 {
     <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
     <ApexChart TItem="ApplicationLogSystemDTO"
-           Title="@localizer.Get("System logs by level")"
+           Title="@Localizer.Get("System logs by level")"
            XAxisType="XAxisType.Datetime" Height="@Height"
-           Options="options" @ref="chart">
+           Options="_options" @ref="_chart">
 
         <ApexPointSeries TItem="ApplicationLogSystemDTO"
-                     Items="logs"
+                     Items="_logs"
                      Name="Warnings"
                      SeriesType="SeriesType.Area"
                      XValue="@(e => e.TimeStampAppHour.Date.ToLocalTime())"
@@ -20,14 +20,14 @@ else
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="ApplicationLogSystemDTO"
-                     Items="logs"
+                     Items="_logs"
                      Name="Errors"
                      SeriesType="SeriesType.Area"
                      XValue="@(e => e.TimeStampAppHour.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.Level==4?1:0))"
                      OrderBy="e=>e.X" />
         <ApexPointSeries TItem="ApplicationLogSystemDTO"
-                     Items="logs"
+                     Items="_logs"
                      Name="Criticals"
                      SeriesType="SeriesType.Area"
                      XValue="@(e => e.TimeStampAppHour.Date.ToLocalTime())"
@@ -40,18 +40,18 @@ else
 @code {
 
     [Parameter] public string Height { get; set; } = null;
-    private List<ApplicationLogSystemDTO>? logs;
-    private ApexChartOptions<ApplicationLogSystemDTO> options = new ApexChartOptions<ApplicationLogSystemDTO>();
-    private ApexChart<ApplicationLogSystemDTO> chart;
+    private List<ApplicationLogSystemDTO>? _logs;
+    private ApexChartOptions<ApplicationLogSystemDTO> _options = new ApexChartOptions<ApplicationLogSystemDTO>();
+    private ApexChart<ApplicationLogSystemDTO> _chart;
 
     protected override async Task OnInitializedAsync()
     {
-        logs = logs = await dataService.GetValues<ApplicationLogSystemDTO>("SystemLogs", "api/Dashboard/");
-        options.Chart.Stacked = true;
-        options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
-        options.Theme = new Theme { Palette = PaletteType.Palette3};
-        options.Colors = new List<string> { "#008FFB", "#FEB019", "#FF4560" };
-        options.Chart.Toolbar = new Toolbar { Show = false };
-        options.Stroke=new Stroke { Curve = Curve.Smooth, Width=2 };
+        _logs = _logs = await DataService.GetValues<ApplicationLogSystemDTO>("SystemLogs", "api/Dashboard/");
+        _options.Chart.Stacked = true;
+        _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
+        _options.Theme = new Theme { Palette = PaletteType.Palette3};
+        _options.Colors = new List<string> { "#008FFB", "#FEB019", "#FF4560" };
+        _options.Chart.Toolbar = new Toolbar { Show = false };
+        _options.Stroke=new Stroke { Curve = Curve.Smooth, Width=2 };
     }
 }

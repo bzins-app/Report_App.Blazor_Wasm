@@ -5,61 +5,61 @@
 @inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@localizer.Get("SMTP configuration")</PageTitle>
+<PageTitle>@Localizer.Get("SMTP configuration")</PageTitle>
 
 <ErrorBoundary>
-    @if (!string.IsNullOrEmpty(errorMessage))
+    @if (!string.IsNullOrEmpty(_errorMessage))
     {
-        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@localizer.Get("An error has occurred"): @errorMessage</b></MudText>
+        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@Localizer.Get("An error has occurred"): @_errorMessage</b></MudText>
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@localizer.Get("SMTP configuration")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("SMTP configuration")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="rendering" />
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="_rendering" />
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@localizer.Get("Configuration name")" Sortable="true" />
-                    <TemplateColumn Title="@localizer.Get("Is activated?")">
+                    <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
+                    <TemplateColumn Title="@Localizer.Get("Is activated?")">
                         <_SMTPActivate Item="context" />
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.SmtpHost)" Title="@localizer.Get("SMTP host")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.SmtpPort)" Title="@localizer.Get("SMTP port")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.FromEmail)" Title="@localizer.Get("From email")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.FromFullName)" Title="@localizer.Get("From full name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.SmtpSSL)" Title="@localizer.Get("SSL Activated?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpHost)" Title="@Localizer.Get("SMTP host")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpPort)" Title="@Localizer.Get("SMTP port")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FromEmail)" Title="@Localizer.Get("From email")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FromFullName)" Title="@Localizer.Get("From full name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpSSL)" Title="@Localizer.Get("SSL Activated?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
-            @if (rendering)
+            @if (_rendering)
             {
-                <MudProgressLinear Color="Color.Info" Indeterminate="@rendering" />
+                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering" />
             }
-            <Paginator Value="@pagination" FieldsContent="@Translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -67,16 +67,16 @@
 @code
 {
 #nullable enable
-    GridItemsProvider<SMTPConfigurationDTO>? _ItemsProvider;
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent Translations = default!;
+    GridItemsProvider<SMTPConfigurationDTO>? _itemsProvider;
+    PaginationState _pagination = new PaginationState { ItemsPerPage = 10 };
+    SimpleGridFieldsContent _translations = default!;
     SimpleGrid<SMTPConfigurationDTO> _grid = default!;
-    private string errorMessage = default!;
-    private bool rendering = false;
+    private string _errorMessage = default!;
+    private bool _rendering = false;
 
     protected override void OnInitialized()
     {
-        _ItemsProvider = async req =>
+        _itemsProvider = async req =>
         {
             var response = await GetRemoteData(req);
             if (response is null)
@@ -85,22 +85,22 @@
             }
             return GridItemsProviderResult.From(response.Value, response.Count);
         };
-        Translations = appService.GetGridTranslations();
+        _translations = AppService.GetGridTranslations();
     }
 
     private async Task<ApiResponse<SMTPConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<SMTPConfigurationDTO> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
-        var OdataQuery = _grid?.GetODataQuery();
+        var odataQuery = _grid?.GetODataQuery();
         string url = "odata/SMTP?";
-        if (string.IsNullOrEmpty(OdataQuery))
+        if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top=10";
         }
         else
         {
-            url += OdataQuery;
+            url += odataQuery;
         }
         try
         {
@@ -115,16 +115,16 @@
 
     private async Task OnRefresh()
     {
-        rendering = true;
+        _rendering = true;
         await _grid.RefreshDataAsync();
-        rendering = false;
+        _rendering = false;
     }
 
     private async Task RemoveFilters()
     {
-        rendering = true;
+        _rendering = true;
         await _grid.RemoveFilters();
-        rendering = false;
+        _rendering = false;
     }
 
     public async ValueTask DisposeAsync()
@@ -153,7 +153,7 @@
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
+            _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
             value.SmtpHost = item.SmtpHost;
             value.SmtpPort = item.SmtpPort;
@@ -163,16 +163,16 @@
             value.FromEmail = item.FromEmail;
             value.FromFullName = item.FromFullName;
 
-            var result = await dataService.PostValues(value, "SMTPUpdate");
+            var result = await DataService.PostValues(value, "SMTPUpdate");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }
@@ -186,17 +186,17 @@
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
-            var result = await dataService.PostValues(value, "SMTPDelete");
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "SMTPDelete");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }
@@ -211,17 +211,17 @@
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
-            var result = await dataService.PostValues(value, "SMTPInsert");
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "SMTPInsert");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object added"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }

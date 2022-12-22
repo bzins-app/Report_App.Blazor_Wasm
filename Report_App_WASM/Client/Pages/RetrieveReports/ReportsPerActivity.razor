@@ -5,47 +5,47 @@
 @inject GeneralRepository _repo
 @attribute [Authorize]
 
-<PageTitle>@localizer.Get("Run reports manually"): @ActivityName</PageTitle>
+<PageTitle>@Localizer.Get("Run reports manually"): @ActivityName</PageTitle>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@localizer.Get("Run reports manually"): @ActivityName</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Run reports manually"): @ActivityName</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering"/>
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
                 <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
 
-                    <PropertyColumn Property="@(p => p.TaskName)" Title="@localizer.Get("Report title")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true" />
                     @if (typeTask == TaskTypeEnum.Report.ToString())
                     {
-                        <PropertyColumn Property="@(p => p.TypeFile)" Title="@localizer.Get("Type of file")" Sortable="true" />
+                        <PropertyColumn Property="@(p => p.TypeFile)" Title="@Localizer.Get("Type of file")" Sortable="true" />
                     }
-                    <TemplateColumn Title="@localizer.Get("Run manually")">
+                    <TemplateColumn Title="@Localizer.Get("Run manually")">
                         <_TaskRunForm Item="context" />
                     </TemplateColumn>
                     @if (typeTask == TaskTypeEnum.Report.ToString())
                     {
-                        <TemplateColumn Title="@localizer.Get("Create file manually")">
+                        <TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context" />
                         </TemplateColumn>
-                        <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@localizer.Get("Archiving duration in days")" Sortable="true" />
+                        <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true" />
                     }
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
             <Paginator Value="@pagination" FieldsContent="@Translations" />

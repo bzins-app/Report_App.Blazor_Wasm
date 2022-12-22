@@ -9,15 +9,15 @@
 <MudDialog @bind-IsVisible="visible" Options="dialogOptions">
     <TitleContent>
         <MudText Typo="Typo.h6">
-            @localizer.Get("Confirm duplication")
+            @Localizer.Get("Confirm duplication")
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="name" Label="@localizer.Get("Report title")" />
+        <MudTextField @bind-Value="name" Label="@Localizer.Get("Report title")" />
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="CancelDialog">@localizer.Get("Cancel")</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmDuplicate" Class="px-10">@localizer.Get("Validate")</MudButton>
+        <MudButton OnClick="CancelDialog">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmDuplicate" Class="px-10">@Localizer.Get("Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -39,7 +39,7 @@
     {
         visible = false;
         await Clone(name, Item.TaskHeaderId);
-        Snackbar.Add(localizer.Get("Object added"), Severity.Success);
+        Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
         await dataGrid.RefreshDataAsync();
         
 
@@ -81,7 +81,7 @@
         }
         catch (Exception e)
         {
-            Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
             Snackbar.Add(e.Message, Severity.Error);
         }
     }

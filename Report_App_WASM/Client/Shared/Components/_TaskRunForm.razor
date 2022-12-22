@@ -2,13 +2,13 @@
 @inject IDialogService DialogService
 @inject IdentityAuthenticationStateProvider IdentityProvider
 
-<MudIconButton Icon="@Icons.Outlined.Sync" OnClick="(()=>OpenRunConfirmationComponent())"><MudText>@localizer.Get("Run")</MudText></MudIconButton>
+<MudIconButton Icon="@Icons.Outlined.Sync" OnClick="(()=>OpenRunConfirmationComponent())"><MudText>@Localizer.Get("Run")</MudText></MudIconButton>
 
 @code {
     [Parameter]
     public TaskHeaderDTO Item { get; set; }
 
-    private string email;
+    private string _email;
 
     private async Task OpenRunConfirmationComponent()
     {
@@ -18,7 +18,7 @@
 
         var currentUserEmail = (await IdentityProvider.GetUserInfo()).UserMail;
         userEmail.Add(currentUserEmail);
-        email = currentUserEmail;
+        _email = currentUserEmail;
 
         //var recipients = await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
         //if (Item != null&&recipients!=null)
@@ -38,7 +38,7 @@
 
         var parameters = new DialogParameters { ["userEmail"] = userEmail, ["recipientsEmails"] = recipientsEmails, ["queryParameters"] = queryParameters };
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        var dialog = DialogService.Show<_ManualRun>(localizer.Get("Confirm manual job"), parameters, dialogOptions);
+        var dialog = DialogService.Show<_ManualRun>(Localizer.Get("Confirm manual job"), parameters, dialogOptions);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
@@ -53,11 +53,11 @@
             }
             else
             {
-                emails.Add(new EmailRecipient { Email = email, BCC = false });
+                emails.Add(new EmailRecipient { Email = _email, BCC = false });
                 RunTaskManually payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
-                await dataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
+                await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
-            Snackbar.Add(localizer.Get("Alert") + " " + localizer.Get("Job on going"), Severity.Success);
+            Snackbar.Add(Localizer.Get("Alert") + " " + Localizer.Get("Job on going"), Severity.Success);
         }
     }
 }

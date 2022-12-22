@@ -2,22 +2,22 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            @localizer.Get("Query Result: max 20 rows")
+            @Localizer.Get("Query Result: max 20 rows")
         </MudText>
     </TitleContent>
     <DialogContent>
-        <_QueryResult data="@data" queryTestResult="@queryTestResult" testResult="@testResult" />
+        <_QueryResult Data="@Data" QueryTestResult="@QueryTestResult" TestResult="@TestResult" />
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Primary" OnClick="Cancel" Class="px-10">@localizer.Get("OK")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Cancel" Class="px-10">@Localizer.Get("OK")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public List<Dictionary<string, object>> data { get; set; }
-    [Parameter] public string queryTestResult { get; set; }
-    [Parameter] public bool testResult { get; set; }
+    [Parameter] public List<Dictionary<string, object>> Data { get; set; }
+    [Parameter] public string QueryTestResult { get; set; }
+    [Parameter] public bool TestResult { get; set; }
 
     private void Cancel()
     {

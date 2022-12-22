@@ -1,52 +1,52 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@inject IJSRuntime JsRuntime
 
 
 <MudDialog>
     <DialogContent >
-        @if (displayTagMessage)
+        @if (DisplayTagMessage)
         {
-            <p><b> @localizer.Get("Warning: keep the {0} tag inner the message to see the values ​​of the variable") </b></p>
+            <p><b> @Localizer.Get("Warning: keep the {0} tag inner the message to see the values ​​of the variable") </b></p>
         }
-        <textarea id="@id"
-          value="@htmlText"></textarea>
+        <textarea id="@_id"
+          value="@HtmlText"></textarea>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@localizer.Get("Validate")</MudButton>
+        <MudButton OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@Localizer.Get("Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter]
-    public string htmlText { get; set; }
+    public string HtmlText { get; set; }
     [Parameter]
-    public bool displayTagMessage { get; set; }
-    private DotNetObjectReference<_TextEditor> objRef;
-    string id;
+    public bool DisplayTagMessage { get; set; }
+    private DotNetObjectReference<_TextEditor> _objRef;
+    string _id;
 
-    readonly string uid = Guid.NewGuid().ToString().ToLower().Replace("-", "");
+    readonly string _uid = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 
     protected override void OnInitialized()
     {
-        id = $"CKEditor_{uid}";
+        _id = $"CKEditor_{_uid}";
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("loadScript", "https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js");
-            await JSRuntime.InvokeVoidAsync("loadScript", "/js/CKEditorInterop.js");
-            objRef = DotNetObjectReference.Create(this);
-            await JSRuntime.InvokeVoidAsync("CKEditorInterop.init", id, objRef);
+            await JsRuntime.InvokeVoidAsync("loadScript", "https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js");
+            await JsRuntime.InvokeVoidAsync("loadScript", "/js/CKEditorInterop.js");
+            _objRef = DotNetObjectReference.Create(this);
+            await JsRuntime.InvokeVoidAsync("CKEditorInterop.init", _id, _objRef);
         }
     }
 
     [JSInvokable]
     public void EditorDataChanged(string data)
     {
-        htmlText = data;
+        HtmlText = data;
     }
 
     private void Cancel()
@@ -56,6 +56,6 @@
 
     private void ConfirmText()
     {
-        MudDialog.Close(DialogResult.Ok(htmlText));
+        MudDialog.Close(DialogResult.Ok(HtmlText));
     }
 }

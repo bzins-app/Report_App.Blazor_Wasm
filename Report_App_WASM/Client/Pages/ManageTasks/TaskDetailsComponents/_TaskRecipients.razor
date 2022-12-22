@@ -4,22 +4,22 @@
 
 <MudCard>
     <MudCardContent>
-        <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@localizer.Get("Edit email message")</MudButton>
-        <MudForm Model="@email" @ref="form">
-            <MudTextField T="string" Label="@localizer.Get("Enter the email address")" @bind-Value="email"
-                          Validation="@(new EmailAddressAttribute() {ErrorMessage = localizer.Get("The email address is invalid")})" Required RequiredError="@localizer.Get("Required")"/>
+        <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Edit email message")</MudButton>
+        <MudForm Model="@_email" @ref="_form">
+            <MudTextField T="string" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email"
+                          Validation="@(new EmailAddressAttribute() {ErrorMessage = Localizer.Get("The email address is invalid")})" Required RequiredError="@Localizer.Get("Required")"/>
             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
-                       OnClick="Add">@localizer.Get("Add recipient")</MudButton>
+                       OnClick="Add">@Localizer.Get("Add recipient")</MudButton>
         </MudForm>
-        <MudTable Items="@EmailItems" Hover="true" Dense="true">
+        <MudTable Items="@_emailItems" Hover="true" Dense="true">
             <HeaderContent>
-                <MudTh>@localizer.Get("Email")</MudTh>
-                <MudTh>@localizer.Get("Blind copy")</MudTh>
-                <MudTh>@localizer.Get("Action")</MudTh>
+                <MudTh>@Localizer.Get("Email")</MudTh>
+                <MudTh>@Localizer.Get("Blind copy")</MudTh>
+                <MudTh>@Localizer.Get("Action")</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="@localizer.Get("Email")">@context.Email</MudTd>
-                <MudTd DataLabel="@localizer.Get("Blind copy")"><MudSwitch Checked="@context.BCC" CheckedChanged="(bool value)=>ChangeBccValue(context, value)" Color="Color.Primary" /></MudTd>
+                <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
+                <MudTd DataLabel="@Localizer.Get("Blind copy")"><MudSwitch Checked="@context.BCC" CheckedChanged="(bool value)=>ChangeBccValue(context, value)" Color="Color.Primary" /></MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="()=>Delete(context)"></MudIconButton></MudTd>
             </RowTemplate>
         </MudTable>
@@ -29,96 +29,96 @@
 @code {
 
     [Parameter] public TaskHeaderDTO Item { get; set; }
-    [Parameter] public bool changePending { get; set; }
-    [Parameter] public EventCallback<bool> changePendingChanged { get; set; }
-    private List<EmailRecipient> emails = new List<EmailRecipient>();
-    List<EmailRecipient> EmailItems = new();
-    private TaskEmailRecipientDTO recipients = new();
-    private MudForm form = default!;
-    private string email = "";
+    [Parameter] public bool ChangePending { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
+    private List<EmailRecipient> _emails = new List<EmailRecipient>();
+    List<EmailRecipient> _emailItems = new();
+    private TaskEmailRecipientDTO _recipients = new();
+    private MudForm _form = default!;
+    private string _email = "";
 
     protected override void OnParametersSet()
     {
-        recipients = Item.TaskEmailRecipients.FirstOrDefault();
-        if (recipients != null)
+        _recipients = Item.TaskEmailRecipients.FirstOrDefault();
+        if (_recipients != null)
         {
-            if (!string.IsNullOrEmpty(recipients.Email))
+            if (!string.IsNullOrEmpty(_recipients.Email))
             {
-                emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
+                _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_recipients.Email);
                 PopulateEmailItems();
             }
         }
         else
         {
-            recipients = new() { TaskHeader = Item, Email = "[]", Message = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
-            Item.TaskEmailRecipients = new List<TaskEmailRecipientDTO>() { recipients };
+            _recipients = new() { TaskHeader = Item, Email = "[]", Message = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
+            Item.TaskEmailRecipients = new List<TaskEmailRecipientDTO>() { _recipients };
         }
     }
 
     private void PopulateEmailItems()
     {
-        EmailItems.Clear();
-        foreach (var t in emails)
+        _emailItems.Clear();
+        foreach (var t in _emails)
         {
-            EmailItems.Add(t);
+            _emailItems.Add(t);
         }
     }
 
     private async Task Delete(EmailRecipient id)
     {
-        emails.Remove(id);
-        recipients.Email = JsonSerializer.Serialize(emails);
+        _emails.Remove(id);
+        _recipients.Email = JsonSerializer.Serialize(_emails);
         PopulateEmailItems();
-        changePending = true;
-        await changePendingChanged.InvokeAsync(changePending);
+        ChangePending = true;
+        await ChangePendingChanged.InvokeAsync(ChangePending);
     }
 
     private void ChangeBccValue(EmailRecipient id, bool value)
     {
-        var bccupdate = emails.Where(a => a.Email == id.Email).FirstOrDefault();
+        var bccupdate = _emails.Where(a => a.Email == id.Email).FirstOrDefault();
         bccupdate.BCC = value;
-        recipients.Email = JsonSerializer.Serialize(emails);
+        _recipients.Email = JsonSerializer.Serialize(_emails);
         PopulateEmailItems();
     }
 
     private async Task Add()
     {
-        await form.Validate();
-        if (form.IsValid)
+        await _form.Validate();
+        if (_form.IsValid)
         {
-            if (!emails.Select(a => a.Email).Contains(email))
+            if (!_emails.Select(a => a.Email).Contains(_email))
             {
-                emails.Add(new EmailRecipient { Email = email });
-                recipients.Email = JsonSerializer.Serialize(emails);
+                _emails.Add(new EmailRecipient { Email = _email });
+                _recipients.Email = JsonSerializer.Serialize(_emails);
                 PopulateEmailItems();
-                changePending = true;
-                await changePendingChanged.InvokeAsync(changePending);
+                ChangePending = true;
+                await ChangePendingChanged.InvokeAsync(ChangePending);
             }
         }
-        email = "";
+        _email = "";
     }
 
 
-    private string htmlText;
-    private bool displayTagMessage = false;
+    private string _htmlText;
+    private bool _displayTagMessage = false;
     private async Task OpenTextEditorComponent()
     {
         var typeReport = Item.Type;
         if (typeReport == TaskType.Alert)
         {
-            displayTagMessage = true;
+            _displayTagMessage = true;
         }
-        htmlText = recipients.Message;
+        _htmlText = _recipients.Message;
         DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
-        var parameters = new DialogParameters { ["htmlText"] = htmlText, ["displayTagMessage"] = displayTagMessage };
+        var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
 
-        var dialog = DialogService.Show<_TextEditor>(@localizer.Get("Edit email message"), parameters, maxWidth);
+        var dialog = DialogService.Show<_TextEditor>(@Localizer.Get("Edit email message"), parameters, maxWidth);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            recipients.Message = result.Data.ToString();
-            changePending = true;
-            await changePendingChanged.InvokeAsync(changePending);
+            _recipients.Message = result.Data.ToString();
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
         }
     }
 

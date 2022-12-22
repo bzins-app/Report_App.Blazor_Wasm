@@ -1,114 +1,114 @@
 ﻿@page "/login"
 @layout LoginLayout
-@inject NavigationManager navigationManager
-@inject IdentityAuthenticationStateProvider authStateProvider
+@inject NavigationManager NavigationManager
+@inject IdentityAuthenticationStateProvider AuthStateProvider
 @inject HttpClient Http
 
-<PageTitle>@localizer.Get("Log in")</PageTitle>
+<PageTitle>@Localizer.Get("Log in")</PageTitle>
 
-@if (LDAP)
+@if (_ldap)
 {
-    <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="loginParameters">
+    <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="LoginParameters">
         <DataAnnotationsValidator />
         <div class="row" style="padding-left:1rem">
             <div class="mb-4 col-2">
                 <img src="/images/windows-Logo.png" alt="" style="max-width: 95%; max-height: 40px;" />
             </div>
             <div class="col-10">
-                <h3 class="mb-4">@localizer.Get("Windows authentication")</h3>
+                <h3 class="mb-4">@Localizer.Get("Windows authentication")</h3>
             </div>
         </div>
 
         <div class="input-group mb-3">
-            <InputText id="inputUsername" class="form-control" @bind-Value="loginParameters.UserName" autofocus placeholder="@localizer.Get("Firstname.Lastname")" />
+            <InputText id="inputUsername" class="form-control" @bind-Value="LoginParameters.UserName" autofocus placeholder="@Localizer.Get("Firstname.Lastname")" />
         </div>
-        <ValidationMessage For="@(() => loginParameters.UserName)" />
+        <ValidationMessage For="@(() => LoginParameters.UserName)" />
         <div class="input-group mb-4">
-            <InputText type="password" id="inputPassword" class="form-control" placeholder="@localizer.Get("Password")" @bind-Value="loginParameters.Password" />
+            <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password" />
         </div>
-        <ValidationMessage For="@(() => loginParameters.Password)" />
+        <ValidationMessage For="@(() => LoginParameters.Password)" />
         <div class="form-group text-left" style="padding-bottom:10px">
             <div class="checkbox checkbox-fill d-inline">
-                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@loginParameters.RememberMe" />
-                <label for="checkbox-fill-a1" class="cr">@localizer.Get("Save credentials")</label>
+                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe" />
+                <label for="checkbox-fill-a1" class="cr">@Localizer.Get("Save credentials")</label>
             </div>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary shadow-2 mb-4">@localizer.Get("Login")</button>
-            <p class="mb-2 text-muted">@localizer.Get("Need to connect locally?") <MudLink id="local-login" OnClick="changeTypeLogin">@localizer.Get("Local login")</MudLink></p>
+            <button type="submit" class="btn btn-primary shadow-2 mb-4">@Localizer.Get("Login")</button>
+            <p class="mb-2 text-muted">@Localizer.Get("Need to connect locally?") <MudLink id="local-login" OnClick="ChangeTypeLogin">@Localizer.Get("Local login")</MudLink></p>
         </div>
 
-        <label class="text-danger">@error</label>
+        <label class="text-danger">@Error</label>
     </EditForm>
 }
 else
 {
-    <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="loginParameters">
+    <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="LoginParameters">
         <DataAnnotationsValidator />
-        <h3 class="mb-4">@localizer.Get("Login")</h3>
+        <h3 class="mb-4">@Localizer.Get("Login")</h3>
 
         <div class="input-group mb-3">
-            <InputText id="inputUsername" class="form-control" @bind-Value="loginParameters.UserName" autofocus placeholder="@localizer.Get("Email")" />
+            <InputText id="inputUsername" class="form-control" @bind-Value="LoginParameters.UserName" autofocus placeholder="@Localizer.Get("Email")" />
         </div>
-        <ValidationMessage For="@(() => loginParameters.UserName)" />
+        <ValidationMessage For="@(() => LoginParameters.UserName)" />
         <div class="input-group mb-4">
-            <InputText type="password" id="inputPassword" class="form-control" placeholder="@localizer.Get("Password")" @bind-Value="loginParameters.Password" />
+            <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password" />
         </div>
-        <ValidationMessage For="@(() => loginParameters.Password)" />
+        <ValidationMessage For="@(() => LoginParameters.Password)" />
         <div class="form-group text-left" style="padding-bottom:10px">
             <div class="checkbox checkbox-fill d-inline">
-                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@loginParameters.RememberMe" />
-                <label for="checkbox-fill-a1" class="cr">@localizer.Get("Save credentials")</label>
+                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe" />
+                <label for="checkbox-fill-a1" class="cr">@Localizer.Get("Save credentials")</label>
             </div>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary shadow-2 mb-4">@localizer.Get("Login")</button>
+            <button type="submit" class="btn btn-primary shadow-2 mb-4">@Localizer.Get("Login")</button>
         </div>
 
 
-        <label class="text-danger">@error</label>
+        <label class="text-danger">@Error</label>
 
     </EditForm>
 }
 
 
 @code {
-    LoginParameters loginParameters { get; set; } = new LoginParameters();
-    string error { get; set; }
-    bool LDAP = true;
+    LoginParameters LoginParameters { get; set; } = new LoginParameters();
+    string Error { get; set; }
+    bool _ldap = true;
 
     protected override async Task OnInitializedAsync()
     {
         var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
-       LDAP = values.LDAPLogin;
+       _ldap = values.LDAPLogin;
        // StateHasChanged();
     }
 
-    void changeTypeLogin()
+    void ChangeTypeLogin()
     {
-        LDAP = false;
+        _ldap = false;
     }
 
     async Task OnSubmit()
     {
-        error = null;
+        Error = null;
         try
         {
-            if (LDAP)
+            if (_ldap)
             {
-              //  await authStateProvider.Login(loginParameters);
-                await authStateProvider.LoginLDAP(loginParameters);
+              //  await AuthStateProvider.Login(loginParameters);
+                await AuthStateProvider.LoginLdap(LoginParameters);
             }
             else
             {
-                await authStateProvider.Login(loginParameters);
+                await AuthStateProvider.Login(LoginParameters);
             }
             
-            navigationManager.NavigateTo("");
+            NavigationManager.NavigateTo("");
         }
         catch (Exception ex)
         {
-            error = ex.Message;
+            Error = ex.Message;
         }
     }
 }

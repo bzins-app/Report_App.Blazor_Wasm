@@ -3,40 +3,40 @@
 
 <MudDialog>
     <DialogContent>
-        <MudForm @ref="@form">
+        <MudForm @ref="@_form">
             <MudCard>
                 <MudCardContent>
-                    <MudText Typo="Typo.body2">@localizer.Get("Emails")</MudText>
-                    @if (recipientsEmails.Count > 0)
+                    <MudText Typo="Typo.body2">@Localizer.Get("Emails")</MudText>
+                    @if (RecipientsEmails.Count > 0)
                     {
                         <MudStack Row="true">
-                            <p>@localizer.Get("Send for me")</p>
-                            <MudSwitch @bind-Checked="@sendForReportRecipients" Color="Color.Primary" />
-                            <p>@localizer.Get("Send for all recipients")</p>
+                            <p>@Localizer.Get("Send for me")</p>
+                            <MudSwitch @bind-Checked="@SendForReportRecipients" Color="Color.Primary" />
+                            <p>@Localizer.Get("Send for all recipients")</p>
                         </MudStack>
                     }
-                    @if (!sendForReportRecipients)
+                    @if (!SendForReportRecipients)
                     {
-                        foreach (string str in userEmail)
+                        foreach (string str in UserEmail)
                         {
-                            <MudTextField Value="str" Label="@localizer.Get("Email")" Disabled />
+                            <MudTextField Value="str" Label="@Localizer.Get("Email")" Disabled />
                         }
                     }
                     else
                     {
-                        foreach (string str in recipientsEmails)
+                        foreach (string str in RecipientsEmails)
                         {
-                            <MudTextField Value="str" Label="@localizer.Get("Email")" Disabled />
+                            <MudTextField Value="str" Label="@Localizer.Get("Email")" Disabled />
                         }
                     }
                 </MudCardContent>
             </MudCard>
-            @if (queryParameters.Any())
+            @if (QueryParameters.Any())
             {
                 <MudCard>
                     <MudCardContent>
-                        <MudText Typo="Typo.body2">@localizer.Get("Query parameters")</MudText>
-                        @foreach (QueryCommandParameter t in queryParameters)
+                        <MudText Typo="Typo.body2">@Localizer.Get("Query parameters")</MudText>
+                        @foreach (QueryCommandParameter t in QueryParameters)
                         {
                             @if (t.ValueType == QueryCommandParameterValueType.Date)
                             {
@@ -61,8 +61,8 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@localizer.Get("Validate")</MudButton>
+        <MudButton OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@Localizer.Get("Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -70,19 +70,19 @@
 @code {
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    public bool sendForReportRecipients { get; set; }
-    private MudForm form = default!;
+    public bool SendForReportRecipients { get; set; }
+    private MudForm _form = default!;
     [Parameter]
-    public List<string> userEmail { get; set; }
+    public List<string> UserEmail { get; set; }
     [Parameter]
-    public List<QueryCommandParameter> queryParameters { get; set; }
+    public List<QueryCommandParameter> QueryParameters { get; set; }
     [Parameter]
-    public List<string> recipientsEmails { get; set; }
+    public List<string> RecipientsEmails { get; set; }
 
 
     protected override void OnInitialized()
     {
-        foreach (var t in queryParameters.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
+        foreach (var t in QueryParameters.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
         {
             if (t.ValueType == QueryCommandParameterValueType.Date)
             {
@@ -103,10 +103,10 @@
 
     private async Task ConfirmText()
     {
-        await form.Validate();
-        if (form.IsValid)
+        await _form.Validate();
+        if (_form.IsValid)
         {
-            Tuple<bool, List<QueryCommandParameter>> payload = new Tuple<bool, List<QueryCommandParameter>>(sendForReportRecipients, queryParameters);
+            Tuple<bool, List<QueryCommandParameter>> payload = new Tuple<bool, List<QueryCommandParameter>>(SendForReportRecipients, QueryParameters);
             MudDialog.Close(DialogResult.Ok(payload));
         }
     }

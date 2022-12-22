@@ -15,28 +15,28 @@ namespace Report_App_WASM.Client.Services
     public class DataInteractionService
     {
         private readonly HttpClient _httpClient;
-        private readonly IBlazorDownloadFileService BlazorDownloadFileService;
-        private readonly AuthenticationStateProvider _AuthenticationStateProvider;
-        private const string CrudAPI = ApiControllers.CrudDataApi;
+        private readonly IBlazorDownloadFileService _blazorDownloadFileService;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
+        private const string CrudApi = ApiControllers.CrudDataApi;
 
         public DataInteractionService(HttpClient httpClient,
-            IBlazorDownloadFileService blazorDownloadFileService, AuthenticationStateProvider AuthenticationStateProvider)
+            IBlazorDownloadFileService blazorDownloadFileService, AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
-            BlazorDownloadFileService = blazorDownloadFileService;
-            _AuthenticationStateProvider = AuthenticationStateProvider;
+            _blazorDownloadFileService = blazorDownloadFileService;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
 
         private async Task<string> GetUserIdAsync()
         {
-            return (await _AuthenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
+            return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
 
-        public async Task<SubmitResult> PostValues<T>(T value, string ControllerAction, string controller = CrudAPI) where T : class
+        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{ControllerAction}";
+            string uri = $"{controller}{controllerAction}";
 
             ApiCRUDPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
@@ -61,15 +61,15 @@ namespace Report_App_WASM.Client.Services
             }
         }
 
-        public async Task ExtractGridLogs(ODataExtractPayload Values)
+        public async Task ExtractGridLogs(ODataExtractPayload values)
         {
             try
             {
                 string url = "odata/ExtractLogs";
-                var response = await _httpClient.PostAsJsonAsync(url, Values);
+                var response = await _httpClient.PostAsJsonAsync(url, values);
                 if (response.IsSuccessStatusCode)
                 {
-                    var downloadresult = await BlazorDownloadFileService.DownloadFile(Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
+                    var downloadresult = await _blazorDownloadFileService.DownloadFile(values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
                     if (downloadresult.Succeeded)
                     {
                         response.Dispose();
@@ -84,9 +84,9 @@ namespace Report_App_WASM.Client.Services
         }
 
 
-        public async Task<List<T>> GetValues<T>(string ControllerAction, string controller = CrudAPI) where T : class
+        public async Task<List<T>> GetValues<T>(string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{ControllerAction}";
+            string uri = $"{controller}{controllerAction}";
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<List<T>>(uri);
@@ -105,9 +105,9 @@ namespace Report_App_WASM.Client.Services
             }
         }
 
-        public async Task<T> GetUniqueValue<T>(T value, string ControllerAction, string controller = CrudAPI) where T : class
+        public async Task<T> GetUniqueValue<T>(T value, string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{ControllerAction}";
+            string uri = $"{controller}{controllerAction}";
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<T>(uri);

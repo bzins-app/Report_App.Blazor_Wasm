@@ -3,12 +3,12 @@
 @using Microsoft.Extensions.Options
 @inject NavigationManager NavigationManager
 @inject IOptions<RequestLocalizationOptions> LocOptions
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
-<MudTooltip Text="@localizer.Get("Language")">
+<MudTooltip Text="@Localizer.Get("Language")">
     <MudMenu Class="mx-1" Icon="@Icons.Material.Outlined.Translate" Color="Color.Default" Direction="Direction.Bottom" OffsetY="true" AnchorOrigin="Origin.BottomLeft"
              Dense="true">
-        @foreach (var culture in supportedCultures)
+        @foreach (var culture in _supportedCultures)
         {
             if (culture.Name == _language)
             {
@@ -24,7 +24,7 @@
 
 @code {
     private string _language;
-    private CultureInfo[] supportedCultures = new[]
+    private CultureInfo[] _supportedCultures = new[]
     {
                     new CultureInfo("fr"),
                     new CultureInfo("en"),
@@ -49,7 +49,7 @@
         {
             if (CultureInfo.CurrentCulture != value)
             {
-                var js = (IJSInProcessRuntime)JSRuntime;
+                var js = (IJSInProcessRuntime)JsRuntime;
                 js.InvokeVoid("cultureInfo.set", value.Name);
 
                 NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);

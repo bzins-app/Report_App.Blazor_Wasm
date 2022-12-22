@@ -3,32 +3,32 @@
 @using System.Text.Json
 @using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
-@inject NavigationManager uriHelper
+@inject NavigationManager UriHelper
 @inject IDialogService DialogService
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@localizer.Get("Application parameters")</PageTitle>
+<PageTitle>@Localizer.Get("Application parameters")</PageTitle>
 
 
 <MudCard Elevation="6">
         <MudCardHeader>
         <CardHeaderContent>
-            <MudText Typo="Typo.h6">@localizer.Get("Application parameters")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Application parameters")</MudText>
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudForm Model="@param" @ref="form" @bind-IsValid="@success">
-            <MudTextField @bind-Value="param.ApplicationName" Label="@localizer.Get("Application name")" Required />
-            <MudNumericField @bind-Value="param.LogsRetentionInDays" Label="@localizer.Get("Logs: Archiving duration")" />
-            <MudTextField @bind-Value="param.EmailPrefix" Label="@localizer.Get("Email prefix")" Required />
-            <MudTextField @bind-Value="param.AlertEmailPrefix" Label="@localizer.Get("Alert email prefix")" Required />
-            <MudTextField @bind-Value="param.ErrorEmailPrefix" Label="@localizer.Get("Error email prefix")" Required />
-            <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@localizer.Get("Edit error email")</MudButton>
-            <MudText Typo="Typo.h6" Class="pa-4">@localizer.Get("Logo")</MudText>
+        <MudForm Model="@_param" @ref="_form" @bind-IsValid="@_success">
+            <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required />
+            <MudNumericField @bind-Value="_param.LogsRetentionInDays" Label="@Localizer.Get("Logs: Archiving duration")" />
+            <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required />
+            <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required />
+            <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required />
+            <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Edit error email")</MudButton>
+            <MudText Typo="Typo.h6" Class="pa-4">@Localizer.Get("Logo")</MudText>
             <div style="padding-bottom:5px">
-                @if (!string.IsNullOrEmpty(param.ApplicationLogo))
+                @if (!string.IsNullOrEmpty(_param.ApplicationLogo))
                 {
-                    <MudImage Src="@param.ApplicationLogo" style="max-width:150px;max-height:200px;" Alt="@param.ApplicationName" Elevation="2" />
+                    <MudImage Src="@_param.ApplicationLogo" style="max-width:150px;max-height:200px;" Alt="@_param.ApplicationName" Elevation="2" />
                 }
             </div>
             <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png, .gif" />
@@ -36,23 +36,23 @@
                     Color="Color.Primary"
                     Icon="@Icons.Filled.Image"
                     Style="text-transform: none" Size="Size.Small"
-                    Label="@localizer.Get("Select application Logo")"
+                    Label="@Localizer.Get("Select application Logo")"
                     for="fileInput" />
         </MudForm>
         <div style="padding-top:15px">
-            <MudTextField T="string" Label="@localizer.Get("Administrator email for error notifications")" @bind-Value="@email"
-                          Validation="@checkMail()" />
-            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="emailNotValidated" Style="text-transform: none" Size="Size.Small"
-                       Class="ml-auto mt-3 mb-3" OnClick="@(()=>Add())">@localizer.Get("Add recipient")</MudButton>
-            <MudTable Items="@EmailItems" Hover="true" Dense="true">
+            <MudTextField T="string" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="@_email"
+                          Validation="@CheckMail()" />
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small"
+                       Class="ml-auto mt-3 mb-3" OnClick="@(()=>Add())">@Localizer.Get("Add recipient")</MudButton>
+            <MudTable Items="@_emailItems" Hover="true" Dense="true">
                 <HeaderContent>
-                    <MudTh>@localizer.Get("Email")</MudTh>
-                    <MudTh>@localizer.Get("Blind copy")</MudTh>
-                    <MudTh>@localizer.Get("Action")</MudTh>
+                    <MudTh>@Localizer.Get("Email")</MudTh>
+                    <MudTh>@Localizer.Get("Blind copy")</MudTh>
+                    <MudTh>@Localizer.Get("Action")</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="@localizer.Get("Email")">@context.Email</MudTd>
-                    <MudTd DataLabel="@localizer.Get("Blind copy")"><MudSwitch Checked="@context.BCC" CheckedChanged="(bool value)=>ChangeBccValue(context, value)" Color="Color.Primary" /></MudTd>
+                    <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
+                    <MudTd DataLabel="@Localizer.Get("Blind copy")"><MudSwitch Checked="@context.BCC" CheckedChanged="(bool value)=>ChangeBccValue(context, value)" Color="Color.Primary" /></MudTd>
                     <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="()=>Delete(context)"></MudIconButton></MudTd>
                 </RowTemplate>
             </MudTable>
@@ -60,10 +60,10 @@
     </MudCardContent>
     <MudCardActions>
         <MudItem Class="pa-4 mt-4">
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" @onclick="OnClickCancel" Disabled="@(!success)">@localizer.Get("Cancel")</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" @onclick="OnClickCancel" Disabled="@(!_success)">@Localizer.Get("Cancel")</MudButton>
             <AuthorizeView Roles="Admin">
                 <Authorized>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="UpdateApplication" Disabled="@(!success)">@localizer.Get("Validate")</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="UpdateApplication" Disabled="@(!_success)">@Localizer.Get("Validate")</MudButton>
                 </Authorized>
             </AuthorizeView>
         </MudItem>
@@ -71,27 +71,27 @@
 </MudCard>
 
 @code {
-    private ApplicationParametersDTO param = new();
-    bool success = false;
-    MudForm form;
-    private List<EmailRecipient> emails = new List<EmailRecipient>();
-    readonly List<EmailRecipient> EmailItems = new();
-    private string email = "";
-    private bool emailNotValidated;
-    private string completeLogoPath;
-    private readonly List<string> filesToDelete = new();
-    private string initialAppName;
-    private string initialAppLogo;
-    EmailAddressAttribute checkEmail = new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" };
+    private ApplicationParametersDTO _param = new();
+    bool _success = false;
+    MudForm _form;
+    private List<EmailRecipient> _emails = new List<EmailRecipient>();
+    readonly List<EmailRecipient> _emailItems = new();
+    private string _email = "";
+    private bool _emailNotValidated;
+    private string _completeLogoPath;
+    private readonly List<string> _filesToDelete = new();
+    private string _initialAppName;
+    private string _initialAppLogo;
+    EmailAddressAttribute _checkEmail = new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" };
 
     protected override async Task OnInitializedAsync()
     {
-        param = await dataService.GetUniqueValue(param, "GetApplicationParameters",ApiControllers.ApplicationParametersApi);
-        initialAppName = param.ApplicationName;
-        initialAppLogo = param.ApplicationLogo;
-        if (!string.IsNullOrEmpty(param.AdminEmails))
+        _param = await DataService.GetUniqueValue(_param, "GetApplicationParameters",ApiControllers.ApplicationParametersApi);
+        _initialAppName = _param.ApplicationName;
+        _initialAppLogo = _param.ApplicationLogo;
+        if (!string.IsNullOrEmpty(_param.AdminEmails))
         {
-            emails = JsonSerializer.Deserialize<List<EmailRecipient>>(param.AdminEmails);
+            _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_param.AdminEmails);
             PopulateEmailItems();
         }
     }
@@ -100,11 +100,11 @@
     {
         foreach (var file in e.GetMultipleFiles())
         {
-            var result = await dataService.PostFile(file);
+            var result = await DataService.PostFile(file);
             if (result.Success)
             {
-                param.ApplicationLogo ="/"+result.Message;
-                success = true;
+                _param.ApplicationLogo ="/"+result.Message;
+                _success = true;
             }
         }
     }
@@ -112,97 +112,97 @@
 
     private async Task UpdateApplication()
     {
-        if (filesToDelete.Any())
+        if (_filesToDelete.Any())
         {
             //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
-        await dataService.PostValues(param, "ApplicationParametersUpdate",ApiControllers.CrudDataApi);
+        await DataService.PostValues(_param, "ApplicationParametersUpdate",ApiControllers.CrudDataApi);
         StateHasChanged();
-        if (initialAppLogo != param.ApplicationLogo || initialAppName != param.ApplicationLogo)
+        if (_initialAppLogo != _param.ApplicationLogo || _initialAppName != _param.ApplicationLogo)
         {
-            uriHelper.NavigateTo("/", forceLoad: true);
+            UriHelper.NavigateTo("/", forceLoad: true);
         }
         else
         {
-            uriHelper.NavigateTo("/");
+            UriHelper.NavigateTo("/");
         }
     }
 
     private void OnClickCancel()
     {
-        param.ApplicationLogo = "";
-        if (!string.IsNullOrEmpty(completeLogoPath))
+        _param.ApplicationLogo = "";
+        if (!string.IsNullOrEmpty(_completeLogoPath))
         {
-            filesToDelete.Add(completeLogoPath);
+            _filesToDelete.Add(_completeLogoPath);
           //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
-        uriHelper.NavigateTo("/");
+        UriHelper.NavigateTo("/");
     }
 
     private void Delete(EmailRecipient id)
     {
-        emails.Remove(id);
+        _emails.Remove(id);
         PopulateEmailItems();
-        param.AdminEmails = JsonSerializer.Serialize(emails);
+        _param.AdminEmails = JsonSerializer.Serialize(_emails);
     }
 
     private void PopulateEmailItems()
     {
-        EmailItems.Clear();
-        foreach (var t in emails)
+        _emailItems.Clear();
+        foreach (var t in _emails)
         {
-            EmailItems.Add(t);
+            _emailItems.Add(t);
         }
     }
 
     private void Add()
     {
-        if (!emails.Select(a => a.Email).Contains(email))
+        if (!_emails.Select(a => a.Email).Contains(_email))
         {
-            emails.Add(new EmailRecipient { Email = email });
+            _emails.Add(new EmailRecipient { Email = _email });
         }
-        email = "";
-        emailNotValidated = true;
+        _email = "";
+        _emailNotValidated = true;
         PopulateEmailItems();
-        param.AdminEmails = JsonSerializer.Serialize(emails);
+        _param.AdminEmails = JsonSerializer.Serialize(_emails);
     }
 
     private void ChangeBccValue(EmailRecipient id, bool value)
     {
-        var bccupdate = emails.Where(a => a.Email == id.Email).FirstOrDefault();
+        var bccupdate = _emails.Where(a => a.Email == id.Email).FirstOrDefault();
         bccupdate.BCC = value;
-        param.AdminEmails = JsonSerializer.Serialize(emails);
+        _param.AdminEmails = JsonSerializer.Serialize(_emails);
     }
 
-    private bool checkMail()
+    private bool CheckMail()
     {
-        if (!string.IsNullOrEmpty(email))
+        if (!string.IsNullOrEmpty(_email))
         {
-            emailNotValidated = !Regex.IsMatch(email,
+            _emailNotValidated = !Regex.IsMatch(_email,
             @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
             RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
         }
         else
         {
-            emailNotValidated = true;
+            _emailNotValidated = true;
         }
-        return emailNotValidated;
+        return _emailNotValidated;
     }
 
-    private string htmlText;
-    private readonly bool displayTagMessage = true;
+    private string _htmlText;
+    private readonly bool _displayTagMessage = true;
 
     private async Task OpenTextEditorComponent()
     {
-        htmlText = param.ErrorEMailMessage;
+        _htmlText = _param.ErrorEMailMessage;
         DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
-        var parameters = new DialogParameters { ["htmlText"] = htmlText, ["displayTagMessage"] = displayTagMessage };
+        var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
 
-        var dialog = DialogService.Show<_TextEditor>(@localizer.Get("Edit error email template"), parameters, maxWidth);
+        var dialog = DialogService.Show<_TextEditor>(@Localizer.Get("Edit error email template"), parameters, maxWidth);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            param.ErrorEMailMessage = result.Data.ToString();
+            _param.ErrorEMailMessage = result.Data.ToString();
         }
     }
 }

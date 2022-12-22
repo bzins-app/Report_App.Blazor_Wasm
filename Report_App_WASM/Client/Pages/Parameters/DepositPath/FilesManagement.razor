@@ -1,16 +1,16 @@
 ﻿@page "/DepositPath"
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@localizer.Get("File deposit configuration")</PageTitle>
+<PageTitle>@Localizer.Get("File deposit configuration")</PageTitle>
 
 <ErrorBoundary>
     <ChildContent>
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
                  ApplyEffectsToContainer="true" Class="mt-8">
-            <MudTabPanel Text="@localizer.Get("File deposit path")" >
+            <MudTabPanel Text="@Localizer.Get("File deposit path")" >
                <_FileDepositPath/>
             </MudTabPanel>
-            <MudTabPanel Text="@localizer.Get("SFTP configuration")">
+            <MudTabPanel Text="@Localizer.Get("SFTP configuration")">
                 <_SFTP />
             </MudTabPanel>
         </MudTabs>

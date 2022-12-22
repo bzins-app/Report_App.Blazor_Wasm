@@ -16,13 +16,13 @@
 			//if (await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).Select(a => a.Email).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync()=="[]"||!await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AnyAsync())
 			//{
 			//	Item.SendByEmail = false;
-   //             Snackbar.Add( Item.TaskName + " " + localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
+   //             Snackbar.Add( Item.TaskName + " " + Localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
 
 			//	return;
 			//}
 		}
-		await dataService.PostValues(Item, "TaskHeaderUpdate");
+		await DataService.PostValues(Item, "TaskHeaderUpdate");
 
-		Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " +localizer.Get("send by email") +" "  +localizer.Get("enabled") : Item.TaskName + " " +localizer.Get("send by email") +" "+ localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
+		Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " +Localizer.Get("send by email") +" "  +Localizer.Get("enabled") : Item.TaskName + " " +Localizer.Get("send by email") +" "+ Localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
 	}
     }

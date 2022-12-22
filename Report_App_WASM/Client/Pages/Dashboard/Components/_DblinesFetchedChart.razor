@@ -1,20 +1,20 @@
 ﻿@using ApexCharts
 
-@if (logs == null)
+@if (_logs == null)
 {
     <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
     <ApexChart TItem="DbLinesQuery"
-           Title="@localizer.Get("Nbr of rows fetched from databases")"
+           Title="@Localizer.Get("Nbr of rows fetched from databases")"
            Height="@Height"
-           XAxisType="XAxisType.Datetime" Options="options"
-           @ref=chart>
+           XAxisType="XAxisType.Datetime" Options="_options"
+           @ref=_chart>
 
         <ApexPointSeries TItem="DbLinesQuery"
-                     Items="logs"
-                     Name="@localizer.Get("Nbr of rows")"
+                     Items="_logs"
+                     Name="@Localizer.Get("Nbr of rows")"
                      SeriesType="SeriesType.Line"
                      XValue="@(e => e.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.NbrOfRows))"
@@ -26,13 +26,13 @@ else
 @code {
     [Parameter] public string Height { get; set; } = null;
 
-    private List<DbLinesQuery>? logs;
-    private ApexChartOptions<DbLinesQuery> options = new ApexChartOptions<DbLinesQuery>();
-    private ApexChart<DbLinesQuery> chart;
+    private List<DbLinesQuery>? _logs;
+    private ApexChartOptions<DbLinesQuery> _options = new ApexChartOptions<DbLinesQuery>();
+    private ApexChart<DbLinesQuery> _chart;
 
     protected override async Task OnInitializedAsync()
     {
-        logs = await dataService.GetValues<DbLinesQuery>("DbFetchMetrics", "api/Dashboard/");
-        options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
+        _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", "api/Dashboard/");
+        _options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
     }
 }

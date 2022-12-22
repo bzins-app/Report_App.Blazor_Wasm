@@ -21,7 +21,7 @@ namespace Report_App_WASM.Client.Services.Implementations
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task LoginLDAP(LoginParameters loginParameters)
+        public async Task LoginLdap(LoginParameters loginParameters)
         {
             //var stringContent = new StringContent(JsonSerializer.Serialize(loginParameters), Encoding.UTF8, "application/json");
             var result = await _httpClient.PostAsJsonAsync("api/Authorize/LDAPLogin", loginParameters);
