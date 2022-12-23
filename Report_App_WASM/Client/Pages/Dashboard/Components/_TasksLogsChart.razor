@@ -17,7 +17,7 @@ else
                      Name="@localizer.Get("Nbr of jobs")"
                      SeriesType="SeriesType.Line"
                      XValue="@(e => e.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Count())"
+                     YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="TaksLogsValues"

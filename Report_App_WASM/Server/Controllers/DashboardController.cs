@@ -43,12 +43,6 @@ namespace Report_App_WASM.Server.Controllers
             return metrics;
         }
 
-        //[HttpGet("TasksLogs")]
-        //public async Task<List<ApplicationLogTask>> GetTasksLogsAsync()
-        //{
-        //    return await _context.ApplicationLogTask.AsNoTracking().Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt")).ToListAsync();
-        //}
-
         [HttpGet("TasksLogs")]
         public async Task<List<TaksLogsValues>> GetTasksLogsAsync()
         {
@@ -58,15 +52,23 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet("SystemLogs")]
-        public async Task<List<ApplicationLogSystem>> GetSystemLogsAsync()
+        public async Task<List<TaksSystemValues>> GetSystemLogsAsync()
         {
-            return await _context.ApplicationLogSystem.AsNoTracking().Where(a => a.Level > 2 && a.TimeStamp.Date > DateTime.Today.AddDays(-20)).ToListAsync();
+            return await _context.ApplicationLogSystem.AsNoTracking().Where(a => a.Level > 2 && a.TimeStamp.Date > DateTime.Today.AddDays(-20))
+                .GroupBy(a=>a.TimeStamp.Date)
+                .Select(a=> new TaksSystemValues {Date=a.Key.Date,NbrWarnings= a.Sum(a => a.Level == 3 ? 1 : 0) , NbrErrors= a.Sum(a => a.Level == 4 ? 1 : 0) 
+                , NbrCriticals= a.Sum(a => a.Level == 5 ? 1 : 0)
+                })
+                .ToListAsync();
         }
 
         [HttpGet("EmailLogs")]
-        public async Task<List<ApplicationLogEmailSender>> GetEmailLogsAsync()
+        public async Task<List<EmailsLogsalues>> GetEmailLogsAsync()
         {
-            return await _context.ApplicationLogEmailSender.AsNoTracking().Where(a => a.EndDateTime.Date > DateTime.Today.AddDays(-20)).ToListAsync();
+            return await _context.ApplicationLogEmailSender.AsNoTracking().Where(a => a.EndDateTime.Date > DateTime.Today.AddDays(-20))
+                .GroupBy(a=>a.EndDateTime.Date)
+                .Select(a=> new EmailsLogsalues {Date=a.Key.Date, NbrEmails=a.Count(), NbrErrors=a.Sum(a => a.Error ? 1 : 0), TotalDuration=a.Sum(a=>a.DurationInSeconds) })
+                .ToListAsync();
         }
 
         [HttpGet("StorageInfo")]
