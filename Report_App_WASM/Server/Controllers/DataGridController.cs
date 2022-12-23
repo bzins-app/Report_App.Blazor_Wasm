@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Community.OData.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiResponse;
+using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -117,9 +119,9 @@ namespace Report_App_WASM.Server.Controllers
 
         [EnableQuery(EnsureStableOrdering = false)]
         [HttpGet("odata/QueryExecutionLogs")]
-        public IQueryable<ApplicationLogQueryExecution> GetQueryExecutionLogs()
+        public IQueryable<ApplicationLogQueryExecutionDTO> GetQueryExecutionLogs()
         {
-            return _context.ApplicationLogQueryExecution.OrderByDescending(a => a.Id).AsNoTracking();
+            return _context.ApplicationLogQueryExecution.ProjectTo<ApplicationLogQueryExecutionDTO>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id).AsQueryable();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
