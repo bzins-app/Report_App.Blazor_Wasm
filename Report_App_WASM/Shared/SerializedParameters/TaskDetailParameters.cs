@@ -12,8 +12,8 @@
         public string? ExcelTabName { get; set; }
         public string? DataTransferTargetTableName { get; set; }
         public bool DataTransferCreateTable { get; set; } = false;
-        public bool DataTransferUsePK { get; set; } = false;
+        public bool DataTransferUsePk { get; set; } = false;
         public string? DataTransferCommandBehaviour { get; set; }
-        public List<string> DataTransferPK { get; set; } = new();
+        public List<string?>? DataTransferPk { get; set; } = new();
     }
 }

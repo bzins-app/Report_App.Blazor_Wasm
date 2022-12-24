@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Report_App_WASM.Server.Models.AuditModels;
 
 namespace Report_App_WASM.Server.Models
 {

@@ -10,7 +10,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
             return HashKey.Key;
         }
 
-        public static string EncryptString(string text)
+        public static string? EncryptString(string? text)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -22,8 +22,8 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
             {
                 return text;
             }
-            var GetKey = Secretkey();
-            var key = Encoding.UTF8.GetBytes(GetKey);
+            var getKey = Secretkey();
+            var key = Encoding.UTF8.GetBytes(getKey);
 
             using var aesAlg = Aes.Create();
             using var encryptor = aesAlg.CreateEncryptor(key, aesAlg.IV);
@@ -63,8 +63,8 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
 
                 Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
                 Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, iv.Length);
-                var GetKey = Secretkey();
-                var key = Encoding.UTF8.GetBytes(GetKey);
+                var getKey = Secretkey();
+                var key = Encoding.UTF8.GetBytes(getKey);
 
                 using var aesAlg = Aes.Create();
                 aesAlg.Padding = PaddingMode.PKCS7;

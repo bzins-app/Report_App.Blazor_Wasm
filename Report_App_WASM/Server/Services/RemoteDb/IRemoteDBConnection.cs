@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Data;
+using System.Data.Common;
+using System.Data.OleDb;
+using System.Text;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -11,24 +15,21 @@ using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Server.Utils.RemoteQueryParameters;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.DTO;
+using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.RemoteQueryParameters;
 using Report_App_WASM.Shared.SerializedParameters;
-using System.Data;
-using System.Data.Common;
-using System.Data.OleDb;
-using System.Text;
 
-namespace Report_App_BlazorServ.Services.RemoteDb
+namespace Report_App_WASM.Server.Services.RemoteDb
 {
     public interface IRemoteDbConnection
     {
-        Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDTO parameter);
+        Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDto parameter);
         Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts, int taskId = 0);
         Task<bool> CkeckTableExists(string query);
         Task CreateTable(string query);
-        Task LoadDatatableToTable(DataTable data, string targetTable);
+        Task LoadDatatableToTable(DataTable data, string? targetTable);
         Task<MergeResult> MergeTables(string query);
-        Task DeleteTable(string tableName);
+        Task DeleteTable(string? tableName);
     }
     public class RemoteDbConnection : IRemoteDbConnection, IDisposable
     {
@@ -46,7 +47,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
         private async Task<int> GetDataTransferActivity()
         {
-            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB).Select(a => a.ActivityId).FirstOrDefaultAsync();
+            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).Select(a => a.ActivityId).FirstOrDefaultAsync();
         }
 
         public async Task<bool> CkeckTableExists(string query)
@@ -77,7 +78,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             return false;
         }
 
-        public async Task DeleteTable(string tableName)
+        public async Task DeleteTable(string? tableName)
         {
             StringBuilder query = new();
             query.Append(
@@ -142,7 +143,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             return result;
         }
 
-        public async Task LoadDatatableToTable(DataTable data, string targetTable)
+        public async Task LoadDatatableToTable(DataTable data, string? targetTable)
         {
             var activityId = await GetDataTransferActivity();
             var remoteConnection = GetConnectionString(activityId);
@@ -171,14 +172,14 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             await conn.DisposeAsync();
         }
 
-        private RemoteConnectionParameter CreateConnectionString(ActivityDbConnectionDTO parameter)
+        private RemoteConnectionParameter CreateConnectionString(ActivityDbConnectionDto parameter)
         {
             RemoteConnectionParameter value = new() { Schema = parameter.DbSchema, UseDbSchema = parameter.UseDbSchema, TypeDb = parameter.TypeDb, CommandFetchSize = parameter.CommandFetchSize, CommandTimeOut = parameter.CommandTimeOut };
             if (parameter.TypeDb == TypeDb.Oracle)
             {
                 value.ConnnectionString = $"User ID={parameter.ConnectionLogin};Password={parameter.Password}; Data Source={parameter.ConnectionPath};";
             }
-            else if (parameter.TypeDb == TypeDb.SQLServer)
+            else if (parameter.TypeDb == TypeDb.SqlServer)
             {
                 var windowsAuthentication = ";Integrated Security=SSPI";
                 string connectionString;
@@ -188,7 +189,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                     databaseInfo = $";Database={parameter.DbSchema}";
                 }
 
-                if (parameter.ADAuthentication)
+                if (parameter.AdAuthentication)
                 {
                     connectionString = $"server ={parameter.ConnectionPath}{databaseInfo}{windowsAuthentication};";
                 }
@@ -204,7 +205,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                 connectionString += "Encrypt=False;";
                 value.ConnnectionString = connectionString;
             }
-            else if (parameter.TypeDb == TypeDb.DB2)
+            else if (parameter.TypeDb == TypeDb.Db2)
             {
                 parameter.UseDbSchema = true;
                 var databaseInfo = "";
@@ -230,26 +231,26 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
         private RemoteConnectionParameter GetConnectionString(int activityId)
         {
-            ActivityDbConnectionDTO conValue = new();
-            conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDTO>(_mapper.ConfigurationProvider).SingleOrDefault();
+            ActivityDbConnectionDto conValue = new();
+            conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDto>(_mapper.ConfigurationProvider).SingleOrDefault();
             conValue.Password = EncryptDecrypt.DecryptString(conValue.Password);
 
             return CreateConnectionString(conValue);
         }
 
-        private async Task TryConnectAsync(TypeDb TypeDb, string connectionString)
+        private async Task TryConnectAsync(TypeDb typeDb, string connectionString)
         {
             DbConnection conn;
 
-            if (TypeDb == TypeDb.Oracle)
+            if (typeDb == TypeDb.Oracle)
             {
                 conn = new OracleConnection(connectionString);
             }
-            else if (TypeDb == TypeDb.SQLServer)
+            else if (typeDb == TypeDb.SqlServer)
             {
                 conn = new SqlConnection(connectionString);
             }
-            else if (TypeDb == TypeDb.DB2)
+            else if (typeDb == TypeDb.Db2)
             {
                 conn = new OleDbConnection(connectionString);
             }
@@ -299,7 +300,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             await dbConnector.DbConnection.DisposeAsync();
             return dataTable;
         }
-        public async Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDTO parameter)
+        public async Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDto parameter)
         {
             try
             {
@@ -360,9 +361,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     or QueryCommandParameterValueType.DateTime)
                                 {
                                     DateTime timevalue;
-                                    if (!string.IsNullOrEmpty(parameter.value))
+                                    if (!string.IsNullOrEmpty(parameter.Value))
                                     {
-                                        timevalue = DateTime.Parse(parameter.value);
+                                        timevalue = DateTime.Parse(parameter.Value);
                                     }
                                     else if (parameter.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                     {
@@ -385,9 +386,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     OracleParameter para = new(parameter.ParameterIdentifier, OracleDbType.Varchar2,
                                         ParameterDirection.Input)
                                     {
-                                        Value = parameter.value
+                                        Value = parameter.Value
                                     };
-                                    if (string.IsNullOrEmpty(parameter.value))
+                                    if (string.IsNullOrEmpty(parameter.Value))
                                     {
                                         para.Value = DBNull.Value;
                                         cmd.Parameters.Add(para);
@@ -409,7 +410,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                         }
                         dbConnector.IntializationQueries.Add("alter session set nls_date_format = 'DD/MM/YYYY HH24:MI:SS'  ");
                     }
-                    else if (connectionInfo.TypeDb == TypeDb.SQLServer)
+                    else if (connectionInfo.TypeDb == TypeDb.SqlServer)
                     {
                         dbConnector.DbConnection = new SqlConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new SqlDataAdapter();
@@ -422,9 +423,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     or QueryCommandParameterValueType.DateTime)
                                 {
                                     DateTime timevalue;
-                                    if (!string.IsNullOrEmpty(parameter.value))
+                                    if (!string.IsNullOrEmpty(parameter.Value))
                                     {
-                                        timevalue = DateTime.Parse(parameter.value);
+                                        timevalue = DateTime.Parse(parameter.Value);
                                     }
                                     else if (parameter.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                     {
@@ -445,9 +446,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                 {
                                     SqlParameter para = new(parameter.ParameterIdentifier, SqlDbType.VarChar)
                                     {
-                                        Value = parameter.value
+                                        Value = parameter.Value
                                     };
-                                    if (string.IsNullOrEmpty(parameter.value))
+                                    if (string.IsNullOrEmpty(parameter.Value))
                                     {
                                         para.Value = DBNull.Value;
                                         cmd.Parameters.Add(para);
@@ -462,7 +463,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
                         dbConnector.DbCommand = cmd;
                     }
-                    else if (connectionInfo.TypeDb == TypeDb.DB2)
+                    else if (connectionInfo.TypeDb == TypeDb.Db2)
                     {
                         dbConnector.DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new OleDbDataAdapter();
@@ -481,9 +482,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     or QueryCommandParameterValueType.DateTime)
                                 {
                                     DateTime timevalue;
-                                    if (!string.IsNullOrEmpty(parameter.value))
+                                    if (!string.IsNullOrEmpty(parameter.Value))
                                     {
-                                        timevalue = DateTime.Parse(parameter.value);
+                                        timevalue = DateTime.Parse(parameter.Value);
                                     }
                                     else if (parameter.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                     {
@@ -504,9 +505,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                 {
                                     MySqlParameter para = new(parameter.ParameterIdentifier, MySqlDbType.VarChar)
                                     {
-                                        Value = parameter.value
+                                        Value = parameter.Value
                                     };
-                                    if (string.IsNullOrEmpty(parameter.value))
+                                    if (string.IsNullOrEmpty(parameter.Value))
                                     {
                                         para.Value = DBNull.Value;
                                         cmd.Parameters.Add(para);
@@ -544,7 +545,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                             CommandTimeOut = connectionInfo.CommandTimeOut,
                             StartDateTime = start,
                             TotalDuration = end - start,
-                            SQLExcecutionDuration = fill - start,
+                            SqlExcecutionDuration = fill - start,
                             DownloadDuration = end - fill,
                             EndDateTime = end,
                             TransferBeginDateTime = fill,

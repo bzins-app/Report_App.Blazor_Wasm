@@ -1,4 +1,5 @@
-﻿@inject ISnackbar Snackbar
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject IdentityAuthenticationStateProvider IdentityProvider
 
@@ -6,7 +7,7 @@
 
 @code {
     [Parameter]
-    public TaskHeaderDTO Item { get; set; }
+    public TaskHeaderDto Item { get; set; }
 
     private string _email;
 
@@ -53,7 +54,7 @@
             }
             else
             {
-                emails.Add(new EmailRecipient { Email = _email, BCC = false });
+                emails.Add(new EmailRecipient { Email = _email, Bcc = false });
                 var payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }

@@ -1,6 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@using Microsoft.AspNetCore.Components.Authorization
-@using Report_App_WASM.Client.Utils
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
@@ -50,8 +48,8 @@
                 <MudNavLink Href="ApplicationParameters" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
                 <MudNavLink Href="Activities" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Activities manager")</MudNavLink>
                 <MudNavLink Href="DataTransferParameters" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Data transfer parameters")</MudNavLink>
-                <MudNavLink Href="SMTP" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("SMTP configuration")</MudNavLink>
-                <MudNavLink Href="LDAP" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("LDAP configuration")</MudNavLink>
+                <MudNavLink Href="Smtp" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Smtp configuration")</MudNavLink>
+                <MudNavLink Href="Ldap" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Ldap configuration")</MudNavLink>
                 <MudNavLink Href="DepositPath" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Deposit path")</MudNavLink>
                 <MudNavLink Href="/swagger" Target="_blank" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Swagger")</MudNavLink>
             </MudNavGroup>

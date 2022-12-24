@@ -1,4 +1,5 @@
 ﻿@page "/ReportsResultLogs"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
@@ -38,7 +39,7 @@
                     <PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.IsAvailable)" Title="@Localizer.Get("Is available?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.FileSizeInMB)" Title="@Localizer.Get("File size in MB")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FileSizeInMb)" Title="@Localizer.Get("File size in MB")" Sortable="true" />
                 </SimpleGrid>
             </div>
             @if (_rendering)
@@ -53,10 +54,10 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogReportResultDTO>? _itemsProvider;
+    GridItemsProvider<ApplicationLogReportResultDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationLogReportResultDTO>? _grid;
+    SimpleGrid<ApplicationLogReportResultDto>? _grid;
     private bool _rendering;
 
 
@@ -67,14 +68,14 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);           
+            return GridItemsProviderResult.From(response.Value!, response.Count);           
         };
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogReportResultDTO>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDTO> req)
+    private async Task<ApiResponse<ApplicationLogReportResultDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -82,7 +83,7 @@
         var url = "odata/ReportResultLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -90,7 +91,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogReportResultDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogReportResultDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -102,7 +103,7 @@
     private async Task OnRefresh()
     {
         _rendering = true;
-        await _grid.RefreshDataAsync();
+        if (_grid != null) await _grid.RefreshDataAsync();
         _rendering = false;
     }
 
@@ -117,13 +118,13 @@
     private async Task RemoveFilters()
     {
         _rendering = true;
-        await _grid.RemoveFilters();
+        if (_grid != null) await _grid.RemoveFilters();
         _rendering = false;
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _grid.DisposeAsync();
+        if (_grid != null) await _grid.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }

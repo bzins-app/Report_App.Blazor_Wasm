@@ -1,4 +1,5 @@
-﻿@inject IDialogService DialogService
+﻿@using CronExpressionDescriptor
+@inject IDialogService DialogService
 
 <ErrorBoundary>
     <MudCard Elevation="6">
@@ -35,11 +36,11 @@
 </ErrorBoundary>
 
 @code {
-    [Parameter] public TaskHeaderDTO? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
     [Parameter] public bool ChangePending { get; set; }
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
-    private List<CronParameters>? _crons = new();
-    SimpleGrid<CronEditView> _grid;
+    private List<CronParameters?>? _crons = new();
+    SimpleGrid<CronEditView>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
     private List<CronEditView> _elements = new();
@@ -69,9 +70,9 @@
     private void PopulateCronsItems()
     {
         _elements.Clear();
-        foreach (var t in _crons)
+        foreach (var t in _crons!)
         {
-            _elements.Add(new CronEditView { CronValue = t.CronValue, CronDescription = CronExpressionDescriptor.ExpressionDescriptor.GetDescription(t.CronValue) });
+            _elements.Add(new CronEditView { CronValue = t?.CronValue, CronDescription = ExpressionDescriptor.GetDescription(t?.CronValue) });
         }
     }
 
@@ -88,7 +89,7 @@
         {
             if (_crons != null)
             {
-                var toUpdate = _crons.FirstOrDefault(a => a.CronValue == dataBefore);
+                var toUpdate = _crons.FirstOrDefault(a => a?.CronValue == dataBefore);
                 if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
             }
             ChangePending = true;
@@ -108,7 +109,7 @@
         if (result != null)
         {
             var toRemove = _crons!.FirstOrDefault(a => a.CronValue == value.CronValue);
-             _crons.Remove(toRemove);
+             _crons?.Remove(toRemove);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
@@ -120,7 +121,7 @@
 
     private async Task OpenCreateDialog()
     {
-        string value = null;
+        string? value = null;
         var parameters = new DialogParameters { ["Value"] = value };
 
         var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
@@ -128,7 +129,7 @@
 
         if (!feedback.Cancelled)
         {
-            _crons.Add(new CronParameters { CronValue = feedback.Data.ToString() });
+            _crons?.Add(new CronParameters { CronValue = feedback.Data.ToString() });
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
@@ -138,9 +139,9 @@
 
     private void SetItemCronValues()
     {
-        if (_crons.Any())
+        if (_crons!.Any())
         {
-            Item.CronParameters = JsonSerializer.Serialize(_crons);
+            Item!.CronParameters = JsonSerializer.Serialize(_crons);
         }
     }
 
@@ -151,7 +152,7 @@
 
     private void RemoveFilters()
     {
-        _grid.RefreshDataAsync();
+        _grid?.RefreshDataAsync();
         UpdateElements();
     }
 }

@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@using Microsoft.AspNetCore.Builder
+﻿@using Microsoft.AspNetCore.Builder
 @using Microsoft.Extensions.Options
 @inject NavigationManager NavigationManager
 @inject IOptions<RequestLocalizationOptions> LocOptions
@@ -23,13 +22,12 @@
 </MudTooltip>
 
 @code {
-    private string _language;
-    private CultureInfo[] _supportedCultures = new[]
-    {
-                    new CultureInfo("fr"),
-                    new CultureInfo("en"),
-                    new CultureInfo("de"),
-                    new CultureInfo("nl"),
+    private string? _language;
+    private CultureInfo[] _supportedCultures = {
+                    new("fr"),
+                    new("en"),
+                    new("de"),
+                    new("nl"),
     };
 
     protected override void OnInitialized()

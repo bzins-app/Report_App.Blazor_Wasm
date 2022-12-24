@@ -2,7 +2,7 @@
 
 namespace Report_App_WASM.Shared.DTO
 {
-    public class BaseTraceabilityDTO
+    public class BaseTraceabilityDto
     {
         public DateTime CreateDateTime { get; set; } = DateTime.Now;
         [MaxLength(100)]

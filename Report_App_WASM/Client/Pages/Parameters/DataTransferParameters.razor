@@ -19,9 +19,9 @@
             <MudSwitch @bind-Checked="_dbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
             <MudTextField @bind-Value="_dbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!_dbCon.UseDbSchema" />
             <MudSwitch @bind-Checked="_dbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
-            <MudSwitch @bind-Checked="_dbCon.ADAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" />
-            <MudTextField @bind-Value="_dbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="_dbCon.ADAuthentication" />
-            <MudTextField @bind-Value="_dbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="_dbCon.ADAuthentication" />
+            <MudSwitch @bind-Checked="_dbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" />
+            <MudTextField @bind-Value="_dbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="_dbCon.AdAuthentication" />
+            <MudTextField @bind-Value="_dbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="_dbCon.AdAuthentication" />
 
             <MudNumericField @bind-Value="_dbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" />
             <MudButton Disabled="@_loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
@@ -48,11 +48,11 @@
 </MudCard>
 
 @code {
-    private ActivityDTO _targetInfo = new();
+    private ActivityDto _targetInfo = new();
 
     private string _connectionTestResult = string.Empty;
     private bool _validateButtonDisabled = true;
-    private ActivityDbConnectionDTO _dbCon = new();
+    private ActivityDbConnectionDto _dbCon = new();
     private bool _loading;
 
     protected override async Task OnInitializedAsync()
@@ -82,8 +82,8 @@
 
     private async Task ConnectionTest()
     {
-        var tryConn = new ActivityDbConnectionDTO();
-        tryConn.ADAuthentication = _dbCon.ADAuthentication;
+        var tryConn = new ActivityDbConnectionDto();
+        tryConn.AdAuthentication = _dbCon.AdAuthentication;
         tryConn.ConnectionLogin = _dbCon.ConnectionLogin;
         tryConn.ConnectionPath = _dbCon.ConnectionPath;
         tryConn.IntentReadOnly = _dbCon.IntentReadOnly;

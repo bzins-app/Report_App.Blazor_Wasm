@@ -1,4 +1,5 @@
 ﻿@page "/UsersManagement"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -87,7 +88,7 @@
         var url = "odata/Users?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -107,7 +108,7 @@
     private void OpenEditDialog(ApplicationUser value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Update };
-        var dialog = DialogService.Show<_UserDetails>("Edit", parameters, _maxWidth);
+        DialogService.Show<_UserDetails>("Edit", parameters, _maxWidth);
     }
 
     private async Task OpenDeleteDialog(ApplicationUser value)

@@ -1,6 +1,5 @@
-﻿using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.SerializedParameters;
-using System.Data.Common;
+﻿using System.Data.Common;
+using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Server.Utils.RemoteQueryParameters
 {

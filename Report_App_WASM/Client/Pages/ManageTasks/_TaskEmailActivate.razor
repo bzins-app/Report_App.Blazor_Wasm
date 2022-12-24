@@ -1,15 +1,15 @@
 ﻿@inject ISnackbar Snackbar
 @inject HttpClient Http
 
-<MudSwitch Checked="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+<MudSwitch Checked="@Item!.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
 
 @code {
     [Parameter]
-    public TaskHeaderDTO Item { get; set; }
+    public TaskHeaderDto? Item { get; set; }
 
     private async Task ChangeStatusAsync(bool value)
     {
-        Item.SendByEmail = value;
+        Item!.SendByEmail = value;
 
         if (Item.SendByEmail)
         {

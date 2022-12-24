@@ -1,6 +1,6 @@
-﻿using Report_App_WASM.Server.Models.AuditModels;
+﻿using System.ComponentModel.DataAnnotations;
+using Report_App_WASM.Server.Models.AuditModels;
 using Report_App_WASM.Shared;
-using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Server.Models
 {
@@ -11,7 +11,7 @@ namespace Report_App_WASM.Server.Models
         [Required]
         [MaxLength(60)]
         public string? ActivityName { get; set; }
-        public ActivityType ActivityType { get; set; } = ActivityType.SourceDB;
+        public ActivityType ActivityType { get; set; } = ActivityType.SourceDb;
         private string? _activityTypeName;
 
         [MaxLength(20)]

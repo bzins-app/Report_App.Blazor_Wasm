@@ -1,18 +1,18 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Components.Authorization;
 using Report_App_WASM.Client.Services.Contracts;
 using Report_App_WASM.Shared;
-using System.Security.Claims;
 
-namespace Report_App_WASM.Client.Services.States
+namespace Report_App_WASM.Client.Services.Implementations
 {
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private UserInfo _userInfoCache;
+        private UserInfo? _userInfoCache;
         private readonly IAuthorizeApi _authorizeApi;
 
         public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi)
         {
-            this._authorizeApi = authorizeApi;
+            _authorizeApi = authorizeApi;
         }
 
         public async Task Login(LoginParameters loginParameters)
@@ -40,7 +40,7 @@ namespace Report_App_WASM.Client.Services.States
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
-        public async Task<UserInfo> GetUserInfo()
+        public async Task<UserInfo?> GetUserInfo()
         {
             if (_userInfoCache != null && _userInfoCache.IsAuthenticated) return _userInfoCache;
             _userInfoCache = await _authorizeApi.GetUserInfo();
@@ -55,13 +55,13 @@ namespace Report_App_WASM.Client.Services.States
                 var userInfo = await GetUserInfo();
                 if (userInfo.IsAuthenticated)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }.Concat(userInfo.ExposedClaims.Select(c => new Claim(c.Type, c.Value)));
+                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }.Concat(userInfo.ExposedClaims!.Select(c => new Claim(c.Type!, c.Value)));
                     identity = new ClaimsIdentity(claims, "Server authentication");
                 }
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine("Request failed:" + ex.ToString());
+                Console.WriteLine("Request failed:" + ex);
             }
 
             return new AuthenticationState(new ClaimsPrincipal(identity));

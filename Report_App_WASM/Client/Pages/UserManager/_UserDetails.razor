@@ -1,4 +1,5 @@
-﻿@inject ISnackbar Snackbar
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@inject ISnackbar Snackbar
 @inject HttpClient Http
 
 <MudDialog>
@@ -97,7 +98,7 @@
         var uri = $"{ApiControllers.UserManagerApi}GetRolesList";
         var roles = await Http.GetFromJsonAsync<List<string>>(uri);
 
-        foreach (var r in roles)
+        foreach (var r in roles!)
         {
             _rolesAvailable.Add(r);
         }
@@ -105,13 +106,13 @@
         var uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item.UserName}";
         var userRoles = await Http.GetFromJsonAsync<List<string>>(uriUser);
 
-        foreach (var ur in userRoles)
+        foreach (var ur in userRoles!)
         {
             _rolesAssigned.Add(ur);
             _rolesAvailable.Remove(ur);
         }
 
-        _titles = new string[] { Localizer.Get("Roles available"), Localizer.Get("Roles assigned") };
+        _titles = new[] { Localizer.Get("Roles available"), Localizer.Get("Roles assigned") };
         await base.OnInitializedAsync();
     }
 

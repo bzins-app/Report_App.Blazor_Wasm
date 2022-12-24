@@ -6,9 +6,9 @@ namespace Report_App_WASM.Client.Shared.Theme
     {
         public static MudTheme ApplicationMudTheme()
         {
-            var theme = new MudTheme()
+            var theme = new MudTheme
             {
-                Palette = new Palette()
+                Palette = new Palette
                 {
                     DrawerBackground = "#001529",
                     DrawerText = "#FFFFFF7F",
@@ -208,7 +208,7 @@ namespace Report_App_WASM.Client.Shared.Theme
                 },
                 Shadows = new()
                 {
-                    Elevation = new string[]
+                    Elevation = new[]
                  {
             "none",
             "0 2px 4px -1px rgba(6, 24, 44, 0.2)",

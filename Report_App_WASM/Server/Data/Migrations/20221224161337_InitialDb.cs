@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿#nullable disable
 
-#nullable disable
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ReportAppWASM.Server.Migrations
 {
@@ -91,7 +90,7 @@ namespace ReportAppWASM.Server.Migrations
                     TransferBeginDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalDuration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    SQLExcecutionDuration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    SqlExcecutionDuration = table.Column<TimeSpan>(type: "time", nullable: false),
                     DownloadDuration = table.Column<TimeSpan>(type: "time", nullable: false),
                     NbrOfRows = table.Column<int>(type: "int", nullable: false),
                     RunBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -118,7 +117,7 @@ namespace ReportAppWASM.Server.Migrations
                     FileType = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     FileName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ReportPath = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FileSizeInMB = table.Column<double>(type: "float", nullable: false),
+                    FileSizeInMb = table.Column<double>(type: "float", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     Result = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Error = table.Column<bool>(type: "bit", nullable: false)
@@ -158,6 +157,7 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TaskId = table.Column<int>(type: "int", nullable: false),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationInSeconds = table.Column<int>(type: "int", nullable: false),
@@ -276,7 +276,7 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LDAPConfiguration",
+                name: "LdapConfiguration",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -293,7 +293,7 @@ namespace ReportAppWASM.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LDAPConfiguration", x => x.Id);
+                    table.PrimaryKey("PK_LdapConfiguration", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -342,12 +342,12 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SFTPConfiguration",
+                name: "SftpConfiguration",
                 columns: table => new
                 {
-                    SFTPConfigurationId = table.Column<int>(type: "int", nullable: false)
+                    SftpConfigurationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UseFTPProtocol = table.Column<bool>(type: "bit", nullable: false),
+                    UseFtpProtocol = table.Column<bool>(type: "bit", nullable: false),
                     ConfigurationName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Port = table.Column<int>(type: "int", nullable: false),
@@ -360,11 +360,11 @@ namespace ReportAppWASM.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SFTPConfiguration", x => x.SFTPConfigurationId);
+                    table.PrimaryKey("PK_SftpConfiguration", x => x.SftpConfigurationId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SMTPConfiguration",
+                name: "SmtpConfiguration",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -374,7 +374,7 @@ namespace ReportAppWASM.Server.Migrations
                     SmtpPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SmtpHost = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SmtpPort = table.Column<int>(type: "int", nullable: false),
-                    SmtpSSL = table.Column<bool>(type: "bit", nullable: false),
+                    SmtpSsl = table.Column<bool>(type: "bit", nullable: false),
                     FromEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     FromFullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsActivated = table.Column<bool>(type: "bit", nullable: false),
@@ -385,7 +385,7 @@ namespace ReportAppWASM.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SMTPConfiguration", x => x.Id);
+                    table.PrimaryKey("PK_SmtpConfiguration", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -402,7 +402,7 @@ namespace ReportAppWASM.Server.Migrations
                     ConnectionLogin = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UseDbSchema = table.Column<bool>(type: "bit", nullable: false),
-                    ADAuthentication = table.Column<bool>(type: "bit", nullable: false),
+                    AdAuthentication = table.Column<bool>(type: "bit", nullable: false),
                     IntentReadOnly = table.Column<bool>(type: "bit", nullable: false),
                     DbSchema = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CommandTimeOut = table.Column<int>(type: "int", nullable: false),
@@ -582,8 +582,8 @@ namespace ReportAppWASM.Server.Migrations
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsReachable = table.Column<bool>(type: "bit", nullable: false),
                     TryToCreateFolder = table.Column<bool>(type: "bit", nullable: false),
-                    UseSFTPProtocol = table.Column<bool>(type: "bit", nullable: false),
-                    SFTPConfigurationId = table.Column<int>(type: "int", nullable: true),
+                    UseSftpProtocol = table.Column<bool>(type: "bit", nullable: false),
+                    SftpConfigurationId = table.Column<int>(type: "int", nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -593,10 +593,10 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     table.PrimaryKey("PK_FileDepositPathConfiguration", x => x.FileDepositPathConfigurationId);
                     table.ForeignKey(
-                        name: "FK_FileDepositPathConfiguration_SFTPConfiguration_SFTPConfigurationId",
-                        column: x => x.SFTPConfigurationId,
-                        principalTable: "SFTPConfiguration",
-                        principalColumn: "SFTPConfigurationId");
+                        name: "FK_FileDepositPathConfiguration_SftpConfiguration_SftpConfigurationId",
+                        column: x => x.SftpConfigurationId,
+                        principalTable: "SftpConfiguration",
+                        principalColumn: "SftpConfigurationId");
                 });
 
             migrationBuilder.CreateTable(
@@ -611,7 +611,7 @@ namespace ReportAppWASM.Server.Migrations
                     QueryParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DetailSequence = table.Column<int>(type: "int", nullable: false),
                     LastRunDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NbrOFCumulativeOccurences = table.Column<int>(type: "int", nullable: false),
+                    NbrOfCumulativeOccurences = table.Column<int>(type: "int", nullable: false),
                     TaskHeaderId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -774,9 +774,9 @@ namespace ReportAppWASM.Server.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FileDepositPathConfiguration_SFTPConfigurationId",
+                name: "IX_FileDepositPathConfiguration_SftpConfigurationId",
                 table: "FileDepositPathConfiguration",
-                column: "SFTPConfigurationId");
+                column: "SftpConfigurationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QueryStore_Typoplogy_Area",
@@ -851,7 +851,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "FileDepositPathConfiguration");
 
             migrationBuilder.DropTable(
-                name: "LDAPConfiguration");
+                name: "LdapConfiguration");
 
             migrationBuilder.DropTable(
                 name: "QueryStore");
@@ -860,7 +860,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "ServicesStatus");
 
             migrationBuilder.DropTable(
-                name: "SMTPConfiguration");
+                name: "SmtpConfiguration");
 
             migrationBuilder.DropTable(
                 name: "TaskDetail");
@@ -875,7 +875,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "SFTPConfiguration");
+                name: "SftpConfiguration");
 
             migrationBuilder.DropTable(
                 name: "TaskHeader");

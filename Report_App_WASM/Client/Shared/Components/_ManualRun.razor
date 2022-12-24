@@ -1,6 +1,4 @@
-﻿@using System.Runtime.InteropServices.ComTypes
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
-
+﻿@using Report_App_WASM.Shared.Extensions
 <MudDialog>
     <DialogContent>
         <MudForm @ref="@_form">
@@ -31,7 +29,7 @@
                     }
                 </MudCardContent>
             </MudCard>
-            @if (QueryParameters.Any())
+            @if (QueryParameters!.Any())
             {
                 <MudCard>
                     <MudCardContent>
@@ -40,19 +38,19 @@
                         {
                             @if (t.ValueType == QueryCommandParameterValueType.Date)
                             {
-                                <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.value" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@t.ParameterIdentifier" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.DateTime)
                             {
-                                <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.value" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@t.ParameterIdentifier" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.Number)
                             {
-                                <MudTextField InputType="InputType.Number" @bind-Value="t.value" Required="@t.Required" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@t.ParameterIdentifier" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.String)
                             {
-                                <MudTextField InputType="InputType.Text" @bind-Value="t.value" Required="@t.Required" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@t.ParameterIdentifier" />
                             }
                         }
                     </MudCardContent>
@@ -69,13 +67,13 @@
 
 @code {
 
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
     public bool SendForReportRecipients { get; set; }
     private MudForm _form = default!;
     [Parameter]
-    public List<string> UserEmail { get; set; }
+    public List<string>? UserEmail { get; set; }
     [Parameter]
-    public List<QueryCommandParameter> QueryParameters { get; set; }
+    public List<QueryCommandParameter>? QueryParameters { get; set; }
     [Parameter]
     public List<string> RecipientsEmails { get; set; }
 
@@ -86,11 +84,11 @@
         {
             if (t.ValueType == QueryCommandParameterValueType.Date)
             {
-                t.value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
+                t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
             }
             if (t.ValueType == QueryCommandParameterValueType.DateTime)
             {
-                t.value = t.DateOption.GetCalculateDateTime().ToString("s");
+                t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
             }
         }
     }
@@ -106,7 +104,7 @@
         await _form.Validate();
         if (_form.IsValid)
         {
-            Tuple<bool, List<QueryCommandParameter>> payload = new Tuple<bool, List<QueryCommandParameter>>(SendForReportRecipients, QueryParameters);
+            Tuple<bool, List<QueryCommandParameter>?> payload = new Tuple<bool, List<QueryCommandParameter>?>(SendForReportRecipients, QueryParameters);
             MudDialog.Close(DialogResult.Ok(payload));
         }
     }

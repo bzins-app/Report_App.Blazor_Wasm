@@ -1,19 +1,16 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using System.Text;
+using System.Text.Encodings.Web;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared;
-using System.Text.Encodings.Web;
-using System.Text;
-using ReportAppWASM.Server.Services.BackgroundWorker;
-using Report_App_WASM.Client.Pages.UserManager;
-using static MudBlazor.CategoryTypes;
-using Microsoft.AspNetCore.Authorization;
+using Report_App_WASM.Shared.ApiExchanges;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -27,12 +24,12 @@ namespace Report_App_WASM.Server.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser?> _userManager;
         private readonly IBackgroundWorkers _backgroundWorker;
 
         public UserManagerController(ILogger<UserManagerController> logger,
             ApplicationDbContext context, IMapper mapper,
-             RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager, IBackgroundWorkers backgroundWorker)
+             RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser?> userManager, IBackgroundWorkers backgroundWorker)
         {
             _logger = logger;
             _context = context;
@@ -48,10 +45,10 @@ namespace Report_App_WASM.Server.Controllers
            return await _roleManager.Roles.Select(a => a.Name).ToListAsync();
         }
         [HttpGet]
-        public async Task<IEnumerable<string>> GetRolesListPerUserAsync(string UserName)
+        public async Task<IEnumerable<string>> GetRolesListPerUserAsync(string userName)
         {
             List<string> userRoles= new List<string>();
-            var user= await  _userManager.FindByNameAsync(UserName);
+            var user= await  _userManager.FindByNameAsync(userName);
             if(user==null)
             {
                 return userRoles;
@@ -65,7 +62,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserInsert(ApiCRUDPayload<UserPayload> item)
+        public async Task<IActionResult> UserInsert(ApiCrudPayload<UserPayload> item)
         {
             try
             {
@@ -88,12 +85,12 @@ namespace Report_App_WASM.Server.Controllers
                         pageHandler: null,
                         values: new { area = "Identity", userId = appUser.Id, code },
                         protocol: Request.Scheme);
-                    List<EmailRecipient> ListEmail = new();
+                    List<EmailRecipient>? listEmail = new();
                     var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
-                    ListEmail.Add(new EmailRecipient { Email = appUser.Email });
-                    var Title = emailPrefix + " - Confirm your email";
-                    var Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
-                    _backgroundWorker.SendEmail(ListEmail, Title, Body);
+                    listEmail.Add(new EmailRecipient { Email = appUser.Email });
+                    var title = emailPrefix + " - Confirm your email";
+                    var body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+                    _backgroundWorker.SendEmail(listEmail, title, body);
                 }
 
                 return Ok(new SubmitResult { Success = true, Message = "Ok" });
@@ -105,7 +102,7 @@ namespace Report_App_WASM.Server.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> AddRolesAsync(ApiCRUDPayload<ChangeRolePayload> item)
+        public async Task<IActionResult> AddRolesAsync(ApiCrudPayload<ChangeRolePayload> item)
         {
             var user = await _userManager.FindByNameAsync(item.EntityValue.UserName);
             var result = await _userManager.AddToRolesAsync(user, item.EntityValue.Roles);
@@ -114,17 +111,17 @@ namespace Report_App_WASM.Server.Controllers
             return Ok(new SubmitResult { Success = result.Succeeded});
         }
         [HttpPost]
-        public async Task<IActionResult> RemoveRolesAsync(ApiCRUDPayload<ChangeRolePayload> item)
+        public async Task<IActionResult> RemoveRolesAsync(ApiCrudPayload<ChangeRolePayload> item)
         {
-            var user = await _userManager.FindByNameAsync(item.EntityValue.UserName);
-            var result = await _userManager.RemoveFromRolesAsync(user, item.EntityValue.Roles);
+            var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
+            var result = await _userManager.RemoveFromRolesAsync(user, item.EntityValue?.Roles!);
             // await _SignIn.RefreshSignInAsync(user);
-            _logger.Log(LogLevel.Warning, $"User {item.EntityValue.UserName} has been removed from roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles));
+            _logger.Log(LogLevel.Warning, $"User {item.EntityValue?.UserName} has been removed from roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles));
             return Ok(new SubmitResult { Success = result.Succeeded });
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserDelete(ApiCRUDPayload<UserPayload> item)
+        public async Task<IActionResult> UserDelete(ApiCrudPayload<UserPayload> item)
         {
             try
             {

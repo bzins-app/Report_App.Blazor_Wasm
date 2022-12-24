@@ -1,5 +1,5 @@
-﻿using Report_App_WASM.Server.Models.AuditModels;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Report_App_WASM.Server.Models.AuditModels;
 
 namespace Report_App_WASM.Server.Models
 {
@@ -15,7 +15,7 @@ namespace Report_App_WASM.Server.Models
         public string QueryParameters { get; set; } = "[]";
         public int DetailSequence { get; set; } = 99;
         public DateTime? LastRunDateTime { get; set; } = null;
-        public int NbrOFCumulativeOccurences { get; set; }
+        public int NbrOfCumulativeOccurences { get; set; }
         public virtual TaskHeader? TaskHeader { get; set; }
     }
 }

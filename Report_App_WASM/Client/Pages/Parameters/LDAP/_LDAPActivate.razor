@@ -1,19 +1,19 @@
 ﻿@inject ISnackbar Snackbar
 
-<MudSwitch Checked="@Item.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+<MudSwitch Checked="@Item!.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
 
 @code {
     [Parameter]
-    public LDAPConfigurationDTO Item { get; set; }
+    public LdapConfigurationDto? Item { get; set; }
 
     private async Task ChangeStatusAsync(bool value)
     {
-        Item.IsActivated = value;
-        var result = await DataService.PostValues(Item, "LDAPActivate");
+        Item!.IsActivated = value;
+        var result = await DataService.PostValues(Item, "LdapActivate");
 
         if (result.Success)
         {
-            Snackbar.Add(Item.IsActivated ? "LDAP " + Localizer.Get("enabled") : "lDAP " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+            Snackbar.Add(Item.IsActivated ? "Ldap " + Localizer.Get("enabled") : "Ldap " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
         }
         else
         {

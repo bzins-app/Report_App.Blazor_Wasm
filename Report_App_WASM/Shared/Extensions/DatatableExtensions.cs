@@ -54,7 +54,7 @@ namespace Report_App_WASM.Shared.Extensions
                     for (var k = 0; k < columnsQty; k++)
                     {
                         tableStr.Append("<TD>");
-                        tableStr.Append(dtInfo.Rows[i][k].ToString());
+                        tableStr.Append(dtInfo.Rows[i][k]);
                         tableStr.Append("</TD>");
                     }
                     tableStr.Append("</TR>");

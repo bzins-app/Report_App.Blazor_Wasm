@@ -1,4 +1,5 @@
 ﻿@page "/QueryExecutionLogs"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
@@ -27,13 +28,13 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogQueryExecutionDTO">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogQueryExecutionDto">
                     <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.SQLExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SqlExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.DownloadDuration)" Title="@Localizer.Get("Download duration")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.TypeDb)" Title="@Localizer.Get("Type of Database")" Sortable="true" />
@@ -74,11 +75,11 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogQueryExecutionDTO>? _itemsProvider;
+    GridItemsProvider<ApplicationLogQueryExecutionDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationLogQueryExecutionDTO>? _grid;
-    private string _queryValue = string.Empty;
+    SimpleGrid<ApplicationLogQueryExecutionDto>? _grid;
+    private string? _queryValue = string.Empty;
     private bool _rendering;
 
     protected override void OnInitialized()
@@ -88,14 +89,14 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogQueryExecutionDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ApplicationLogQueryExecutionDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogQueryExecutionDTO>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogQueryExecutionDTO> req)
+    private async Task<ApiResponse<ApplicationLogQueryExecutionDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogQueryExecutionDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -103,7 +104,7 @@
         var url = "odata/QueryExecutionLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -111,7 +112,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogQueryExecutionDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogQueryExecutionDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -123,7 +124,7 @@
     private async Task OnRefresh()
     {
         _rendering = true;
-        await _grid.RefreshDataAsync();
+        if (_grid != null) await _grid.RefreshDataAsync();
         _rendering = false;
     }
 
@@ -137,18 +138,18 @@
     private async Task RemoveFilters()
     {
         _rendering = true;
-        await _grid.RemoveFilters();
+        if (_grid != null) await _grid.RemoveFilters();
         _rendering = false;
     }
 
-    void RowClicked(SimpleGridRowClickEventArgs<ApplicationLogQueryExecutionDTO> args)
+    void RowClicked(SimpleGridRowClickEventArgs<ApplicationLogQueryExecutionDto> args)
     {
         _queryValue = args.Item.Query;
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _grid.DisposeAsync();
+        if (_grid != null) await _grid.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }

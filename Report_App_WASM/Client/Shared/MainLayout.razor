@@ -1,5 +1,4 @@
-﻿@using Report_App_WASM.Client.Shared.Theme;
-@using Report_App_WASM.Client.Utils;
+﻿@using Report_App_WASM.Client.Shared.Theme
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject IdentityAuthenticationStateProvider AuthStateProvider
@@ -22,7 +21,7 @@
         <img src="@ApplicationConstants.ApplicationLogo" alt="@ApplicationConstants.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />
         <MudSpacer />
         <MudTooltip Duration="1000" Text="@(_isDarkMode ? Localizer.Get("Switch to Light Theme") : Localizer.Get("Switch to Dark Theme"))">
-            <MudIconButton Icon="@(_isDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(()=>DarkModeChange(!UserAppTheme.DarkTheme))" />
+            <MudIconButton Icon="@(_isDarkMode ? Icons.Rounded.LightMode : Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(()=>DarkModeChange(!UserAppTheme.DarkTheme))" />
         </MudTooltip>
         <LanguageSwitch />
         <LoginDisplay />
@@ -52,7 +51,7 @@
         var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
         ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
         ApplicationConstants.ApplicationName = values.ApplicationName;
-        ApplicationConstants.LdapLogin = values.LDAPLogin;
+        ApplicationConstants.LdapLogin = values.LdapLogin;
         _isDarkMode=UserAppTheme.DarkTheme;
     }
 

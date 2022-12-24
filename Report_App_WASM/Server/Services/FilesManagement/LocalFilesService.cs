@@ -3,7 +3,7 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared;
 
-namespace ReportAppWASM.Server.Services.FilesManagement
+namespace Report_App_WASM.Server.Services.FilesManagement
 {
     public class LocalFilesService
     {
@@ -20,16 +20,16 @@ namespace ReportAppWASM.Server.Services.FilesManagement
         {
             try
             {
-                var StoragePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
-                var filePath = Path.Combine(StoragePath, fileName);
+                var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
+                var filePath = Path.Combine(storagePath, fileName);
                 await using var fileWriter = new FileStream(filePath, FileMode.CreateNew);
                 await fileWriter.WriteAsync(file.FileContents);
             }
             catch (Exception ex)
             {
-                return new SubmitResult() { Success = false, Message = ex.Message };
+                return new SubmitResult { Success = false, Message = ex.Message };
             }
-            return new SubmitResult() { Success = true, Message = "Ok" };
+            return new SubmitResult { Success = true, Message = "Ok" };
         }
 
         public async Task<SubmitResult> SaveFileAsync(FileContentResult file, string fileName, string storagePath, bool tryCreateFolder = false)
@@ -54,23 +54,23 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             }
             catch (Exception ex)
             {
-                return new SubmitResult() { Success = false, Message = ex.Message };
+                return new SubmitResult { Success = false, Message = ex.Message };
             }
-            return new SubmitResult() { Success = true, Message = "Ok" };
+            return new SubmitResult { Success = true, Message = "Ok" };
         }
 
 
-        public FileInfo GetFileInfo(string filePath)
+        public FileInfo GetFileInfo(string? filePath)
         {
-            var StoragePath = Path.Combine(_hostingEnvironment.WebRootPath, filePath);
-            return new FileInfo(StoragePath);
+            var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, filePath);
+            return new FileInfo(storagePath);
         }
 
         public async Task RemoveLocalFilesAsync(List<ApplicationLogReportResult> filesInfo)
         {
-            var StoragePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
+            var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
 
-            var direct = new DirectoryInfo(StoragePath);
+            var direct = new DirectoryInfo(storagePath);
             if (direct.Exists)
             {
                 foreach (var fi in direct.EnumerateFiles())
@@ -107,10 +107,10 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             }
             catch (Exception ex)
             {
-                return Task.FromResult(new SubmitResult() { Success = false, Message = ex.Message });
+                return Task.FromResult(new SubmitResult { Success = false, Message = ex.Message });
             }
 
-            return Task.FromResult(new SubmitResult() { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" });
+            return Task.FromResult(new SubmitResult { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" });
         }
     }
 }

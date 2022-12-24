@@ -204,8 +204,8 @@
   <data name="Add new credentials" xml:space="preserve">
     <value>Nieuwe credentials toevoegen</value>
   </data>
-  <data name="Add new sFTP" xml:space="preserve">
-    <value>Nieuwe sFTP toevoegen</value>
+  <data name="Add new Sftp" xml:space="preserve">
+    <value>Nieuwe Sftp toevoegen</value>
   </data>
   <data name="Add query" xml:space="preserve">
     <value>Query toevoegen</value>
@@ -435,8 +435,8 @@
   <data name="cannot be enabled because no query is attached to this report" xml:space="preserve">
     <value>kan niet worden ingeschakeld omdat aan dit rapport geen query is gekoppeld</value>
   </data>
-  <data name="cannot be enabled because no SMTP configuration has been activated" xml:space="preserve">
-    <value>kan niet worden ingeschakeld omdat geen SMTP-configuratie is geactiveerd</value>
+  <data name="cannot be enabled because no Smtp configuration has been activated" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat geen Smtp-configuratie is geactiveerd</value>
   </data>
   <data name="cannot be enabled because the related activity is not enabled" xml:space="preserve">
     <value>kan niet worden ingeschakeld omdat de desbetreffende activiteit niet is ingeschakeld</value>
@@ -471,8 +471,8 @@
   <data name="Check if the activity exists" xml:space="preserve">
     <value>Controleer of de activiteit bestaat</value>
   </data>
-  <data name="Check SMTP configuration" xml:space="preserve">
-    <value>Controleer SMTP configuratie</value>
+  <data name="Check Smtp configuration" xml:space="preserve">
+    <value>Controleer Smtp configuratie</value>
   </data>
   <data name="Check task" xml:space="preserve">
     <value>Controleer taak</value>
@@ -489,8 +489,8 @@
   <data name="Choose a deposit path configuration" xml:space="preserve">
     <value>Kies een depot pad configuratie</value>
   </data>
-  <data name="Choose an sFTP configuration" xml:space="preserve">
-    <value>Kies een sFTP configuratie</value>
+  <data name="Choose an Sftp configuration" xml:space="preserve">
+    <value>Kies een Sftp configuratie</value>
   </data>
   <data name="Choose first parameters" xml:space="preserve">
     <value>Kies de eerste parameters</value>
@@ -624,8 +624,8 @@
   <data name="Create a new email report" xml:space="preserve">
     <value>Maak een nieuw e-mail rapport</value>
   </data>
-  <data name="Create a new LDAP profil" xml:space="preserve">
-    <value>Een nieuw LDAP-profiel aanmaken</value>
+  <data name="Create a new Ldap profil" xml:space="preserve">
+    <value>Een nieuw Ldap-profiel aanmaken</value>
   </data>
   <data name="Create a new network credential" xml:space="preserve">
     <value>Creëer een nieuwe netwerk credential</value>
@@ -633,11 +633,11 @@
   <data name="Create a new report" xml:space="preserve">
     <value>Maak een nieuw rapport</value>
   </data>
-  <data name="Create a new SFTP profil" xml:space="preserve">
-    <value>Maak een nieuw SFTP profiel</value>
+  <data name="Create a new Sftp profil" xml:space="preserve">
+    <value>Maak een nieuw Sftp profiel</value>
   </data>
-  <data name="Create a new SMTP profil" xml:space="preserve">
-    <value>Maak een nieuw SMTP profiel</value>
+  <data name="Create a new Smtp profil" xml:space="preserve">
+    <value>Maak een nieuw Smtp profiel</value>
   </data>
   <data name="create a report" xml:space="preserve">
     <value>Maak een rapport</value>
@@ -1293,8 +1293,8 @@
   <data name="LastRun" xml:space="preserve">
     <value>Laatste uitvoering</value>
   </data>
-  <data name="LDAP configuration" xml:space="preserve">
-    <value>LDAP configuratie</value>
+  <data name="Ldap configuration" xml:space="preserve">
+    <value>Ldap configuratie</value>
   </data>
   <data name="Left Sidebar Color" xml:space="preserve">
     <value>Kleur linkerzijbalk</value>
@@ -1434,8 +1434,8 @@
   <data name="Navigate to &quot;Base parameters&quot; and &quot;Manage activities&quot; and check if your activity exists. If not ask to the application admin" xml:space="preserve">
     <value>Navigeer naar "Basis parameters" en "Beheer activiteiten" en controleer of uw activiteit bestaat. Indien niet, vraag het aan de applicatiebeheerder</value>
   </data>
-  <data name="Navigate to &quot;Base parameters&quot; and &quot;SMTP configuration&quot; and check if one is active. If not ask to the application admin" xml:space="preserve">
-    <value>Navigeer naar "Basis parameters" en "SMTP configuratie" en controleer of er een actief is. Indien niet, vraag het aan de applicatiebeheerder</value>
+  <data name="Navigate to &quot;Base parameters&quot; and &quot;Smtp configuration&quot; and check if one is active. If not ask to the application admin" xml:space="preserve">
+    <value>Navigeer naar "Basis parameters" en "Smtp configuratie" en controleer of er een actief is. Indien niet, vraag het aan de applicatiebeheerder</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; and switch on the report. If something goes wrong you will get an error with the reason" xml:space="preserve">
     <value>Navigeer naar "Modifity tasks" en "Alerts" en zet het rapport aan. Als er iets fout gaat krijg je een foutmelding met de reden</value>
@@ -1974,20 +1974,20 @@
   <data name="Setup authenticator app" xml:space="preserve">
     <value>Instellen authenticator app</value>
   </data>
-  <data name="SFTP configuration" xml:space="preserve">
-    <value>SFTP configuratie</value>
+  <data name="Sftp configuration" xml:space="preserve">
+    <value>Sftp configuratie</value>
   </data>
-  <data name="SFTP host" xml:space="preserve">
-    <value>SFTP host</value>
+  <data name="Sftp host" xml:space="preserve">
+    <value>Sftp host</value>
   </data>
-  <data name="SFTP password" xml:space="preserve">
-    <value>SFTP-wachtwoord</value>
+  <data name="Sftp password" xml:space="preserve">
+    <value>Sftp-wachtwoord</value>
   </data>
-  <data name="SFTP port" xml:space="preserve">
-    <value>SFTP-poort</value>
+  <data name="Sftp port" xml:space="preserve">
+    <value>Sftp-poort</value>
   </data>
-  <data name="SFTP username" xml:space="preserve">
-    <value>SFTP gebruikersnaam</value>
+  <data name="Sftp username" xml:space="preserve">
+    <value>Sftp gebruikersnaam</value>
   </data>
   <data name="Side menu" xml:space="preserve">
     <value>Zijmenu</value>
@@ -2001,20 +2001,20 @@
   <data name="Size of files stored locally" xml:space="preserve">
     <value>Grootte van lokaal opgeslagen bestanden</value>
   </data>
-  <data name="SMTP configuration" xml:space="preserve">
-    <value>SMTP configuratie</value>
+  <data name="Smtp configuration" xml:space="preserve">
+    <value>Smtp configuratie</value>
   </data>
-  <data name="SMTP host" xml:space="preserve">
-    <value>SMTP host</value>
+  <data name="Smtp host" xml:space="preserve">
+    <value>Smtp host</value>
   </data>
-  <data name="SMTP password" xml:space="preserve">
-    <value>SMTP wachtwoord</value>
+  <data name="Smtp password" xml:space="preserve">
+    <value>Smtp wachtwoord</value>
   </data>
-  <data name="SMTP port" xml:space="preserve">
-    <value>SMTP-poort</value>
+  <data name="Smtp port" xml:space="preserve">
+    <value>Smtp-poort</value>
   </data>
-  <data name="SMTP username" xml:space="preserve">
-    <value>SMTP gebruikersnaam</value>
+  <data name="Smtp username" xml:space="preserve">
+    <value>Smtp gebruikersnaam</value>
   </data>
   <data name="Sorry, the page you visited does not exist." xml:space="preserve">
     <value>Sorry, de pagina die u bezoekt bestaat niet.</value>
@@ -2262,8 +2262,8 @@
   <data name="Update password" xml:space="preserve">
     <value>Wachtwoord bijwerken</value>
   </data>
-  <data name="Update SMTP profil" xml:space="preserve">
-    <value>SMTP profiel bijwerken</value>
+  <data name="Update Smtp profil" xml:space="preserve">
+    <value>Smtp profiel bijwerken</value>
   </data>
   <data name="Updated at" xml:space="preserve">
     <value>Bijgewerkt bij</value>
@@ -2301,11 +2301,11 @@
   <data name="Use primary keys?" xml:space="preserve">
     <value>Primaire sleutels gebruiken?</value>
   </data>
-  <data name="Use sFTP protocol" xml:space="preserve">
-    <value>SFTP protocol gebruiken</value>
+  <data name="Use Sftp protocol" xml:space="preserve">
+    <value>Sftp protocol gebruiken</value>
   </data>
-  <data name="Use sFTP protocol?" xml:space="preserve">
-    <value>SFTP-protocol gebruiken?</value>
+  <data name="Use Sftp protocol?" xml:space="preserve">
+    <value>Sftp-protocol gebruiken?</value>
   </data>
   <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
     <value>Standaard query's gebruiken voor Rhs WMS?</value>

@@ -1,11 +1,12 @@
-﻿@inject ISnackbar Snackbar
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
 <MudIconButton Icon="@Icons.Outlined.FileDownload" OnClick="(()=>OpenRunConfirmationComponent())" Disabled="Item.FileDepositPathConfigurationId == 0 ? true : false"><MudText>@Localizer.Get("Drop file")</MudText> </MudIconButton>
 
 @code {
     [Parameter]
-    public TaskHeaderDTO Item { get; set; }
+    public TaskHeaderDto Item { get; set; }
 
     private async Task OpenRunConfirmationComponent()
     {

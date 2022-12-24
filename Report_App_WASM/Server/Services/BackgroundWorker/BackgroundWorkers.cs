@@ -1,20 +1,19 @@
-﻿using AutoMapper;
+﻿using System.Net.Mail;
+using System.Text.Json;
+using AutoMapper;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.EntityFrameworkCore;
-using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.EmailSender;
+using Report_App_WASM.Server.Services.FilesManagement;
+using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.SerializedParameters;
-using ReportAppWASM.Server.Services.EmailSender;
-using ReportAppWASM.Server.Services.FilesManagement;
-using System.Data;
-using System.Net.Mail;
-using System.Text.Json;
 
-namespace ReportAppWASM.Server.Services.BackgroundWorker
+namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     {
@@ -24,7 +23,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         readonly LocalFilesService _fileDeposit;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IServiceScopeFactory scopeFactory;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public BackgroundWorkers(
                       ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment, IServiceScopeFactory scopeFactory)
@@ -35,12 +34,12 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             _fileDeposit = fileDeposit;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
-            this.scopeFactory = scopeFactory;
+            _scopeFactory = scopeFactory;
         }
 
-        public void SendEmail(List<EmailRecipient> email, string subject, string message, List<Attachment> Attachment = null)
+        public void SendEmail(List<EmailRecipient>? email, string subject, string message, List<Attachment> attachment = null)
         {
-            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, Attachment));
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment));
         }
 
         public void DeleteFile(string filePath)
@@ -69,7 +68,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             var services = await _context.ServicesStatus.Select(a => new { a.AlertService, a.ReportService, a.DataTransferService }).FirstOrDefaultAsync();
             var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == taskHeaderId).Select(a => new { a.TaskName, a.Type, a.Activity.ActivityName, a.CronParameters }).FirstOrDefaultAsync();
-            var JobName = taskHeader.Type + ":" + taskHeader.ActivityName + ":" + taskHeader.TaskName + " Id:" + taskHeaderId;
+            var jobName = taskHeader.Type + ":" + taskHeader.ActivityName + ":" + taskHeader.TaskName + " Id:" + taskHeaderId;
             if (activate)
             {
                 var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
@@ -79,7 +78,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     var cronId = 0;
                     foreach (var cron in crons)
                     {
-                        var jobID = JobName + "_" + cronId;
+                        var jobId = jobName + "_" + cronId;
                         var jobParam = new TaskJobParameters
                         {
                             TaskHeaderId = taskHeaderId,
@@ -90,19 +89,19 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         {
                             var queueName = "report";
                             options.QueueName = queueName;
-                            RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+                            RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
                         if (taskHeader.Type == TaskType.Alert && services.AlertService)
                         {
                             var queueName = "alert";
                             options.QueueName = queueName;
-                            RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+                            RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
                         if (taskHeader.Type == TaskType.DataTransfer && services.DataTransferService)
                         {
                             var queueName = "datatransfer";
                             options.QueueName = queueName;//to remove in version 2.0
-                            RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+                            RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
 
                         cronId++;
@@ -112,7 +111,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             }
             else
             {
-                List<RecurringJobDto> recurringJobs = Hangfire.JobStorage.Current.GetConnection().GetRecurringJobs();
+                List<RecurringJobDto> recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
                 foreach (var j in recurringJobs.Where(a => a.Id.Contains(" Id:" + taskHeaderId + "_")))
                 {
                     RecurringJob.RemoveIfExists(j.Id);
@@ -143,7 +142,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
-                            var JobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
+                            var jobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
@@ -156,8 +155,8 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                                         Cts = CancellationToken.None,
                                         GenerateFiles = true
                                     };
-                                    var jobID = JobName + "_" + cronId;
-                                    RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+                                    var jobId = jobName + "_" + cronId;
+                                    RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                                     cronId++;
                                 }
                             }
@@ -185,7 +184,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
         public async Task RunTaskJobAsync(TaskJobParameters parameters)
         {
-            using (var scope = scopeFactory.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
                 var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
 

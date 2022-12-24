@@ -4,7 +4,7 @@ namespace Report_App_WASM.Shared.Extensions
 {
     public static class StringExtensions
     {
-        public static string RemoveSpecialCharacters(this string str)
+        public static string RemoveSpecialCharacters(this string? str)
         {
             StringBuilder sb = new();
             foreach (var c in str)
@@ -17,7 +17,7 @@ namespace Report_App_WASM.Shared.Extensions
             return sb.ToString();
         }
 
-        public static string RemoveSpecialExceptSpaceCharacters(this string str)
+        public static string RemoveSpecialExceptSpaceCharacters(this string? str)
         {
             StringBuilder sb = new();
             foreach (var c in str)

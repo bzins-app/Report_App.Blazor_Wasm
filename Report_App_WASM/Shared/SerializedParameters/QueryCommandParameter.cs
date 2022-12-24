@@ -6,7 +6,7 @@
         public QueryCommandParameterValueType ValueType { get; set; }
         public CalulatedDateOption DateOption { get; set; }
         public bool Required { get; set; } = true;
-        public string? value { get; set; }
+        public string? Value { get; set; }
     }
 
 

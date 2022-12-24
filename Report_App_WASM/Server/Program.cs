@@ -1,21 +1,19 @@
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
-using Report_App_BlazorServ.Services.RemoteDb;
-using Report_App_WASM.Client.Pages.Parameters;
 using Report_App_WASM.Server;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.BackgroundWorker;
+using Report_App_WASM.Server.Services.EmailSender;
+using Report_App_WASM.Server.Services.FilesManagement;
+using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
-using ReportAppWASM.Server.Services.BackgroundWorker;
-using ReportAppWASM.Server.Services.EmailSender;
-using ReportAppWASM.Server.Services.FilesManagement;
-using System.Configuration;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -156,8 +154,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+        services.GetRequiredService<UserManager<ApplicationUser>>();
+        services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
         var dbInit = services.GetRequiredService<InitializeDatabase>();
 
         dbInit.InitializeAsync().Wait();
@@ -165,8 +163,8 @@ using (var scope = app.Services.CreateScope())
         var parameters = context.ApplicationParameters.FirstOrDefault();
         ApplicationConstants.ApplicationName = parameters.ApplicationName!;
         ApplicationConstants.ApplicationLogo = parameters.ApplicationLogo!;
-        var LdapParameters = context.LDAPConfiguration.Where(a => a.IsActivated).Any();
-        ApplicationConstants.LDAPLogin = LdapParameters!;
+        var ldapParameters = context.LdapConfiguration.Where(a => a.IsActivated).Any();
+        ApplicationConstants.LdapLogin = ldapParameters!;
     }
     catch (Exception ex)
     {
@@ -214,7 +212,7 @@ app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 
 app.UseHangfireDashboard("/HangfireRead", new DashboardOptions
 {
-    IsReadOnlyFunc = (context) => true,
+    IsReadOnlyFunc = context => true,
     Authorization = new[] { new HangfireAuthorizationFilterRead() }
 });
 

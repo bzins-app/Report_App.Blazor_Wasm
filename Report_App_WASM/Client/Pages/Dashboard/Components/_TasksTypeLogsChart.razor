@@ -1,8 +1,9 @@
 ﻿@using ApexCharts
-
+@using Report_App_WASM.Shared.ApiExchanges
+@using Color = MudBlazor.Color
 @if (_taskLogs == null)
 {
-    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
@@ -12,7 +13,7 @@ else
            Options="_options" @ref="_chart">
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="_taskLogs.Where(a=>a.TypeTask.Contains(reportFilter))"
+                     Items="_taskLogs.Where(a=>a.TypeTask!.Contains(_reportFilter))"
                      Name="@Localizer.Get("Reports")"
                      SeriesType="SeriesType.Bar"
                      XValue="@(e => e.Date.ToLocalTime())"
@@ -20,7 +21,7 @@ else
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="_taskLogs.Where(a=>a.TypeTask.Contains(alertFilter))"
+                     Items="_taskLogs.Where(a=>a.TypeTask!.Contains(_alertFilter))"
                      Name="@Localizer.Get("Alerts")"
                      SeriesType="SeriesType.Bar"
                      XValue="@(e => e.Date.Date.ToLocalTime())"
@@ -28,7 +29,7 @@ else
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="_taskLogs.Where(a=>a.TypeTask.Contains(dataFilter))"
+                     Items="_taskLogs.Where(a=>a.TypeTask!.Contains(_dataFilter))"
                      Name="@Localizer.Get("Data transfer")"
                      SeriesType="SeriesType.Bar"
                      XValue="@(e => e.Date.Date.ToLocalTime())"
@@ -39,19 +40,19 @@ else
 
 
 @code {
-    [Parameter] public string Height { get; set; } = null;
+    [Parameter] public string? Height { get; set; } = null;
     private List<TaksLogsValues>? _taskLogs;
-    private ApexChartOptions<TaksLogsValues> _options = new ApexChartOptions<TaksLogsValues>();
-    private ApexChart<TaksLogsValues> _chart;
-    private string reportFilter="Report";
-    private string alertFilter = "Alert";
-    private string dataFilter = "Data";
+    private ApexChartOptions<TaksLogsValues> _options = new();
+    private ApexChart<TaksLogsValues>? _chart;
+    private string _reportFilter="Report";
+    private string _alertFilter = "Alert";
+    private string _dataFilter = "Data";
 
     protected override async Task OnInitializedAsync()
     {
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
         _options.Chart.Stacked = true;
-        _options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
+        _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
         _options.Theme = new Theme { Palette = PaletteType.Palette8 };
         //options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
         _options.Stroke=new Stroke { Curve = Curve.Smooth, Width=2 };

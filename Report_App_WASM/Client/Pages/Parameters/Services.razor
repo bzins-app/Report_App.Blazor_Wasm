@@ -1,4 +1,5 @@
 ﻿@page "/Services"
+@using Report_App_WASM.Shared.ApiExchanges
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 
@@ -41,13 +42,13 @@
 
 @code {
     [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    private ServicesStatusDTO _status = new();
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+    private ServicesStatusDto _status = new();
     private bool _switchDisabled = true;
 
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateTask).User;
+        var user = (await AuthenticationStateTask!).User;
         if (user.IsInRole("Admin"))
         {
             _switchDisabled = false;
@@ -91,11 +92,11 @@
     {
         if (value)
         {
-            if (!await Http.GetFromJsonAsync<bool>($"{ApiControllers.ApplicationParametersApi}CheckSMTPConfiguration"))
+            if (!await Http.GetFromJsonAsync<bool>($"{ApiControllers.ApplicationParametersApi}CheckSmtpConfiguration"))
             {
                 _status.EmailService = false;
 
-                Snackbar.Add(Localizer.Get("Email service") + " " + Localizer.Get("cannot be enabled because no SMTP configuration has been activated"), Severity.Error);
+                Snackbar.Add(Localizer.Get("Email service") + " " + Localizer.Get("cannot be enabled because no Smtp configuration has been activated"), Severity.Error);
                 return;
             }
         }

@@ -1,11 +1,12 @@
-﻿@page "/LDAP"
+﻿@page "/Ldap"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@Localizer.Get("LDAP configuration")</PageTitle>
+<PageTitle>@Localizer.Get("Ldap configuration")</PageTitle>
 
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
@@ -14,7 +15,7 @@
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("LDAP configuration")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Ldap configuration")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
@@ -42,7 +43,7 @@
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
                     <TemplateColumn Title="@Localizer.Get("Is activated?")">
-                        <_LDAPActivate Item="context" />
+                        <_LdapActivate Item="context" />
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.Domain)" Title="@Localizer.Get("Domain")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
@@ -63,11 +64,11 @@
 @code
 {
     #nullable enable
-    GridItemsProvider<LDAPConfigurationDTO>? _itemsProvider;
+    GridItemsProvider<LdapConfigurationDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<LDAPConfigurationDTO> _grid = default!;
-    private string _errorMessage = default!;
+    SimpleGrid<LdapConfigurationDto> _grid = default!;
+    private string? _errorMessage;
     private bool _rendering;
 
     protected override void OnInitialized()
@@ -77,22 +78,22 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<LDAPConfigurationDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<LdapConfigurationDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<LDAPConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<LDAPConfigurationDTO> req)
+    private async Task<ApiResponse<LdapConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<LdapConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        var url = "odata/LDAP?";
+        var url = "odata/Ldap?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -100,7 +101,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<LDAPConfigurationDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<LdapConfigurationDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -129,9 +130,9 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(LDAPConfigurationDTO value)
+    private async Task OpenEditDialog(LdapConfigurationDto value)
     {
-        var item = new LDAPConfigurationDTO
+        var item = new LdapConfigurationDto
             {
 
                 ConfigurationName = value.ConfigurationName,
@@ -141,7 +142,7 @@
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = await DialogService.ShowAsync<_LDAPFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -152,7 +153,7 @@
             value.UserName = item.UserName;
             value.Password = item.Password;
 
-            var result = await DataService.PostValues(value, "LDAPUpdate");
+            var result = await DataService.PostValues(value, "LdapUpdate");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
@@ -166,17 +167,17 @@
         }
     }
 
-    private async Task OpenDeleteDialog(LDAPConfigurationDTO value)
+    private async Task OpenDeleteDialog(LdapConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = await DialogService.ShowAsync<_LDAPFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
-            var result = await DataService.PostValues(value, "LDAPDelete");
+            var result = await DataService.PostValues(value, "LdapDelete");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
@@ -192,16 +193,16 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new LDAPConfigurationDTO();
+        var value = new LdapConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = await DialogService.ShowAsync<_LDAPFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
-            var result = await DataService.PostValues(value, "LDAPInsert");
+            var result = await DataService.PostValues(value, "LdapInsert");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object added"), Severity.Success);

@@ -1,7 +1,6 @@
-﻿@using System.Threading
-@using Report_App_WASM.Shared.RemoteQueryParameters
+﻿@using Blazor.AceEditorJs
 @using Report_App_WASM.Shared.ApiExchanges
-@using Blazor.AceEditorJs
+@using Report_App_WASM.Shared.RemoteQueryParameters
 @inject HttpClient Http
 @inject IDialogService DialogService
 
@@ -47,7 +46,7 @@
                     @if (_taskType == TaskType.Report.ToString())
                     {
                         <br />
-                        <MudSwitch @bind-Checked="_param.GenerateIfEmpty" Label="@Localizer.Get("Generate if empty?")" Color="MudBlazor.Color.Primary" />
+                        <MudSwitch @bind-Checked="_param.GenerateIfEmpty" Label="@Localizer.Get("Generate if empty?")" Color="Color.Primary" />
                         if (_fileType == FileType.Excel.ToString())
                         {
                             <MudSwitch @bind-Checked="_param.SeparateExcelFile" Label="@Localizer.Get("Separated excel file?")" Color="Color.Primary" />
@@ -84,12 +83,12 @@
                                Required>
                                 @foreach (EncodingType item in Enum.GetValues(typeof(EncodingType)))
                                 {
-                                    <MudSelectItem Value="@item.ToString()">@Localizer.Get(@item.ToString())</MudSelectItem>
+                                    <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
                                 }
   
                             </MudSelect>
                         }
-                        @if (_fileType == FileType.CSV.ToString())
+                        @if (_fileType == FileType.Csv.ToString())
                         {
                             <MudSwitch @bind-Checked="_param.RemoveHeader" Label="@Localizer.Get("Remove Header")" Color="Color.Primary" />
                         }
@@ -98,22 +97,22 @@
                     {
                         <MudTextField @bind-Value="_param.DataTransferTargetTableName" Label="@Localizer.Get("Target table name")" Required />
                         <MudSwitch @bind-Checked="_param.DataTransferCreateTable" Label="@Localizer.Get("Create target table?")" Color="Color.Primary" />
-                        <MudSwitch @bind-Checked="_param.DataTransferUsePK" Label="@Localizer.Get("Use primary keys?")" Color="Color.Primary" @onclick="ResetCommandBehaviour" />
+                        <MudSwitch @bind-Checked="_param.DataTransferUsePk" Label="@Localizer.Get("Use primary keys?")" Color="Color.Primary" @onclick="ResetCommandBehaviour" />
 
-                        @if (_param.DataTransferUsePK)
+                        @if (_param.DataTransferUsePk)
                         {
                             <MudSelect T="string" Label="@Localizer.Get("Command behaviour")"
                                AnchorOrigin="Origin.BottomCenter" @bind-Value="_param.DataTransferCommandBehaviour"
                                Required>
                                 @foreach (DataTransferAdvancedBehaviour item in Enum.GetValues(typeof(DataTransferAdvancedBehaviour)))
                                 {
-                                    <MudSelectItem Value="@item.ToString()">@Localizer.Get(@item.ToString())</MudSelectItem>
+                                    <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
                                 }
                             </MudSelect>
                             <MudTextField T="string" Label="@Localizer.Get("Enter the primary key column")" @bind-Value="@_pKName" />
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
                                Class="ml-auto mt-3 mb-3" OnClick="@(Add)">@Localizer.Get("Add the primary key")</MudButton>
-                            <MudTable Items="@_param.DataTransferPK" Hover="true" Dense="true">
+                            <MudTable Items="@_param.DataTransferPk" Hover="true" Dense="true">
                                 <HeaderContent>
                                     <MudTh>@Localizer.Get("Column name")</MudTh>
                                     <MudTh>@Localizer.Get("Action")</MudTh>
@@ -133,7 +132,7 @@
                                Required>
                                 @foreach (DataTransferBasicBehaviour item in Enum.GetValues(typeof(DataTransferBasicBehaviour)))
                                 {
-                                    <MudSelectItem Value="@item.ToString()">@Localizer.Get(@item.ToString())</MudSelectItem>
+                                    <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
                                 }
                             </MudSelect>
                         }
@@ -141,7 +140,7 @@
                     }
                 </MudItem>
                 <MudItem sm="12" md="8" lg="10">
-                    @if (_typeDbActivity != TypeDb.DB2)
+                    @if (_typeDbActivity != TypeDb.Db2)
                     {
                         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
                             <MudTabPanel Text="SQL">
@@ -174,8 +173,8 @@
 @code {
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public TaskDetailDTO? Item { get; set; }
-    [Parameter] public TaskHeaderDTO? Header { get; set; }
+    [Parameter] public TaskDetailDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Header { get; set; }
     [Parameter] public int ActivityId { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
@@ -183,63 +182,60 @@
     private _QueryParameters? _refQuery;
 
     private TaskDetailParameters? _param = new();
-    private TaskHeaderParameters _paramHeader = new();
+    private TaskHeaderParameters? _paramHeader = new();
     private TypeDb _typeDbActivity;
-    private string _taskType = null!;
-    private string _fileType = null!;
+    private string? _taskType;
+    private string? _fileType;
     private bool _useExcelTemplate;
     private bool _useSpecificFileNaming;
     private bool _loading;
-    private List<Dictionary<string,object>> _data = null!;
+    private List<Dictionary<string, object>>? _data;
     private string _queryTestResult = null!;
     private bool _testResult;
-    private CancellationTokenSource _cts;
-    private List<string> _encodingType;
+    private CancellationTokenSource? _cts;
+/*
+    private List<string>? _encodingType;
+*/
     private bool _isDarkMode;
-    private AceEditorOptions _opt;
+    private AceEditorOptions? _opt;
 
-    private string _pKName;
-    List<string> _commandBehaviourBasic = new();
-    List<string> _commandBehaviourAdvanced = new();
+    private string? _pKName;
 
     protected override async Task OnInitializedAsync()
     {
-        _commandBehaviourAdvanced = StaticAppLists.GetDataTransferAdvancedBehaviour;
-        _commandBehaviourBasic = StaticAppLists.GetDataTransferBasicBehaviour;
         _isDarkMode = await AppService.GetUserTheme();
-        _taskType = Header.TypeName;
-        _fileType = Header.TypeFileName;
-        if (Item.TaskDetailParameters != "[]" && !string.IsNullOrEmpty(Item.TaskDetailParameters))
+        _taskType = Header?.TypeName;
+        _fileType = Header?.TypeFileName;
+        if (Item!.TaskDetailParameters != "[]" && !string.IsNullOrEmpty(Item.TaskDetailParameters))
         {
             _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters);
         }
-        if (Header.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header.TaskHeaderParameters))
+        if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
         {
             _paramHeader = JsonSerializer.Deserialize<TaskHeaderParameters>(Header.TaskHeaderParameters);
         }
 
-        _useExcelTemplate = _paramHeader.UseAnExcelTemplate;
+        _useExcelTemplate = _paramHeader!.UseAnExcelTemplate;
         _useSpecificFileNaming = _paramHeader.UseASpecificFileNaming;
         var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
-        var response = await DataService.GetValues<ActivityDbConnectionDTO>(uri);
+        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         if(response.Any())
         {
             _typeDbActivity = response.Select(a => a.TypeDb).First();
-        }      
-        _encodingType = StaticAppLists.GetEncodingType;
+        }
         _loading = false;
         _opt = new() { IsReadOnly = false, Language = _typeDbActivity switch
         {
-            TypeDb.MySQL => AceLanguage.mysql,
-            TypeDb.MariaDB => AceLanguage.mysql,
-            TypeDb.SQLServer => AceLanguage.sqlserver,
+            TypeDb.MySql => AceLanguage.mysql,
+            TypeDb.MariaDb => AceLanguage.mysql,
+            TypeDb.SqlServer => AceLanguage.sqlserver,
             _ => AceLanguage.sql
             }, Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver };
     }
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private async Task Validate()
@@ -248,7 +244,7 @@
         {
             if (_deletionValidation == "Validate")
             {
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
@@ -257,8 +253,8 @@
             if (_form.IsValid)
             {
                 _refQuery?.UpdateParameters();
-                Item.TaskDetailParameters = JsonSerializer.Serialize(_param);
-                MudDialog.Close(DialogResult.Ok(Item));
+                Item!.TaskDetailParameters = JsonSerializer.Serialize(_param);
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
     }
@@ -268,7 +264,7 @@
         try
         {
             _cts = new();
-            List<QueryCommandParameter> param = new();
+            List<QueryCommandParameter>? param = new();
             _refQuery?.UpdateParameters();
             if (Header.UseGlobalQueryParameters && Header.QueryParameters != "[]" ||
                 !string.IsNullOrEmpty(Header.QueryParameters))
@@ -276,19 +272,19 @@
                 param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.QueryParameters);
             }
 
-            if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+            if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
             {
                 var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
-                foreach (var value in desParam)
+                foreach (var value in desParam!)
                 {
-                    if(!param.Any(a => a.ParameterIdentifier==value.ParameterIdentifier))
+                    if(param!.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
                     {
-                        param.Add(value);
+                        param?.Add(value);
                     }
                 }
             }
-            var run = new RemoteDbCommandParameters() { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20 , LastRunDateTime = Item.LastRunDateTime?? DateTime.Now, QueryCommandParameters = param};
-            var remoteDataPayload = new RemoteDataPayload {values=run};
+            var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20 , LastRunDateTime = Item.LastRunDateTime?? DateTime.Now, QueryCommandParameters = param};
+            var remoteDataPayload = new RemoteDataPayload {Values=run};
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
             var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
             if(response.IsSuccessStatusCode)
@@ -299,7 +295,7 @@
             {
                 _data = new();
             }
-            _queryTestResult = null;
+            _queryTestResult = null!;
             _testResult = true;
         }
         catch (Exception ex)
@@ -318,27 +314,27 @@
         _loading = false;
         var parameters = new DialogParameters { ["data"] = _data, ["queryTestResult"] = _queryTestResult, ["testResult"] = _testResult };
 
-        var dialog = await DialogService.ShowAsync<_QueryResultDialog>("Create", parameters, _dialogOptions);
+        await DialogService.ShowAsync<_QueryResultDialog>("Create", parameters, _dialogOptions);
     }
 
     void CancelTest()
     {
-        _cts.Cancel();
+        _cts?.Cancel();
     }
 
     //data transfer
-    private void Delete(string value)
+    private void Delete(string? value)
     {
-        _param.DataTransferPK.Remove(value);
+        _param?.DataTransferPk?.Remove(value);
     }
 
     private void Add()
     {
         if (!string.IsNullOrEmpty(_pKName))
         {
-            if (!_param.DataTransferPK.Contains(_pKName))
+            if (!_param!.DataTransferPk.Contains(_pKName))
             {
-                _param.DataTransferPK.Add(_pKName);
+                _param.DataTransferPk.Add(_pKName);
             }
             _pKName = "";
         }
@@ -351,13 +347,13 @@
 
         if (result != null)
         {
-            var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";;
-            await Http.PostAsJsonAsync(uri, _param.DataTransferTargetTableName);
+            var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";
+            await Http.PostAsJsonAsync(uri, _param?.DataTransferTargetTableName);
         }
     }
 
     private void ResetCommandBehaviour()
     {
-        _param.DataTransferCommandBehaviour = null;
+        _param!.DataTransferCommandBehaviour = null;
     }
 }

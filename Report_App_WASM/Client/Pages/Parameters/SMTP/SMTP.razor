@@ -1,11 +1,12 @@
-﻿@page "/SMTP"
+﻿@page "/Smtp"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@Localizer.Get("SMTP configuration")</PageTitle>
+<PageTitle>@Localizer.Get("Smtp configuration")</PageTitle>
 
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
@@ -14,7 +15,7 @@
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("SMTP configuration")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Smtp configuration")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
@@ -42,13 +43,13 @@
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
                     <TemplateColumn Title="@Localizer.Get("Is activated?")">
-                        <_SMTPActivate Item="context" />
+                        <_SmtpActivate Item="context" />
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.SmtpHost)" Title="@Localizer.Get("SMTP host")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.SmtpPort)" Title="@Localizer.Get("SMTP port")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpHost)" Title="@Localizer.Get("Smtp host")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpPort)" Title="@Localizer.Get("Smtp port")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.FromEmail)" Title="@Localizer.Get("From email")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.FromFullName)" Title="@Localizer.Get("From full name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.SmtpSSL)" Title="@Localizer.Get("SSL Activated?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SmtpSsl)" Title="@Localizer.Get("SSL Activated?")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
@@ -67,11 +68,11 @@
 @code
 {
 #nullable enable
-    GridItemsProvider<SMTPConfigurationDTO>? _itemsProvider;
+    GridItemsProvider<SmtpConfigurationDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<SMTPConfigurationDTO> _grid = default!;
-    private string _errorMessage = default!;
+    SimpleGrid<SmtpConfigurationDto> _grid = default!;
+    private string? _errorMessage;
     private bool _rendering;
 
     protected override void OnInitialized()
@@ -81,22 +82,22 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<SMTPConfigurationDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<SmtpConfigurationDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<SMTPConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<SMTPConfigurationDTO> req)
+    private async Task<ApiResponse<SmtpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SmtpConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        var url = "odata/SMTP?";
+        var url = "odata/Smtp?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -104,7 +105,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<SMTPConfigurationDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<SmtpConfigurationDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -133,14 +134,14 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(SMTPConfigurationDTO value)
+    private async Task OpenEditDialog(SmtpConfigurationDto value)
     {
-        var item = new SMTPConfigurationDTO
+        var item = new SmtpConfigurationDto
             {
                 ConfigurationName = value.ConfigurationName,
                 SmtpHost = value.SmtpHost,
                 SmtpPort = value.SmtpPort,
-                SmtpSSL = value.SmtpSSL,
+                SmtpSsl = value.SmtpSsl,
                 SmtpUserName = value.SmtpUserName,
                 SmtpPassword = value.SmtpPassword,
                 FromEmail = value.FromEmail,
@@ -148,7 +149,7 @@
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = await DialogService.ShowAsync<_SMTPFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
@@ -157,13 +158,13 @@
             value.ConfigurationName = item.ConfigurationName;
             value.SmtpHost = item.SmtpHost;
             value.SmtpPort = item.SmtpPort;
-            value.SmtpSSL = item.SmtpSSL;
+            value.SmtpSsl = item.SmtpSsl;
             value.SmtpUserName = item.SmtpUserName;
             value.SmtpPassword = item.SmtpPassword;
             value.FromEmail = item.FromEmail;
             value.FromFullName = item.FromFullName;
 
-            var result = await DataService.PostValues(value, "SMTPUpdate");
+            var result = await DataService.PostValues(value, "SmtpUpdate");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
@@ -172,22 +173,22 @@
             else
             {
                 Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-                _errorMessage = result.Message;
+                _errorMessage = result.Message!;
             }
         }
     }
 
-    private async Task OpenDeleteDialog(SMTPConfigurationDTO value)
+    private async Task OpenDeleteDialog(SmtpConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = await DialogService.ShowAsync<_SMTPFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
-            var result = await DataService.PostValues(value, "SMTPDelete");
+            var result = await DataService.PostValues(value, "SmtpDelete");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
@@ -203,16 +204,16 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new SMTPConfigurationDTO();
+        var value = new SmtpConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = await DialogService.ShowAsync<_SMTPFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
-            var result = await DataService.PostValues(value, "SMTPInsert");
+            var result = await DataService.PostValues(value, "SmtpInsert");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object added"), Severity.Success);

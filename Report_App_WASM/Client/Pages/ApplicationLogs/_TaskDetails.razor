@@ -52,11 +52,11 @@
 
 @code {
     [Parameter] public int TaskId { get; set; }
-    private List<ApplicationLogTaskDetailsDTO> _details = new();
+    private List<ApplicationLogTaskDetailsDto> _details = new();
 
     protected override async Task OnInitializedAsync()
     {
         var uri = $"GetLogTaskDetails?LogTaskHeaderId={TaskId}";
-        _details = await DataService.GetValues<ApplicationLogTaskDetailsDTO>(uri);
+        _details = await DataService.GetValues<ApplicationLogTaskDetailsDto>(uri);
     }
 }

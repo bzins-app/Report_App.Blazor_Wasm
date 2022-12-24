@@ -5,7 +5,6 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
-using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -35,10 +34,10 @@ namespace Report_App_WASM.Server.Controllers
         }
 
 		[Authorize]
-		[HttpGet("SFTPInfo")]
-		public async Task<IEnumerable<SelectItem>> GetSFTPInfo()
+		[HttpGet("SftpInfo")]
+		public async Task<IEnumerable<SelectItem>> GetSftpInfo()
 		{
-			return await _context.SFTPConfiguration.Select(a => new SelectItem { Id = a.SFTPConfigurationId, Name = a.ConfigurationName }).ToListAsync();
+			return await _context.SftpConfiguration.Select(a => new SelectItem { Id = a.SftpConfigurationId, Name = a.ConfigurationName }).ToListAsync();
 		}
 
         [Authorize]
@@ -51,22 +50,22 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("ApplicationConstants")]
         public ApplicationConstantsValues GetApplicationConstants()
         {
-            ApplicationConstantsValues values = new() { ApplicationLogo = ApplicationConstants.ApplicationLogo, ApplicationName = ApplicationConstants.ApplicationName, LDAPLogin = ApplicationConstants.LDAPLogin };
+            ApplicationConstantsValues values = new() { ApplicationLogo = ApplicationConstants.ApplicationLogo, ApplicationName = ApplicationConstants.ApplicationName, LdapLogin = ApplicationConstants.LdapLogin };
             return values;
         }
 
         [Authorize]
-        [HttpGet("CheckSMTPConfiguration")]
-        public async Task<bool> CheckSMTPConfigurationAsync()
+        [HttpGet("CheckSmtpConfiguration")]
+        public async Task<bool> CheckSmtpConfigurationAsync()
         {
-            return await _context.SMTPConfiguration.Where(a => a.IsActivated).AnyAsync();
+            return await _context.SmtpConfiguration.Where(a => a.IsActivated).AnyAsync();
         }
 
         [Authorize]
         [HttpGet("CheckTaskHeaderEmail")]
         public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
         {
-            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() == "[]" || !await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
+            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() == "[]" || !await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
         }
 
 
@@ -83,7 +82,7 @@ namespace Report_App_WASM.Server.Controllers
 
         [Authorize]
         [HttpGet("GetApplicationParameters")]
-        public async Task<ApplicationParameters> GetApplicationParametersAsync()
+        public async Task<ApplicationParameters?> GetApplicationParametersAsync()
         {
             return await _context.ApplicationParameters.OrderBy(a => a.Id).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync();
         }

@@ -9,24 +9,24 @@ namespace Report_App_WASM.Server.Utils
         public MappingProfile()
         {
             // Add as many of these lines as you need to map your objects
-            CreateMap<SFTPConfiguration, SFTPConfigurationDTO>().ReverseMap();
-            CreateMap<ApplicationParameters, ApplicationParametersDTO>().ReverseMap();
-            CreateMap<Activity, ActivityDTO>().ReverseMap();
-            CreateMap<ActivityDbConnection, ActivityDbConnectionDTO>().ReverseMap();
-            CreateMap<FileDepositPathConfiguration, FileDepositPathConfigurationDTO>().ReverseMap();
-            CreateMap<ServicesStatus, ServicesStatusDTO>().ReverseMap();
-            CreateMap<SMTPConfiguration, SMTPConfigurationDTO>().ReverseMap();
-            CreateMap<LDAPConfiguration, LDAPConfigurationDTO>().ReverseMap();
-            CreateMap<TaskDetail, TaskDetailDTO>().ReverseMap();
-            CreateMap<TaskEmailRecipient, TaskEmailRecipientDTO>().ReverseMap();
-            CreateMap<TaskHeader, TaskHeaderDTO>().ReverseMap();
-            CreateMap<ApplicationLogQueryExecution, ApplicationLogQueryExecutionDTO>();
-            CreateMap<ApplicationLogEmailSender, ApplicationLogEmailSenderDTO>();
-            CreateMap<ApplicationLogReportResult, ApplicationLogReportResultDTO>();
-            CreateMap<ApplicationLogTask, ApplicationLogTaskDTO>();
-            CreateMap<ApplicationLogSystem, ApplicationLogSystemDTO>();
-            CreateMap<ApplicationAuditTrail, ApplicationAuditTrailDTO>();
-            CreateMap<ApplicationLogTaskDetails, ApplicationLogTaskDetailsDTO>();
+            CreateMap<SftpConfiguration, SftpConfigurationDto>().ReverseMap();
+            CreateMap<ApplicationParameters, ApplicationParametersDto>().ReverseMap();
+            CreateMap<Activity, ActivityDto>().ReverseMap();
+            CreateMap<ActivityDbConnection, ActivityDbConnectionDto>().ReverseMap();
+            CreateMap<FileDepositPathConfiguration, FileDepositPathConfigurationDto>().ReverseMap();
+            CreateMap<ServicesStatus, ServicesStatusDto>().ReverseMap();
+            CreateMap<SmtpConfiguration, SmtpConfigurationDto>().ReverseMap();
+            CreateMap<LdapConfiguration, LdapConfigurationDto>().ReverseMap();
+            CreateMap<TaskDetail, TaskDetailDto>().ReverseMap();
+            CreateMap<TaskEmailRecipient, TaskEmailRecipientDto>().ReverseMap();
+            CreateMap<TaskHeader, TaskHeaderDto>().ReverseMap();
+            CreateMap<ApplicationLogQueryExecution, ApplicationLogQueryExecutionDto>();
+            CreateMap<ApplicationLogEmailSender, ApplicationLogEmailSenderDto>();
+            CreateMap<ApplicationLogReportResult, ApplicationLogReportResultDto>();
+            CreateMap<ApplicationLogTask, ApplicationLogTaskDto>();
+            CreateMap<ApplicationLogSystem, ApplicationLogSystemDto>();
+            CreateMap<ApplicationAuditTrail, ApplicationAuditTrailDto>();
+            CreateMap<ApplicationLogTaskDetails, ApplicationLogTaskDetailsDto>();
         }
     }
 }

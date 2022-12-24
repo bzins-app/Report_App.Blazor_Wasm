@@ -1,4 +1,5 @@
-﻿
+﻿@using Report_App_WASM.Shared.ApiExchanges
+
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
@@ -18,12 +19,12 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudTextField @bind-Value="Item.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudSwitch @bind-Checked="Item.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudSwitch @bind-Checked="Item.UseSFTPProtocol" Label="@Localizer.Get("Use sFTP protocol?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudSelect T="int" Label="@Localizer.Get("Choose an sFTP configuration")" @bind-Value="_sftpConfigurationId"
-                       AnchorOrigin="Origin.BottomCenter" Disabled="!Item.UseSFTPProtocol"
+            <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
+            <MudTextField @bind-Value="Item!.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
+            <MudSwitch @bind-Checked="Item!.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete" />
+            <MudSwitch @bind-Checked="Item!.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete" />
+            <MudSelect T="int" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="_sftpConfigurationId"
+                       AnchorOrigin="Origin.BottomCenter" Disabled="!Item!.UseSftpProtocol"
                        Required>
                 @foreach (var value in _listConfigs)
                 {
@@ -37,7 +38,7 @@
         }
         else
         {
-            <MudButton OnClick="TestConfiguration" Variant="Variant.Filled" Color="MudBlazor.Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Test path configuration")</MudButton>
+            <MudButton OnClick="TestConfiguration" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Test path configuration")</MudButton>
             <MudText>@Localizer.Get("Test Feedback:") @_directoryTestResult</MudText>
         }
     </DialogContent>
@@ -49,37 +50,37 @@
 @code {
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public FileDepositPathConfigurationDTO? Item { get; set; }
+    [Parameter] public FileDepositPathConfigurationDto? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private List<SelectItem> _listConfigs = new();
     private MudForm _form = default!;
     private string _deletionValidation = null!;
     private int _sftpConfigurationId;
-    private string _directoryTestResult = null!;
+    private string? _directoryTestResult;
 
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        var controllerActionListConfigs = "SFTPInfo";
+        var controllerActionListConfigs = "SftpInfo";
         _listConfigs = await DataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
-        Item.SFTPConfiguration = new();
+        Item!.SftpConfiguration = new();
         if (Action != CrudAction.Create && Item.FileDepositPathConfigurationId>0)
         {
-            var contollerSftpConfig = $"GetSTFPConfiguration?SFTPConfigurationId={Item.FileDepositPathConfigurationId}";
-            SFTPConfigurationDTO config = new();
+            var contollerSftpConfig = $"GetSTFPConfiguration?SftpConfigurationId={Item.FileDepositPathConfigurationId}";
+            SftpConfigurationDto config = new();
             config= await DataService.GetUniqueValue(config, contollerSftpConfig);
             if (config != null)
             {
-                Item.SFTPConfiguration = config;
+                Item.SftpConfiguration = config;
             }
         }
 
-        _sftpConfigurationId = Item.SFTPConfiguration.SFTPConfigurationId;
+        _sftpConfigurationId = Item.SftpConfiguration.SftpConfigurationId;
     }
 
     private async Task Validate()
@@ -88,7 +89,7 @@
         {
             if (_deletionValidation=="Validate")
             {
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
@@ -98,19 +99,19 @@
             {
                 if (_sftpConfigurationId != null || _sftpConfigurationId>0)
                 {
-                    var contollerSftpConfig = $"GetSTFPConfiguration?SFTPConfigurationId={_sftpConfigurationId}";
-                    SFTPConfigurationDTO config = new();
+                    var contollerSftpConfig = $"GetSTFPConfiguration?SftpConfigurationId={_sftpConfigurationId}";
+                    SftpConfigurationDto config = new();
                     config = await DataService.GetUniqueValue(config, contollerSftpConfig);
-                    Item.SFTPConfiguration = config;
+                    Item!.SftpConfiguration = config;
                 }
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
     }
 
     private async Task TestConfiguration()
     {
-        var payload = new DepositPathTest { UseSFTPProtocol = Item.UseSFTPProtocol, SFTPConfigurationId = _sftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
+        var payload = new DepositPathTest { UseSftpProtocol = Item!.UseSftpProtocol, SftpConfigurationId = _sftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
         var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi);
         if(result.Success)
         {

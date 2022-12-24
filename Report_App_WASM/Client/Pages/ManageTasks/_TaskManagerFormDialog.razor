@@ -18,9 +18,9 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item.TaskName" Label="@(Item.TypeName==TaskType.Report.ToString()? Localizer.Get("Report title"):Item.TypeName==TaskType.DataTransfer.ToString()?  Localizer.Get("Job title"): Localizer.Get("Alert title"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
+            <MudTextField @bind-Value="Item.TaskName" Label="@(Item.TypeName==TaskType.Report.ToString()? Localizer.Get("Report title"):Item.TypeName==TaskType.DataTransfer.ToString()?  Localizer.Get("Job title"): Localizer.Get("Alert title"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
             <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item.ActivityName" AnchorOrigin="Origin.BottomCenter"
-                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false">
+                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
                 @foreach (var value in _activities)
                 {
                     <MudSelectItem Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
@@ -51,7 +51,7 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public TaskHeaderDTO Item { get; set; }
+    [Parameter] public TaskHeaderDto Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
     private string _deletionValidation;
@@ -73,13 +73,13 @@
         {
             if (_deletionValidation == "Validate")
             {
-                Item.Activity = new ActivityDTO { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+                Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
                 MudDialog.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
-            Item.Activity = new ActivityDTO { ActivityId=_activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
+            Item.Activity = new ActivityDto { ActivityId=_activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
             Item.IdActivity = Item.Activity.ActivityId;
             await _form.Validate();
             if (_form.IsValid&&Item.Activity is not null)

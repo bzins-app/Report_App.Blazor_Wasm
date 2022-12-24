@@ -8,7 +8,7 @@ namespace Report_App_WASM.Server.Controllers
     public class CultureController : Controller
     {
         [HttpPost]
-        public IActionResult SetCulture(string culture, string redirectUri)
+        public IActionResult SetCulture(string? culture, string redirectUri)
         {
             if (culture != null)
             {

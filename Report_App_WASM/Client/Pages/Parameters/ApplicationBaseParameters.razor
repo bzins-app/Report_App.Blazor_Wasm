@@ -1,8 +1,6 @@
 ﻿@page "/ApplicationParameters"
-@using System.IO
-@using System.Text.Json
-@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
 @inject NavigationManager UriHelper
 @inject IDialogService DialogService
 @attribute [Authorize(Roles = "Admin, Supervisor")]
@@ -52,7 +50,7 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
-                    <MudTd DataLabel="@Localizer.Get("Blind copy")"><MudSwitch Checked="@context.BCC" CheckedChanged="(bool value)=>ChangeBccValue(context, value)" Color="Color.Primary" /></MudTd>
+                    <MudTd DataLabel="@Localizer.Get("Blind copy")"><MudSwitch Checked="@context.Bcc" CheckedChanged="(bool value)=>ChangeBccValue(context, value)" Color="Color.Primary" /></MudTd>
                     <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="()=>Delete(context)"></MudIconButton></MudTd>
                 </RowTemplate>
             </MudTable>
@@ -71,17 +69,17 @@
 </MudCard>
 
 @code {
-    private ApplicationParametersDTO _param = new();
+    private ApplicationParametersDto _param = new();
     bool _success;
     MudForm _form;
-    private List<EmailRecipient> _emails = new();
+    private List<EmailRecipient>? _emails = new();
     readonly List<EmailRecipient> _emailItems = new();
     private string _email = "";
     private bool _emailNotValidated;
-    private string _completeLogoPath;
-    private readonly List<string> _filesToDelete = new();
-    private string _initialAppName;
-    private string _initialAppLogo;
+    private string? _completeLogoPath;
+    private readonly List<string?> _filesToDelete = new();
+    private string? _initialAppName;
+    private string? _initialAppLogo;
     EmailAddressAttribute _checkEmail = new() { ErrorMessage = "The email address is invalid" };
 
     protected override async Task OnInitializedAsync()
@@ -116,7 +114,7 @@
         {
             //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
-        await DataService.PostValues(_param, "ApplicationParametersUpdate",ApiControllers.CrudDataApi);
+        await DataService.PostValues(_param, "ApplicationParametersUpdate");
         StateHasChanged();
         if (_initialAppLogo != _param.ApplicationLogo || _initialAppName != _param.ApplicationLogo)
         {
@@ -141,7 +139,7 @@
 
     private void Delete(EmailRecipient id)
     {
-        _emails.Remove(id);
+        _emails?.Remove(id);
         PopulateEmailItems();
         _param.AdminEmails = JsonSerializer.Serialize(_emails);
     }
@@ -149,7 +147,7 @@
     private void PopulateEmailItems()
     {
         _emailItems.Clear();
-        foreach (var t in _emails)
+        foreach (var t in _emails!)
         {
             _emailItems.Add(t);
         }
@@ -157,9 +155,9 @@
 
     private void Add()
     {
-        if (!_emails.Select(a => a.Email).Contains(_email))
+        if (!_emails!.Select(a => a.Email).Contains(_email))
         {
-            _emails.Add(new EmailRecipient { Email = _email });
+            _emails?.Add(new EmailRecipient { Email = _email });
         }
         _email = "";
         _emailNotValidated = true;
@@ -169,8 +167,8 @@
 
     private void ChangeBccValue(EmailRecipient id, bool value)
     {
-        var bccupdate = _emails.Where(a => a.Email == id.Email).FirstOrDefault();
-        bccupdate.BCC = value;
+        var bccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
+        bccupdate!.Bcc = value;
         _param.AdminEmails = JsonSerializer.Serialize(_emails);
     }
 
@@ -189,16 +187,16 @@
         return _emailNotValidated;
     }
 
-    private string _htmlText;
+    private string? _htmlText;
     private readonly bool _displayTagMessage = true;
 
     private async Task OpenTextEditorComponent()
     {
         _htmlText = _param.ErrorEMailMessage;
-        var maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var maxWidth = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
         var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
 
-        var dialog = await DialogService.ShowAsync<_TextEditor>(@Localizer.Get("Edit error email template"), parameters, maxWidth);
+        var dialog = await DialogService.ShowAsync<_TextEditor>(Localizer.Get("Edit error email template"), parameters, maxWidth);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {

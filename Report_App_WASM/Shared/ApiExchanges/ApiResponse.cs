@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Report_App_WASM.Shared
+namespace Report_App_WASM.Shared.ApiExchanges
 {
     public class ApiResponse<T> where T:class
     {

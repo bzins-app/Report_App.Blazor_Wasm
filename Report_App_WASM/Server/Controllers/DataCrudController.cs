@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +7,7 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.ApiExchanges;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -37,32 +37,32 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ApplicationLogTaskDetails>> GetLogTaskDetailsAsync(int LogTaskHeaderId)
+        public async Task<IEnumerable<ApplicationLogTaskDetails>> GetLogTaskDetailsAsync(int logTaskHeaderId)
         {
-            return await _context.ApplicationLogTaskDetails.Where(a => a.TaskId == LogTaskHeaderId).ToArrayAsync();
+            return await _context.ApplicationLogTaskDetails.Where(a => a.TaskId == logTaskHeaderId).ToArrayAsync();
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ActivityDbConnection>> GetActivityDbConnectionAsync(int ActivityId)
+        public async Task<IEnumerable<ActivityDbConnection>> GetActivityDbConnectionAsync(int activityId)
         {
-            return await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == ActivityId).ToArrayAsync();
+            return await _context.ActivityDbConnection.Where(a => a.Activity!.ActivityId == activityId).ToArrayAsync();
         }
 
         [HttpGet]
-        public async Task<SFTPConfiguration> GetSTFPConfigurationAsync(int SFTPConfigurationId)
+        public async Task<SftpConfiguration?> GetStfpConfigurationAsync(int sftpConfigurationId)
         {
-            return await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPConfigurationId).FirstOrDefaultAsync();
+            return await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == sftpConfigurationId).FirstOrDefaultAsync();
         }
 
         [HttpGet]
         public async Task<Activity> GetDataTransferInfoAsync()
         {
-            var targetInfo = await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB).Include(a => a.ActivityDbConnections).FirstOrDefaultAsync();
+            var targetInfo = await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).Include(a => a.ActivityDbConnections).FirstOrDefaultAsync();
             if (targetInfo == null)
             {
                 List<ActivityDbConnection> connections = new List<ActivityDbConnection>();
-                targetInfo = new Activity { ActivityName = "Data transfer", ActivityType = ActivityType.TargetDB };
-                connections.Add(new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDb.SQLServer });
+                targetInfo = new Activity { ActivityName = "Data transfer", ActivityType = ActivityType.TargetDb };
+                connections.Add(new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDb.SqlServer });
                 targetInfo.ActivityDbConnections = connections;
             }
             return targetInfo;
@@ -75,7 +75,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ApplicationParametersUpdateAsync(ApiCRUDPayload<ApplicationParameters> values)
+        public async Task<IActionResult> ApplicationParametersUpdateAsync(ApiCrudPayload<ApplicationParameters> values)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SMTPInsert(ApiCRUDPayload<SMTPConfiguration> values)
+        public async Task<IActionResult> SmtpInsert(ApiCrudPayload<SmtpConfiguration> values)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SMTPDelete(ApiCRUDPayload<SMTPConfiguration> values)
+        public async Task<IActionResult> SmtpDelete(ApiCrudPayload<SmtpConfiguration> values)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SMTPUpdate(ApiCRUDPayload<SMTPConfiguration> values)
+        public async Task<IActionResult> SmtpUpdate(ApiCrudPayload<SmtpConfiguration> values)
         {
             try
             {
@@ -137,14 +137,14 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SMTPActivate(ApiCRUDPayload<SMTPConfiguration> values)
+        public async Task<IActionResult> SmtpActivate(ApiCrudPayload<SmtpConfiguration> values)
         {
             try
             {
                 var updateValues = values.EntityValue;
                 if (updateValues.IsActivated)
                 {
-                    var others = await _context.SMTPConfiguration.Where(a => a.Id != updateValues.Id).OrderBy(a => a.Id).ToListAsync();
+                    var others = await _context.SmtpConfiguration.Where(a => a.Id != updateValues.Id).OrderBy(a => a.Id).ToListAsync();
                     foreach (var item in others)
                     {
                         item.IsActivated = false;
@@ -163,14 +163,14 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LDAPActivate(ApiCRUDPayload<LDAPConfiguration> values)
+        public async Task<IActionResult> LdapActivate(ApiCrudPayload<LdapConfiguration> values)
         {
             try
             {
                 var updateValues = values.EntityValue;
                 if (updateValues.IsActivated)
                 {
-                    var others = await _context.LDAPConfiguration.Where(a => a.Id != updateValues.Id).OrderBy(a => a.Id).ToListAsync();
+                    var others = await _context.LdapConfiguration.Where(a => a.Id != updateValues.Id).OrderBy(a => a.Id).ToListAsync();
                     foreach (var item in others)
                     {
                         item.IsActivated = false;
@@ -189,7 +189,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LDAPInsert(ApiCRUDPayload<LDAPConfiguration> values)
+        public async Task<IActionResult> LdapInsert(ApiCrudPayload<LdapConfiguration> values)
         {
             try
             {
@@ -204,14 +204,14 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LDAPDelete(ApiCRUDPayload<LDAPConfiguration> values)
+        public async Task<IActionResult> LdapDelete(ApiCrudPayload<LdapConfiguration> values)
         {
             try
             {
                 _context.Remove(values.EntityValue);
                 if (values.EntityValue.IsActivated)
                 {
-                    ApplicationConstants.LDAPLogin = false;
+                    ApplicationConstants.LdapLogin = false;
                 }
                 await SaveDbAsync(values.UserName);
 
@@ -224,13 +224,13 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LDAPUpdate(ApiCRUDPayload<LDAPConfiguration> values)
+        public async Task<IActionResult> LdapUpdate(ApiCrudPayload<LdapConfiguration> values)
         {
             try
             {
                 _context.Update(values.EntityValue);
                 await SaveDbAsync(values.UserName);
-                ApplicationConstants.LDAPLogin = values.EntityValue.IsActivated;
+                ApplicationConstants.LdapLogin = values.EntityValue.IsActivated;
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -240,7 +240,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ActivityInsert(ApiCRUDPayload<Activity> values)
+        public async Task<IActionResult> ActivityInsert(ApiCrudPayload<Activity> values)
         {
             try
             {
@@ -253,7 +253,7 @@ namespace Report_App_WASM.Server.Controllers
                     {
                         if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName))
                         {
-                            var roleresult = await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName);
+                            await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName);
                             // await _SignIn.RefreshSignInAsync(user);
                         }
                     }
@@ -276,7 +276,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ActivityDelete(ApiCRUDPayload<Activity> values)
+        public async Task<IActionResult> ActivityDelete(ApiCrudPayload<Activity> values)
         {
             try
             {
@@ -298,7 +298,7 @@ namespace Report_App_WASM.Server.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ActivityUpdate(ApiCRUDPayload<Activity> values)
+        public async Task<IActionResult> ActivityUpdate(ApiCrudPayload<Activity> values)
         {
             try
             {
@@ -337,7 +337,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TaskHeaderInsert(ApiCRUDPayload<TaskHeader> values)
+        public async Task<IActionResult> TaskHeaderInsert(ApiCrudPayload<TaskHeader> values)
         {
             try
             {
@@ -353,7 +353,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TaskHeaderDelete(ApiCRUDPayload<TaskHeader> values)
+        public async Task<IActionResult> TaskHeaderDelete(ApiCrudPayload<TaskHeader> values)
         {
             try
             {
@@ -368,36 +368,36 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TaskClone(ApiCRUDPayload<DuplicateTask> values)
+        public async Task<IActionResult> TaskClone(ApiCrudPayload<DuplicateTask> values)
         {
             try
             {
-                var DbItem = await _context.TaskHeader.Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Where(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
-                if (DbItem != null)
+                var dbItem = await _context.TaskHeader.Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Where(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
+                if (dbItem != null)
                 {
-                    DbItem.TaskName = values.EntityValue.Name;
-                    DbItem.IsActivated = false;
-                    DbItem.SendByEmail = false;
-                    DbItem.FileDepositPathConfigurationId = 0;
-                    DbItem.TaskHeaderId = 0;
+                    dbItem.TaskName = values.EntityValue.Name;
+                    dbItem.IsActivated = false;
+                    dbItem.SendByEmail = false;
+                    dbItem.FileDepositPathConfigurationId = 0;
+                    dbItem.TaskHeaderId = 0;
 
-                    if (DbItem.TaskDetails != null)
+                    if (dbItem.TaskDetails != null)
                     {
-                        foreach (var t in DbItem.TaskDetails)
+                        foreach (var t in dbItem.TaskDetails)
                         {
                             t.TaskDetailId = 0;
                         }
                     }
-                    if (DbItem.TaskEmailRecipients != null)
+                    if (dbItem.TaskEmailRecipients != null)
                     {
-                        foreach (var t in DbItem.TaskEmailRecipients)
+                        foreach (var t in dbItem.TaskEmailRecipients)
                         {
                             t.TaskEmailRecipientId = 0;
                         }
                     }
-                    _context.Update(DbItem);
+                    _context.Update(dbItem);
                     await SaveDbAsync(values.UserName);
-                    _context.Entry(DbItem).State = EntityState.Detached;
+                    _context.Entry(dbItem).State = EntityState.Detached;
                     _context.Entry(values.EntityValue).State = EntityState.Deleted;
 
 
@@ -412,7 +412,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TaskHeaderUpdate(ApiCRUDPayload<TaskHeader> values)
+        public async Task<IActionResult> TaskHeaderUpdate(ApiCrudPayload<TaskHeader> values)
         {
             try
             {
@@ -431,7 +431,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TaskDetailDelete(ApiCRUDPayload<TaskDetail> values)
+        public async Task<IActionResult> TaskDetailDelete(ApiCrudPayload<TaskDetail> values)
         {
             try
             {
@@ -446,7 +446,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SFTPInsert(ApiCRUDPayload<SFTPConfiguration> values)
+        public async Task<IActionResult> SftpInsert(ApiCrudPayload<SftpConfiguration> values)
         {
             try
             {
@@ -461,7 +461,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SFTPDelete(ApiCRUDPayload<SFTPConfiguration> values)
+        public async Task<IActionResult> SftpDelete(ApiCrudPayload<SftpConfiguration> values)
         {
             try
             {
@@ -476,7 +476,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SFTPUpdate(ApiCRUDPayload<SFTPConfiguration> values)
+        public async Task<IActionResult> SftpUpdate(ApiCrudPayload<SftpConfiguration> values)
         {
             try
             {
@@ -491,7 +491,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DepositPathInsert(ApiCRUDPayload<FileDepositPathConfiguration> values)
+        public async Task<IActionResult> DepositPathInsert(ApiCrudPayload<FileDepositPathConfiguration> values)
         {
             try
             {
@@ -506,7 +506,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DepositPathDelete(ApiCRUDPayload<FileDepositPathConfiguration> values)
+        public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileDepositPathConfiguration> values)
         {
             try
             {
@@ -521,7 +521,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DepositPathUpdate(ApiCRUDPayload<FileDepositPathConfiguration> values)
+        public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileDepositPathConfiguration> values)
         {
             try
             {

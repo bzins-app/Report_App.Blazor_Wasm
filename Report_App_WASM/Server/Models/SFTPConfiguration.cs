@@ -1,13 +1,13 @@
-﻿using Report_App_WASM.Server.Models.AuditModels;
+﻿using System.ComponentModel.DataAnnotations;
+using Report_App_WASM.Server.Models.AuditModels;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
-using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Server.Models
 {
-    public class SFTPConfiguration : BaseTraceability
+    public class SftpConfiguration : BaseTraceability
     {
-        public int SFTPConfigurationId { get; set; }
-        public bool UseFTPProtocol { get; set; }
+        public int SftpConfigurationId { get; set; }
+        public bool UseFtpProtocol { get; set; }
         [Required]
         [MaxLength(60)]
         public string? ConfigurationName { get; set; }

@@ -39,12 +39,12 @@
 </ErrorBoundary>
 
 @code {
-    [Parameter] public TaskHeaderDTO Item { get; set; }
-    [Parameter] public List<TaskDetailDTO> ItemToDelete { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public List<TaskDetailDto>? ItemToDelete { get; set; }
     [Parameter] public bool ChangePending { get; set; }
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
-    IEnumerable<TaskDetailDTO> _elements = new List<TaskDetailDTO>();
-    SimpleGrid<TaskDetailDTO> _grid;
+    IEnumerable<TaskDetailDto>? _elements = new List<TaskDetailDto>();
+    SimpleGrid<TaskDetailDto>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
     DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
@@ -58,14 +58,14 @@
 
     private void UpdateElements()
     {
-        _elements = Item.TaskDetails.ToList();
+        _elements = Item?.TaskDetails.ToList();
     }
 
-    private async Task OpenEditDialog(TaskDetailDTO value)
+    private async Task OpenEditDialog(TaskDetailDto value)
     {
         _disable = true;
-        var itemUpdate = new TaskDetailDTO()
-            {
+        var itemUpdate = new TaskDetailDto
+        {
                 Query = value.Query,
                 QueryName = value.QueryName,
                 QueryParameters = value.QueryParameters,
@@ -73,14 +73,14 @@
                 TaskDetailParameters = value.TaskDetailParameters,
                 LastRunDateTime=value.LastRunDateTime
             };
-        var parameters = new DialogParameters { ["Item"] = itemUpdate, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Update };
+        var parameters = new DialogParameters { ["Item"] = itemUpdate, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Update };
 
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Edit", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            var result = (TaskDetailDTO)feedback.Data;
+            var result = (TaskDetailDto)feedback.Data;
             var toUpdate = Item.TaskDetails.Where(a => a.TaskDetailId == value.TaskDetailId).First();
             toUpdate.Query = result.Query;
             toUpdate.QueryName = result.QueryName;
@@ -93,7 +93,7 @@
         _disable = false;
     }
 
-    private async Task OpenDeleteDialog(TaskDetailDTO value)
+    private async Task OpenDeleteDialog(TaskDetailDto value)
     {
         _disable = true;
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
@@ -101,8 +101,8 @@
 
         if (result!=null)
         {
-            ItemToDelete.Add(value);
-            Item.TaskDetails.Remove(value);
+            ItemToDelete?.Add(value);
+            Item?.TaskDetails.Remove(value);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();
@@ -113,7 +113,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new TaskDetailDTO();
+        var value = new TaskDetailDto();
         var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
@@ -121,7 +121,7 @@
 
         if (!feedback.Cancelled)
         {
-            Item.TaskDetails.Add((TaskDetailDTO)feedback.Data);
+            Item.TaskDetails.Add((TaskDetailDto)feedback.Data);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();

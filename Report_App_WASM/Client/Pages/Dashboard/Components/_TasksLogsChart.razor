@@ -1,9 +1,9 @@
 ﻿@using ApexCharts
-
-
+@using Report_App_WASM.Shared.ApiExchanges
+@using Color = MudBlazor.Color
 @if (_taskLogs == null)
 {
-    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
@@ -40,10 +40,10 @@ else
 
 
 @code {
-    [Parameter] public string Height { get; set; } = null;
+    [Parameter] public string? Height { get; set; } = null;
     private List<TaksLogsValues>? _taskLogs;
-    private ApexChartOptions<TaksLogsValues> _options = new ApexChartOptions<TaksLogsValues>();
-    private ApexChart<TaksLogsValues> _chart;
+    private ApexChartOptions<TaksLogsValues> _options = new();
+    private ApexChart<TaksLogsValues>? _chart;
 
     protected override async Task OnInitializedAsync()
     {

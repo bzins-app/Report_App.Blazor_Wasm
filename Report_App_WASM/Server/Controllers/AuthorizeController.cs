@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.DirectoryServices.AccountManagement;
+using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared;
-using System.DirectoryServices.AccountManagement;
-using System.Globalization;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -33,9 +33,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginParameters parameters)
         {
-            var user = await _userManager.FindByNameAsync(parameters.UserName);
+            var user = await _userManager.FindByNameAsync(parameters.UserName!);
             if (user == null) return BadRequest("User does not exist");
-            var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password, false);
+            var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password!, false);
             if (!singInResult.Succeeded) return BadRequest("Invalid password");
 
             await _signInManager.SignInAsync(user, parameters.RememberMe);
@@ -45,50 +45,46 @@ namespace Report_App_WASM.Server.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> LDAPLogin(LoginParameters parameters)
+        public async Task<IActionResult> LdapLogin(LoginParameters parameters)
         {
-            var domain = await _context.LDAPConfiguration.Where(a => a.IsActivated).Select(a => a.Domain).FirstOrDefaultAsync();
+            var domain = await _context.LdapConfiguration.Where(a => a.IsActivated).Select(a => a.Domain).FirstOrDefaultAsync();
             try
             {
-                var RememberMe = true;
+                var rememberMe = true;
                 using var context = new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
-                var userAD = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName);
-                var userMail = await _userManager.FindByEmailAsync(userAD.EmailAddress);
+                var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName);
+                var userMail = await _userManager.FindByEmailAsync(userAd.EmailAddress);
                 if (userMail != null)
                 {
-                    await _signInManager.SignInAsync(userMail, RememberMe);
+                    await _signInManager.SignInAsync(userMail, rememberMe);
                     _logger.LogInformation("User logged in:" + parameters.UserName);
                     return Ok();
 
                 }
-                else
+
+                var user = await _userManager.FindByNameAsync(parameters.UserName);
+                if (user != null)
                 {
-                    var user = await _userManager.FindByNameAsync(parameters.UserName);
-                    if (user != null)
-                    {
-                        await _signInManager.SignInAsync(user, RememberMe);
-                        _logger.LogInformation("User logged in:" + parameters.UserName);
-                        return Ok();
-                    }
-                    else
-                    {
-                        List<string> errors = new List<string>();
-                        var userNew = new ApplicationUser { UserName = parameters.UserName, Email = userAD.EmailAddress, CreateUser = "AD screen", ModDateTime = DateTime.Now, ModificationUser = "Register screen", Culture = CultureInfo.CurrentCulture.Name, EmailConfirmed = true };
-                        var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
-                        if (result.Succeeded)
-                        {
-                            await _signInManager.SignInAsync(userNew, RememberMe);
-                            return Ok();
-                        }
-                        foreach (var error in result.Errors)
-                        {
-                            errors.Add(error.Description);
-                        }
-                        if (!result.Succeeded)
-                        {
-                            return BadRequest(string.Join(',', errors));
-                        }
-                    }
+                    await _signInManager.SignInAsync(user, rememberMe);
+                    _logger.LogInformation("User logged in:" + parameters.UserName);
+                    return Ok();
+                }
+
+                List<string> errors = new List<string>();
+                var userNew = new ApplicationUser { UserName = parameters.UserName, Email = userAd.EmailAddress, CreateUser = "AD screen", ModDateTime = DateTime.Now, ModificationUser = "Register screen", Culture = CultureInfo.CurrentCulture.Name, EmailConfirmed = true };
+                var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(userNew, rememberMe);
+                    return Ok();
+                }
+                foreach (var error in result.Errors)
+                {
+                    errors.Add(error.Description);
+                }
+                if (!result.Succeeded)
+                {
+                    return BadRequest(string.Join(',', errors));
                 }
             }
             catch (Exception ex)

@@ -2,8 +2,8 @@
 {
     public static class ApplicationConstants
     {
-        public static string ApplicationName { get; set; } = default!;
-        public static string ApplicationLogo { get; set; } = default!;
+        public static string? ApplicationName { get; set; } = default!;
+        public static string? ApplicationLogo { get; set; } = default!;
         public static bool LdapLogin { get; set; }
     }
     public static class UserAppTheme {

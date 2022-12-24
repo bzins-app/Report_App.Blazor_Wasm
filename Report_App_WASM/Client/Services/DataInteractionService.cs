@@ -1,14 +1,14 @@
-﻿using BlazorDownloadFile;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Report_App_WASM.Client.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiResponse;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using static System.Net.WebRequestMethods;
+using BlazorDownloadFile;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
+using Report_App_WASM.Client.Utils;
+using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.ApiExchanges;
 
 namespace Report_App_WASM.Client.Services
 {
@@ -38,22 +38,20 @@ namespace Report_App_WASM.Client.Services
         {
             var uri = $"{controller}{controllerAction}";
 
-            ApiCRUDPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
+            ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
             {
                 JsonSerializerOptions options = new();
                 options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 var response = await _httpClient.PostAsJsonAsync(uri, payload, options);
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync());
+                if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync());
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     return await response.Content.ReadFromJsonAsync<SubmitResult>();
                 }
-                else
-                {
-                    return new SubmitResult { Success = false };
-                }
+
+                return new SubmitResult { Success = false };
             }
             catch (Exception ex)
             {
@@ -94,10 +92,8 @@ namespace Report_App_WASM.Client.Services
                 {
                     return response;
                 }
-                else
-                {
-                    return new List<T>();
-                }
+
+                return new List<T>();
             }
             catch
             {
@@ -115,10 +111,8 @@ namespace Report_App_WASM.Client.Services
                 {
                     return response;
                 }
-                else
-                {
-                    return value;
-                }
+
+                return value;
             }
             catch
             {

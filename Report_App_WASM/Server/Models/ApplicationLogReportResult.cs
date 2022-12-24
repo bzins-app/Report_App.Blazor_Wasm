@@ -1,5 +1,5 @@
-﻿using Report_App_WASM.Server.Models.AuditModels;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Report_App_WASM.Server.Models.AuditModels;
 
 namespace Report_App_WASM.Server.Models
 {
@@ -22,7 +22,7 @@ namespace Report_App_WASM.Server.Models
         [MaxLength(100)]
         public string? FileName { get; set; }
         public string? ReportPath { get; set; }
-        public double FileSizeInMB { get; set; }
+        public double FileSizeInMb { get; set; }
         public bool IsAvailable { get; set; } = true;
         public string? Result { get; set; }
         public bool Error { get; set; }

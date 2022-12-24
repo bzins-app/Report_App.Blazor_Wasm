@@ -1,39 +1,39 @@
 ﻿@using ApexCharts
-
+@using Color = MudBlazor.Color
 @if (_logs == null)
 {
-    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
-    <ApexChart TItem="ApplicationLogReportResultDTO"
+    <ApexChart TItem="ApplicationLogReportResultDto"
            Title="@(Localizer.Get("Storage per report")+":"+Localizer.Get("Total size in MB"))"
            Height="@Height"
            Options="_options"
            @ref=_chart>
 
-        <ApexPointSeries TItem="ApplicationLogReportResultDTO"
+        <ApexPointSeries TItem="ApplicationLogReportResultDto"
                      Items="_logs"
                      Name="@Localizer.Get("Total size in MB")"
                      SeriesType="SeriesType.Treemap"
-                     XValue="@(e => e.ReportName)"
-                     YAggregate="@(e => (decimal)e.Sum(a=>Math.Round( a.FileSizeInMB,2)))" OrderByDescending="@(e=>e.Y)"/>
+                     XValue="@(e => e.ReportName!)"
+                     YAggregate="@(e => (decimal)e.Sum(a=>Math.Round( a.FileSizeInMb,2)))" OrderByDescending="@(e=>e.Y!)"/>
     </ApexChart>
 }
 
 
 
 @code {
-    [Parameter] public string Height { get; set; } = null;
+    [Parameter] public string? Height { get; set; } = null;
     private double _sizeFilesStoredLocally;
     private int _nbrOfFilesStored;
 
-    private List<ApplicationLogReportResultDTO>? _logs;
-    private ApexChartOptions<ApplicationLogReportResultDTO> _options = new();
-    private ApexChart<ApplicationLogReportResultDTO> _chart;
+    private List<ApplicationLogReportResultDto>? _logs;
+    private ApexChartOptions<ApplicationLogReportResultDto> _options = new();
+    private ApexChart<ApplicationLogReportResultDto>? _chart;
 
     protected override async Task OnInitializedAsync()
     {
-        _logs = await DataService.GetValues<ApplicationLogReportResultDTO>("StorageInfo", "api/Dashboard/");
+        _logs = await DataService.GetValues<ApplicationLogReportResultDto>("StorageInfo", "api/Dashboard/");
     }
 }

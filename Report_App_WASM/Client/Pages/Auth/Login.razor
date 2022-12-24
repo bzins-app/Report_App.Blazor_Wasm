@@ -74,14 +74,14 @@ else
 
 @code {
     LoginParameters LoginParameters { get; set; } = new();
-    string Error { get; set; }
+    string? Error { get; set; }
     bool _ldap = true;
 
     protected override async Task OnInitializedAsync()
     {
         var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
-       _ldap = values.LDAPLogin;
-       // StateHasChanged();
+        if (values != null) _ldap = values.LdapLogin;
+    // StateHasChanged();
     }
 
     void ChangeTypeLogin()

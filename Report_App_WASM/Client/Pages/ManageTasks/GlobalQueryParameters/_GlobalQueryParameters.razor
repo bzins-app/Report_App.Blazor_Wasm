@@ -1,4 +1,5 @@
-﻿@inject IDialogService DialogService
+﻿@using Report_App_WASM.Shared.Extensions
+@inject IDialogService DialogService
 
 <MudCard>
     <MudCardContent>
@@ -40,11 +41,11 @@
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.String)
                             {
-                                <MudTextField Label="@Localizer.Get("Enter value")" @bind-Value="@element.value" TextChanged="UpdateParameters" Text="@element.value" />
+                                <MudTextField Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" Text="@element.Value" />
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.Number)
                             {
-                                <MudNumericField Label="@Localizer.Get("Enter value")" @bind-Value="@(element.value)" TextChanged="UpdateParameters" Text="@element.value" />
+                                <MudNumericField Label="@Localizer.Get("Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value" />
                             }
                             <MudSwitch @bind-Checked="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters" />
                         </MudCardContent>
@@ -57,14 +58,14 @@
 
 @code {
 
-    [Parameter] public TaskHeaderDTO Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
     [Parameter] public bool ChangePending { get; set; }
-    List<QueryCommandParameter> _parameters = new();
+    List<QueryCommandParameter>? _parameters = new();
 
     protected override void OnInitialized()
     {
-        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        if (Item?.QueryParameters != "[]" && !string.IsNullOrEmpty(Item?.QueryParameters))
         {
             _parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
         }
@@ -77,7 +78,7 @@
 
         if (!feedback.Cancelled)
         {
-            _parameters.Add((QueryCommandParameter)feedback.Data);
+            _parameters?.Add((QueryCommandParameter)feedback.Data);
             await UpdateParameters();
         }
     }
@@ -89,7 +90,7 @@
 
         if (result != null)
         {
-            _parameters.Remove(_parameters.FirstOrDefault(a => a.ParameterIdentifier == element.ParameterIdentifier));
+            _parameters!.Remove(_parameters.FirstOrDefault(a => a.ParameterIdentifier == element.ParameterIdentifier)!);
             await UpdateParameters();
         }
 
@@ -97,7 +98,7 @@
 
     private async Task UpdateParameters()
     {
-        Item.QueryParameters = JsonSerializer.Serialize(_parameters);
+        Item!.QueryParameters = JsonSerializer.Serialize(_parameters);
         ChangePending = true;
         await ChangePendingChanged.InvokeAsync(ChangePending);
     }

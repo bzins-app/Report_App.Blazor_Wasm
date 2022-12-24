@@ -1,19 +1,19 @@
-﻿using Report_App_WASM.Shared.SerializedParameters;
-using System.Data;
+﻿using System.Data;
+using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Utils
 {
     public struct ExcelCreationDatatable : IDisposable
     {
-        public string TabName;
+        public string? TabName;
         public ExcelTemplate ExcelTemplate;
         public DataTable Data;
 
-        public ExcelCreationDatatable(string TabName, ExcelTemplate ExcelTemplate, DataTable Data)
+        public ExcelCreationDatatable(string? tabName, ExcelTemplate excelTemplate, DataTable data)
         {
-            this.TabName = TabName;
-            this.ExcelTemplate = ExcelTemplate;
-            this.Data = Data;
+            TabName = tabName;
+            ExcelTemplate = excelTemplate;
+            Data = data;
         }
 
         public void Dispose()

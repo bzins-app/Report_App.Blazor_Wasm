@@ -1,13 +1,13 @@
-﻿using Report_App_WASM.Server.Utils;
+﻿using System.Net.Mail;
+using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.SerializedParameters;
-using System.Net.Mail;
 
-namespace ReportAppWASM.Server.Services.BackgroundWorker
+namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public interface IBackgroundWorkers
     {
-        void SendEmail(List<EmailRecipient> email, string subject, string message, List<Attachment> Attachment = null);
+        void SendEmail(List<EmailRecipient>? email, string subject, string message, List<Attachment> attachment = null);
         void DeleteFile(string filePath);
         Task SwitchBackgroundTasksPerActivityAsync(int activityId, bool activate);
         Task SwitchBackgroundTaskAsync(int taskHeaderId, bool activate);

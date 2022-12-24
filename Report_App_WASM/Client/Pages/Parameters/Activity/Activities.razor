@@ -1,4 +1,5 @@
 ﻿@page "/Activities"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -65,11 +66,11 @@
 @code
 {
     #nullable enable
-    GridItemsProvider<ActivityDTO>? _itemsProvider;
+    GridItemsProvider<ActivityDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<ActivityDTO> _grid = default!;
-    private string _errorMessage = default!;
+    SimpleGrid<ActivityDto> _grid = default!;
+    private string? _errorMessage;
     private bool _rendering;
 
 
@@ -80,14 +81,14 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ActivityDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ActivityDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ActivityDTO>?> GetRemoteData(GridItemsProviderRequest<ActivityDTO> req)
+    private async Task<ApiResponse<ActivityDto>?> GetRemoteData(GridItemsProviderRequest<ActivityDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -95,7 +96,7 @@
         var url = "odata/Activities?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -103,7 +104,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<ActivityDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<ActivityDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -131,15 +132,15 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(ActivityDTO value)
+    private async Task OpenEditDialog(ActivityDto value)
     {
         var uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
-        var item = new ActivityDTO
+        var item = new ActivityDto
             {
 
                 ActivityName = value.ActivityName,
                 ActivityLogo = value.ActivityLogo,
-                ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDTO>(uri)
+                ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDto>(uri)
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -167,10 +168,10 @@
         }
     }
 
-    private async Task OpenDeleteDialog(ActivityDTO value)
+    private async Task OpenDeleteDialog(ActivityDto value)
     {
         var uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
-        value.ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDTO>(uri);
+        value.ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
         var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Delete", parameters);
@@ -196,7 +197,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new ActivityDTO() { ActivityDbConnections = new List<ActivityDbConnectionDTO>() { new() }, ActivityType = ActivityType.SourceDB };
+        var value = new ActivityDto { ActivityDbConnections = new List<ActivityDbConnectionDto> { new() }, ActivityType = ActivityType.SourceDb };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Create", parameters);

@@ -1,4 +1,5 @@
 ﻿@inject HttpClient Http
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -42,7 +43,7 @@
                     <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.FilePath)" Title="@Localizer.Get("File path")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.TryToCreateFolder)" Title="@(Localizer.Get("Try to create folder") + "?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.UseSFTPProtocol)"Title="@(Localizer.Get("Use sFTP protocol") + "?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.UseSftpProtocol)"Title="@(Localizer.Get("Use Sftp protocol") + "?")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.IsReachable)" Title="@(Localizer.Get("Is reachable") + "?")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
@@ -58,12 +59,12 @@
 @code
 {
     #nullable enable
-    GridItemsProvider<FileDepositPathConfigurationDTO>? _itemsProvider;
+    GridItemsProvider<FileDepositPathConfigurationDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
     private bool _processing = false;
-    SimpleGrid<FileDepositPathConfigurationDTO> _grid = default!;
-    private string _errorMessage = default!;
+    SimpleGrid<FileDepositPathConfigurationDto> _grid = default!;
+    private string? _errorMessage = default!;
     private bool _rendering = false;
 
     protected override void OnInitialized()
@@ -73,14 +74,14 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<FileDepositPathConfigurationDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<FileDepositPathConfigurationDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<FileDepositPathConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<FileDepositPathConfigurationDTO> req)
+    private async Task<ApiResponse<FileDepositPathConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<FileDepositPathConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -88,7 +89,7 @@
         var url = "odata/DepositPath?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -96,7 +97,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<FileDepositPathConfigurationDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<FileDepositPathConfigurationDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -125,15 +126,15 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(FileDepositPathConfigurationDTO value)
+    private async Task OpenEditDialog(FileDepositPathConfigurationDto value)
     {
-        var item = new FileDepositPathConfigurationDTO
+        var item = new FileDepositPathConfigurationDto
             {
 
                 ConfigurationName = value.ConfigurationName,
                 FilePath = value.FilePath,
                 TryToCreateFolder = value.TryToCreateFolder,
-                UseSFTPProtocol = value.UseSFTPProtocol
+                UseSftpProtocol = value.UseSftpProtocol
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -146,8 +147,8 @@
             value.ConfigurationName = item.ConfigurationName;
             value.FilePath = item.FilePath;
             value.TryToCreateFolder = item.TryToCreateFolder;
-            value.UseSFTPProtocol = item.UseSFTPProtocol;
-            value.SFTPConfiguration = item?.SFTPConfiguration;
+            value.UseSftpProtocol = item.UseSftpProtocol;
+            value.SftpConfiguration = item?.SftpConfiguration;
 
             var result = await DataService.PostValues(value, "DepositPathUpdate");
             if (result.Success)
@@ -163,7 +164,7 @@
         }
     }
 
-    private async Task OpenDeleteDialog(FileDepositPathConfigurationDTO value)
+    private async Task OpenDeleteDialog(FileDepositPathConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
@@ -189,7 +190,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new FileDepositPathConfigurationDTO();
+        var value = new FileDepositPathConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Create", parameters);

@@ -1,9 +1,9 @@
 ﻿@page "/TaskEdit/{taskHeaderId:int}"
+@using MudBlazor.Utilities
+@using Report_App_WASM.Shared.ApiExchanges
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
-@using System.IO
-@using MudBlazor.Utilities
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <MudCard Elevation="6">
@@ -35,7 +35,7 @@
                 <MudItem sm="12" lg="6" xl="6">
                     <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text" />
                     <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@_activityId"
-                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="((IEnumerable<int> value)=>OnSelectedItemChangedHandler(value))"
+                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="(OnSelectedItemChangedHandler)"
                                Required>
                         @foreach (var value in _activities)
                         {
@@ -46,7 +46,7 @@
                     {
                         <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")" />
                     }
-                    @if (_typeDbTask != TypeDb.DB2)
+                    @if (_typeDbTask != TypeDb.Db2)
                     {
                         <MudSwitch @bind-Checked="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary" />
                     }
@@ -68,7 +68,7 @@
                         {
                             <MudSwitch @bind-Checked="_param.UseAnExcelTemplate" Label="@Localizer.Get("Use an excel template?")" Color="Color.Primary" />
                         }
-                        @if (Item.TypeFile == FileType.CSV)
+                        @if (Item.TypeFile == FileType.Csv)
                         {
                             <MudTextField @bind-Value="_param.Delimiter" Label="@Localizer.Get("CSV delimiter")" />
                         }
@@ -113,7 +113,7 @@
                     {
                         <MudSwitch @bind-Checked="_param.AlertOccurenceByTime" Label="@Localizer.Get("Manage by duration?")" Color="Color.Primary" />
                         <p>@Localizer.Get("In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences")</p>
-                        <MudNumericField @bind-Value="_param.NbrOFMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")" />
+                        <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")" />
                         <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")" />
                     }
                     @if (Item.Type == TaskType.Report)
@@ -157,7 +157,7 @@
             <MudTabPanel Text="@Localizer.Get("Queries")">
                 <Report_App_WASM.Client.Pages.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" itemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave" />
             </MudTabPanel>
-            <MudTabPanel Text="@Localizer.Get("Global query parameters")" Disabled="@(!@Item.UseGlobalQueryParameters)">
+            <MudTabPanel Text="@Localizer.Get("Global query parameters")" Disabled="@(!Item.UseGlobalQueryParameters)">
                 <Report_App_WASM.Client.Pages.ManageTasks.GlobalQueryParameters._GlobalQueryParameters Item="@Item" @bind-changePending="@_changesToSave" />
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Scheduler")">
@@ -185,22 +185,19 @@
     [SupplyParameterFromQuery]
     public int? PageSize { get; set; }
 
-    private TaskHeaderDTO Item { get; set; } = new();
+    private TaskHeaderDto Item { get; set; } = new();
     private List<SelectItemActivitiesInfo> _activities = new();
     private List<SelectItem> _depositPathSelect = new();
-    private FileDepositPathConfigurationDTO _depositPathConf = new();
     private int _activityId;
-    private string _errorMessage;
-    private readonly List<TaskDetailDTO> _itemToDelete = new();
-    private TaskHeaderParameters _param = new();
+    private string? _errorMessage;
+    private readonly List<TaskDetailDto> _itemToDelete = new();
+    private TaskHeaderParameters? _param = new();
 
-    private string _cronDescription;
-    private string _reportDepositName = "";
+    private string? _reportDepositName = "";
     private bool _loading;
     private TypeDb _typeDbTask;
 
     private bool _changesToSave;
-    MudForm _form;
 
     protected override async Task OnInitializedAsync()
     {
@@ -219,16 +216,13 @@
             _param = JsonSerializer.Deserialize<TaskHeaderParameters>(Item.TaskHeaderParameters);
         }
 
-        if (Item.Activity != null)
+        if (Item.FileDepositPathConfigurationId != 0)
         {
-            if (Item.FileDepositPathConfigurationId != 0)
-            {
-                _reportDepositName = _depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault(); 
-            }
-            _activityId = Item.Activity.ActivityId;
+            _reportDepositName = _depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault(); 
         }
+        _activityId = Item.Activity.ActivityId;
         var uri = $"GetActivityDbConnection?ActivityId={Item.Activity.ActivityId}";
-        var response = await DataService.GetValues<ActivityDbConnectionDTO>(uri);
+        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         if (response.Any())
         {
             _typeDbTask = response.Select(a => a.TypeDb).First();
@@ -249,8 +243,8 @@
             }
             if (!Item.TaskEmailRecipients.Any())
             {
-                var recipients = new TaskEmailRecipientDTO() { TaskHeader = Item, Email = "[]", Message = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
-                Item.TaskEmailRecipients = new List<TaskEmailRecipientDTO>() { recipients };
+                var recipients = new TaskEmailRecipientDto { TaskHeader = Item, Email = "[]", Message = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
+                Item.TaskEmailRecipients = new List<TaskEmailRecipientDto> { recipients };
             }
             Item.TaskHeaderParameters = JsonSerializer.Serialize(_param);
 
@@ -292,18 +286,18 @@
             uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.Activity.ActivityId}/{Item.Activity.ActivityName}",
                 new Dictionary<string, object>
                 {
-                    ["Page"] = Page,
-                    ["PageSize"] = PageSize
-                });
+                    ["Page"] = Page!,
+                    ["PageSize"] = PageSize!
+                }!);
         }
         else
         {
-            uri = UriHelper.GetUriWithQueryParameters("TaskManager/" + Item.Type.ToString(),
+            uri = UriHelper.GetUriWithQueryParameters("TaskManager/" + Item.Type,
              new Dictionary<string, object>
-                 {
-                     ["Page"] = Page,
-                     ["PageSize"] = PageSize
-                 });
+             {
+                 ["Page"] = Page!,
+                 ["PageSize"] = PageSize!
+             }!);
         }
 
         if (_changesToSave)
@@ -323,7 +317,7 @@
     private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
     {
         _activityId = actId.FirstOrDefault();
-        Item.Activity = new ActivityDTO { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
         Item.IdActivity = Item.Activity.ActivityId;
         Item.ActivityName = Item.Activity.ActivityName;
     }
@@ -336,7 +330,7 @@
             var result = await DataService.PostFile(file);
             if(result.Success)
             {
-                _param.ExcelTemplatePath = result.Message;
+                _param!.ExcelTemplatePath = result.Message;
             }
         }
         _changesToSave = true;

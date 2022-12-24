@@ -1,4 +1,5 @@
 ﻿@page "/BackgroundTasksLogs"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -30,7 +31,7 @@
             <div style="overflow:auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn >
-                        <MudIconButton Style="padding:0px!important" Icon="@Icons.Outlined.Article" OnClick="()=>OpenDetails(context.Id)" Title="@Localizer.Get("Display details")" />
+                        <MudIconButton Style="padding:0px!important" Icon="@Icons.Outlined.Article" OnClick="()=>OpenDetails(context.TaskId)" Title="@Localizer.Get("Display details")" />
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true" />
@@ -55,10 +56,10 @@
 @code
 {
     #nullable enable
-    GridItemsProvider<ApplicationLogTaskDTO>? _itemsProvider;
+    GridItemsProvider<ApplicationLogTaskDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
-    SimpleGridFieldsContent _translations = new();
-    SimpleGrid<ApplicationLogTaskDTO> _grid = default!;
+    SimpleGridFieldsContent? _translations = new();
+    SimpleGrid<ApplicationLogTaskDto> _grid = default!;
     private bool _rendering;
 
 
@@ -69,15 +70,15 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogTaskDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ApplicationLogTaskDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
 
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogTaskDTO>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogTaskDTO> req)
+    private async Task<ApiResponse<ApplicationLogTaskDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogTaskDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -85,7 +86,7 @@
         var url = "odata/TaskLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
@@ -93,7 +94,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogTaskDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogTaskDto>>(url, req.CancellationToken);
         }
         catch
         {

@@ -1,4 +1,4 @@
-﻿namespace Report_App_WASM.Shared
+﻿namespace Report_App_WASM.Shared.Dashboard
 {
     public class AppMetrics
     {

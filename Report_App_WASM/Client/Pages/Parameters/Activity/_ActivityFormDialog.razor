@@ -1,6 +1,4 @@
-﻿@using System.IO
-
-<MudDialog>
+﻿<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@(Action switch
@@ -19,8 +17,8 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="_checkNameResult" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" HelperText="@Localizer.Get("Please select a Db type")" Disabled="Action==CrudAction.Delete?true:false">
+            <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="_checkNameResult" Disabled="Action==CrudAction.Delete" />
+            <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" HelperText="@Localizer.Get("Please select a Db type")" Disabled="Action==CrudAction.Delete">
                 @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
                 {
                     <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -37,18 +35,18 @@
                     <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" />
                     <MudNumericField @bind-Value="DbCon.CommandFetchSize" Label="@Localizer.Get("Command fetch size")" />
                 }
-                else if (DbCon.TypeDb == TypeDb.SQLServer)
+                else if (DbCon.TypeDb == TypeDb.SqlServer)
                 {
 
                     <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
                     <MudSwitch @bind-Checked="DbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
                     <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!DbCon.UseDbSchema" />
                     <MudSwitch @bind-Checked="DbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
-                    <MudSwitch @bind-Checked="DbCon.ADAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true" />
-                    <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.ADAuthentication" />
-                    <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="DbCon.ADAuthentication" />
+                    <MudSwitch @bind-Checked="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true" />
+                    <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" />
+                    <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="DbCon.AdAuthentication" />
                 }
-                else if (DbCon.TypeDb == TypeDb.DB2)
+                else if (DbCon.TypeDb == TypeDb.Db2)
                 {
                     <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("IP or Servername")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port" />
                     <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" />
@@ -78,7 +76,7 @@
                 <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
                 <div>
                     <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
-                    @if (!string.IsNullOrEmpty(Item.ActivityLogo))
+                    @if (!string.IsNullOrEmpty(Item?.ActivityLogo))
                     {
                         <img src="@Item.ActivityLogo" style="max-width:150px;max-height:200px; padding:10px" alt="@Item.ActivityName" />
                     }
@@ -107,14 +105,13 @@
 @code {
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public ActivityDTO? Item { get; set; }
+    [Parameter] public ActivityDto? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
     private string _deletionValidation = null!;
 
-    private ActivityDbConnectionDTO DbCon { get; set; } = new();
+    private ActivityDbConnectionDto DbCon { get; set; } = new();
     private string _connectionTestResult = null!;
-    private List<string> _dbSelect = new();
     private string _activityDepositName = "";
     private List<SelectItemActivitiesInfo> _activities = new();
     private string _checkNameResult = null!;
@@ -131,7 +128,7 @@
         {
             if (_deletionValidation == "Validate")
             {
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
@@ -139,7 +136,7 @@
             await _form.Validate();
             if (_form.IsValid)
             {
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
     }
@@ -147,7 +144,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Item.ActivityDbConnections.Any())
+        if (Item!.ActivityDbConnections.Any())
         {
             DbCon = Item.ActivityDbConnections.First();
         }
@@ -164,8 +161,8 @@
 
     private async Task ConnectionTest()
     {
-        var tryConn = new ActivityDbConnectionDTO();
-        tryConn.ADAuthentication = DbCon.ADAuthentication;
+        var tryConn = new ActivityDbConnectionDto();
+        tryConn.AdAuthentication = DbCon.AdAuthentication;
         tryConn.ConnectionLogin = DbCon.ConnectionLogin;
         tryConn.ConnectionPath = DbCon.ConnectionPath;
         tryConn.IntentReadOnly = DbCon.IntentReadOnly;
@@ -180,11 +177,11 @@
 
     private void CheckActivityName()
     {
-        if (string.IsNullOrEmpty(Item.ActivityName))
+        if (string.IsNullOrEmpty(Item?.ActivityName))
         {
             return;
         }
-        if (_activities.Where(a => a.ActivityName.ToLower() == Item.ActivityName.ToLower()).Any())
+        if (_activities.Any(a => a.ActivityName?.ToLower() == Item.ActivityName.ToLower()))
         {
             _checkNameResult = Localizer.Get("Another activity with the same name already exists");
         }
@@ -202,7 +199,7 @@
             var result = await DataService.PostFile(file);
             if(result.Success)
             {
-                Item.ActivityLogo = "/" + result.Message;
+                Item!.ActivityLogo = "/" + result.Message;
             }
         }
     }
@@ -210,7 +207,7 @@
 
     private void OnRemoveLogo()
     {
-        Item.ActivityLogo = null;
+        Item!.ActivityLogo = null;
     }
 
 }

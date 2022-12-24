@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.ApiExchanges;
+using Report_App_WASM.Shared.Dashboard;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -29,9 +31,9 @@ namespace Report_App_WASM.Server.Controllers
             AppMetrics metrics = new();
             var tasksToday = _context.ApplicationLogTask.Where(a => a.EndDateTime.Date == DateTime.Today.Date);
             metrics.NbrOfTasksExcecutedToday = await tasksToday.CountAsync();
-            metrics.NbrTasksInError = await tasksToday.Where(a => a.Error == true && !a.Result.Contains("attempt")).CountAsync();
+            metrics.NbrTasksInError = await tasksToday.Where(a => a.Error == true && !a.Result!.Contains("attempt")).CountAsync();
             var reportsToday = _context.ApplicationLogReportResult.Where(a => a.IsAvailable == true);
-            metrics.SizeFilesStoredLocally = await reportsToday.SumAsync(a => a.FileSizeInMB);
+            metrics.SizeFilesStoredLocally = await reportsToday.SumAsync(a => a.FileSizeInMb);
             metrics.NbrOfFilesStored = await reportsToday.CountAsync();
 
             var activeTask = _context.TaskHeader.Where(a => a.IsActivated);
@@ -39,7 +41,7 @@ namespace Report_App_WASM.Server.Controllers
             metrics.NbrOfActiveAlerts = await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync();
             metrics.NbrOfActiveDataTransfer = await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync();
 
-            metrics.NbrOfActiveQueries = await _context.TaskDetail.Where(a => a.TaskHeader.IsActivated).CountAsync();
+            metrics.NbrOfActiveQueries = await _context.TaskDetail.Where(a => a.TaskHeader!.IsActivated).CountAsync();
             return metrics;
         }
 
@@ -56,7 +58,7 @@ namespace Report_App_WASM.Server.Controllers
         {
             return await _context.ApplicationLogSystem.AsNoTracking().Where(a => a.Level > 2 && a.TimeStamp.Date > DateTime.Today.AddDays(-20))
                 .GroupBy(a=>a.TimeStamp.Date)
-                .Select(a=> new TaksSystemValues {Date=a.Key.Date,NbrWarnings= a.Sum(a => a.Level == 3 ? 1 : 0) , NbrErrors= a.Sum(a => a.Level == 4 ? 1 : 0) 
+                .Select(a=> new TaksSystemValues {Date=a.Key.Date,NbrWarnings= a.Sum(applicationLogSystem => applicationLogSystem.Level == 3 ? 1 : 0) , NbrErrors= a.Sum(logSystem => logSystem.Level == 4 ? 1 : 0) 
                 , NbrCriticals= a.Sum(a => a.Level == 5 ? 1 : 0)
                 })
                 .ToListAsync();

@@ -1,4 +1,4 @@
-﻿namespace Report_App_WASM.Server.Models
+﻿namespace Report_App_WASM.Server.Models.AuditModels
 {
     public interface IBaseEntity
     {
