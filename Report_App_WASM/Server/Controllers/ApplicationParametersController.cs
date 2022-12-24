@@ -5,6 +5,7 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
+using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -60,6 +61,14 @@ namespace Report_App_WASM.Server.Controllers
         {
             return await _context.SMTPConfiguration.Where(a => a.IsActivated).AnyAsync();
         }
+
+        [Authorize]
+        [HttpGet("CheckTaskHeaderEmail")]
+        public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
+        {
+            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() == "[]" || !await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
+        }
+
 
         [Authorize]
         [HttpGet("GetUploadedFilePath")]

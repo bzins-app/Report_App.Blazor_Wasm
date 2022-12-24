@@ -1,6 +1,6 @@
 ﻿@using ApexCharts
 
-<MudTable Items="_taskLogs.GroupBy(e => e.ActivityName).OrderByDescending(a=>a.Count())" Height="460px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
+<MudTable Items="TaskLogs.GroupBy(e => e.ActivityName).OrderByDescending(a=>a.Sum(a=>a.NbrTasks))" Height="460px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
     <HeaderContent>
         <MudTh>@Localizer.Get("Activity")</MudTh>
         <MudTh>@Localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
@@ -9,34 +9,34 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.Key</MudTd>
-        <MudTd>@context.Count()</MudTd>
+        <MudTd>@context.Sum(a=>a.NbrTasks)</MudTd>
         <MudTd>
-            <ApexChart TItem="ApplicationLogTaskDTO"
+            <ApexChart TItem="TaksLogsValues"
                        Width="30"
                        Height="30"
                        Options="GetPieOptions()">
 
-                <ApexPointSeries TItem="ApplicationLogTaskDTO"
+                <ApexPointSeries TItem="TaksLogsValues"
                                  Items="context.ToList()"
                                  Name="@Localizer.Get("Type of tasks")"
                                  SeriesType="SeriesType.Pie"
-                                 XValue="@(e => e.Type)"
-                                 YAggregate="@(e => e.Count())" />
+                                 XValue="@(e => e.TypeTask)"
+                                 YAggregate="@(e => e.Sum(a=>a.NbrTasks))" />
 
             </ApexChart>
         </MudTd>
         <MudTd>
-            <ApexChart TItem="ApplicationLogTaskDTO"
+            <ApexChart TItem="TaksLogsValues"
                        XAxisType="XAxisType.Datetime"
                        Options="GetBarOptions()"
                        Height="30"
                        Width="150">
 
-                <ApexPointSeries TItem="ApplicationLogTaskDTO"
+                <ApexPointSeries TItem="TaksLogsValues"
                                  Items="context.ToList()"
                                  Name="@Localizer.Get("Tasks per day")"
                                  SeriesType="SeriesType.Bar"
-                                 XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
+                                 XValue="@(e => e.Date.ToLocalTime())"
                                  YAggregate="@(e => e.Count())"
                                  OrderBy="e=>e.X" />
             </ApexChart>
@@ -45,16 +45,16 @@
 </MudTable>
 
 @code {
-    private List<ApplicationLogTaskDTO>? _taskLogs = new();
+    private List<TaksLogsValues>? TaskLogs = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _taskLogs = await DataService.GetValues<ApplicationLogTaskDTO>("TasksLogs", "api/Dashboard/");
+        TaskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
     }
 
-    private ApexChartOptions<ApplicationLogTaskDTO> GetPieOptions()
+    private ApexChartOptions<TaksLogsValues> GetPieOptions()
     {
-        var options = new ApexChartOptions<ApplicationLogTaskDTO>();
+        var options = new ApexChartOptions<TaksLogsValues>();
         options.Stroke = new Stroke { Width = 1 };
         options.Tooltip = new Tooltip { Fixed = new TooltipFixed { Enabled = false } };
         options.Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } };
@@ -62,9 +62,9 @@
         return options;
     }
 
-    private ApexChartOptions<ApplicationLogTaskDTO> GetBarOptions()
+    private ApexChartOptions<TaksLogsValues> GetBarOptions()
     {
-        var options = new ApexChartOptions<ApplicationLogTaskDTO>();
+        var options = new ApexChartOptions<TaksLogsValues>();
         options.Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } };
         options.PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%", } };
         options.Tooltip = new Tooltip { X = new TooltipX { Format = @" dd \ MM \ yyyy" } };

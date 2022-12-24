@@ -27,7 +27,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogSystemDTO">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogSystemDTO" FieldsContent="_translations">
                     <PropertyColumn Property="@(p => p.TimeStampAppHour)" Title="@Localizer.Get("Timestamp")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.EventId)" Title="@Localizer.Get("Event Id")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.Id)" Title="@Localizer.Get("Id")" Sortable="true" />
@@ -42,7 +42,7 @@
             {
                 <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering" />
             }
-            <Paginator Value="@_pagination" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
     <MudCard Elevation="6">

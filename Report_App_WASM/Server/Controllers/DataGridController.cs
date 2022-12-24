@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Community.OData.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiResponse;
+using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -92,12 +94,12 @@ namespace Report_App_WASM.Server.Controllers
 
             try
             {
-                _logger.LogInformation("Grid extraction: Start ", Values.FunctionName);
+                _logger.LogInformation("Grid extraction: Start "+ Values.FunctionName, Values.FunctionName);
                 var items = await FinalQ.AsQueryable().Take(Values.MaxResult).ToListAsync();
                 var fileName = Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
                 var file = CreateFile.ExcelFromCollection(fileName, Values.TabName, items);
-                _logger.LogInformation($"Grid extraction: End", $" {fileName} {items.Count} lines");
+                _logger.LogInformation($"Grid extraction: End {fileName} {items.Count} lines", $" {fileName} {items.Count} lines");
                 return File(file.FileContents, contentType: file.ContentType, file.FileDownloadName);
             }
             catch (Exception e)
@@ -117,9 +119,9 @@ namespace Report_App_WASM.Server.Controllers
 
         [EnableQuery(EnsureStableOrdering = false)]
         [HttpGet("odata/QueryExecutionLogs")]
-        public IQueryable<ApplicationLogQueryExecution> GetQueryExecutionLogs()
+        public IQueryable<ApplicationLogQueryExecutionDTO> GetQueryExecutionLogs()
         {
-            return _context.ApplicationLogQueryExecution.OrderByDescending(a => a.Id).AsNoTracking();
+            return _context.ApplicationLogQueryExecution.ProjectTo<ApplicationLogQueryExecutionDTO>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id).AsQueryable();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]

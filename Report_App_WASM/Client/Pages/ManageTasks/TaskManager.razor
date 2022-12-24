@@ -58,12 +58,12 @@
                     <TemplateColumn Title="@Localizer.Get("Is activated?")">
                         <_TaskActivate Item="context" />
                     </TemplateColumn>
-                    @*    @if (typeTask == TaskType.Report.ToString())
+                    @if (TypeTask == TaskType.Report.ToString())
                     {
-                    <TemplateColumn Title="@Localizer.Get("Send by email?")">
-                    <_TaskEmailActivate Item="context" />
-                    </TemplateColumn>
-                    }*@
+                        <TemplateColumn Title="@Localizer.Get("Send by email?")">
+                            <_TaskEmailActivate Item="context" />
+                        </TemplateColumn>
+                    }
                     @if (TypeTask == TaskType.Report.ToString())
                     {
                     <PropertyColumn Property="@(p => p.FileDepositPathConfigurationId)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
@@ -72,11 +72,11 @@
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true" />
                     }
-@*                    <TemplateColumn Title="@Localizer.Get("Duplicate")">
-                    <CascadingValue Value="@_grid">
-                    <_TaskDuplicateForm Item="context" />
-                    </CascadingValue>
-                    </TemplateColumn>*@
+                    <TemplateColumn Title="@Localizer.Get("Duplicate")">
+                        <CascadingValue Value="@_grid">
+                            <_TaskDuplicateForm Item="context" />
+                        </CascadingValue>
+                    </TemplateColumn>
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
@@ -320,13 +320,13 @@
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
-                //if (result.Value != null)
-                //{
-                //    var item = (TaskHeaderDTO)Convert.ChangeType(result.Value, typeof(TaskHeaderDTO));
-                //    uriHelper.NavigateTo("TaskEdit/" + item.TaskHeaderId);
-                //}
-                //else
-                await OnRefresh();
+                if (result.Value != null)
+                {
+                    var item = (TaskHeaderDTO)Convert.ChangeType(result.Value, typeof(TaskHeaderDTO));
+                    UriHelper.NavigateTo("TaskEdit/" + item.TaskHeaderId);
+                }
+                else
+                    await OnRefresh();
             }
             else
             {

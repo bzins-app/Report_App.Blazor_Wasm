@@ -1,6 +1,7 @@
 ﻿using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Utils
 {
@@ -11,7 +12,7 @@ namespace Report_App_WASM.Server.Utils
             ODataConventionModelBuilder builder = new();
             builder.EntitySet<ApplicationLogSystem>("SystemLogs");
             builder.EntitySet<ApplicationLogEmailSender>("EmailLogs");
-            builder.EntitySet<ApplicationLogQueryExecution>("QueryExecutionLogs");
+            builder.EntitySet<ApplicationLogQueryExecutionDTO>("QueryExecutionLogs");
             builder.EntitySet<ApplicationLogReportResult>("ReportResultLogs");
             builder.EntitySet<ApplicationLogTask>("TaskLogs");
             builder.EntitySet<ApplicationAuditTrail>("AuditTrail");

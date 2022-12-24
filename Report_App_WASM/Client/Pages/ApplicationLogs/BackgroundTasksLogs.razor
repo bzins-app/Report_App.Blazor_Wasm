@@ -73,6 +73,8 @@
             }
             return GridItemsProviderResult.From(response.Value, response.Count);
         };
+
+        _translations = AppService.GetGridTranslations();
     }
 
     private async Task<ApiResponse<ApplicationLogTaskDTO>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogTaskDTO> req)

@@ -43,7 +43,8 @@ namespace Report_App_WASM.Client.Services
                 Page = _Localizer.Get("Page"),
                 Reset = _Localizer.Get("Reset"),
                 StartsWith = _Localizer.Get("Starts with"),
-                TheSameDateWith = _Localizer.Get("The same date with")
+                TheSameDateWith = _Localizer.Get("The same date with"),
+                ItemsPerPage=_Localizer.Get("Rows per page")
             };
         }
 

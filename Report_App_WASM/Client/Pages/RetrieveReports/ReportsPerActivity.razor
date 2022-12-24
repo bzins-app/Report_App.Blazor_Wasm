@@ -1,8 +1,7 @@
 ﻿@page "/ReportsPerActivity/{ActivityName}/{ActivityId:int}"
-@*@implements IAsyncDisposable
+@implements IAsyncDisposable
 @inject NavigationManager uriHelper
-@inject DataGridRepository<TaskHeader,TaskHeaderDTO> _rep
-@inject GeneralRepository _repo
+@inject HttpClient Http
 @attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Run reports manually"): @ActivityName</PageTitle>
@@ -25,17 +24,17 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@Elements" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
 
                     <PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true" />
-                    @if (typeTask == TaskTypeEnum.Report.ToString())
+                    @if (typeTask == TaskType.Report.ToString())
                     {
                         <PropertyColumn Property="@(p => p.TypeFile)" Title="@Localizer.Get("Type of file")" Sortable="true" />
                     }
                     <TemplateColumn Title="@Localizer.Get("Run manually")">
                         <_TaskRunForm Item="context" />
                     </TemplateColumn>
-                    @if (typeTask == TaskTypeEnum.Report.ToString())
+                    @if (typeTask == TaskType.Report.ToString())
                     {
                         <TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context" />
@@ -56,12 +55,12 @@
 @code
 {
     #nullable enable
-    [Parameter] public int ActivityId { get; set; } = default!;
-    [Parameter] public string ActivityName { get; set; } = default!;
+    [Parameter] public int? ActivityId { get; set; } = default!;
+    [Parameter] public string? ActivityName { get; set; } = default!;
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }=default!;
-    private readonly string typeTask = TaskTypeEnum.Report.ToString();
-    IQueryable<TaskHeaderDTO>? Elements;
+    private readonly string typeTask = TaskType.Report.ToString();
+    GridItemsProvider<TaskHeaderDTO>? _ItemsProvider;
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     SimpleGridFieldsContent Translations = default!;
     SimpleGrid<TaskHeaderDTO> _grid = default!;
@@ -79,8 +78,61 @@
 
     protected override void OnInitialized()
     {
-        Elements = _rep.GetElements().Where(a => a.Type == typeTask && a.ActivityName == ActivityName).OrderBy(a=>a.TaskHeaderId);
-        Translations = _repo.GetGridTranslations();
+        _ItemsProvider = async req =>
+        {
+            var response = await GetRemoteData(req);
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<TaskHeaderDTO>(), 0);
+            }
+            return GridItemsProviderResult.From(response.Value, response.Count);
+        };
+        Translations = AppService.GetGridTranslations();
+    }
+
+    private async Task<ApiResponse<TaskHeaderDTO>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDTO> req)
+    {
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var OdataSort = _grid?.GetODataSortValues();
+        var OdataPagination = _grid?.GetODataPaginationValues();
+        var OdataFilters = _grid?.GetODataFilterValues();
+        string url = $"odata/TaskHeader?";
+
+
+        string customFilters = $"TypeName eq '{typeTask}'";
+        if (ActivityId.HasValue)
+        {
+            customFilters += $" and  ActivityName eq tolower('{ActivityName}')";
+        }
+
+        url += $"$count=true";
+        if (!string.IsNullOrEmpty(OdataPagination))
+        {
+            url += "&" + OdataPagination;
+        }
+        if (!string.IsNullOrEmpty(OdataSort))
+        {
+            url += "&" + OdataSort;
+        }
+        if (!string.IsNullOrEmpty(OdataFilters))
+        {
+            url += "&" + OdataFilters + " and " + customFilters;
+        }
+        else
+        {
+            url += "&$filter=" + customFilters;
+        }
+
+        try
+        {
+            return await Http.GetFromJsonAsync<ApiResponse<TaskHeaderDTO>>(url, req.CancellationToken);
+        }
+        catch
+        {
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
     }
 
     private async Task OnRefresh()
@@ -90,13 +142,6 @@
         rendering = false;
     }
 
-    private async Task ExtractElements()
-    {
-        _processing = true;
-        string fileName = "Reports";
-        await _rep.GetExcelExtractionAsync(_grid.Items, fileName);
-        _processing = false;
-    }
     private async Task RemoveFilters()
     {
         rendering = true;
@@ -110,4 +155,3 @@
         GC.SuppressFinalize(this);
     }
 }
-*@

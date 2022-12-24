@@ -7,33 +7,33 @@
 }
 else
 {
-    <ApexChart TItem="ApplicationLogTaskDTO"
+    <ApexChart TItem="TaksLogsValues"
            Title="@Localizer.Get("Background taks")"
            XAxisType="XAxisType.Datetime" Height="@Height"
            Options="_options" @ref="_chart">
 
-        <ApexPointSeries TItem="ApplicationLogTaskDTO"
+        <ApexPointSeries TItem="TaksLogsValues"
                      Items="_taskLogs"
                      Name="@Localizer.Get("Nbr of jobs")"
                      SeriesType="SeriesType.Line"
-                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Count())"
+                     XValue="@(e => e.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 
-        <ApexPointSeries TItem="ApplicationLogTaskDTO"
+        <ApexPointSeries TItem="TaksLogsValues"
                      Items="_taskLogs"
                      Name="@Localizer.Get("Nbr of errors")"
                      SeriesType="SeriesType.Line"
-                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Sum(a=>a.Error?1:0))"
+                     XValue="@(e => e.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.NbrErrors))"
                      OrderBy="e=>e.X" />
 
-        <ApexPointSeries TItem="ApplicationLogTaskDTO"
+        <ApexPointSeries TItem="TaksLogsValues"
                      Items="_taskLogs"
                      Name="@Localizer.Get("Job duration")"
                      SeriesType="SeriesType.Line"
-                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Sum(a=>a.DurationInSeconds/60))"
+                     XValue="@(e => e.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.TotalDuration/60))"
                      OrderBy="e=>e.X" />
     </ApexChart>
 }
@@ -41,13 +41,13 @@ else
 
 @code {
     [Parameter] public string Height { get; set; } = null;
-    private List<ApplicationLogTaskDTO>? _taskLogs;
-    private ApexChartOptions<ApplicationLogTaskDTO> _options = new();
-    private ApexChart<ApplicationLogTaskDTO> _chart;
+    private List<TaksLogsValues>? _taskLogs;
+    private ApexChartOptions<TaksLogsValues> _options = new ApexChartOptions<TaksLogsValues>();
+    private ApexChart<TaksLogsValues> _chart;
 
     protected override async Task OnInitializedAsync()
     {
-        _taskLogs = await DataService.GetValues<ApplicationLogTaskDTO>("TasksLogs", "api/Dashboard/");
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
         //options.Chart.Stacked = true;
         _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
         _options.Theme = new Theme { Palette = PaletteType.Palette7 };

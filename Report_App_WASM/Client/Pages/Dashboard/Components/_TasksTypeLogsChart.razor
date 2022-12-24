@@ -6,33 +6,33 @@
 }
 else
 {
-<ApexChart TItem="ApplicationLogTaskDTO"
+    <ApexChart TItem="TaksLogsValues"
            Title="@Localizer.Get("Tasks per type")"
            XAxisType="XAxisType.Datetime" Height="@Height"
            Options="_options" @ref="_chart">
 
-    <ApexPointSeries TItem="ApplicationLogTaskDTO"
-                     Items="_taskLogs.Where(a=>a.Type.Contains(_reportFilter))"
+        <ApexPointSeries TItem="TaksLogsValues"
+                     Items="_taskLogs.Where(a=>a.TypeTask.Contains(reportFilter))"
                      Name="@Localizer.Get("Reports")"
                      SeriesType="SeriesType.Bar"
-                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Count())"
+                     XValue="@(e => e.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 
-    <ApexPointSeries TItem="ApplicationLogTaskDTO"
-                     Items="_taskLogs.Where(a=>a.Type.Contains(_alertFilter))"
+        <ApexPointSeries TItem="TaksLogsValues"
+                     Items="_taskLogs.Where(a=>a.TypeTask.Contains(alertFilter))"
                      Name="@Localizer.Get("Alerts")"
                      SeriesType="SeriesType.Bar"
-                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Count())"
+                     XValue="@(e => e.Date.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 
-    <ApexPointSeries TItem="ApplicationLogTaskDTO"
-                     Items="_taskLogs.Where(a=>a.Type.Contains(_dataFilter))"
+        <ApexPointSeries TItem="TaksLogsValues"
+                     Items="_taskLogs.Where(a=>a.TypeTask.Contains(dataFilter))"
                      Name="@Localizer.Get("Data transfer")"
                      SeriesType="SeriesType.Bar"
-                     XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Count())"
+                     XValue="@(e => e.Date.Date.ToLocalTime())"
+                     YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 </ApexChart>
 }
@@ -40,16 +40,16 @@ else
 
 @code {
     [Parameter] public string Height { get; set; } = null;
-    private List<ApplicationLogTaskDTO>? _taskLogs;
-    private ApexChartOptions<ApplicationLogTaskDTO> _options = new();
-    private ApexChart<ApplicationLogTaskDTO> _chart;
-    private string _reportFilter="Report";
-    private string _alertFilter = "Alert";
-    private string _dataFilter = "Data";
+    private List<TaksLogsValues>? _taskLogs;
+    private ApexChartOptions<TaksLogsValues> _options = new ApexChartOptions<TaksLogsValues>();
+    private ApexChart<TaksLogsValues> _chart;
+    private string reportFilter="Report";
+    private string alertFilter = "Alert";
+    private string dataFilter = "Data";
 
     protected override async Task OnInitializedAsync()
     {
-        _taskLogs = await DataService.GetValues<ApplicationLogTaskDTO>("TasksLogs", "api/Dashboard/");
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
         _options.Chart.Stacked = true;
         _options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
         _options.Theme = new Theme { Palette = PaletteType.Palette8 };

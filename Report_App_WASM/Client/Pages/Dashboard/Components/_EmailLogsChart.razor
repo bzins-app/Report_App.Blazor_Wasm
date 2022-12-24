@@ -6,32 +6,32 @@
 }
 else
 {
-<ApexChart TItem="ApplicationLogEmailSenderDTO"
+	<ApexChart TItem="EmailsLogsalues"
 		   Title="@Localizer.Get("Emails")"
 		   XAxisType="XAxisType.Datetime" Height="@Height"
 		   Options="_options" @ref="_chart">
 
-	<ApexPointSeries TItem="ApplicationLogEmailSenderDTO"
+		<ApexPointSeries TItem="EmailsLogsalues"
 				Items="_logs"
 				Name="@Localizer.Get("Nbr of jobs")"
 				SeriesType="SeriesType.Bar"
-				XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-				YAggregate="@(e => e.Count())"
+				XValue="@(e => e.Date.ToLocalTime())"
+					 YAggregate="@(e => e.Sum(a=>a.NbrEmails))"
 				OrderBy="e=>e.X" />
-	<ApexPointSeries TItem="ApplicationLogEmailSenderDTO"
+		<ApexPointSeries TItem="EmailsLogsalues"
 				Items="_logs"
 				Name="@Localizer.Get("Nbr of errors")"
 				SeriesType="SeriesType.Bar"
-				XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-				YAggregate="@(e => e.Sum(a=>a.Error?1:0))"
+				XValue="@(e => e.Date.ToLocalTime())"
+				YAggregate="@(e => e.Sum(a=>a.NbrErrors))"
 				OrderBy="e=>e.X" />
 
-	<ApexPointSeries TItem="ApplicationLogEmailSenderDTO"
+		<ApexPointSeries TItem="EmailsLogsalues"
 				Items="_logs"
 				Name="@Localizer.Get("Job duration")"
 				SeriesType="SeriesType.Bar"
-				XValue="@(e => e.EndDateTime.Date.ToLocalTime())"
-				YAggregate="@(e => e.Sum(a=>a.DurationInSeconds/60))"
+				XValue="@(e => e.Date.ToLocalTime())"
+					 YAggregate="@(e => e.Sum(a=>a.TotalDuration/60))"
 				OrderBy="e=>e.X" />
 
 </ApexChart>
@@ -41,16 +41,16 @@ else
 @code {
 
 	[Parameter] public string Height { get; set; } = null;
-	private List<ApplicationLogEmailSenderDTO>? _logs;
-	private ApexChartOptions<ApplicationLogEmailSenderDTO> _options = new();
-	private ApexChart<ApplicationLogEmailSenderDTO> _chart;
+	private List<EmailsLogsalues>? _logs;
+	private ApexChartOptions<EmailsLogsalues> _options = new ApexChartOptions<EmailsLogsalues>();
+	private ApexChart<EmailsLogsalues> _chart;
 
 	 protected override async Task OnInitializedAsync()
 	{
-		_logs = await DataService.GetValues<ApplicationLogEmailSenderDTO>("EmailLogs", "api/Dashboard/");
+		_logs = await DataService.GetValues<EmailsLogsalues>("EmailLogs", "api/Dashboard/");
 		_options.Chart.Stacked = true;
 		_options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
-		_options.Theme = new Theme { Palette = PaletteType.Palette3};
+		_options.Theme = new Theme { Palette = PaletteType.Palette3 };
 		_options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
 		//Stacked 100% test
 		//options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };

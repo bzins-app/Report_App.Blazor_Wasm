@@ -4,6 +4,7 @@
 @inject NavigationManager UriHelper
 @using System.IO
 @using MudBlazor.Utilities
+@attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <MudCard Elevation="6">
     <MudCardHeader>
@@ -288,7 +289,7 @@
         string uri;
         if (FromTaskManager.HasValue && FromTaskManager.Value)
         {
-            uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type}/{Item.Activity.ActivityName}",
+            uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.Activity.ActivityId}/{Item.Activity.ActivityName}",
                 new Dictionary<string, object>
                 {
                     ["Page"] = Page,
@@ -297,7 +298,7 @@
         }
         else
         {
-            uri = UriHelper.GetUriWithQueryParameters("TaskManager/" + Item.Type,
+            uri = UriHelper.GetUriWithQueryParameters("TaskManager/" + Item.Type.ToString(),
              new Dictionary<string, object>
                  {
                      ["Page"] = Page,

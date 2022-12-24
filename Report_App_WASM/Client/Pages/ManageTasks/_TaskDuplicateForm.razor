@@ -1,8 +1,4 @@
-﻿@*@using Report_App_BlazorServ.Services.BackgroundWorker
-@using Report_App_BlazorServ.Models
-@inject ApplicationDbContext _context
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
 
 <MudIconButton OnClick="(()=>OpenRunConfirmationComponent())" Icon="@Icons.Material.Filled.ContentCopy" />
 
@@ -28,7 +24,7 @@
     string name = "";
 
     private bool visible;
-    private DialogOptions dialogOptions = new() { CloseOnEscapeKey=false, DisableBackdropClick=true ,MaxWidth = MaxWidth.Small, FullWidth = true };
+    private DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
     private void OpenRunConfirmationComponent()
     {
         name = Item.TaskName + " (Copy)";
@@ -41,50 +37,21 @@
         await Clone(name, Item.TaskHeaderId);
         Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
         await dataGrid.RefreshDataAsync();
-        
+
 
     }
     void CancelDialog() => visible = false;
 
     private async Task Clone(string name, int taskHeaderId)
     {
-        try
-        {
-            var DbItem = await _context.TaskHeader.Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Where(a => a.TaskHeaderId == taskHeaderId).AsNoTracking().FirstOrDefaultAsync();
-            if (DbItem != null)
-            {
-                DbItem.TaskName = name;
-                DbItem.IsActivated = false;
-                DbItem.SendByEmail = false;
-                DbItem.FileDepositPathConfigurationId = 0;
-                DbItem.TaskHeaderId = 0;
-
-                if (DbItem.TaskDetails != null)
-                {
-                    foreach (var t in DbItem.TaskDetails)
-                    {
-                        t.TaskDetailId = 0;
-                    }
-                }
-                if (DbItem.TaskEmailRecipients != null)
-                {
-                    foreach (var t in DbItem.TaskEmailRecipients)
-                    {
-                        t.TaskEmailRecipientId = 0;
-                    }
-                }
-                _context.Update(DbItem);
-                await _context.SaveChangesAsync((await AuthenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name); 
-                _context.Entry(DbItem).State = EntityState.Detached;
-            }
-
-        }
-        catch (Exception e)
+        DuplicateTask payload = new DuplicateTask { Name = name, TaskHeaderId = taskHeaderId };
+        var result = await DataService.PostValues(payload, "TaskClone");
+        if (!result.Success)
         {
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-            Snackbar.Add(e.Message, Severity.Error);
+            Snackbar.Add(result.Message, Severity.Error);
         }
     }
 
 
-}*@
+}

@@ -1,6 +1,7 @@
 ﻿@page "/DashboardApp"
 @inherits ComponentBase
 @implements IDisposable
+@attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
 
