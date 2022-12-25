@@ -38,7 +38,7 @@
 
     protected override void OnParametersSet()
     {
-        _recipients = Item?.TaskEmailRecipients.FirstOrDefault();
+        _recipients = Item?.TaskEmailRecipients.FirstOrDefault()!;
         if (_recipients != null)
         {
             if (!string.IsNullOrEmpty(_recipients.Email))
@@ -75,7 +75,7 @@
     private void ChangeBccValue(EmailRecipient id, bool value)
     {
         var bccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
-        bccupdate.Bcc = value;
+        bccupdate!.Bcc = value;
         _recipients.Email = JsonSerializer.Serialize(_emails);
         PopulateEmailItems();
     }
@@ -87,7 +87,7 @@
         {
             if (!_emails!.Select(a => a.Email).Contains(_email))
             {
-                _emails?.Add(new EmailRecipient { Email = _email });
+                _emails?.Add(new() { Email = _email });
                 _recipients.Email = JsonSerializer.Serialize(_emails);
                 PopulateEmailItems();
                 ChangePending = true;

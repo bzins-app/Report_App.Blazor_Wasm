@@ -111,12 +111,12 @@
     private UserProfile Model { get; set; } = new();
     private readonly UserProfileEditValidator _userValidator = new();
     private ChangePasswordModel Changepassword { get; set; } = new();
-    private ChangePasswordModelValidator _passwordValidator;
+    private ChangePasswordModelValidator? _passwordValidator;
     private readonly UserInfo _user = new();
 
     private bool _ldapSignin;
-    private string _passwordForDeletion;
-    private string _deletionPasswordResult;
+    private string? _passwordForDeletion;
+    private string? _deletionPasswordResult;
     bool _passwordVisibility;
     InputType _passwordInput = InputType.Password;
 

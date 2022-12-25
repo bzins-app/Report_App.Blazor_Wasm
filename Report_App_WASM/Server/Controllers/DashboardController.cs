@@ -48,18 +48,25 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("TasksLogs")]
         public async Task<List<TaksLogsValues>> GetTasksLogsAsync()
         {
-           return await _context.ApplicationLogTask.AsNoTracking()
-               .Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt"))
-               .GroupBy(a => new { a.Type, a.ActivityName, a.EndDateTime.Date }).Select(a => new TaksLogsValues { Date = a.Key.Date, ActivityName = a.Key.ActivityName, TypeTask = a.Key.Type, TotalDuration = a.Sum(a => a.DurationInSeconds), NbrTasks = a.Count(), NbrErrors= a.Sum(a => a.Error ? 1 : 0) }).ToListAsync();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            return await _context.ApplicationLogTask.AsNoTracking()
+                .Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt"))
+                .GroupBy(a => new { a.Type, a.ActivityName, a.EndDateTime.Date }).Select(a => new TaksLogsValues { Date = a.Key.Date, ActivityName = a.Key.ActivityName, TypeTask = a.Key.Type, TotalDuration = a.Sum(a => a.DurationInSeconds), NbrTasks = a.Count(), NbrErrors = a.Sum(a => a.Error ? 1 : 0) }).ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
         [HttpGet("SystemLogs")]
         public async Task<List<TaksSystemValues>> GetSystemLogsAsync()
         {
             return await _context.ApplicationLogSystem.AsNoTracking().Where(a => a.Level > 2 && a.TimeStamp.Date > DateTime.Today.AddDays(-20))
-                .GroupBy(a=>a.TimeStamp.Date)
-                .Select(a=> new TaksSystemValues {Date=a.Key.Date,NbrWarnings= a.Sum(applicationLogSystem => applicationLogSystem.Level == 3 ? 1 : 0) , NbrErrors= a.Sum(logSystem => logSystem.Level == 4 ? 1 : 0) 
-                , NbrCriticals= a.Sum(a => a.Level == 5 ? 1 : 0)
+                .GroupBy(a => a.TimeStamp.Date)
+                .Select(a => new TaksSystemValues
+                {
+                    Date = a.Key.Date,
+                    NbrWarnings = a.Sum(applicationLogSystem => applicationLogSystem.Level == 3 ? 1 : 0),
+                    NbrErrors = a.Sum(logSystem => logSystem.Level == 4 ? 1 : 0)
+                ,
+                    NbrCriticals = a.Sum(a => a.Level == 5 ? 1 : 0)
                 })
                 .ToListAsync();
         }
@@ -68,8 +75,8 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<List<EmailsLogsalues>> GetEmailLogsAsync()
         {
             return await _context.ApplicationLogEmailSender.AsNoTracking().Where(a => a.EndDateTime.Date > DateTime.Today.AddDays(-20))
-                .GroupBy(a=>a.EndDateTime.Date)
-                .Select(a=> new EmailsLogsalues {Date=a.Key.Date, NbrEmails=a.Count(), NbrErrors=a.Sum(a => a.Error ? 1 : 0), TotalDuration=a.Sum(a=>a.DurationInSeconds) })
+                .GroupBy(a => a.EndDateTime.Date)
+                .Select(a => new EmailsLogsalues { Date = a.Key.Date, NbrEmails = a.Count(), NbrErrors = a.Sum(a => a.Error ? 1 : 0), TotalDuration = a.Sum(a => a.DurationInSeconds) })
                 .ToListAsync();
         }
 
@@ -82,7 +89,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("DbFetchMetrics")]
         public async Task<List<DbLinesQuery>> GetDbFetchMetricsAsync()
         {
-            return await _context.ApplicationLogQueryExecution.Where(a => a.EndDateTime > DateTime.Today.AddDays(-10)).Select(a => new DbLinesQuery { Date = new DateTime(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour, a.EndDateTime.Minute, 0), NbrOfRows = a.NbrOfRows }).ToListAsync();
+            return await _context.ApplicationLogQueryExecution.Where(a => a.EndDateTime > DateTime.Today.AddDays(-10)).Select(a => new DbLinesQuery { Date = new(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour, a.EndDateTime.Minute, 0), NbrOfRows = a.NbrOfRows }).ToListAsync();
         }
     }
 }

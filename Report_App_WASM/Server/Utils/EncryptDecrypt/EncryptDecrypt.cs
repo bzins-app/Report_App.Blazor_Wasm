@@ -7,7 +7,9 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
     {
         private static string Secretkey()
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return HashKey.Key;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public static string? EncryptString(string? text)
@@ -47,7 +49,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
             return Convert.ToBase64String(result);
         }
 
-        public static string DecryptString(string cipherText)
+        public static string? DecryptString(string? cipherText)
         {
             if (string.IsNullOrEmpty(cipherText))
             {
@@ -69,7 +71,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
                 using var aesAlg = Aes.Create();
                 aesAlg.Padding = PaddingMode.PKCS7;
                 using var decryptor = aesAlg.CreateDecryptor(key, iv);
-                string result;
+                string? result;
                 using (var msDecrypt = new MemoryStream(cipher))
                 {
                     using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);

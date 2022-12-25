@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Report_App_WASM.Shared.SerializedParameters;
+﻿using Report_App_WASM.Shared.SerializedParameters;
+using System.Data;
 
 namespace Report_App_WASM.Server.Utils
 {
@@ -24,10 +24,10 @@ namespace Report_App_WASM.Server.Utils
 
     public class ExcelCreationData : IDisposable
     {
-        public string? FileName { get; set; }
-        public bool ValidationSheet { get; set; }
-        public string? ValidationText { get; set; }
-        public IList<ExcelCreationDatatable>? Data { get; set; }
+        public string? FileName { get; init; }
+        public bool ValidationSheet { get; init; }
+        public string? ValidationText { get; init; }
+        public IList<ExcelCreationDatatable>? Data { get; init; }
 
         public void Dispose()
         {

@@ -27,9 +27,9 @@ namespace Report_App_WASM.Server.Services.FilesManagement
             }
             catch (Exception ex)
             {
-                return new SubmitResult { Success = false, Message = ex.Message };
+                return new() { Success = false, Message = ex.Message };
             }
-            return new SubmitResult { Success = true, Message = "Ok" };
+            return new() { Success = true, Message = "Ok" };
         }
 
         public async Task<SubmitResult> SaveFileAsync(FileContentResult file, string fileName, string storagePath, bool tryCreateFolder = false)
@@ -54,16 +54,16 @@ namespace Report_App_WASM.Server.Services.FilesManagement
             }
             catch (Exception ex)
             {
-                return new SubmitResult { Success = false, Message = ex.Message };
+                return new() { Success = false, Message = ex.Message };
             }
-            return new SubmitResult { Success = true, Message = "Ok" };
+            return new() { Success = true, Message = "Ok" };
         }
 
 
         public FileInfo GetFileInfo(string? filePath)
         {
-            var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, filePath);
-            return new FileInfo(storagePath);
+            var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, filePath!);
+            return new(storagePath);
         }
 
         public async Task RemoveLocalFilesAsync(List<ApplicationLogReportResult> filesInfo)

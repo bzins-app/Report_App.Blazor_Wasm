@@ -20,8 +20,8 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="Item.UserName" Label="@Localizer.Get("Name")" Disabled />
-        <MudTextField @bind-Value="Item.Email" Label="@Localizer.Get("Email")" Disabled />
+        <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("Name")" Disabled />
+        <MudTextField @bind-Value="Item!.Email" Label="@Localizer.Get("Email")" Disabled />
         <MudCard Elevation=0>
             <MudCardContent>
                 <MudGrid Style="min-height:300px">
@@ -74,7 +74,7 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public ApplicationUser Item { get; set; }
+    [Parameter] public ApplicationUser? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
     private HashSet<string> _rolesToAssign = new();
@@ -83,10 +83,7 @@
     private HashSet<string> _rolesToRemove = new();
     private readonly List<string> _rolesAssigned = new();
 
-    //private List<TransferItem> dataSource = new List<TransferItem>();
-    private List<string> _targetKeys = new();
-    private string[] _selectedKeys = Array.Empty<string>();
-    private string[] _titles;
+    private string?[]? _titles;
 
     private void Cancel()
     {
@@ -103,7 +100,7 @@
             _rolesAvailable.Add(r);
         }
 
-        var uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item.UserName}";
+        var uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item?.UserName}";
         var userRoles = await Http.GetFromJsonAsync<List<string>>(uriUser);
 
         foreach (var ur in userRoles!)
@@ -120,7 +117,7 @@
     {
         if (_rolesToAssign != null)
         {
-            var values = new ChangeRolePayload { UserName = Item.UserName, Roles = _rolesToAssign.ToList() };
+            var values = new ChangeRolePayload { UserName = Item?.UserName, Roles = _rolesToAssign.ToList() };
             var result = await DataService.PostValues(values, "AddRoles", ApiControllers.UserManagerApi);
             if (result.Success)
             {
@@ -150,7 +147,7 @@
                     _rolesAssigned.Remove(t);
                     _rolesAvailable.Add(t);
                 }
-                _rolesToRemove = null;
+                _rolesToRemove = null!;
             }
             StateHasChanged();
         }

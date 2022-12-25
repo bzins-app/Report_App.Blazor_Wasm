@@ -1,12 +1,12 @@
-﻿using System.DirectoryServices.AccountManagement;
-using System.Globalization;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared;
+using System.DirectoryServices.AccountManagement;
+using System.Globalization;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -52,8 +52,8 @@ namespace Report_App_WASM.Server.Controllers
             {
                 var rememberMe = true;
                 using var context = new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
-                var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName);
-                var userMail = await _userManager.FindByEmailAsync(userAd.EmailAddress);
+                var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);
+                var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);
                 if (userMail != null)
                 {
                     await _signInManager.SignInAsync(userMail, rememberMe);
@@ -62,7 +62,7 @@ namespace Report_App_WASM.Server.Controllers
 
                 }
 
-                var user = await _userManager.FindByNameAsync(parameters.UserName);
+                var user = await _userManager.FindByNameAsync(parameters.UserName!);
                 if (user != null)
                 {
                     await _signInManager.SignInAsync(user, rememberMe);
@@ -70,7 +70,7 @@ namespace Report_App_WASM.Server.Controllers
                     return Ok();
                 }
 
-                List<string> errors = new List<string>();
+                List<string> errors = new();
                 var userNew = new ApplicationUser { UserName = parameters.UserName, Email = userAd.EmailAddress, CreateUser = "AD screen", ModDateTime = DateTime.Now, ModificationUser = "Register screen", Culture = CultureInfo.CurrentCulture.Name, EmailConfirmed = true };
                 var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
                 if (result.Succeeded)
@@ -103,10 +103,13 @@ namespace Report_App_WASM.Server.Controllers
         {
             var user = new ApplicationUser();
             user.UserName = parameters.UserName;
-            var result = await _userManager.CreateAsync(user, parameters.Password);
-            if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+            if (parameters.Password != null)
+            {
+                var result = await _userManager.CreateAsync(user, parameters.Password);
+                if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+            }
 
-            return await Login(new LoginParameters
+            return await Login(new()
             {
                 UserName = parameters.UserName,
                 Password = parameters.Password
@@ -132,11 +135,11 @@ namespace Report_App_WASM.Server.Controllers
         private async Task<UserInfo> BuildUserInfoAsync()
         {
             var userData = await _userManager.GetUserAsync(User);
-            return new UserInfo
+            return new()
             {
-                IsAuthenticated = User.Identity.IsAuthenticated,
+                IsAuthenticated = User.Identity!.IsAuthenticated,
                 UserName = User.Identity.Name,
-                UserMail= userData?.Email,
+                UserMail = userData?.Email,
                 AppTheme = userData?.ApplicationTheme ?? "Light",
                 Culture = userData?.Culture ?? "en",
                 ExposedClaims = User.Claims

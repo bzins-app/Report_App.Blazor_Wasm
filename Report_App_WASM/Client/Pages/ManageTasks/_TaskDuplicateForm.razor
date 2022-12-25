@@ -28,7 +28,7 @@
     private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
     private void OpenRunConfirmationComponent()
     {
-        _name = Item.TaskName + " (Copy)";
+        _name = Item?.TaskName + " (Copy)";
         _visible = true;
     }
 
@@ -45,7 +45,7 @@
 
     private async Task Clone(string name, int taskHeaderId)
     {
-        DuplicateTask payload = new DuplicateTask { Name = name, TaskHeaderId = taskHeaderId };
+        DuplicateTask payload = new() { Name = name, TaskHeaderId = taskHeaderId };
         var result = await DataService.PostValues(payload, "TaskClone");
         if (!result.Success)
         {

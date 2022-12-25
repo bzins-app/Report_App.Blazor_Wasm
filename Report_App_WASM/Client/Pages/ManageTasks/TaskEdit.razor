@@ -193,7 +193,6 @@
     private readonly List<TaskDetailDto> _itemToDelete = new();
     private TaskHeaderParameters? _param = new();
 
-    private string? _reportDepositName = "";
     private bool _loading;
     private TypeDb _typeDbTask;
 
@@ -218,7 +217,7 @@
 
         if (Item.FileDepositPathConfigurationId != 0)
         {
-            _reportDepositName = _depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault(); 
+            _depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault(); 
         }
         _activityId = Item.Activity.ActivityId;
         var uri = $"GetActivityDbConnection?ActivityId={Item.Activity.ActivityId}";
@@ -317,7 +316,7 @@
     private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
     {
         _activityId = actId.FirstOrDefault();
-        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+        Item.Activity = new() { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
         Item.IdActivity = Item.Activity.ActivityId;
         Item.ActivityName = Item.Activity.ActivityName;
     }

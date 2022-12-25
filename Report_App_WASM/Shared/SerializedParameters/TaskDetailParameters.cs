@@ -3,7 +3,7 @@
     public class TaskDetailParameters
     {
         public string? FileName { get; set; }
-        public string EncodingType { get; set; } = "UTF8";
+        public string? EncodingType { get; set; } = "UTF8";
         public ExcelTemplate ExcelTemplate { get; set; } = new();
         public bool SeparateExcelFile { get; set; } = false;
         public bool RemoveHeader { get; set; } = false;

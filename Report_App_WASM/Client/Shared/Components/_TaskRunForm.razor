@@ -9,7 +9,7 @@
     [Parameter]
     public TaskHeaderDto Item { get; set; }
 
-    private string _email;
+    private string? _email;
 
     private async Task OpenRunConfirmationComponent()
     {
@@ -54,7 +54,7 @@
             }
             else
             {
-                emails.Add(new EmailRecipient { Email = _email, Bcc = false });
+                emails.Add(new() { Email = _email, Bcc = false });
                 var payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }

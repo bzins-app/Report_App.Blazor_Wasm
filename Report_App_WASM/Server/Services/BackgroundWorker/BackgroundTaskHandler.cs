@@ -1,7 +1,4 @@
-﻿using System.Data;
-using System.Net.Mail;
-using System.Text.Json;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
@@ -12,8 +9,10 @@ using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
 using Report_App_WASM.Shared.SerializedParameters;
+using System.Data;
+using System.Net.Mail;
+using System.Text.Json;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
@@ -40,8 +39,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         private Dictionary<TaskDetail, DataTable> _fetchedData = new();
         private List<FileContentResult> _fileResults = new();
         private List<EmailRecipient>? _emails = new();
-        private TaskJobParameters _jobParameters;
-        private TaskHeader _header;
+        private TaskJobParameters _jobParameters = null!;
+        private TaskHeader _header = null!;
         private int _taskId;
 
         public async Task HandleTask(TaskJobParameters parameters)
@@ -135,7 +134,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             }
             catch (Exception ex)
             {
-                logTask.Result = new string(ex.Message.Take(2000).ToArray());
+                logTask.Result = new(ex.Message.Take(2000).ToArray());
                 logTask.Error = true;
                 logTask.EndDateTime = DateTime.Now;
                 logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
@@ -172,11 +171,11 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     {
                         if (param!.All(a => a.ParameterIdentifier?.ToLower() != value.ParameterIdentifier?.ToLower()))
                         {
-                            param.Add(value);
+                            param?.Add(value);
                         }
                     }
                 }
-                var table = await remoteDb.RemoteDbToDatableAsync(new RemoteDbCommandParameters { ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, _jobParameters.Cts, _taskId);
+                var table = await remoteDb.RemoteDbToDatableAsync(new() { ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, _jobParameters.Cts, _taskId);
                 await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Fetch data completed", Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count });
 
                 if (detailParam!.GenerateIfEmpty || table.Rows.Count > 0)
@@ -192,7 +191,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
             }
         }
-        private async Task WriteFileAsync(FileContentResult fileResult, string fName, bool useDepositConfiguration, string subName = null)
+        private async Task WriteFileAsync(FileContentResult fileResult, string fName, bool useDepositConfiguration, string? subName = null)
         {
             var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
             if (!localFileResult.Success)
@@ -440,7 +439,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         fName += fExtension;
                         List<ExcelCreationDatatable> excelCreationDatatables = new()
                         {
-                            new ExcelCreationDatatable { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
+                            new() { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
                         };
                         ExcelCreationData dataExcel = new() { FileName = fName, Data = excelCreationDatatables, ValidationSheet = detailParam.AddValidationSheet, ValidationText = headerParam?.ValidationSheetText };
 
@@ -468,7 +467,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         {
                             tabName = detailParam.ExcelTabName ?? d.Key.QueryName;
                         }
-                        excelMultipleTabs.Add(new ExcelCreationDatatable { TabName = tabName, ExcelTemplate = template, Data = d.Value });
+                        excelMultipleTabs.Add(new() { TabName = tabName, ExcelTemplate = template, Data = d.Value });
                         continue;
                     }
                 }
@@ -482,13 +481,13 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 {
                     fExtension = ".csv";
                     fName += fExtension;
-                    fileCreated = CreateFile.CsvFromDatable(fName, d.Value, detailParam!.EncodingType ?? "UTF8", headerParam?.Delimiter, detailParam.RemoveHeader);
+                    fileCreated = CreateFile.CsvFromDatable(fName, d.Value, detailParam!.EncodingType, headerParam?.Delimiter, detailParam.RemoveHeader);
                 }
                 else
                 {
                     fExtension = ".xml";
                     fName += fExtension;
-                    fileCreated = CreateFile.XmlFromDatable(d.Key.QueryName, fName, detailParam.EncodingType ?? "UTF8", d.Value);
+                    fileCreated = CreateFile.XmlFromDatable(d.Key.QueryName, fName, detailParam?.EncodingType, d.Value);
                 }
                 _fileResults.Add(fileCreated);
                 await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "File created", Info = fName });
@@ -498,7 +497,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 fName = string.IsNullOrEmpty(headerParam?.ExcelFileName) ? $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}" : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
 
                 FileContentResult fileCreated;
-                if (!headerParam.UseAnExcelTemplate)
+                if (!headerParam!.UseAnExcelTemplate)
                 {
                     ExcelCreationData dataExcel = new() { FileName = fName, Data = excelMultipleTabs, ValidationSheet = informationSheet, ValidationText = headerParam.ValidationSheetText };
 
@@ -536,14 +535,14 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 }
                 if (sendEmail || _jobParameters.ManualRun)
                 {
-                    var emailPrefix = await _context.ApplicationParameters.Select(a => a.AlertEmailPrefix).FirstOrDefaultAsync();
+                    var emailPrefix = await _context.ApplicationParameters.Select(a => a!.AlertEmailPrefix).FirstOrDefaultAsync();
                     if ((_header.SendByEmail && _header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]"))
                     {
-                        var subject = emailPrefix + " - " + a.TaskHeader.ActivityName + ": " + a.TaskHeader.TaskName;
+                        var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
                         var message = "";
                         List<Attachment> listAttach = new();
                         var counter = 0;
-                        foreach (var table in _fetchedData.Where(a => a.Value.Rows.Count > 0))
+                        foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
                         {
                             if (table.Value.Rows.Count < 101)
                             {
@@ -551,7 +550,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                                 valueMessage += table.Value.ToHtml();
                                 if (counter == 0)
                                 {
-                                    message = string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault(), valueMessage);
+                                    message = string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!, valueMessage);
                                     counter++;
                                 }
                                 else
@@ -562,16 +561,16 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                             }
                             else
                             {
-                                ExcelCreationDatatable dataExcel = new() { TabName = a.TaskHeader.TaskName, Data = table.Value };
-                                var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader.TaskName, dataExcel);
+                                ExcelCreationDatatable dataExcel = new() { TabName = a.TaskHeader?.TaskName, Data = table.Value };
+                                var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader?.TaskName, dataExcel);
                                 var fName =
                                     $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
-                                listAttach.Add(new Attachment(new MemoryStream(fileResult.FileContents), fName, fileResult.ContentType));
+                                listAttach.Add(new(new MemoryStream(fileResult.FileContents), fName, fileResult.ContentType));
                             }
                         }
 
-                       var result= await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
-                        if(result.Success)
+                        var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
+                        if (result.Success)
                         {
                             await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Email sent", Info = subject });
                         }
@@ -579,7 +578,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         {
                             await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
                         }
-                        
+
                         listAttach.Clear();
                     }
 
@@ -592,31 +591,35 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             else
             {
                 var a = _header.TaskDetails.FirstOrDefault();
-                a.NbrOfCumulativeOccurences = 0;
+                a!.NbrOfCumulativeOccurences = 0;
                 _context.Entry(a).State = EntityState.Modified;
             }
 
         }
         private async Task GenerateEmail()
         {
-            if (_emails.Any() && _fileResults.Any())
+            if (_emails!.Any() && _fileResults.Any())
             {
-                var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
+                var emailPrefix = await _context.ApplicationParameters.Select(a => a!.EmailPrefix).FirstOrDefaultAsync();
                 var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;
 
                 List<Attachment> listAttach = new();
                 listAttach.AddRange(_fileResults.Select(a => new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
 
                 //to remove dirty code
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 if (_header.TaskName.StartsWith("#"))
                 {
                     subject = _header.TaskName;
                 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 //
                 var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
                 if (listAttach.Any())
                 {
-                    var result=await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'message' in 'Task<SubmitResult> IEmailSender.SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)'.
+                    var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'message' in 'Task<SubmitResult> IEmailSender.SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)'.
                     if (result.Success)
                     {
                         await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Email sent", Info = subject });

@@ -266,7 +266,7 @@
             _cts = new();
             List<QueryCommandParameter>? param = new();
             _refQuery?.UpdateParameters();
-            if (Header.UseGlobalQueryParameters && Header.QueryParameters != "[]" ||
+            if (Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]" ||
                 !string.IsNullOrEmpty(Header.QueryParameters))
             {
                 param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.QueryParameters);
@@ -332,7 +332,7 @@
     {
         if (!string.IsNullOrEmpty(_pKName))
         {
-            if (!_param!.DataTransferPk.Contains(_pKName))
+            if (!_param!.DataTransferPk!.Contains(_pKName))
             {
                 _param.DataTransferPk.Add(_pKName);
             }

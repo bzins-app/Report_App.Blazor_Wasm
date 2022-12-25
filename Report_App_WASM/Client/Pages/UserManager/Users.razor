@@ -63,7 +63,7 @@
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
     SimpleGrid<ApplicationUser> _grid = default!;
-    private string _errorMessage = default!;
+    private string? _errorMessage;
     private bool _rendering;
 
     protected override void OnInitialized()

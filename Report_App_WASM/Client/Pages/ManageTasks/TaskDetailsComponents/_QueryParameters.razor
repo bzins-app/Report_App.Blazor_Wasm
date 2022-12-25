@@ -68,7 +68,7 @@
     {
         if (Item?.QueryParameters != "[]" && !string.IsNullOrEmpty(Item?.QueryParameters))
         {
-            _parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
+            _parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters)!;
         }
     }
 
@@ -99,6 +99,6 @@
 
     public void UpdateParameters()
     {
-        Item.QueryParameters = JsonSerializer.Serialize(_parameters);
+        Item!.QueryParameters = JsonSerializer.Serialize(_parameters);
     }
 }

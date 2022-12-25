@@ -18,18 +18,18 @@ namespace Report_App_WASM.Shared.Extensions
 
         public static DateTime GetLastDayOfMonth(this DateTime dt)
         {
-            return new DateTime(dt.Year, dt.Month, DateTime.DaysInMonth(dt.Year, dt.Month));
+            return new(dt.Year, dt.Month, DateTime.DaysInMonth(dt.Year, dt.Month));
         }
 
         public static DateTime GetFisrtDayOfMonth(this DateTime dt)
         {
-            return new DateTime(dt.Year, dt.Month, 1);
+            return new(dt.Year, dt.Month, 1);
         }
 
         public static DateTime GetFirstDayOfQuarter(this DateTime dt)
         {
             var currentQuarter = (dt.Month - 1) / 3 + 1;
-            return new DateTime(dt.Year, (currentQuarter - 1) * 3 + 1, 1);
+            return new(dt.Year, (currentQuarter - 1) * 3 + 1, 1);
         }
 
         public static DateTime GetLastDayOfQuarter(this DateTime dt)
@@ -60,9 +60,9 @@ namespace Report_App_WASM.Shared.Extensions
                 case CalulatedDateOption.EndOfThisQuarter:
                     return DateTime.Now.GetLastDayOfQuarter();
                 case CalulatedDateOption.StartOfThisYear:
-                    return new DateTime(DateTime.Now.Year, 1, 1);
+                    return new(DateTime.Now.Year, 1, 1);
                 case CalulatedDateOption.EndOfThisYear:
-                    return new DateTime(DateTime.Now.Year, 12, 31);
+                    return new(DateTime.Now.Year, 12, 31);
                 case CalulatedDateOption.Yesterday:
                     return DateTime.Now.AddDays(-1);
                 case CalulatedDateOption.Tomorrow:

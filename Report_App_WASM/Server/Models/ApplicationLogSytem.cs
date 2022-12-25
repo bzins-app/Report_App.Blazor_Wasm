@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Report_App_WASM.Server.Models.AuditModels;
+﻿using Report_App_WASM.Server.Models.AuditModels;
+using System.ComponentModel.DataAnnotations;
 using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
 namespace Report_App_WASM.Server.Models

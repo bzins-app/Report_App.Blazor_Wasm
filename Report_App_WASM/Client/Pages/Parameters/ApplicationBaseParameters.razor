@@ -71,7 +71,7 @@
 @code {
     private ApplicationParametersDto _param = new();
     bool _success;
-    MudForm _form;
+    MudForm? _form;
     private List<EmailRecipient>? _emails = new();
     readonly List<EmailRecipient> _emailItems = new();
     private string _email = "";
@@ -157,7 +157,7 @@
     {
         if (!_emails!.Select(a => a.Email).Contains(_email))
         {
-            _emails?.Add(new EmailRecipient { Email = _email });
+            _emails?.Add(new() { Email = _email });
         }
         _email = "";
         _emailNotValidated = true;

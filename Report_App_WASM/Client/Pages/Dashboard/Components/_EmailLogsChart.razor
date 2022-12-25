@@ -1,5 +1,5 @@
-﻿@using ApexCharts
-@using Report_App_WASM.Shared.ApiExchanges
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@using ApexCharts
 @using Color = MudBlazor.Color
 @if (_logs == null)
 {
@@ -50,11 +50,11 @@ else
 	{
 		_logs = await DataService.GetValues<EmailsLogsalues>("EmailLogs", "api/Dashboard/");
 		_options.Chart.Stacked = true;
-		_options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
-		_options.Theme = new Theme { Palette = PaletteType.Palette3 };
-		_options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
+		_options.Tooltip = new() { X = new() { Format = @"dd \ MM \ yyyy" } };
+		_options.Theme = new() { Palette = PaletteType.Palette3 };
+		_options.Colors = new() { "#008FFB", "#FF4560", "#FEB019" };
 		//Stacked 100% test
 		//options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
-		_options.Chart.Toolbar = new Toolbar { Show = false };		
+		_options.Chart.Toolbar = new() { Show = false };		
 	}
 }

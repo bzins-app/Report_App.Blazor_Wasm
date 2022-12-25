@@ -6,7 +6,8 @@
         public static string? ApplicationLogo { get; set; } = default!;
         public static bool LdapLogin { get; set; }
     }
-    public static class UserAppTheme {
+    public static class UserAppTheme
+    {
         public static bool DarkTheme { get; set; } = false;
     }
 

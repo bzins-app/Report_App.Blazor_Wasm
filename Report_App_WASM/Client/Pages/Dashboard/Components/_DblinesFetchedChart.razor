@@ -1,5 +1,5 @@
-﻿@using ApexCharts
-@using Report_App_WASM.Shared.Dashboard
+﻿@using Report_App_WASM.Shared.Dashboard
+@using ApexCharts
 @using Color = MudBlazor.Color
 @if (_logs == null)
 {
@@ -34,6 +34,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", "api/Dashboard/");
-        _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
+        _options.Tooltip = new() { X = new() { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
     }
 }

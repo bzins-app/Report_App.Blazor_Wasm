@@ -2,7 +2,7 @@
 {
     public class DuplicateTask
     {
-        public int TaskHeaderId { get; set; }
-        public string? Name { get; set; }
+        public int TaskHeaderId { get; init; }
+        public string? Name { get; init; }
     }
 }
