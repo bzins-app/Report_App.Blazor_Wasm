@@ -96,16 +96,30 @@
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
-        var odataQuery = _grid?.GetODataQuery();
+        var odataSort = _grid?.GetODataSortValues();
+        var odataPagination = _grid?.GetODataPaginationValues();
+        var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/ReportResultLogs?";
-        if (string.IsNullOrEmpty(odataQuery))
+        string customFilters = $"ActivityId eq {ActivityId} and IsAvailable eq true";
+
+        url += "$count=true";
+        if (!string.IsNullOrEmpty(odataPagination))
         {
-            url += "$count=true&$top=10";
+            url += "&" + odataPagination;
+        }
+        if (!string.IsNullOrEmpty(odataSort))
+        {
+            url += "&" + odataSort;
+        }
+        if (!string.IsNullOrEmpty(odataFilters))
+        {
+            url += "&" + odataFilters + " and " + customFilters;
         }
         else
         {
-            url += odataQuery;
+            url += "&$filter=" + customFilters;
         }
+
         try
         {
             return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogReportResultDto>>(url, req.CancellationToken);
