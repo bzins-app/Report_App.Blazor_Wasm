@@ -2,24 +2,34 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
-            @localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+            <MudIcon Icon="@(Action switch
+                           {
+                               CrudAction.Update => Icons.Material.Filled.Edit,
+                               CrudAction.Create => Icons.Material.Filled.Create,
+                               _ => Icons.Material.Filled.DeleteForever
+                               } )" Class="mr-3 mb-n1" />
+            @Localizer.Get(Action switch
+            {
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+                })
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm Model="@Item" @ref="@form">
-            <MudTextField @bind-Value="Item.TaskName" Label="@(Item.TypeName==TaskType.Report.ToString()? localizer.Get("Report title"):Item.TypeName==TaskType.DataTransfer.ToString()?  localizer.Get("Job title"): localizer.Get("Alert title"))" Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudSelect T="string" Label="@localizer.Get("Activity name")" @bind-Value="@Item.ActivityName" AnchorOrigin="Origin.BottomCenter"
-                       Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false">
-                @foreach (var value in activities)
+        <MudForm Model="@Item" @ref="@_form">
+            <MudTextField @bind-Value="Item!.TaskName" Label="@(Item?.TypeName==TaskType.Report.ToString()? Localizer.Get("Report title"):Item?.TypeName==TaskType.DataTransfer.ToString()?  Localizer.Get("Job title"): Localizer.Get("Alert title"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
+            <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ActivityName" AnchorOrigin="Origin.BottomCenter"
+                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
+                @foreach (var value in _activities)
                 {
                     <MudSelectItem Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
                 }
             </MudSelect>
-            @if (Item.TypeName == TaskType.Report.ToString())
+            @if (Item?.TypeName == TaskType.Report.ToString())
             {
-                <MudSelect  Label="@localizer.Get("Type of file")" @bind-Value="@Item.TypeFile" AnchorOrigin="Origin.BottomCenter"
-                       Required RequiredError="@localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false">
+                <MudSelect  Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile" AnchorOrigin="Origin.BottomCenter"
+                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
                     @foreach (FileType item in Enum.GetValues(typeof(FileType)))
                     {
                         <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -29,53 +39,53 @@
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-                <MudTextField @bind-Value="deletionValidation" Label="@(localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@localizer.Get("Required")" />
+                <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
         }
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+        <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@Localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public TaskHeaderDTO Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
-    private MudForm form = default!;
-    private string deletionValidation;
-    private List<SelectItemActivitiesInfo> activities = new();
+    private MudForm _form = default!;
+    private string? _deletionValidation;
+    private List<SelectItemActivitiesInfo> _activities = new();
 
     protected override async Task OnInitializedAsync()
     {
-        activities = await dataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private async Task Validate()
     {
         if (Action == CrudAction.Delete)
         {
-            if (deletionValidation == "Validate")
+            if (_deletionValidation == "Validate")
             {
-                Item.Activity = new ActivityDTO { ActivityId = activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
-                MudDialog.Close(DialogResult.Ok(Item));
+                Item!.Activity = new() { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
-            Item.Activity = new ActivityDTO { ActivityId=activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
+            Item!.Activity = new() { ActivityId=_activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
             Item.IdActivity = Item.Activity.ActivityId;
-            await form.Validate();
-            if (form.IsValid&&Item.Activity is not null)
+            await _form.Validate();
+            if (_form.IsValid&&Item.Activity is not null)
             {
                 
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
     }

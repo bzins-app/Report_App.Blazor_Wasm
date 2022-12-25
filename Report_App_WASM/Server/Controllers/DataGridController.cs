@@ -10,7 +10,7 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiResponse;
+using Report_App_WASM.Shared.ApiExchanges;
 using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers
@@ -47,65 +47,63 @@ namespace Report_App_WASM.Server.Controllers
 
 
         [HttpPost("odata/ExtractLogs")]
-        public async Task<FileResult?> ExtractLogsAsync([FromBody] ODataExtractPayload Values)
+        public async Task<FileResult?> ExtractLogsAsync([FromBody] ODataExtractPayload values)
         {
-            if (Values.FunctionName == "EmailLogs")
+            if (values.FunctionName == "EmailLogs")
             {
-                return await GetExtractFile(GetEmailLogs(), Values);
+                return await GetExtractFile(GetEmailLogs(), values);
             }
-            else
-            if (Values.FunctionName == "QueryExecutionLogs")
+
+            if (values.FunctionName == "QueryExecutionLogs")
             {
-                return await GetExtractFile(GetQueryExecutionLogs(), Values);
+                return await GetExtractFile(GetQueryExecutionLogs(), values);
             }
-            else
-            if (Values.FunctionName == "ReportResultLogs")
+
+            if (values.FunctionName == "ReportResultLogs")
             {
-                return await GetExtractFile(GetReportResultLogs(), Values);
+                return await GetExtractFile(GetReportResultLogs(), values);
             }
-            else
-            if (Values.FunctionName == "TaskLogs")
+
+            if (values.FunctionName == "TaskLogs")
             {
-                return await GetExtractFile(GetTaskLogs(), Values);
+                return await GetExtractFile(GetTaskLogs(), values);
             }
-            else
-            if (Values.FunctionName == "AuditTrail")
+
+            if (values.FunctionName == "AuditTrail")
             {
-                return await GetExtractFile(GetAuditTrail(), Values);
+                return await GetExtractFile(GetAuditTrail(), values);
             }
-            else
-            {
-                return await GetExtractFile(GetSystemLogs(), Values);
-            }
+
+            return await GetExtractFile(GetSystemLogs(), values);
         }
 
-        private async Task<FileResult> GetExtractFile<T>(IQueryable<T> source, ODataExtractPayload Values) where T : class
+        private async Task<FileResult> GetExtractFile<T>(IQueryable<T> source, ODataExtractPayload values) where T : class
         {
             var q = source.OData();
-            if (!string.IsNullOrEmpty(Values.FilterValues))
+            if (!string.IsNullOrEmpty(values.FilterValues))
             {
-                q = q.Filter(Values.FilterValues);
+                q = q.Filter(values.FilterValues);
             }
-            if (!string.IsNullOrEmpty(Values.SortValues))
+            if (!string.IsNullOrEmpty(values.SortValues))
             {
-                q = q.OrderBy(Values.SortValues);
+                q = q.OrderBy(values.SortValues);
             }
-            var FinalQ = q.ToOriginalQuery();
+            var finalQ = q.ToOriginalQuery();
 
             try
             {
-                _logger.LogInformation("Grid extraction: Start "+ Values.FunctionName, Values.FunctionName);
-                var items = await FinalQ.AsQueryable().Take(Values.MaxResult).ToListAsync();
-                var fileName = Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
+                _logger.LogInformation("Grid extraction: Start " + values.FunctionName, values.FunctionName);
+                var items = await finalQ.AsQueryable().Take(values.MaxResult).ToListAsync();
+                var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
-                var file = CreateFile.ExcelFromCollection(fileName, Values.TabName, items);
+                var file = CreateFile.ExcelFromCollection(fileName, values.TabName, items);
                 _logger.LogInformation($"Grid extraction: End {fileName} {items.Count} lines", $" {fileName} {items.Count} lines");
                 return File(file.FileContents, contentType: file.ContentType, file.FileDownloadName);
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                return null;
+                return null!;
             }
         }
 
@@ -119,9 +117,9 @@ namespace Report_App_WASM.Server.Controllers
 
         [EnableQuery(EnsureStableOrdering = false)]
         [HttpGet("odata/QueryExecutionLogs")]
-        public IQueryable<ApplicationLogQueryExecutionDTO> GetQueryExecutionLogs()
+        public IQueryable<ApplicationLogQueryExecutionDto> GetQueryExecutionLogs()
         {
-            return _context.ApplicationLogQueryExecution.ProjectTo<ApplicationLogQueryExecutionDTO>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id).AsQueryable();
+            return _context.ApplicationLogQueryExecution.ProjectTo<ApplicationLogQueryExecutionDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id).AsQueryable();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
@@ -146,38 +144,40 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [EnableQuery(EnsureStableOrdering = false)]
-        [HttpGet("odata/SMTP")]
-        public IQueryable<SMTPConfiguration> GetSMTP()
+        [HttpGet("odata/Smtp")]
+        public IQueryable<SmtpConfiguration> GetSmtp()
         {
-            return _context.SMTPConfiguration.OrderByDescending(a => a.Id).AsNoTracking();
+            return _context.SmtpConfiguration.OrderByDescending(a => a.Id).AsNoTracking();
         }
 
-        [EnableQuery()]
-        [HttpGet("odata/LDAP")]
-        public IQueryable<LDAPConfiguration> GetLDAP()
+        [EnableQuery]
+        [HttpGet("odata/Ldap")]
+        public IQueryable<LdapConfiguration> GetLdap()
         {
-            return _context.LDAPConfiguration.AsNoTracking();
+            return _context.LdapConfiguration.AsNoTracking();
         }
 
-        [EnableQuery()]
-        [HttpGet("odata/SFTP")]
-        public IQueryable<SFTPConfiguration> GetSFTP()
+        [EnableQuery]
+        [HttpGet("odata/Sftp")]
+        public IQueryable<SftpConfiguration?> GetSftp()
         {
-            return _context.SFTPConfiguration.AsNoTracking();
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
+            return _context.SftpConfiguration.AsNoTracking();
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
         }
 
-        [EnableQuery()]
+        [EnableQuery]
         [HttpGet("odata/DepositPath")]
         public IQueryable<FileDepositPathConfiguration> GetDepositPath()
         {
             return _context.FileDepositPathConfiguration.AsNoTracking();
         }
 
-        [EnableQuery()]
+        [EnableQuery]
         [HttpGet("odata/Activities")]
         public IQueryable<Activity> GetActivities()
         {
-            return _context.Activity.Where(a=>a.ActivityType==ActivityType.SourceDB).Include(a => a.ActivityDbConnections).AsNoTracking();
+            return _context.Activity.Where(a => a.ActivityType == ActivityType.SourceDb).Include(a => a.ActivityDbConnections).AsNoTracking();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]

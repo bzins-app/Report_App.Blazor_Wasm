@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Server.Models
 {
-    public class LDAPConfiguration : BaseTraceability
+    public class LdapConfiguration : BaseTraceability
     {
         public int Id { get; set; }
         [Required]

@@ -13,7 +13,7 @@ namespace Report_App_WASM.Server.Models
         public string FilePath { get; set; } = ".";
         public bool IsReachable { get; set; }
         public bool TryToCreateFolder { get; set; }
-        public bool UseSFTPProtocol { get; set; } = false;
-        public virtual SFTPConfiguration? SFTPConfiguration { get; set; }
+        public bool UseSftpProtocol { get; set; } = false;
+        public virtual SftpConfiguration? SftpConfiguration { get; set; }
     }
 }

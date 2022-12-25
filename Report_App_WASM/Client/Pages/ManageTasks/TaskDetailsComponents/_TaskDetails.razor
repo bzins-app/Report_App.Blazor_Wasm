@@ -3,69 +3,69 @@
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@localizer.Get("Queries")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Queries")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@Elements.AsQueryable()" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid Items="@_elements.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.QueryName)" Title="@localizer.Get("Query name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.DetailSequence)" Title="@localizer.Get("Query sequence")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.DetailSequence)" Title="@Localizer.Get("Query sequence")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
-            <Paginator Value="@pagination" FieldsContent="@Translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
 
 @code {
-    [Parameter] public TaskHeaderDTO Item { get; set; }
-    [Parameter] public List<TaskDetailDTO> itemToDelete { get; set; }
-    [Parameter] public bool changePending { get; set; }
-    [Parameter] public EventCallback<bool> changePendingChanged { get; set; }
-    IEnumerable<TaskDetailDTO> Elements = new List<TaskDetailDTO>();
-    SimpleGrid<TaskDetailDTO> _grid;
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent Translations = default!;
-    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
-    private bool disable;
+    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public List<TaskDetailDto>? ItemToDelete { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
+    IEnumerable<TaskDetailDto>? _elements = new List<TaskDetailDto>();
+    SimpleGrid<TaskDetailDto>? _grid;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = default!;
+    DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
+    private bool _disable;
 
     protected override void OnParametersSet()
     {
         UpdateElements();
-        Translations = appService.GetGridTranslations();
+        _translations = AppService.GetGridTranslations();
     }
 
     private void UpdateElements()
     {
-        Elements = Item.TaskDetails.ToList();
+        _elements = Item?.TaskDetails.ToList();
     }
 
-    private async Task OpenEditDialog(TaskDetailDTO value)
+    private async Task OpenEditDialog(TaskDetailDto value)
     {
-        disable = true;
-        TaskDetailDTO itemUpdate = new TaskDetailDTO()
-            {
+        _disable = true;
+        var itemUpdate = new TaskDetailDto
+        {
                 Query = value.Query,
                 QueryName = value.QueryName,
                 QueryParameters = value.QueryParameters,
@@ -73,57 +73,57 @@
                 TaskDetailParameters = value.TaskDetailParameters,
                 LastRunDateTime=value.LastRunDateTime
             };
-        var parameters = new DialogParameters { ["Item"] = itemUpdate, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Update };
+        var parameters = new DialogParameters { ["Item"] = itemUpdate, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_TaskDetailsFormDialog>("Edit", parameters, maxWidth);
+        var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Edit", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            var result = (TaskDetailDTO)feedback.Data;
+            var result = (TaskDetailDto)feedback.Data;
             var toUpdate = Item.TaskDetails.Where(a => a.TaskDetailId == value.TaskDetailId).First();
             toUpdate.Query = result.Query;
             toUpdate.QueryName = result.QueryName;
             toUpdate.QueryParameters = result.QueryParameters;
             toUpdate.DetailSequence = result.DetailSequence;
             toUpdate.TaskDetailParameters = result.TaskDetailParameters;
-            changePending = true;
-            await changePendingChanged.InvokeAsync(changePending);
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
         }
-        disable = false;
+        _disable = false;
     }
 
-    private async Task OpenDeleteDialog(TaskDetailDTO value)
+    private async Task OpenDeleteDialog(TaskDetailDto value)
     {
-        disable = true;
+        _disable = true;
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        bool? result = await DialogService.ShowMessageBox(localizer.Get("Warning"),localizer.Get("Are you sure?"), localizer.Get("Delete"),null, cancelText: localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"),Localizer.Get("Are you sure?"), Localizer.Get("Delete"),null, cancelText: Localizer.Get("Cancel"), dialogOptions);
 
         if (result!=null)
         {
-            itemToDelete.Add(value);
-            Item.TaskDetails.Remove(value);
-            changePending = true;
-            await changePendingChanged.InvokeAsync(changePending);
+            ItemToDelete?.Add(value);
+            Item?.TaskDetails.Remove(value);
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();
         }
-        disable = false;
+        _disable = false;
     }
 
 
     private async Task OpenCreateDialog()
     {
-        var value = new TaskDetailDTO();
-        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
+        var value = new TaskDetailDto();
+        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_TaskDetailsFormDialog>("Create", parameters, maxWidth);
+        var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            Item.TaskDetails.Add((TaskDetailDTO)feedback.Data);
-            changePending = true;
-            await changePendingChanged.InvokeAsync(changePending);
+            Item.TaskDetails.Add((TaskDetailDto)feedback.Data);
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();
         }
     }
@@ -134,7 +134,7 @@
 
     private void RemoveFilters()
     {
-        _grid.RefreshDataAsync();
+        _grid?.RefreshDataAsync();
         UpdateElements();
     }
 }

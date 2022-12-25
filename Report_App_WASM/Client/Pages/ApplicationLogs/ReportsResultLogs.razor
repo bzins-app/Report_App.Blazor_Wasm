@@ -1,51 +1,52 @@
 ﻿@page "/ReportsResultLogs"
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@localizer.Get("Reports result logs")</PageTitle>
+<PageTitle>@Localizer.Get("Reports result logs")</PageTitle>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@localizer.Get("Reports result logs")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Reports result logs")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering"/>
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering"/>
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(ExtractElements)"
-                               Icon="@Icons.Material.Filled.Download" Title="@localizer.Get("Download")" Disabled="@rendering" />
+                               Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid BuildInFilter="true" FieldsContent="@Translations" ItemsProvider="@_ItemsProvider" Pagination="@pagination" @ref="_grid">
-                    <PropertyColumn Property="@(p => p.ActivityName)" Title="@localizer.Get("Activity name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreatedAt)" Title="@localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ReportName)" Title="@localizer.Get("Report name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.SubName)" Title="@localizer.Get("Report sub name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.FileType)" Title="@localizer.Get("File type")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.FileName)" Title="@localizer.Get("File name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ReportPath)" Title="@localizer.Get("File deposit path")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Error)" Title="@localizer.Get("Error?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Result)" Title="@localizer.Get("Result")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.IsAvailable)" Title="@localizer.Get("Is available?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.FileSizeInMB)" Title="@localizer.Get("File size in MB")" Sortable="true" />
+                <SimpleGrid BuildInFilter="true" FieldsContent="@_translations" ItemsProvider="@_itemsProvider" Pagination="@_pagination" @ref="_grid">
+                    <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreatedAt)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ReportName)" Title="@Localizer.Get("Report name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.SubName)" Title="@Localizer.Get("Report sub name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FileType)" Title="@Localizer.Get("File type")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FileName)" Title="@Localizer.Get("File name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ReportPath)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.IsAvailable)" Title="@Localizer.Get("Is available?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FileSizeInMb)" Title="@Localizer.Get("File size in MB")" Sortable="true" />
                 </SimpleGrid>
             </div>
-            @if (rendering)
+            @if (_rendering)
             {
-                <MudProgressLinear Color="Color.Info" Indeterminate="@rendering" />
+                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering" />
             }
-            <Paginator Value="@pagination" FieldsContent="@Translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -53,44 +54,44 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogReportResultDTO>? _ItemsProvider;
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent Translations = new();
-    SimpleGrid<ApplicationLogReportResultDTO> _grid;
-    private bool rendering = false;
+    GridItemsProvider<ApplicationLogReportResultDto>? _itemsProvider;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = new();
+    SimpleGrid<ApplicationLogReportResultDto>? _grid;
+    private bool _rendering;
 
 
     protected override void OnInitialized()
     {
-        _ItemsProvider = async req =>
+        _itemsProvider = async req =>
         {
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);           
+            return GridItemsProviderResult.From(response.Value!, response.Count);           
         };
-        Translations = appService.GetGridTranslations();
+        _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogReportResultDTO>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDTO> req)
+    private async Task<ApiResponse<ApplicationLogReportResultDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
-        var OdataQuery = _grid?.GetODataQuery();
-        string url = "odata/ReportResultLogs?";
-        if (string.IsNullOrEmpty(OdataQuery))
+        var odataQuery = _grid?.GetODataQuery();
+        var url = "odata/ReportResultLogs?";
+        if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
-            url += OdataQuery;
+            url += odataQuery;
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogReportResultDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<ApplicationLogReportResultDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -101,29 +102,29 @@
 
     private async Task OnRefresh()
     {
-        rendering = true;
-        await _grid.RefreshDataAsync();
-        rendering = false;
+        _rendering = true;
+        if (_grid != null) await _grid.RefreshDataAsync();
+        _rendering = false;
     }
 
     private async Task ExtractElements()
     {
-        rendering = true;
-        ODataExtractPayload Values = new ODataExtractPayload { FunctionName = "ReportResultLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Reports result logs" };
-        await dataService.ExtractGridLogs(Values);
-        rendering = false;
+        _rendering = true;
+        var values = new ODataExtractPayload { FunctionName = "ReportResultLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Reports result logs" };
+        await DataService.ExtractGridLogs(values);
+        _rendering = false;
     }
 
     private async Task RemoveFilters()
     {
-        rendering = true;
-        await _grid.RemoveFilters();
-        rendering = false;
+        _rendering = true;
+        if (_grid != null) await _grid.RemoveFilters();
+        _rendering = false;
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _grid.DisposeAsync();
+        if (_grid != null) await _grid.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }

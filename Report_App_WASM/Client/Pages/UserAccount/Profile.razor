@@ -1,104 +1,102 @@
 ﻿@page "/Profile"
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager uriHelper
-@inject ISnackbar Snackbar
 
-<PageTitle>@localizer.Get("Manage your account")</PageTitle>
+<PageTitle>@Localizer.Get("Manage your account")</PageTitle>
 
 <ErrorBoundary>
     <ChildContent>
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
                  ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
-            <MudTabPanel Text="@localizer.Get("Profile")">
-                <MudForm Model="@model" @ref="@form" Validation="@(userValidator.ValidateValue)" Style="display: flex; align-content: center;  align-items: center; flex-direction: column;">
+            <MudTabPanel Text="@Localizer.Get("Profile")">
+                <MudForm Model="@Model" @ref="@_form" Validation="@(_userValidator.ValidateValue)" Style="display: flex; align-content: center;  align-items: center; flex-direction: column;">
                     <MudGrid Justify="Justify.FlexStart" Style="max-width:600px;display:flex;">
                         <MudItem sm="12" xs="12">
-                            <MudTextField For="@(() => model.UserName)" @bind-Value="model.UserName" Label="@localizer.Get("User name")" Variant="Variant.Text" ReadOnly="true" Margin="Margin.Dense"></MudTextField>
+                            <MudTextField For="@(() => Model.UserName)" @bind-Value="Model.UserName" Label="@Localizer.Get("User name")" Variant="Variant.Text" ReadOnly="true" Margin="Margin.Dense"></MudTextField>
                         </MudItem>
                         <MudItem sm="12" xs="12">
-                            <MudTextField For="@(() => model.Email)" @bind-Value="model.Email" Label="@localizer.Get("Email")" Variant="Variant.Text" ReadOnly="true" Margin="Margin.Dense"></MudTextField>
+                            <MudTextField For="@(() => Model.Email)" @bind-Value="Model.Email" Label="@Localizer.Get("Email")" Variant="Variant.Text" ReadOnly="true" Margin="Margin.Dense"></MudTextField>
                         </MudItem>
                         <MudItem sm="12" xs="12" Class="d-flex justify-end">
-                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">@localizer.Get("Validate")</MudButton>
+                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">@Localizer.Get("Validate")</MudButton>
                         </MudItem>
                     </MudGrid>
                 </MudForm>
             </MudTabPanel>
-            <MudTabPanel Text="@localizer.Get("Change password")">
-                <MudForm Model="@changepassword" @ref="@passwordform" Validation="@(passwordValidator.ValidateValue)" Style="display: flex;align-content: center;  align-items: center; flex-direction: column;">
+            <MudTabPanel Text="@Localizer.Get("Change password")">
+                <MudForm Model="@Changepassword" @ref="@_passwordform" Validation="@(_passwordValidator.ValidateValue)" Style="display: flex;align-content: center;  align-items: center; flex-direction: column;">
                     <MudGrid Justify="Justify.FlexStart" Style="max-width:600px">
                         <MudItem sm="12" xs="12">
                             <MudTextField Immediate="true"
-                                          Label="@localizer.Get("Old password")"
-                                          For="@(()=>changepassword.CurrentPassword)"
-                                          @bind-Value="changepassword.CurrentPassword"
+                                          Label="@Localizer.Get("Old password")"
+                                          For="@(()=>Changepassword.CurrentPassword)"
+                                          @bind-Value="Changepassword.CurrentPassword"
                                           Variant="Variant.Text"
-                                          InputType="@PasswordInput"
+                                          InputType="@_passwordInput"
                                           Adornment="Adornment.End"
-                                          AdornmentIcon="@PasswordInputIcon"
+                                          AdornmentIcon="@_passwordInputIcon"
                                           Required="true"
-                                          RequiredError="@localizer.Get("Required")"
+                                          RequiredError="@Localizer.Get("Required")"
                                           Margin="Margin.Dense"
                                           IconSize="Size.Small"
                                           OnAdornmentClick="TogglePasswordVisibility" />
                         </MudItem>
                         <MudItem xs="12">
                             <MudTextField Immediate="true"
-                                          Label="@localizer.Get("New password")"
-                                          For="@(()=>changepassword.NewPassword)"
-                                          @bind-Value="changepassword.NewPassword"
+                                          Label="@Localizer.Get("New password")"
+                                          For="@(()=>Changepassword.NewPassword)"
+                                          @bind-Value="Changepassword.NewPassword"
                                           Variant="Variant.Text"
-                                          InputType="@PasswordInput"
+                                          InputType="@_passwordInput"
                                           Adornment="Adornment.End"
-                                          AdornmentIcon="@PasswordInputIcon"
+                                          AdornmentIcon="@_passwordInputIcon"
                                           Required="true"
-                                          RequiredError="@localizer.Get("Required")"
+                                          RequiredError="@Localizer.Get("Required")"
                                           Margin="Margin.Dense"
                                           IconSize="Size.Small"
                                           OnAdornmentClick="TogglePasswordVisibility" />
                         </MudItem>
                         <MudItem xs="12">
                             <MudTextField Immediate="true"
-                                          Label="@localizer.Get("Confirm password")"
-                                          For="@(()=>changepassword.ConfirmPassword)"
-                                          @bind-Value="changepassword.ConfirmPassword"
+                                          Label="@Localizer.Get("Confirm password")"
+                                          For="@(()=>Changepassword.ConfirmPassword)"
+                                          @bind-Value="Changepassword.ConfirmPassword"
                                           Variant="Variant.Text"
-                                          InputType="@PasswordInput"
+                                          InputType="@_passwordInput"
                                           Adornment="Adornment.End"
-                                          AdornmentIcon="@PasswordInputIcon"
+                                          AdornmentIcon="@_passwordInputIcon"
                                           Required="true"
-                                          RequiredError="@localizer.Get("Required")"
+                                          RequiredError="@Localizer.Get("Required")"
                                           Margin="Margin.Dense"
                                           IconSize="Size.Small"
                                           OnAdornmentClick="TogglePasswordVisibility" />
                         </MudItem>
                         <MudItem sm="12" xs="12" Class="d-flex justify-end">
-                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await ChangePassword())">@localizer.Get("Update password")</MudButton>
+                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await ChangePassword())">@Localizer.Get("Update password")</MudButton>
                         </MudItem>
                     </MudGrid>
                 </MudForm>
             </MudTabPanel>
-            <MudTabPanel Text="@localizer.Get("Personal data")">
+            <MudTabPanel Text="@Localizer.Get("Personal data")">
                 <MudCardContent Style="display: flex;align-content: center;  align-items: center; flex-direction: column;">
                     <MudGrid Justify="Justify.FlexEnd" Style="max-width:600px;">
                         <MudItem sm="12" xs="12">
-                            <MudText>@localizer.Get("Your account contains personal data that you have given us. This page allows you to download or delete that data.")</MudText>
+                            <MudText>@Localizer.Get("Your account contains personal data that you have given us. This page allows you to download or delete that data.")</MudText>
                         </MudItem>
                         <MudItem sm="12" xs="12" Class="d-flex justify-end">
-                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Link="/DownloadPersonalData">@localizer.Get("Download")</MudButton>
+                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Link="/DownloadPersonalData">@Localizer.Get("Download")</MudButton>
                         </MudItem>
                     </MudGrid>
                 </MudCardContent>
             </MudTabPanel>
-            <MudTabPanel Text="@localizer.Get("Close your account")">
+            <MudTabPanel Text="@Localizer.Get("Close your account")">
                 <MudCardContent Style="display: flex;align-content: center;  align-items: center; flex-direction: column;">
                     <MudGrid Justify="Justify.Center" Style="max-width:600px;">
                         <MudItem sm="12" xs="12">
-                            <MudText><strong>@localizer.Get("Deleting this data will permanently remove your account, and this cannot be recovered.")</strong></MudText>
-                            <MudTextField @bind-Value="passwordForDeletion" Variant="Variant.Text" Label="@localizer.Get("Password")" Validation="@deletionPasswordResult" InputType="InputType.Password" Margin="Margin.Dense" Disabled="@LdapSignin" />
+                            <MudText><strong>@Localizer.Get("Deleting this data will permanently remove your account, and this cannot be recovered.")</strong></MudText>
+                            <MudTextField @bind-Value="_passwordForDeletion" Variant="Variant.Text" Label="@Localizer.Get("Password")" Validation="@_deletionPasswordResult" InputType="InputType.Password" Margin="Margin.Dense" Disabled="@_ldapSignin" />
                         </MudItem>
                         <MudItem sm="12" xs="12" Class="d-flex justify-end">
-                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Warning" Class="ml-auto" Disabled="@LdapSignin" OnClick="DeleteAccount">@localizer.Get("Delete data and close my account")</MudButton>
+                            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Warning" Class="ml-auto" Disabled="@_ldapSignin" OnClick="DeleteAccount">@Localizer.Get("Delete data and close my account")</MudButton>
                         </MudItem>
                     </MudGrid>
                 </MudCardContent>
@@ -107,35 +105,35 @@
     </ChildContent>
 </ErrorBoundary>
 @code {
-    private MudForm form = default!;
-    private MudForm passwordform = default!;
+    private MudForm _form = default!;
+    private MudForm _passwordform = default!;
 
-    private UserProfile model { get; set; } = new();
-    private readonly UserProfileEditValidator userValidator = new();
-    private ChangePasswordModel changepassword { get; set; } = new();
-    private ChangePasswordModelValidator passwordValidator;
-    private readonly UserInfo user = new();
+    private UserProfile Model { get; set; } = new();
+    private readonly UserProfileEditValidator _userValidator = new();
+    private ChangePasswordModel Changepassword { get; set; } = new();
+    private ChangePasswordModelValidator? _passwordValidator;
+    private readonly UserInfo _user = new();
 
-    private bool LdapSignin;
-    private string passwordForDeletion;
-    private string deletionPasswordResult;
-    bool PasswordVisibility;
-    InputType PasswordInput = InputType.Password;
+    private bool _ldapSignin;
+    private string? _passwordForDeletion;
+    private string? _deletionPasswordResult;
+    bool _passwordVisibility;
+    InputType _passwordInput = InputType.Password;
 
-    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+    string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
     void TogglePasswordVisibility()
     {
-        @if (PasswordVisibility)
+        @if (_passwordVisibility)
         {
-            PasswordVisibility = false;
-            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-            PasswordInput = InputType.Password;
+            _passwordVisibility = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
         }
         else
         {
-            PasswordVisibility = true;
-            PasswordInputIcon = Icons.Material.Filled.Visibility;
-            PasswordInput = InputType.Text;
+            _passwordVisibility = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
         }
     }
 
@@ -144,11 +142,11 @@
         var user = await AuthenticationStateProvider.GetUserInfo();
        // model.Options = _userManager.Options;
       //  changepassword.Options = _userManager.Options;
-        model.UserName = user.UserName;
+        Model.UserName = user.UserName;
         //model.Id = user.Id;
-        model.Email = user.UserMail;
-        LdapSignin = ApplicationConstants.LDAPLogin;
-        passwordValidator = new(localizer);
+        Model.Email = user.UserMail;
+        _ldapSignin = ApplicationConstants.LdapLogin;
+        _passwordValidator = new(Localizer);
     }
 
 
@@ -173,7 +171,7 @@
         //    var result = await _userManager.ChangePasswordAsync(user, changepassword.CurrentPassword, changepassword.NewPassword);
         //    if (result.Succeeded)
         //    {
-        //        Snackbar.Add($"{localizer.Get("Changed password successfully")}", Severity.Info);
+        //        Snackbar.Add($"{Localizer.Get("Changed password successfully")}", Severity.Info);
         //    }
         //    else
         //    {
@@ -186,12 +184,12 @@
     {
         //if (string.IsNullOrEmpty(passwordForDeletion))
         //{
-        //    deletionPasswordResult = localizer.Get("Incorrect password");
+        //    deletionPasswordResult = Localizer.Get("Incorrect password");
         //    return;
         //}
         //if (!await _userManager.CheckPasswordAsync(user, passwordForDeletion))
         //{
-        //    deletionPasswordResult = localizer.Get("Incorrect password");
+        //    deletionPasswordResult = Localizer.Get("Incorrect password");
         //    return;
         //}
         //deletionPasswordResult = "";

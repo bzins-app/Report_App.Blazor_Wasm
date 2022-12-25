@@ -2,19 +2,18 @@
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.EntityFrameworkCore;
-using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.EmailSender;
+using Report_App_WASM.Server.Services.FilesManagement;
+using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.SerializedParameters;
-using ReportAppWASM.Server.Services.EmailSender;
-using ReportAppWASM.Server.Services.FilesManagement;
-using System.Data;
 using System.Net.Mail;
 using System.Text.Json;
 
-namespace ReportAppWASM.Server.Services.BackgroundWorker
+namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     {
@@ -24,7 +23,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         readonly LocalFilesService _fileDeposit;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IServiceScopeFactory scopeFactory;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public BackgroundWorkers(
                       ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment, IServiceScopeFactory scopeFactory)
@@ -35,12 +34,14 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             _fileDeposit = fileDeposit;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
-            this.scopeFactory = scopeFactory;
+            _scopeFactory = scopeFactory;
         }
 
-        public void SendEmail(List<EmailRecipient> email, string subject, string message, List<Attachment> Attachment = null)
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        public void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         {
-            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, Attachment));
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment));
         }
 
         public void DeleteFile(string filePath)
@@ -69,40 +70,46 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             var services = await _context.ServicesStatus.Select(a => new { a.AlertService, a.ReportService, a.DataTransferService }).FirstOrDefaultAsync();
             var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == taskHeaderId).Select(a => new { a.TaskName, a.Type, a.Activity.ActivityName, a.CronParameters }).FirstOrDefaultAsync();
-            string JobName = taskHeader.Type + ":" + taskHeader.ActivityName + ":" + taskHeader.TaskName + " Id:" + taskHeaderId;
+            var jobName = taskHeader!.Type + ":" + taskHeader.ActivityName + ":" + taskHeader.TaskName + " Id:" + taskHeaderId;
             if (activate)
             {
                 var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
                 if (!string.IsNullOrEmpty(taskHeader.CronParameters) || taskHeader.CronParameters != "[]")
                 {
                     var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);
-                    int cronId = 0;
-                    foreach (var cron in crons)
+                    var cronId = 0;
+                    foreach (var cron in crons!)
                     {
-                        var jobID = JobName + "_" + cronId;
+                        var jobId = jobName + "_" + cronId;
                         var jobParam = new TaskJobParameters
                         {
                             TaskHeaderId = taskHeaderId,
                             Cts = CancellationToken.None,
                             GenerateFiles = true
                         };
-                        if (taskHeader.Type == TaskType.Report && services.ReportService)
+                        if (taskHeader.Type == TaskType.Report && services!.ReportService)
                         {
-                            string queueName = "report";
+                            var queueName = "report";
+#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             options.QueueName = queueName;
-                            RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
+                            RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
-                        if (taskHeader.Type == TaskType.Alert && services.AlertService)
+                        if (taskHeader.Type == TaskType.Alert && services!.AlertService)
                         {
-                            string queueName = "alert";
+                            var queueName = "alert";
+#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             options.QueueName = queueName;
-                            RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
+                            RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
-                        if (taskHeader.Type == TaskType.DataTransfer && services.DataTransferService)
+                        if (taskHeader.Type == TaskType.DataTransfer && services!.DataTransferService)
                         {
-                            string queueName = "datatransfer";
+                            var queueName = "datatransfer";
+#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             options.QueueName = queueName;//to remove in version 2.0
-                            RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
+                            RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
 
                         cronId++;
@@ -112,7 +119,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             }
             else
             {
-                List<RecurringJobDto> recurringJobs = Hangfire.JobStorage.Current.GetConnection().GetRecurringJobs();
+                List<RecurringJobDto> recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
                 foreach (var j in recurringJobs.Where(a => a.Id.Contains(" Id:" + taskHeaderId + "_")))
                 {
                     RecurringJob.RemoveIfExists(j.Id);
@@ -122,8 +129,10 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
         public async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type)
         {
-            string queueName = type.ToString().ToLower();
+            var queueName = type.ToString().ToLower();
+#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
             var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local, QueueName = queueName };
+#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
             SubmitResult result = new();
             if (activate)
             {
@@ -134,16 +143,21 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 }
                 else
                 {
-                    var typeTask = type == BackgroundTaskType.DataTransfer ? TaskType.DataTransfer : type == BackgroundTaskType.Alert ? TaskType.Alert : TaskType.Report;
+                    var typeTask = type switch
+                    {
+                        BackgroundTaskType.DataTransfer => TaskType.DataTransfer,
+                        BackgroundTaskType.Alert => TaskType.Alert,
+                        _ => TaskType.Report
+                    };
                     await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
-                            string JobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
+                            var jobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
-                                int cronId = 0;
-                                foreach (var cron in crons)
+                                var cronId = 0;
+                                foreach (var cron in crons!)
                                 {
                                     var jobParam = new TaskJobParameters
                                     {
@@ -151,8 +165,8 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                                         Cts = CancellationToken.None,
                                         GenerateFiles = true
                                     };
-                                    var jobID = JobName + "_" + cronId;
-                                    RecurringJob.AddOrUpdate(jobID, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
+                                    var jobId = jobName + "_" + cronId;
+                                    RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                                     cronId++;
                                 }
                             }
@@ -173,18 +187,20 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             return result;
         }
 
-        public void RunManuallyTask(int taskHeaderId, string runBy, List<EmailRecipient> emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
+        public void RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient>? emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
         {
-            BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters { TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles, CustomEmails = emails ?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters, ManualRun = true, RunBy = runBy }));
+            BackgroundJob.Enqueue(() => RunTaskJobAsync(new() { TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles, CustomEmails = emails ?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters, ManualRun = true, RunBy = runBy }));
         }
 
         public async Task RunTaskJobAsync(TaskJobParameters parameters)
         {
-            using (var scope = scopeFactory.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
                 var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'context' in 'BackgroundTaskHandler.BackgroundTaskHandler(ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment)'.
                 using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper, _hostingEnvironment);
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'context' in 'BackgroundTaskHandler.BackgroundTaskHandler(ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment)'.
                 await handler.HandleTask(parameters);
                 handler.Dispose();
             }
@@ -244,7 +260,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         public async Task DeleteLogsAsync()
         {
             ApplicationLogTask logTask = new() { StartDateTime = DateTime.Now, JobDescription = "Logs cleaner", Type = "Cleaner service" };
-            var rententionDays = await _context.ApplicationParameters.Select(a => a.LogsRetentionInDays).FirstOrDefaultAsync();
+            var rententionDays = await _context.ApplicationParameters.Select(a => a!.LogsRetentionInDays).FirstOrDefaultAsync();
             await _context.ApplicationLogSystem.Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-rententionDays)).ForEachAsync(a => _context.Remove(a));
             await _context.ApplicationLogTask.Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-rententionDays)).ForEachAsync(a => _context.Remove(a));
             await _context.ApplicationLogTaskDetails.Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-rententionDays)).ForEachAsync(a => _context.Remove(a));

@@ -3,73 +3,70 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Report_App_WASM.Client.Utils;
 using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiResponse;
-using System.Net.Http.Headers;
+using Report_App_WASM.Shared.ApiExchanges;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using static System.Net.WebRequestMethods;
 
 namespace Report_App_WASM.Client.Services
 {
     public class DataInteractionService
     {
         private readonly HttpClient _httpClient;
-        private readonly IBlazorDownloadFileService BlazorDownloadFileService;
-        private readonly AuthenticationStateProvider _AuthenticationStateProvider;
-        private const string CrudAPI = ApiControllers.CrudDataApi;
+        private readonly IBlazorDownloadFileService _blazorDownloadFileService;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
+        private const string CrudApi = ApiControllers.CrudDataApi;
 
         public DataInteractionService(HttpClient httpClient,
-            IBlazorDownloadFileService blazorDownloadFileService, AuthenticationStateProvider AuthenticationStateProvider)
+            IBlazorDownloadFileService blazorDownloadFileService, AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
-            BlazorDownloadFileService = blazorDownloadFileService;
-            _AuthenticationStateProvider = AuthenticationStateProvider;
+            _blazorDownloadFileService = blazorDownloadFileService;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
 
-        private async Task<string> GetUserIdAsync()
+        private async Task<string?> GetUserIdAsync()
         {
-            return (await _AuthenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
+            return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
 
-        public async Task<SubmitResult> PostValues<T>(T value, string ControllerAction, string controller = CrudAPI) where T : class
+        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{ControllerAction}";
+            var uri = $"{controller}{controllerAction}";
 
-            ApiCRUDPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
+            ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
             {
                 JsonSerializerOptions options = new();
                 options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 var response = await _httpClient.PostAsJsonAsync(uri, payload, options);
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync());
+                if (response.StatusCode == HttpStatusCode.BadRequest) throw new(await response.Content.ReadAsStringAsync());
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<SubmitResult>();
+                    return (await response.Content.ReadFromJsonAsync<SubmitResult>())!;
                 }
-                else
-                {
-                    return new SubmitResult { Success = false };
-                }
+
+                return new() { Success = false };
             }
             catch (Exception ex)
             {
-                return new SubmitResult { Success = false, Message = ex.Message };
+                return new() { Success = false, Message = ex.Message };
             }
         }
 
-        public async Task ExtractGridLogs(ODataExtractPayload Values)
+        public async Task ExtractGridLogs(ODataExtractPayload values)
         {
             try
             {
-                string url = "odata/ExtractLogs";
-                var response = await _httpClient.PostAsJsonAsync(url, Values);
+                var url = "odata/ExtractLogs";
+                var response = await _httpClient.PostAsJsonAsync(url, values);
                 if (response.IsSuccessStatusCode)
                 {
-                    var downloadresult = await BlazorDownloadFileService.DownloadFile(Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
+                    var downloadresult = await _blazorDownloadFileService.DownloadFile(values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
                     if (downloadresult.Succeeded)
                     {
                         response.Dispose();
@@ -84,9 +81,9 @@ namespace Report_App_WASM.Client.Services
         }
 
 
-        public async Task<List<T>> GetValues<T>(string ControllerAction, string controller = CrudAPI) where T : class
+        public async Task<List<T>> GetValues<T>(string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{ControllerAction}";
+            var uri = $"{controller}{controllerAction}";
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<List<T>>(uri);
@@ -94,20 +91,18 @@ namespace Report_App_WASM.Client.Services
                 {
                     return response;
                 }
-                else
-                {
-                    return new List<T>();
-                }
+
+                return new();
             }
             catch
             {
-                return new List<T>();
+                return new();
             }
         }
 
-        public async Task<T> GetUniqueValue<T>(T value, string ControllerAction, string controller = CrudAPI) where T : class
+        public async Task<T> GetUniqueValue<T>(T value, string controllerAction, string controller = CrudApi) where T : class
         {
-            string uri = $"{controller}{ControllerAction}";
+            var uri = $"{controller}{controllerAction}";
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<T>(uri);
@@ -115,10 +110,8 @@ namespace Report_App_WASM.Client.Services
                 {
                     return response;
                 }
-                else
-                {
-                    return value;
-                }
+
+                return value;
             }
             catch
             {
@@ -136,17 +129,17 @@ namespace Report_App_WASM.Client.Services
                             new StreamContent(file.OpenReadStream(maxFileSize));
 
                 fileContent.Headers.ContentType =
-                    new MediaTypeHeaderValue(file.ContentType);
+                    new(file.ContentType);
                 content.Add(
                             content: fileContent,
                             name: "\"file\"",
                             fileName: file.Name);
                 var response = await _httpClient.PostAsync($"{ApiControllers.FilesApi}Upload", content);
-                return await response.Content.ReadFromJsonAsync<SubmitResult>();
+                return (await response.Content.ReadFromJsonAsync<SubmitResult>())!;
             }
             catch (Exception ex)
             {
-                return new SubmitResult { Success = false, Message = ex.Message };
+                return new() { Success = false, Message = ex.Message };
             }
 
         }

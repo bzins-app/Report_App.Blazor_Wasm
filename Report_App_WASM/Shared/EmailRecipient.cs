@@ -2,7 +2,7 @@
 {
     public class EmailRecipient
     {
-        public string? Email { get; set; }
-        public bool BCC { get; set; } = false;
+        public string? Email { get; init; }
+        public bool Bcc { get; set; } = false;
     }
 }

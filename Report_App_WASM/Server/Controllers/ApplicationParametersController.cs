@@ -5,7 +5,6 @@ using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
-using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -34,12 +33,12 @@ namespace Report_App_WASM.Server.Controllers
             return await _context.Activity.AsNoTracking().Select(a => new SelectItemActivitiesInfo { ActivityId = a.ActivityId, ActivityName = a.ActivityName, HasALogo = !string.IsNullOrEmpty(a.ActivityLogo), IsVisible = a.Display, LogoPath = a.ActivityLogo, IsActivated = a.IsActivated }).ToArrayAsync();
         }
 
-		[Authorize]
-		[HttpGet("SFTPInfo")]
-		public async Task<IEnumerable<SelectItem>> GetSFTPInfo()
-		{
-			return await _context.SFTPConfiguration.Select(a => new SelectItem { Id = a.SFTPConfigurationId, Name = a.ConfigurationName }).ToListAsync();
-		}
+        [Authorize]
+        [HttpGet("SftpInfo")]
+        public async Task<IEnumerable<SelectItem>> GetSftpInfo()
+        {
+            return await _context.SftpConfiguration.Select(a => new SelectItem { Id = a!.SftpConfigurationId, Name = a.ConfigurationName }).ToListAsync();
+        }
 
         [Authorize]
         [HttpGet("DepositPathInfo")]
@@ -51,22 +50,24 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("ApplicationConstants")]
         public ApplicationConstantsValues GetApplicationConstants()
         {
-            ApplicationConstantsValues values = new() { ApplicationLogo = ApplicationConstants.ApplicationLogo, ApplicationName = ApplicationConstants.ApplicationName, LDAPLogin = ApplicationConstants.LDAPLogin };
+            ApplicationConstantsValues values = new() { ApplicationLogo = ApplicationConstants.ApplicationLogo, ApplicationName = ApplicationConstants.ApplicationName, LdapLogin = ApplicationConstants.LdapLogin };
             return values;
         }
 
         [Authorize]
-        [HttpGet("CheckSMTPConfiguration")]
-        public async Task<bool> CheckSMTPConfigurationAsync()
+        [HttpGet("CheckSmtpConfiguration")]
+        public async Task<bool> CheckSmtpConfigurationAsync()
         {
-            return await _context.SMTPConfiguration.Where(a => a.IsActivated).AnyAsync();
+            return await _context.SmtpConfiguration.Where(a => a.IsActivated).AnyAsync();
         }
 
         [Authorize]
         [HttpGet("CheckTaskHeaderEmail")]
         public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
         {
-            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() == "[]" || !await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() == "[]" || !await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
 
@@ -76,16 +77,20 @@ namespace Report_App_WASM.Server.Controllers
         {
             var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "upload");
             var filePath = Path.Combine(uploads, fileName);
-            string savePath = "upload/" + fileName;
+            var savePath = "upload/" + fileName;
             Tuple<string, string> result = new(savePath, filePath);
             return result;
         }
 
         [Authorize]
         [HttpGet("GetApplicationParameters")]
-        public async Task<ApplicationParameters> GetApplicationParametersAsync()
+        public async Task<ApplicationParameters?> GetApplicationParametersAsync()
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTrackingWithIdentityResolution<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
             return await _context.ApplicationParameters.OrderBy(a => a.Id).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync();
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTrackingWithIdentityResolution<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
     }
 }

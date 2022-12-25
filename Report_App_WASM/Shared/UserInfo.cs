@@ -2,17 +2,17 @@
 {
     public class UserInfo
     {
-        public bool IsAuthenticated { get; set; }
-        public string? UserName { get; set; }
-        public string? UserMail { get; set; }
+        public bool IsAuthenticated { get; init; }
+        public string? UserName { get; init; }
+        public string? UserMail { get; init; }
         public string? Culture { get; set; }
-        public string? AppTheme { get; set; }
-        public List<ClaimsValue>? ExposedClaims { get; set; }
+        public string? AppTheme { get; init; }
+        public List<ClaimsValue>? ExposedClaims { get; init; }
     }
 
     public class ClaimsValue
     {
-        public string? Type { get; set; }
-        public string? Value { get; set; }
+        public string? Type { get; init; }
+        public string? Value { get; init; }
     }
 }

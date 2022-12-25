@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Models.AuditModels;
 
@@ -13,14 +12,15 @@ namespace Report_App_WASM.Server.Data
             DbContextOptions options) : base(options)
         {
         }
-        public DbSet<ApplicationAuditTrail> AuditLogs { get; set; }
-        public virtual async Task<int> SaveChangesAsync(string userId = null)
+        public DbSet<ApplicationAuditTrail> AuditLogs { get; set; } = null!;
+
+        public virtual async Task<int> SaveChangesAsync(string? userId = null)
         {
             OnBeforeSaveChanges(userId);
             var result = await base.SaveChangesAsync();
             return result;
         }
-        private void OnBeforeSaveChanges(string userId)
+        private void OnBeforeSaveChanges(string? userId)
         {
             ChangeTracker.DetectChanges();
             var auditEntries = new List<AuditEntry>();
@@ -32,11 +32,11 @@ namespace Report_App_WASM.Server.Data
 
                     if (entry.State == EntityState.Added)
                     {
-                        entity.CreateUser = userId ?? "system";
+                        entity!.CreateUser = userId ?? "system";
                         entity.CreateDateTime = DateTime.Now;
                     }
 
-                    entity.ModificationUser = userId ?? "system";
+                    entity!.ModificationUser = userId ?? "system";
                     entity.ModDateTime = DateTime.Now;
                 }
 
@@ -51,7 +51,7 @@ namespace Report_App_WASM.Server.Data
                 auditEntries.Add(auditEntry);
                 foreach (var property in entry.Properties.Where(a => a.Metadata.Name != "ModDateTime" && a.Metadata.Name != "ModificationUser"))
                 {
-                    string propertyName = property.Metadata.Name;
+                    var propertyName = property.Metadata.Name;
                     if (property.Metadata.IsPrimaryKey())
                     {
                         auditEntry.KeyValues[propertyName] = property.CurrentValue;
@@ -65,15 +65,15 @@ namespace Report_App_WASM.Server.Data
                             break;
                         case EntityState.Deleted:
                             auditEntry.AuditType = AuditType.Delete;
-                            auditEntry.OldValues[propertyName] = oldProperties[propertyName];
+                            auditEntry.OldValues[propertyName] = oldProperties?[propertyName];
                             break;
                         case EntityState.Modified:
-                            property.OriginalValue = oldProperties[propertyName];
+                            property.OriginalValue = oldProperties?[propertyName];
                             if (property.IsModified && property.OriginalValue != null ? !property.OriginalValue.Equals(property.CurrentValue) : property.CurrentValue != property.OriginalValue)
                             {
                                 auditEntry.ChangedColumns.Add(propertyName);
                                 auditEntry.AuditType = AuditType.Update;
-                                auditEntry.OldValues[propertyName] = oldProperties[propertyName];
+                                auditEntry.OldValues[propertyName] = oldProperties?[propertyName];
                                 auditEntry.NewValues[propertyName] = property.CurrentValue;
                             }
                             break;

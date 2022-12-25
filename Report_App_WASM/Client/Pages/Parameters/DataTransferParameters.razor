@@ -2,70 +2,70 @@
 @inject NavigationManager NavManager
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@localizer.Get("Data transfer parameters")</PageTitle>
+<PageTitle>@Localizer.Get("Data transfer parameters")</PageTitle>
 
 <MudCard Elevation="6">
     <MudCardHeader>
         <CardHeaderContent>
-            <MudText Typo="Typo.h6">@localizer.Get("Data transfer parameters")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Data transfer parameters")</MudText>
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudTextField @bind-Value="targetInfo.ActivityName" Label="@localizer.Get("Activity name")" ReadOnly />
-        @if (dbCon.TypeDb>0)
+        <MudTextField @bind-Value="_targetInfo.ActivityName" Label="@Localizer.Get("Activity name")" ReadOnly />
+        @if (_dbCon.TypeDb>0)
         {
 
-            <MudTextField @bind-Value="dbCon.ConnectionPath" Label="@localizer.Get("Connection path")" Required Placeholder="IP or Hostname" />
-            <MudSwitch @bind-Checked="dbCon.UseDbSchema" Label="@localizer.Get("Indicate the database name?")" Color="Color.Primary" />
-            <MudTextField @bind-Value="dbCon.DbSchema" Label="@localizer.Get("Database name")" Disabled="!dbCon.UseDbSchema" />
-            <MudSwitch @bind-Checked="dbCon.IntentReadOnly" Label="@localizer.Get("Application intent read only?")" Color="Color.Primary" />
-            <MudSwitch @bind-Checked="dbCon.ADAuthentication" Label="@localizer.Get("Use Windows authentication?")" Color="Color.Primary" />
-            <MudTextField @bind-Value="dbCon.ConnectionLogin" Label="@localizer.Get("Connection login")" Disabled="dbCon.ADAuthentication" />
-            <MudTextField @bind-Value="dbCon.Password" Label="@localizer.Get("Password")" InputType="InputType.Password" Disabled="dbCon.ADAuthentication" />
+            <MudTextField @bind-Value="_dbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required Placeholder="IP or Hostname" />
+            <MudSwitch @bind-Checked="_dbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
+            <MudTextField @bind-Value="_dbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!_dbCon.UseDbSchema" />
+            <MudSwitch @bind-Checked="_dbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
+            <MudSwitch @bind-Checked="_dbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" />
+            <MudTextField @bind-Value="_dbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="_dbCon.AdAuthentication" />
+            <MudTextField @bind-Value="_dbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="_dbCon.AdAuthentication" />
 
-            <MudNumericField @bind-Value="dbCon.CommandTimeOut" Label="@localizer.Get("Command timeout")" />
-            <MudButton Disabled="@loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                @if (loading)
+            <MudNumericField @bind-Value="_dbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" />
+            <MudButton Disabled="@_loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                @if (_loading)
                 {
                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                    <MudText Class="ms-2">@localizer.Get("Processing")</MudText>
+                    <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
                 }
                 else
                 {
-                    <MudText>@localizer.Get("Test Db connection")</MudText>
+                    <MudText>@Localizer.Get("Test Db connection")</MudText>
                 }
             </MudButton>
-            <MudText>@localizer.Get("Connection Feedback:") @connectionTestResult</MudText>
+            <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
         }
     </MudCardContent>
     <AuthorizeView Roles="Admin">
         <Authorized>
             <MudCardActions>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="ValidateActivity" Disabled="@ValidateButtonDisabled">@localizer.Get("Validate")</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="ValidateActivity" Disabled="@_validateButtonDisabled">@Localizer.Get("Validate")</MudButton>
             </MudCardActions>
         </Authorized>
     </AuthorizeView>
 </MudCard>
 
 @code {
-    private ActivityDTO targetInfo = new();
+    private ActivityDto _targetInfo = new();
 
-    private string connectionTestResult = string.Empty;
-    private bool ValidateButtonDisabled = true;
-    private ActivityDbConnectionDTO dbCon = new ActivityDbConnectionDTO();
-    private bool loading;
+    private string _connectionTestResult = string.Empty;
+    private bool _validateButtonDisabled = true;
+    private ActivityDbConnectionDto _dbCon = new();
+    private bool _loading;
 
     protected override async Task OnInitializedAsync()
     {
-        targetInfo = await dataService.GetUniqueValue(targetInfo, "GetDataTransferInfo");
-        dbCon = targetInfo.ActivityDbConnections.First();
+        _targetInfo = await DataService.GetUniqueValue(_targetInfo, "GetDataTransferInfo");
+        _dbCon = _targetInfo.ActivityDbConnections.First();
     }
 
 
     private async Task ValidateActivity()
     {
 
-        var result = await dataService.PostValues(targetInfo, "ActivityUpdate");
+        var result = await DataService.PostValues(_targetInfo, "ActivityUpdate");
         if (result.Success)
         {
             NavManager.NavigateTo("/");
@@ -75,31 +75,31 @@
 
     private async Task OnClickConnectionTest()
     {
-        loading = true;
+        _loading = true;
         await Task.Run(ConnectionTest);
-        loading = false;
+        _loading = false;
     }
 
     private async Task ConnectionTest()
     {
-        ActivityDbConnectionDTO tryConn = new ActivityDbConnectionDTO();
-        tryConn.ADAuthentication = dbCon.ADAuthentication;
-        tryConn.ConnectionLogin = dbCon.ConnectionLogin;
-        tryConn.ConnectionPath = dbCon.ConnectionPath;
-        tryConn.IntentReadOnly = dbCon.IntentReadOnly;
-        tryConn.DbSchema = dbCon.DbSchema;
-        tryConn.TypeDb = dbCon.TypeDb;
-        tryConn.Port = dbCon.Port;
-        tryConn.UseDbSchema = dbCon.UseDbSchema;
-        tryConn.Password = dbCon.Password;
-        var result = await dataService.PostValues(tryConn, "TestConnection", ApiControllers.RemoteDbApi);
-        connectionTestResult = result.Message ?? "Ok!";
+        var tryConn = new ActivityDbConnectionDto();
+        tryConn.AdAuthentication = _dbCon.AdAuthentication;
+        tryConn.ConnectionLogin = _dbCon.ConnectionLogin;
+        tryConn.ConnectionPath = _dbCon.ConnectionPath;
+        tryConn.IntentReadOnly = _dbCon.IntentReadOnly;
+        tryConn.DbSchema = _dbCon.DbSchema;
+        tryConn.TypeDb = _dbCon.TypeDb;
+        tryConn.Port = _dbCon.Port;
+        tryConn.UseDbSchema = _dbCon.UseDbSchema;
+        tryConn.Password = _dbCon.Password;
+        var result = await DataService.PostValues(tryConn, "TestConnection", ApiControllers.RemoteDbApi);
+        _connectionTestResult = result.Message ?? "Ok!";
     }
 
 
     public void OnSelectedItemChangedHandler(IEnumerable<string> value)
     {
-        ValidateButtonDisabled = true;
+        _validateButtonDisabled = true;
     }
 
 }

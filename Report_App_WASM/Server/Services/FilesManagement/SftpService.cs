@@ -6,7 +6,7 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Shared;
 
-namespace ReportAppWASM.Server.Services.FilesManagement
+namespace Report_App_WASM.Server.Services.FilesManagement
 {
 
     public class SftpService : IDisposable
@@ -20,15 +20,22 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             _context = context;
         }
 
-        private async Task<SFTPConfiguration> GetSFTPConfigurationAsync(int SFTPconfigurationId)
+        private async Task<SftpConfiguration> GetSftpConfigurationAsync(int sftpconfigurationId)
         {
-            return await _context.SFTPConfiguration.Where(a => a.SFTPConfigurationId == SFTPconfigurationId).AsNoTracking().FirstOrDefaultAsync();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
+            return await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == sftpconfigurationId).AsNoTracking().FirstOrDefaultAsync();
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
+#pragma warning restore CS8603 // Possible null reference return.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
-        public async Task<IEnumerable<SftpFile>> ListAllFilesAsync(int SFTPconfigurationId, string remoteDirectory = ".")
+        public async Task<IEnumerable<SftpFile>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
         {
-            var _config = await GetSFTPConfigurationAsync(SFTPconfigurationId);
-            using var client = new SftpClient(_config.Host, _config.Port == 0 ? 22 : _config.Port, _config.UserName, EncryptDecrypt.DecryptString(_config.Password));
+            var config = await GetSftpConfigurationAsync(sftpconfigurationId);
+            using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName, EncryptDecrypt.DecryptString(config.Password));
+#pragma warning disable CS0168 // The variable 'exception' is declared but never used
             try
             {
                 client.Connect();
@@ -43,12 +50,13 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             {
                 client.Disconnect();
             }
+#pragma warning restore CS0168 // The variable 'exception' is declared but never used
         }
 
-        public async Task<SubmitResult> UploadFileAsync(int SFTPconfigurationId, string localFilePath, string remoteDirectory, string fileName, bool tryCreateFolder = false)
+        public async Task<SubmitResult> UploadFileAsync(int sftpconfigurationId, string localFilePath, string remoteDirectory, string fileName, bool tryCreateFolder = false)
         {
-            var _config = await GetSFTPConfigurationAsync(SFTPconfigurationId);
-            using var client = new SftpClient(_config.Host, _config.Port == 0 ? 22 : _config.Port, _config.UserName, EncryptDecrypt.DecryptString(_config.Password));
+            var config = await GetSftpConfigurationAsync(sftpconfigurationId);
+            using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName, EncryptDecrypt.DecryptString(config.Password));
             try
             {
                 client.Connect();
@@ -65,19 +73,19 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             catch (Exception exception)
             {
                 // _logger.LogError(exception, $"Failed in uploading file [{localFilePath}] to [{remoteDirectory}]");
-                return new SubmitResult() { Success = false, Message = exception.Message };
+                return new() { Success = false, Message = exception.Message };
             }
             finally
             {
                 client.Disconnect();
             }
-            return new SubmitResult() { Success = true, Message = "Ok" };
+            return new() { Success = true, Message = "Ok" };
         }
 
-        public async Task<SubmitResult> DownloadFileAsync(int SFTPconfigurationId, string remoteFilePath, string localFilePath)
+        public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath, string localFilePath)
         {
-            var _config = await GetSFTPConfigurationAsync(SFTPconfigurationId);
-            using var client = new SftpClient(_config.Host, _config.Port == 0 ? 22 : _config.Port, _config.UserName, EncryptDecrypt.DecryptString(_config.Password));
+            var config = await GetSftpConfigurationAsync(sftpconfigurationId);
+            using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName, EncryptDecrypt.DecryptString(config.Password));
             try
             {
                 client.Connect();
@@ -88,19 +96,19 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             catch (Exception exception)
             {
                 //  _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
-                return new SubmitResult() { Success = false, Message = exception.Message };
+                return new() { Success = false, Message = exception.Message };
             }
             finally
             {
                 client.Disconnect();
             }
-            return new SubmitResult() { Success = true, Message = "Ok" };
+            return new() { Success = true, Message = "Ok" };
         }
 
-        public async Task<SubmitResult> DeleteFileAsync(int SFTPconfigurationId, string remoteFilePath)
+        public async Task<SubmitResult> DeleteFileAsync(int sftpconfigurationId, string remoteFilePath)
         {
-            var _config = await GetSFTPConfigurationAsync(SFTPconfigurationId);
-            using var client = new SftpClient(_config.Host, _config.Port == 0 ? 22 : _config.Port, _config.UserName, EncryptDecrypt.DecryptString(_config.Password));
+            var config = await GetSftpConfigurationAsync(sftpconfigurationId);
+            using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName, EncryptDecrypt.DecryptString(config.Password));
             try
             {
                 client.Connect();
@@ -110,19 +118,19 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             catch (Exception exception)
             {
                 //  _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
-                return new SubmitResult() { Success = false, Message = exception.Message };
+                return new() { Success = false, Message = exception.Message };
             }
             finally
             {
                 client.Disconnect();
             }
-            return new SubmitResult() { Success = true, Message = "Ok" };
+            return new() { Success = true, Message = "Ok" };
         }
 
-        public async Task<SubmitResult> TestDirectoryAsync(int SFTPconfigurationId, string remoteFilePath, bool tryCreateFolder = false)
+        public async Task<SubmitResult> TestDirectoryAsync(int sftpconfigurationId, string remoteFilePath, bool tryCreateFolder = false)
         {
-            var _config = await GetSFTPConfigurationAsync(SFTPconfigurationId);
-            using var client = new SftpClient(_config.Host, _config.Port == 0 ? 22 : _config.Port, _config.UserName, EncryptDecrypt.DecryptString(_config.Password));
+            var config = await GetSftpConfigurationAsync(sftpconfigurationId);
+            using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName, EncryptDecrypt.DecryptString(config.Password));
             bool checkAcces;
             try
             {
@@ -138,13 +146,13 @@ namespace ReportAppWASM.Server.Services.FilesManagement
             catch (Exception exception)
             {
                 //  _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
-                return new SubmitResult() { Success = false, Message = exception.Message };
+                return new() { Success = false, Message = exception.Message };
             }
             finally
             {
                 client.Disconnect();
             }
-            return new SubmitResult() { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" };
+            return new() { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" };
         }
 
         public void Dispose()

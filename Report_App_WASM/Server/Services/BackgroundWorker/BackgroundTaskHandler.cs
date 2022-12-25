@@ -1,22 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI.Common;
-using Report_App_BlazorServ.Services.RemoteDb;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.EmailSender;
+using Report_App_WASM.Server.Services.FilesManagement;
+using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
 using Report_App_WASM.Shared.SerializedParameters;
-using ReportAppWASM.Server.Services.EmailSender;
-using ReportAppWASM.Server.Services.FilesManagement;
 using System.Data;
 using System.Net.Mail;
 using System.Text.Json;
 
-namespace ReportAppWASM.Server.Services.BackgroundWorker
+namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public class BackgroundTaskHandler : IDisposable
     {
@@ -38,20 +36,20 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             _hostingEnvironment = hostingEnvironment;
         }
 
-        private Dictionary<TaskDetail, DataTable> fetchedData = new();
-        private List<FileContentResult> fileResults = new();
-        private List<EmailRecipient> emails = new();
-        private TaskJobParameters jobParameters;
-        private TaskHeader header;
-        private int taskId;
+        private Dictionary<TaskDetail, DataTable> _fetchedData = new();
+        private List<FileContentResult> _fileResults = new();
+        private List<EmailRecipient>? _emails = new();
+        private TaskJobParameters _jobParameters = null!;
+        private TaskHeader _header = null!;
+        private int _taskId;
 
         public async Task HandleTask(TaskJobParameters parameters)
         {
-            jobParameters = parameters;
-            header = await _context.TaskHeader.Where(a => a.TaskHeaderId == parameters.TaskHeaderId).Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).FirstOrDefaultAsync();
-            ApplicationLogTask logTask = new() { ActivityId = header.Activity.ActivityId, ActivityName = header.ActivityName, StartDateTime = DateTime.Now, JobDescription = header.TaskName, Type = header.Type + " service", Result = "Ok", RunBy = jobParameters.RunBy, EndDateTime = DateTime.Now };
+            _jobParameters = parameters;
+            _header = (await _context.TaskHeader.Where(a => a.TaskHeaderId == parameters.TaskHeaderId).Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).FirstOrDefaultAsync())!;
+            ApplicationLogTask logTask = new() { ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now, JobDescription = _header.TaskName, Type = _header.Type + " service", Result = "Running", RunBy = _jobParameters.RunBy, EndDateTime = DateTime.Now };
 
-            if (!header.TaskDetails.Any())
+            if (!_header.TaskDetails.Any())
             {
                 logTask.EndDateTime = DateTime.Now;
                 logTask.Result = "No query to run";
@@ -63,53 +61,53 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
             }
             await _context.AddAsync(logTask);
             await _context.SaveChangesAsync("backgroundworker");
-            taskId = logTask.Id;
-            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Initialization", Info = "Nbr of queries:" + header.TaskDetails.Count });
+            _taskId = logTask.Id;
+            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Initialization", Info = "Nbr of queries:" + _header.TaskDetails.Count });
 
             try
             {
-                if (header.Type != TaskType.DataTransfer)
+                if (_header.Type != TaskType.DataTransfer)
                 {
-                    if (header.SendByEmail && header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]")
+                    if (_header.SendByEmail && _header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]")
                     {
-                        emails = JsonSerializer.Deserialize<List<EmailRecipient>>(header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault());
+                        _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault()!);
                     }
-                    if (jobParameters.ManualRun)
+                    if (_jobParameters.ManualRun)
                     {
-                        emails = jobParameters.CustomEmails;
+                        _emails = _jobParameters.CustomEmails;
                     }
-                    foreach (var detail in header.TaskDetails)
+                    foreach (var detail in _header.TaskDetails)
                     {
                         await FetchData(detail);
                         await _context.SaveChangesAsync("backgroundworker");
                     }
-                    if (header.Type == TaskType.Alert)
+                    if (_header.Type == TaskType.Alert)
                     {
                         await HandleTaskAlertAsync();
                     }
                     else
                     {
                         await GenerateFile();
-                        foreach (var f in fileResults)
+                        foreach (var f in _fileResults)
                         {
-                            await WriteFileAsync(f, f.FileDownloadName, jobParameters.GenerateFiles, f.FileDownloadName);
+                            await WriteFileAsync(f, f.FileDownloadName, _jobParameters.GenerateFiles, f.FileDownloadName);
                         }
                         await GenerateEmail();
-                        fileResults.Clear();
+                        _fileResults.Clear();
                     }
 
-                    fetchedData.Clear();
+                    _fetchedData.Clear();
                 }
                 else
                 {
-                    foreach (var detail in header.TaskDetails)
+                    foreach (var detail in _header.TaskDetails)
                     {
-                        ApplicationLogTask log = new() { ActivityId = header.Activity.ActivityId, ActivityName = header.ActivityName, StartDateTime = DateTime.Now, JobDescription = detail.QueryName, Type = header.Type + " service", Error = false, RunBy = jobParameters.RunBy };
+                        ApplicationLogTask log = new() { ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now, JobDescription = detail.QueryName, Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy };
 
                         await FetchData(detail);
                         await _context.SaveChangesAsync("backgroundworker");
 
-                        foreach (var value in fetchedData)
+                        foreach (var value in _fetchedData)
                         {
                             await HandleDataTransferTask(detail, value.Value, log);
                         }
@@ -118,28 +116,30 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
                         await _context.AddAsync(log);
                         await _context.SaveChangesAsync("backgroundworker");
-                        fetchedData.Clear();
+                        _fetchedData.Clear();
                     }
                 }
 
                 logTask.Error = false;
+                logTask.Result = "Ok";
+                logTask.TaskId = logTask.Id;
                 logTask.EndDateTime = DateTime.Now;
                 logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
                 if (parameters.GenerateFiles)
                 {
-                    header.LastRunDateTime = DateTime.Now;
-                    _context.Entry(header).State = EntityState.Modified;
+                    _header.LastRunDateTime = DateTime.Now;
+                    _context.Entry(_header).State = EntityState.Modified;
                 }
-                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Job end", Info = $"Total duration {logTask.DurationInSeconds} seconds" });
+                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Job end", Info = $"Total duration {logTask.DurationInSeconds} seconds" });
             }
             catch (Exception ex)
             {
-                logTask.Result = new string(ex.Message.Take(2000).ToArray());
+                logTask.Result = new(ex.Message.Take(2000).ToArray());
                 logTask.Error = true;
                 logTask.EndDateTime = DateTime.Now;
                 logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
-                await _emailSender.GenerateErrorEmailAsync(ex.Message, header.ActivityName + ": " + header.TaskName);
-                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Error", Info = logTask.Result });
+                await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ActivityName + ": " + _header.TaskName);
+                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Error", Info = logTask.Result });
             }
 
             _context.Update(logTask);
@@ -151,47 +151,47 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             using (var remoteDb = new RemoteDbConnection(_context, _mapper))
             {
-                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters);
-                List<QueryCommandParameter> param = new();
-                if (jobParameters.CustomQueryParameters.Any())
+                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!);
+                List<QueryCommandParameter>? param = new();
+                if (_jobParameters.CustomQueryParameters!.Any())
                 {
-                    param = jobParameters.CustomQueryParameters;
+                    param = _jobParameters.CustomQueryParameters;
                 }
                 else
-                if (header.UseGlobalQueryParameters && header.QueryParameters != "[]" &&
-                    !string.IsNullOrEmpty(header.QueryParameters))
+                if (_header.UseGlobalQueryParameters && _header.QueryParameters != "[]" &&
+                    !string.IsNullOrEmpty(_header.QueryParameters))
                 {
-                    param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(header.QueryParameters);
+                    param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.QueryParameters);
                 }
 
                 if (detail.QueryParameters != "[]" && !string.IsNullOrEmpty(detail.QueryParameters))
                 {
                     var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(detail.QueryParameters);
-                    foreach (var value in desParam)
+                    foreach (var value in desParam!)
                     {
-                        if (!param.Any(a => a.ParameterIdentifier.ToLower() == value.ParameterIdentifier.ToLower()))
+                        if (param!.All(a => a.ParameterIdentifier?.ToLower() != value.ParameterIdentifier?.ToLower()))
                         {
-                            param.Add(value);
+                            param?.Add(value);
                         }
                     }
                 }
-                DataTable table = await remoteDb.RemoteDbToDatableAsync(new RemoteDbCommandParameters() { ActivityId = header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, jobParameters.Cts, taskId);
-                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data completed", Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count });
+                var table = await remoteDb.RemoteDbToDatableAsync(new() { ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, _jobParameters.Cts, _taskId);
+                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Fetch data completed", Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count });
 
-                if (detailParam.GenerateIfEmpty || table.Rows.Count > 0)
+                if (detailParam!.GenerateIfEmpty || table.Rows.Count > 0)
                 {
-                    fetchedData.Add(detail, table);
+                    _fetchedData.Add(detail, table);
                 }
 
-                if (jobParameters.GenerateFiles)
+                if (_jobParameters.GenerateFiles)
                 {
                     detail.LastRunDateTime = DateTime.Now;
                     _context.Entry(detail).State = EntityState.Modified;
                 }
 
-            };
+            }
         }
-        private async Task WriteFileAsync(FileContentResult fileResult, string fName, bool useDepositConfiguration, string subName = null)
+        private async Task WriteFileAsync(FileContentResult fileResult, string fName, bool useDepositConfiguration, string? subName = null)
         {
             var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
             if (!localFileResult.Success)
@@ -201,53 +201,53 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
             ApplicationLogReportResult filecreationLocal = new()
             {
-                ActivityId = header.Activity.ActivityId,
-                ActivityName = header.ActivityName,
+                ActivityId = _header.Activity.ActivityId,
+                ActivityName = _header.ActivityName,
                 CreatedAt = DateTime.Now,
                 CreatedBy = "Report Service",
-                TaskHeaderId = header.TaskHeaderId,
-                ReportName = header.TaskName,
+                TaskHeaderId = _header.TaskHeaderId,
+                ReportName = _header.TaskName,
                 SubName = subName ?? "",
-                FileType = header.TypeFile.ToString(),
+                FileType = _header.TypeFile.ToString(),
                 ReportPath = "/docsstorage/" + fName,
                 FileName = fName,
                 IsAvailable = true,
                 Error = !localFileResult.Success,
                 Result = localFileResult.Message,
-                FileSizeInMB = BytesConverter.ConvertBytesToMegabytes(fileResult.FileContents.Length)
+                FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.FileContents.Length)
             };
             await _context.AddAsync(filecreationLocal);
-            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "File local storage", Info = "Ok" });
+            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "File local storage", Info = "Ok" });
 
-            if (header.FileDepositPathConfigurationId != 0 && useDepositConfiguration && localFileResult.Success)
+            if (_header.FileDepositPathConfigurationId != 0 && useDepositConfiguration && localFileResult.Success)
             {
-                string completePath = "";
+                string completePath;
                 SubmitResult resultDeposit;
-                var config = await _context.FileDepositPathConfiguration.Include(a => a.SFTPConfiguration).AsNoTracking().FirstAsync(a => a.FileDepositPathConfigurationId == header.FileDepositPathConfigurationId);
-                if (config.SFTPConfiguration != null && config.UseSFTPProtocol)
+                var config = await _context.FileDepositPathConfiguration.Include(a => a.SftpConfiguration).AsNoTracking().FirstAsync(a => a.FileDepositPathConfigurationId == _header.FileDepositPathConfigurationId);
+                if (config.SftpConfiguration != null && config.UseSftpProtocol)
                 {
-                    var StoragePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
-                    var localfilePath = Path.Combine(StoragePath, fName);
-                    if (config.SFTPConfiguration.UseFTPProtocol)
+                    var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
+                    var localfilePath = Path.Combine(storagePath, fName);
+                    if (config.SftpConfiguration.UseFtpProtocol)
                     {
-                        completePath = "FTP Host:" + config.SFTPConfiguration.Host + " Path:" + config.FilePath;
+                        completePath = "FTP Host:" + config.SftpConfiguration.Host + " Path:" + config.FilePath;
                         using var ftp = new FtpService(_context);
-                        resultDeposit = await ftp.UploadFileAsync(config.SFTPConfiguration.SFTPConfigurationId, localfilePath, config.FilePath, fName, config.TryToCreateFolder);
-                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "File FTP drop", Info = config.FilePath });
+                        resultDeposit = await ftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId, localfilePath, config.FilePath, fName, config.TryToCreateFolder);
+                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "File FTP drop", Info = config.FilePath });
                     }
                     else
                     {
-                        completePath = "sFTP Host:" + config.SFTPConfiguration.Host + " Path:" + config.FilePath;
+                        completePath = "Sftp Host:" + config.SftpConfiguration.Host + " Path:" + config.FilePath;
                         using var sftp = new SftpService(_context);
-                        resultDeposit = await sftp.UploadFileAsync(config.SFTPConfiguration.SFTPConfigurationId, localfilePath, config.FilePath, fName, config.TryToCreateFolder);
-                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "File sFTP drop", Info = config.FilePath });
+                        resultDeposit = await sftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId, localfilePath, config.FilePath, fName, config.TryToCreateFolder);
+                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "File Sftp drop", Info = config.FilePath });
                     }
                 }
                 else
                 {
                     completePath = Path.Combine(config.FilePath, fName);
                     resultDeposit = await _fileDeposit.SaveFileAsync(fileResult, fName, config.FilePath, config.TryToCreateFolder);
-                    await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "File folder drop", Info = config.FilePath });
+                    await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "File folder drop", Info = config.FilePath });
                 }
 
                 if (!resultDeposit.Success)
@@ -257,20 +257,20 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
                 ApplicationLogReportResult filecreationRemote = new()
                 {
-                    ActivityId = header.Activity.ActivityId,
-                    ActivityName = header.ActivityName,
+                    ActivityId = _header.Activity.ActivityId,
+                    ActivityName = _header.ActivityName,
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Report Service",
-                    TaskHeaderId = header.TaskHeaderId,
-                    ReportName = header.TaskName,
+                    TaskHeaderId = _header.TaskHeaderId,
+                    ReportName = _header.TaskName,
                     SubName = subName ?? "",
-                    FileType = header.TypeFile.ToString(),
+                    FileType = _header.TypeFile.ToString(),
                     ReportPath = completePath,
                     FileName = fName,
                     IsAvailable = false,
                     Error = !resultDeposit.Success,
                     Result = resultDeposit.Message,
-                    FileSizeInMB = filecreationLocal.FileSizeInMB
+                    FileSizeInMb = filecreationLocal.FileSizeInMb
                 };
                 await _context.AddAsync(filecreationRemote);
             }
@@ -280,11 +280,11 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             if (data.Rows.Count > 0)
             {
-                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(a.TaskDetailParameters);
-                string checkTableQuery = $@"IF (EXISTS (SELECT *
+                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(a.TaskDetailParameters!);
+                var checkTableQuery = $@"IF (EXISTS (SELECT *
                                                        FROM INFORMATION_SCHEMA.TABLES
                                                        WHERE TABLE_SCHEMA = 'dbo'
-                                                       AND TABLE_NAME = '{detailParam.DataTransferTargetTableName}'))
+                                                       AND TABLE_NAME = '{detailParam?.DataTransferTargetTableName}'))
                                                        BEGIN
                                                           select 1
                                                        END;
@@ -297,9 +297,9 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                 if (!result)
                 {
                     string queryCreate;
-                    if (detailParam.DataTransferUsePK)
+                    if (detailParam!.DataTransferUsePk)
                     {
-                        queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPK);
+                        queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPk);
                     }
                     else
                     {
@@ -316,23 +316,23 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     await _dbReader.CreateTable(queryCreate);
                 }
 
-                if (!detailParam.DataTransferUsePK)
+                if (!detailParam!.DataTransferUsePk)
                 {
                     logTask.Result = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " + data.Rows.Count;
                     await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName);
-                    await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Bulk insert completed", Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " + data.Rows.Count });
+                    await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Bulk insert completed", Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " + data.Rows.Count });
                 }
                 else
                 {
                     var tempTable = "tmp_" + detailParam.DataTransferTargetTableName + DateTime.Now.ToString("yyyyMMddHHmmss");
                     var columnNames = new HashSet<string>(data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
-                    string queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true, detailParam.DataTransferPK);
+                    var queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true, detailParam.DataTransferPk);
 
                     await _dbReader.CreateTable(queryCreate);
                     try
                     {
                         await _dbReader.LoadDatatableToTable(data, tempTable);
-                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Bulk insert completed", Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " + data.Rows.Count });
+                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Bulk insert completed", Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " + data.Rows.Count });
                     }
                     catch (Exception)
                     {
@@ -342,7 +342,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
 
                     var mergeSql = new
                     {
-                        MERGE_FIELD_NAME = string.Join(" and ", detailParam.DataTransferPK.Select(name => $"target.[{name}] = source.[{name}]")),
+                        MERGE_FIELD_NAME = string.Join(" and ", detailParam.DataTransferPk!.Select(name => $"target.[{name}] = source.[{name}]")),
                         FIELD_LIST = string.Join(", ", columnNames.Select(name => $"[{name}]")),
                         SOURCE_TABLE_NAME = tempTable,
                         TARGET_TABLE_NAME = detailParam.DataTransferTargetTableName,
@@ -351,11 +351,11 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         UPDATE_REQUIRED_EXPRESSION = string.Join(" OR ", columnNames.Select(name => $"IIF((target.[{name}] IS NULL AND source.[{name}] IS NULL) OR target.[{name}] = source.[{name}], 1, 0) = 0")) // Take care around null values
                     };
 
-                    string MergeSqlTemplate;
+                    string mergeSqlTemplate;
 
                     if (detailParam.DataTransferCommandBehaviour == DataTransferAdvancedBehaviour.Insert.ToString())
                     {
-                        MergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
+                        mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
                                              MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
                                              USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
                                              ON ({mergeSql.MERGE_FIELD_NAME})
@@ -369,7 +369,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     }
                     else if (detailParam.DataTransferCommandBehaviour == DataTransferAdvancedBehaviour.InsertOrUpdateOrDelete.ToString())
                     {
-                        MergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
+                        mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
                                              MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
                                              USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
                                              ON ({mergeSql.MERGE_FIELD_NAME})
@@ -387,7 +387,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     }
                     else
                     {
-                        MergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
+                        mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
                                              MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
                                              USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
                                              ON ({mergeSql.MERGE_FIELD_NAME})
@@ -402,11 +402,11 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                                              GROUP BY Change;";
                     }
 
-                    var mergeResult = await _dbReader.MergeTables(MergeSqlTemplate);
+                    var mergeResult = await _dbReader.MergeTables(mergeSqlTemplate);
 
                     logTask.Result = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " + mergeResult.UpdatedCount + " Nbr lines deleted: " + mergeResult.DeletedCount;
                     await _dbReader.DeleteTable(tempTable);
-                    await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Merge completed", Info = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " + mergeResult.UpdatedCount + " Nbr lines deleted: " + mergeResult.DeletedCount });
+                    await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Merge completed", Info = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " + mergeResult.UpdatedCount + " Nbr lines deleted: " + mergeResult.DeletedCount });
                 }
             }
         }
@@ -414,47 +414,47 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
         {
             string fName;
             string fExtension;
-            bool informationSheet = false;
+            var informationSheet = false;
             List<ExcelCreationDatatable> excelMultipleTabs = new();
-            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(header.TaskHeaderParameters);
+            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
 
-            foreach (var d in fetchedData)
+            foreach (var d in _fetchedData)
             {
                 FileContentResult fileCreated;
-                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters);
-                if (string.IsNullOrEmpty(detailParam.FileName))
+                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!);
+                if (string.IsNullOrEmpty(detailParam?.FileName))
                 {
-                    fName = $"{header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss")}";
+                    fName = $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss")}";
                 }
                 else
                 {
                     fName = $"{detailParam.FileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HH_mm_ss}";
                 }
 
-                if (header.TypeFile == FileType.Excel)
+                if (_header.TypeFile == FileType.Excel)
                 {
-                    if (detailParam.SeparateExcelFile)
+                    if (detailParam!.SeparateExcelFile)
                     {
                         fExtension = ".xlsx";
                         fName += fExtension;
                         List<ExcelCreationDatatable> excelCreationDatatables = new()
                         {
-                            new ExcelCreationDatatable() { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
+                            new() { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
                         };
-                        ExcelCreationData dataExcel = new() { FileName = fName, Data = excelCreationDatatables, ValidationSheet = detailParam.AddValidationSheet, ValidationText = headerParam.ValidationSheetText };
+                        ExcelCreationData dataExcel = new() { FileName = fName, Data = excelCreationDatatables, ValidationSheet = detailParam.AddValidationSheet, ValidationText = headerParam?.ValidationSheetText };
 
                         fileCreated = CreateFile.ExcelFromSeveralsDatable(dataExcel);
                         dataExcel.Dispose();
                     }
                     else
                     {
-                        string tabName;
+                        string? tabName;
                         ExcelTemplate template = new();
                         if (!informationSheet)
                         {
                             informationSheet = detailParam.AddValidationSheet;
                         }
-                        if (headerParam.UseAnExcelTemplate)
+                        if (headerParam!.UseAnExcelTemplate)
                         {
                             template = detailParam.ExcelTemplate;
                             if (string.IsNullOrEmpty(template.ExcelTabName))
@@ -467,37 +467,37 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                         {
                             tabName = detailParam.ExcelTabName ?? d.Key.QueryName;
                         }
-                        excelMultipleTabs.Add(new ExcelCreationDatatable() { TabName = tabName, ExcelTemplate = template, Data = d.Value });
+                        excelMultipleTabs.Add(new() { TabName = tabName, ExcelTemplate = template, Data = d.Value });
                         continue;
                     }
                 }
-                else if (header.TypeFile == FileType.Json)
+                else if (_header.TypeFile == FileType.Json)
                 {
                     fExtension = ".json";
                     fName += fExtension;
-                    fileCreated = CreateFile.JsonFromDatable(fName, d.Value, detailParam.EncodingType ?? "UTF8");
+                    fileCreated = CreateFile.JsonFromDatable(fName, d.Value, detailParam!.EncodingType ?? "UTF8");
                 }
-                else if (header.TypeFile == FileType.CSV)
+                else if (_header.TypeFile == FileType.Csv)
                 {
                     fExtension = ".csv";
                     fName += fExtension;
-                    fileCreated = CreateFile.CsvFromDatable(fName, d.Value, detailParam.EncodingType ?? "UTF8", headerParam.Delimiter, detailParam.RemoveHeader);
+                    fileCreated = CreateFile.CsvFromDatable(fName, d.Value, detailParam!.EncodingType, headerParam?.Delimiter, detailParam.RemoveHeader);
                 }
                 else
                 {
                     fExtension = ".xml";
                     fName += fExtension;
-                    fileCreated = CreateFile.XMLFromDatable(d.Key.QueryName, fName, detailParam.EncodingType ?? "UTF8", d.Value);
+                    fileCreated = CreateFile.XmlFromDatable(d.Key.QueryName, fName, detailParam?.EncodingType, d.Value);
                 }
-                fileResults.Add(fileCreated);
-                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "File created", Info = fName });
+                _fileResults.Add(fileCreated);
+                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "File created", Info = fName });
             }
             if (excelMultipleTabs.Any())
             {
-                fName = string.IsNullOrEmpty(headerParam.ExcelFileName) ? $"{header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}" : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
+                fName = string.IsNullOrEmpty(headerParam?.ExcelFileName) ? $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}" : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
 
                 FileContentResult fileCreated;
-                if (!headerParam.UseAnExcelTemplate)
+                if (!headerParam!.UseAnExcelTemplate)
                 {
                     ExcelCreationData dataExcel = new() { FileName = fName, Data = excelMultipleTabs, ValidationSheet = informationSheet, ValidationText = headerParam.ValidationSheetText };
 
@@ -511,39 +511,38 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                     fileCreated = CreateFile.ExcelTemplateFromSeveralDatable(dataExcel, fileInfo);
                     dataExcel.Dispose();
                 }
-                fileResults.Add(fileCreated);
+                _fileResults.Add(fileCreated);
                 excelMultipleTabs.Clear();
-                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "File created", Info = fName });
+                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "File created", Info = fName });
             }
-            fetchedData.Clear();
+            _fetchedData.Clear();
         }
         private async Task HandleTaskAlertAsync()
         {
-            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(header.TaskHeaderParameters);
-            if (fetchedData.Any())
+            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
+            if (_fetchedData.Any())
             {
-                bool sendEmail = false;
-                var a = fetchedData.Select(a => a.Key).FirstOrDefault();
-                if (!headerParam.AlertOccurenceByTime && a.NbrOFCumulativeOccurences > headerParam.NbrOfOccurencesBeforeResendAlertEmail - 1 || a.NbrOFCumulativeOccurences == 0)
+                var sendEmail = false;
+                var a = _fetchedData.Select(a => a.Key).FirstOrDefault();
+                if (!headerParam!.AlertOccurenceByTime && a!.NbrOfCumulativeOccurences > headerParam.NbrOfOccurencesBeforeResendAlertEmail - 1 || a!.NbrOfCumulativeOccurences == 0)
                 {
-                    a.NbrOFCumulativeOccurences = 0;
+                    a.NbrOfCumulativeOccurences = 0;
                     sendEmail = true;
                 }
-                if (headerParam.AlertOccurenceByTime & a.LastRunDateTime < DateTime.Now.AddMinutes(-headerParam.NbrOFMinutesBeforeResendAlertEmail))
+                if (headerParam.AlertOccurenceByTime & a.LastRunDateTime < DateTime.Now.AddMinutes(-headerParam.NbrOfMinutesBeforeResendAlertEmail))
                 {
                     sendEmail = true;
                 }
-                if (sendEmail || jobParameters.ManualRun)
+                if (sendEmail || _jobParameters.ManualRun)
                 {
-                    var emailPrefix = await _context.ApplicationParameters.Select(a => a.AlertEmailPrefix).FirstOrDefaultAsync();
-                    if ((header.SendByEmail && header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]"))
+                    var emailPrefix = await _context.ApplicationParameters.Select(a => a!.AlertEmailPrefix).FirstOrDefaultAsync();
+                    if ((_header.SendByEmail && _header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]"))
                     {
-                        string subject = emailPrefix + " - " + a.TaskHeader.ActivityName + ": " + a.TaskHeader.TaskName;
-                        string preMessage = a.TaskHeader.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
-                        string message = "";
+                        var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
+                        var message = "";
                         List<Attachment> listAttach = new();
-                        int counter = 0;
-                        foreach (var table in fetchedData.Where(a => a.Value.Rows.Count > 0))
+                        var counter = 0;
+                        foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
                         {
                             if (table.Value.Rows.Count < 101)
                             {
@@ -551,7 +550,7 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                                 valueMessage += table.Value.ToHtml();
                                 if (counter == 0)
                                 {
-                                    message = string.Format(header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault(), valueMessage);
+                                    message = string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!, valueMessage);
                                     counter++;
                                 }
                                 else
@@ -562,68 +561,72 @@ namespace ReportAppWASM.Server.Services.BackgroundWorker
                             }
                             else
                             {
-                                ExcelCreationDatatable dataExcel = new() { TabName = a.TaskHeader.TaskName, Data = table.Value };
-                                var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader.TaskName, dataExcel);
+                                ExcelCreationDatatable dataExcel = new() { TabName = a.TaskHeader?.TaskName, Data = table.Value };
+                                var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader?.TaskName, dataExcel);
                                 var fName =
-                                    $"{header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
-                                listAttach.Add(new Attachment(new MemoryStream(fileResult.FileContents), fName, fileResult.ContentType));
+                                    $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
+                                listAttach.Add(new(new MemoryStream(fileResult.FileContents), fName, fileResult.ContentType));
                             }
                         }
 
-                       var result= await _emailSender.SendEmailAsync(emails, subject, message, listAttach);
-                        if(result.Success)
+                        var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
+                        if (result.Success)
                         {
-                            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email sent", Info = subject });
+                            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Email sent", Info = subject });
                         }
                         else
                         {
-                            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email not sent", Info = result.Message });
+                            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
                         }
-                        
+
                         listAttach.Clear();
                     }
 
-                    header.TaskDetails.ToList().ForEach(a => a.LastRunDateTime = DateTime.Now);
+                    _header.TaskDetails.ToList().ForEach(a => a.LastRunDateTime = DateTime.Now);
                 }
-                var nbrOccurrences = a.NbrOFCumulativeOccurences++;
+                a.NbrOfCumulativeOccurences++;
                 //header.TaskDetails.ToList().ForEach(a => a.NbrOFCumulativeOccurences = nbrOccurrences);
                 _context.Entry(a).State = EntityState.Modified;
             }
             else
             {
-                var a = header.TaskDetails.FirstOrDefault();
-                a.NbrOFCumulativeOccurences = 0;
+                var a = _header.TaskDetails.FirstOrDefault();
+                a!.NbrOfCumulativeOccurences = 0;
                 _context.Entry(a).State = EntityState.Modified;
             }
 
         }
         private async Task GenerateEmail()
         {
-            if (emails.Any() && fileResults.Any())
+            if (_emails!.Any() && _fileResults.Any())
             {
-                var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
-                string subject = emailPrefix + " - " + header.ActivityName + ": " + header.TaskName;
+                var emailPrefix = await _context.ApplicationParameters.Select(a => a!.EmailPrefix).FirstOrDefaultAsync();
+                var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;
 
                 List<Attachment> listAttach = new();
-                listAttach.AddRange(fileResults.Select(a => new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
+                listAttach.AddRange(_fileResults.Select(a => new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
 
                 //to remove dirty code
-                if (header.TaskName.StartsWith("#"))
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                if (_header.TaskName.StartsWith("#"))
                 {
-                    subject = header.TaskName;
+                    subject = _header.TaskName;
                 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 //
-                string message = header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
+                var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
                 if (listAttach.Any())
                 {
-                    var result=await _emailSender.SendEmailAsync(emails, subject, message, listAttach);
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'message' in 'Task<SubmitResult> IEmailSender.SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)'.
+                    var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'message' in 'Task<SubmitResult> IEmailSender.SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)'.
                     if (result.Success)
                     {
-                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email sent", Info = subject });
+                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Email sent", Info = subject });
                     }
                     else
                     {
-                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = taskId, Step = "Email not sent", Info = result.Message });
+                        await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
                     }
 
                 }

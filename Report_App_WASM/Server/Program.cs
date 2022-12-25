@@ -1,20 +1,17 @@
 using AutoMapper;
 using Hangfire;
-using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
-using Report_App_BlazorServ.Services.RemoteDb;
-using Report_App_WASM.Client.Pages.Parameters;
 using Report_App_WASM.Server;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.BackgroundWorker;
+using Report_App_WASM.Server.Services.EmailSender;
+using Report_App_WASM.Server.Services.FilesManagement;
+using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
-using ReportAppWASM.Server.Services.BackgroundWorker;
-using ReportAppWASM.Server.Services.EmailSender;
-using ReportAppWASM.Server.Services.FilesManagement;
-using System.Configuration;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +38,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.Configure<BaseUser>(builder.Configuration.GetSection("BaseUserDefaultOptions"));
 
-IConfigurationSection identityDefaultOptionsConfigurationSection = builder.Configuration.GetSection("IdentityDefaultOptions");
+var identityDefaultOptionsConfigurationSection = builder.Configuration.GetSection("IdentityDefaultOptions");
 builder.Services.Configure<IdentityDefaultOptions>(identityDefaultOptionsConfigurationSection);
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -56,7 +53,7 @@ var identityDefaultOptions = identityDefaultOptionsConfigurationSection.Get<Iden
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings
-    options.Password.RequireDigit = identityDefaultOptions.PasswordRequireDigit;
+    options.Password.RequireDigit = identityDefaultOptions!.PasswordRequireDigit;
     options.Password.RequiredLength = identityDefaultOptions.PasswordRequiredLength;
     options.Password.RequireNonAlphanumeric = identityDefaultOptions.PasswordRequireNonAlphanumeric;
     options.Password.RequireUppercase = identityDefaultOptions.PasswordRequireUppercase;
@@ -101,7 +98,7 @@ builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new()
     {
         CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
         SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
@@ -143,7 +140,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddProfile(new MappingProfile());
 });
 
-IMapper mapper = mapperConfig.CreateMapper();
+var mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
@@ -156,17 +153,17 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+        services.GetRequiredService<UserManager<ApplicationUser>>();
+        services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
         var dbInit = services.GetRequiredService<InitializeDatabase>();
 
         dbInit.InitializeAsync().Wait();
         HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", "")).FirstOrDefault();
         var parameters = context.ApplicationParameters.FirstOrDefault();
-        ApplicationConstants.ApplicationName = parameters.ApplicationName!;
-        ApplicationConstants.ApplicationLogo = parameters.ApplicationLogo!;
-        var LdapParameters = context.LDAPConfiguration.Where(a => a.IsActivated).Any();
-        ApplicationConstants.LDAPLogin = LdapParameters!;
+        ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
+        ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
+        var ldapParameters = context.LdapConfiguration.Any(a => a.IsActivated);
+        ApplicationConstants.LdapLogin = ldapParameters!;
     }
     catch (Exception ex)
     {
@@ -207,14 +204,14 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHangfireDashboard("/Hangfire", new DashboardOptions
+app.UseHangfireDashboard("/Hangfire", new()
 {
     Authorization = new[] { new HangfireAuthorizationFilter() }
 });
 
-app.UseHangfireDashboard("/HangfireRead", new DashboardOptions
+app.UseHangfireDashboard("/HangfireRead", new()
 {
-    IsReadOnlyFunc = (context) => true,
+    IsReadOnlyFunc = context => true,
     Authorization = new[] { new HangfireAuthorizationFilterRead() }
 });
 

@@ -18,7 +18,7 @@ namespace Report_App_WASM.Server.Models
         public DateTime TransferBeginDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public TimeSpan TotalDuration { get; set; }
-        public TimeSpan SQLExcecutionDuration { get; set; }
+        public TimeSpan SqlExcecutionDuration { get; set; }
         public TimeSpan DownloadDuration { get; set; }
         public int NbrOfRows { get; set; }
         public string? RunBy { get; set; }

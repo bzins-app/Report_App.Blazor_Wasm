@@ -204,8 +204,8 @@
   <data name="Add new credentials" xml:space="preserve">
     <value>Ajouter une nouvelle identification</value>
   </data>
-  <data name="Add new sFTP" xml:space="preserve">
-    <value>Ajouter un nouveau sFTP</value>
+  <data name="Add new Sftp" xml:space="preserve">
+    <value>Ajouter un nouveau Sftp</value>
   </data>
   <data name="Add query" xml:space="preserve">
     <value>Ajouter une requête</value>
@@ -435,8 +435,8 @@
   <data name="cannot be enabled because no query is attached to this report" xml:space="preserve">
     <value>ne peut être activé car aucune requête n'est attachée à ce rapport</value>
   </data>
-  <data name="cannot be enabled because no SMTP configuration has been activated" xml:space="preserve">
-    <value>ne peut être activé car aucune configuration SMTP n'a été activée</value>
+  <data name="cannot be enabled because no Smtp configuration has been activated" xml:space="preserve">
+    <value>ne peut être activé car aucune configuration Smtp n'a été activée</value>
   </data>
   <data name="cannot be enabled because the related activity is not enabled" xml:space="preserve">
     <value>ne peut pas être activé car l'activité connexe n'est pas activée</value>
@@ -471,8 +471,8 @@
   <data name="Check if the activity exists" xml:space="preserve">
     <value>Vérifier si l'activité existe</value>
   </data>
-  <data name="Check SMTP configuration" xml:space="preserve">
-    <value>Vérifiez la configuration SMTP</value>
+  <data name="Check Smtp configuration" xml:space="preserve">
+    <value>Vérifiez la configuration Smtp</value>
   </data>
   <data name="Check task" xml:space="preserve">
     <value>Vérifier la tâche</value>
@@ -489,8 +489,8 @@
   <data name="Choose a deposit path configuration" xml:space="preserve">
     <value>Choisir la configuration d'un chemin de dépose</value>
   </data>
-  <data name="Choose an sFTP configuration" xml:space="preserve">
-    <value>Choisir une configuration sFTP</value>
+  <data name="Choose an Sftp configuration" xml:space="preserve">
+    <value>Choisir une configuration Sftp</value>
   </data>
   <data name="Choose first parameters" xml:space="preserve">
     <value>Choisir les premiers paramètres</value>
@@ -618,8 +618,8 @@
   <data name="Create a new email report" xml:space="preserve">
     <value>Créer un rapport email</value>
   </data>
-  <data name="Create a new LDAP profil" xml:space="preserve">
-    <value>Créer un nouveau profil LDAP</value>
+  <data name="Create a new Ldap profil" xml:space="preserve">
+    <value>Créer un nouveau profil Ldap</value>
   </data>
   <data name="Create a new network credential" xml:space="preserve">
     <value>Ajouter une configuration d'identification réseau</value>
@@ -627,11 +627,11 @@
   <data name="Create a new report" xml:space="preserve">
     <value>Créer un nouveau rapport</value>
   </data>
-  <data name="Create a new SFTP profil" xml:space="preserve">
-    <value>Créer un nouveau profil SFTP</value>
+  <data name="Create a new Sftp profil" xml:space="preserve">
+    <value>Créer un nouveau profil Sftp</value>
   </data>
-  <data name="Create a new SMTP profil" xml:space="preserve">
-    <value>Créer un nouveau profil SMTP</value>
+  <data name="Create a new Smtp profil" xml:space="preserve">
+    <value>Créer un nouveau profil Smtp</value>
   </data>
   <data name="create a report" xml:space="preserve">
     <value>créer un rapport</value>
@@ -1287,8 +1287,8 @@
   <data name="LastRun" xml:space="preserve">
     <value>Dernière exécution</value>
   </data>
-  <data name="LDAP configuration" xml:space="preserve">
-    <value>Paramétrage LDAP</value>
+  <data name="Ldap configuration" xml:space="preserve">
+    <value>Paramétrage Ldap</value>
   </data>
   <data name="Left Sidebar Color" xml:space="preserve">
     <value>Couleur de la barre latérale gauche</value>
@@ -1428,8 +1428,8 @@
   <data name="Navigate to &quot;Base parameters&quot; and &quot;Manage activities&quot; and check if your activity exists. If not ask to the application admin" xml:space="preserve">
     <value>Naviguer dans les rubriques "Paramètres de base" et "Gérer les activités" et vérifier si votre activité existe. Si non, demandez à l'administrateur de l'application</value>
   </data>
-  <data name="Navigate to &quot;Base parameters&quot; and &quot;SMTP configuration&quot; and check if one is active. If not ask to the application admin" xml:space="preserve">
-    <value>Naviguez jusqu'à "Base parameters" et "SMTP configuration" et vérifiez si l'un d'eux est actif. Si ce n'est pas le cas, demandez à l'administrateur de l'application</value>
+  <data name="Navigate to &quot;Base parameters&quot; and &quot;Smtp configuration&quot; and check if one is active. If not ask to the application admin" xml:space="preserve">
+    <value>Naviguez jusqu'à "Base parameters" et "Smtp configuration" et vérifiez si l'un d'eux est actif. Si ce n'est pas le cas, demandez à l'administrateur de l'application</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; and switch on the report. If something goes wrong you will get an error with the reason" xml:space="preserve">
     <value>Naviguez vers "Modifier les tâches" et "Alertes" et activez le rapport. Si quelque chose ne va pas, vous obtiendrez une erreur avec la raison suivante</value>
@@ -1965,20 +1965,20 @@
   <data name="Setup authenticator app" xml:space="preserve">
     <value>Configuration de l'application d'authentification</value>
   </data>
-  <data name="SFTP configuration" xml:space="preserve">
-    <value>Paramétrage SFTP</value>
+  <data name="Sftp configuration" xml:space="preserve">
+    <value>Paramétrage Sftp</value>
   </data>
-  <data name="SFTP host" xml:space="preserve">
-    <value>Hôte SFTP</value>
+  <data name="Sftp host" xml:space="preserve">
+    <value>Hôte Sftp</value>
   </data>
-  <data name="SFTP password" xml:space="preserve">
-    <value>Mot de passe SFTP</value>
+  <data name="Sftp password" xml:space="preserve">
+    <value>Mot de passe Sftp</value>
   </data>
-  <data name="SFTP port" xml:space="preserve">
-    <value>Port SFTP</value>
+  <data name="Sftp port" xml:space="preserve">
+    <value>Port Sftp</value>
   </data>
-  <data name="SFTP username" xml:space="preserve">
-    <value>Nom d'utilisateur SFTP</value>
+  <data name="Sftp username" xml:space="preserve">
+    <value>Nom d'utilisateur Sftp</value>
   </data>
   <data name="Side menu" xml:space="preserve">
     <value>Menu lateral</value>
@@ -1992,20 +1992,20 @@
   <data name="Size of files stored locally" xml:space="preserve">
     <value>Taille des fichiers stockés localement</value>
   </data>
-  <data name="SMTP configuration" xml:space="preserve">
-    <value>Paramétrage SMTP</value>
+  <data name="Smtp configuration" xml:space="preserve">
+    <value>Paramétrage Smtp</value>
   </data>
-  <data name="SMTP host" xml:space="preserve">
-    <value>Hôte SMTP</value>
+  <data name="Smtp host" xml:space="preserve">
+    <value>Hôte Smtp</value>
   </data>
-  <data name="SMTP password" xml:space="preserve">
-    <value>Mot de passe SMTP</value>
+  <data name="Smtp password" xml:space="preserve">
+    <value>Mot de passe Smtp</value>
   </data>
-  <data name="SMTP port" xml:space="preserve">
-    <value>Port SMTP</value>
+  <data name="Smtp port" xml:space="preserve">
+    <value>Port Smtp</value>
   </data>
-  <data name="SMTP username" xml:space="preserve">
-    <value>Identifiant SMTP</value>
+  <data name="Smtp username" xml:space="preserve">
+    <value>Identifiant Smtp</value>
   </data>
   <data name="Sorry, the page you visited does not exist." xml:space="preserve">
     <value>Désolé, la page que vous avez visitée n'existe pas.</value>
@@ -2253,8 +2253,8 @@
   <data name="Update password" xml:space="preserve">
     <value>Mise à jour du mot de passe</value>
   </data>
-  <data name="Update SMTP profil" xml:space="preserve">
-    <value>Mise à jour du profil SMTP</value>
+  <data name="Update Smtp profil" xml:space="preserve">
+    <value>Mise à jour du profil Smtp</value>
   </data>
   <data name="Updated at" xml:space="preserve">
     <value>Mis à jour le</value>
@@ -2292,11 +2292,11 @@
   <data name="Use primary keys?" xml:space="preserve">
     <value>Utiliser les clés primaires ?</value>
   </data>
-  <data name="Use sFTP protocol" xml:space="preserve">
-    <value>Utiliser le protocole sFTP</value>
+  <data name="Use Sftp protocol" xml:space="preserve">
+    <value>Utiliser le protocole Sftp</value>
   </data>
-  <data name="Use sFTP protocol?" xml:space="preserve">
-    <value>Utiliser le protocole sFTP ?</value>
+  <data name="Use Sftp protocol?" xml:space="preserve">
+    <value>Utiliser le protocole Sftp ?</value>
   </data>
   <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
     <value>Utilier les requêtes standards pour le WMS Rhs?</value>

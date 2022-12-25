@@ -11,6 +11,7 @@ using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Server.Utils.RemoteQueryParameters;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.DTO;
+using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.RemoteQueryParameters;
 using Report_App_WASM.Shared.SerializedParameters;
 using System.Data;
@@ -18,17 +19,17 @@ using System.Data.Common;
 using System.Data.OleDb;
 using System.Text;
 
-namespace Report_App_BlazorServ.Services.RemoteDb
+namespace Report_App_WASM.Server.Services.RemoteDb
 {
     public interface IRemoteDbConnection
     {
-        Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDTO parameter);
+        Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDto? parameter);
         Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts, int taskId = 0);
         Task<bool> CkeckTableExists(string query);
         Task CreateTable(string query);
-        Task LoadDatatableToTable(DataTable data, string targetTable);
+        Task LoadDatatableToTable(DataTable data, string? targetTable);
         Task<MergeResult> MergeTables(string query);
-        Task DeleteTable(string tableName);
+        Task DeleteTable(string? tableName);
     }
     public class RemoteDbConnection : IRemoteDbConnection, IDisposable
     {
@@ -46,7 +47,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
         private async Task<int> GetDataTransferActivity()
         {
-            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDB).Select(a => a.ActivityId).FirstOrDefaultAsync();
+            return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).Select(a => a.ActivityId).FirstOrDefaultAsync();
         }
 
         public async Task<bool> CkeckTableExists(string query)
@@ -77,7 +78,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             return false;
         }
 
-        public async Task DeleteTable(string tableName)
+        public async Task DeleteTable(string? tableName)
         {
             StringBuilder query = new();
             query.Append(
@@ -142,7 +143,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             return result;
         }
 
-        public async Task LoadDatatableToTable(DataTable data, string targetTable)
+        public async Task LoadDatatableToTable(DataTable data, string? targetTable)
         {
             var activityId = await GetDataTransferActivity();
             var remoteConnection = GetConnectionString(activityId);
@@ -152,12 +153,12 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             {
                 bulkCopy.DestinationTableName = "dbo." + targetTable;
 
-                int totalRows = data.Rows.Count;
+                var totalRows = data.Rows.Count;
 
                 if (totalRows > 1000000)
                 {
-                    int batchsize = 1000000;
-                    for (int i = 0; i <= totalRows; i += batchsize)
+                    var batchsize = 1000000;
+                    for (var i = 0; i <= totalRows; i += batchsize)
                     {
                         await bulkCopy.WriteToServerAsync(data.AsEnumerable().Skip(i).Take(batchsize).CopyToDataTable());
                     }
@@ -171,24 +172,26 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             await conn.DisposeAsync();
         }
 
-        private RemoteConnectionParameter CreateConnectionString(ActivityDbConnectionDTO parameter)
+        private RemoteConnectionParameter CreateConnectionString(ActivityDbConnectionDto? parameter)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             RemoteConnectionParameter value = new() { Schema = parameter.DbSchema, UseDbSchema = parameter.UseDbSchema, TypeDb = parameter.TypeDb, CommandFetchSize = parameter.CommandFetchSize, CommandTimeOut = parameter.CommandTimeOut };
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (parameter.TypeDb == TypeDb.Oracle)
             {
                 value.ConnnectionString = $"User ID={parameter.ConnectionLogin};Password={parameter.Password}; Data Source={parameter.ConnectionPath};";
             }
-            else if (parameter.TypeDb == TypeDb.SQLServer)
+            else if (parameter.TypeDb == TypeDb.SqlServer)
             {
-                string windowsAuthentication = ";Integrated Security=SSPI";
+                var windowsAuthentication = ";Integrated Security=SSPI";
                 string connectionString;
-                string databaseInfo = "";
+                var databaseInfo = "";
                 if (parameter.UseDbSchema)
                 {
                     databaseInfo = $";Database={parameter.DbSchema}";
                 }
 
-                if (parameter.ADAuthentication)
+                if (parameter.AdAuthentication)
                 {
                     connectionString = $"server ={parameter.ConnectionPath}{databaseInfo}{windowsAuthentication};";
                 }
@@ -204,10 +207,10 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                 connectionString += "Encrypt=False;";
                 value.ConnnectionString = connectionString;
             }
-            else if (parameter.TypeDb == TypeDb.DB2)
+            else if (parameter.TypeDb == TypeDb.Db2)
             {
                 parameter.UseDbSchema = true;
-                string databaseInfo = "";
+                var databaseInfo = "";
                 if (parameter.UseDbSchema)
                 {
                     databaseInfo = $";Initial Catalog={parameter.DbSchema}";
@@ -217,7 +220,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             else
             {
                 parameter.UseDbSchema = true;
-                string databaseInfo = "";
+                var databaseInfo = "";
                 if (parameter.UseDbSchema)
                 {
                     databaseInfo = $";database={parameter.DbSchema}";
@@ -230,26 +233,28 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
         private RemoteConnectionParameter GetConnectionString(int activityId)
         {
-            ActivityDbConnectionDTO conValue = new();
-            conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDTO>(_mapper.ConfigurationProvider).SingleOrDefault();
-            conValue.Password = EncryptDecrypt.DecryptString(conValue.Password);
+            ActivityDbConnectionDto? conValue = new();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDto>(_mapper.ConfigurationProvider).SingleOrDefault();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            conValue!.Password = EncryptDecrypt.DecryptString(conValue.Password);
 
             return CreateConnectionString(conValue);
         }
 
-        private async Task TryConnectAsync(TypeDb TypeDb, string connectionString)
+        private async Task TryConnectAsync(TypeDb typeDb, string connectionString)
         {
             DbConnection conn;
 
-            if (TypeDb == TypeDb.Oracle)
+            if (typeDb == TypeDb.Oracle)
             {
                 conn = new OracleConnection(connectionString);
             }
-            else if (TypeDb == TypeDb.SQLServer)
+            else if (typeDb == TypeDb.SqlServer)
             {
                 conn = new SqlConnection(connectionString);
             }
-            else if (TypeDb == TypeDb.DB2)
+            else if (typeDb == TypeDb.Db2)
             {
                 conn = new OleDbConnection(connectionString);
             }
@@ -263,16 +268,22 @@ namespace Report_App_BlazorServ.Services.RemoteDb
 
         private async Task<DataTable> DbToDataTableAsync(DbGenericParameters dbConnector, RemoteDbCommandParameters run, DataTable dataTable, CancellationToken cts)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             await dbConnector.DbConnection.OpenAsync(cts);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             dbConnector.DbCommand.Connection = dbConnector.DbConnection;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             foreach (var query in dbConnector.IntializationQueries)
             {
                 dbConnector.DbCommand.CommandText = query;
                 await dbConnector.DbCommand.ExecuteReaderAsync(cts);
             }
 
-            using CancellationTokenRegistration ctr = cts.Register(() => dbConnector.DbCommand.Cancel());
+            using var ctr = cts.Register(() => dbConnector.DbCommand.Cancel());
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             dbConnector.DbDataAdapter.SelectCommand = dbConnector.DbCommand;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             using (dbConnector.DbDataAdapter)
             {
                 dbConnector.DbCommand.CommandText = run.QueryToRun + Environment.NewLine;//newline to avoid empty feedback when a comment is open at the last line without CR
@@ -299,17 +310,19 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             await dbConnector.DbConnection.DisposeAsync();
             return dataTable;
         }
-        public async Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDTO parameter)
+        public async Task<SubmitResult> TestConnectionAsync(ActivityDbConnectionDto? parameter)
         {
             try
             {
                 var conParam = CreateConnectionString(parameter);
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'connectionString' in 'Task RemoteDbConnection.TryConnectAsync(TypeDb typeDb, string connectionString)'.
                 await TryConnectAsync(conParam.TypeDb, conParam.ConnnectionString);
-                return new SubmitResult { Success = true, Message = "OK" };
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'connectionString' in 'Task RemoteDbConnection.TryConnectAsync(TypeDb typeDb, string connectionString)'.
+                return new() { Success = true, Message = "OK" };
             }
             catch (Exception e)
             {
-                return new SubmitResult { Success = false, Message = e.Message };
+                return new() { Success = false, Message = e.Message };
             }
 
         }
@@ -333,7 +346,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
             }
             do
             {
-                string activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId).Select(a => a.ActivityName).FirstOrDefaultAsync();
+                var activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId).Select(a => a.ActivityName).FirstOrDefaultAsync();
                 // ApplicationLogTask logTask = new() { ActivityId = run.ActivityId, ActivityName = activityName, StartDateTime = DateTime.Now, JobDescription = run.QueryInfo, Type = "Attempt" };
                 var logTask = new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
                 try
@@ -342,7 +355,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                     var connectionInfo = GetConnectionString(run.ActivityId);
                     DataTable dataTable = new();
                     dataTable.RowChanged += OnInitialized;
-                    DateTime start = DateTime.Now;
+                    var start = DateTime.Now;
                     _first = true;
                     _fillTimeStamp = DateTime.Now;
                     DbGenericParameters dbConnector = new();
@@ -352,6 +365,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                         dbConnector.DbConnection = new OracleConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new OracleDataAdapter();
                         var cmd = new OracleCommand { FetchSize = connectionInfo.CommandFetchSize, CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
                         if (run.QueryCommandParameters.Any())
                         {
                             foreach (var parameter in run.QueryCommandParameters)
@@ -360,9 +374,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     or QueryCommandParameterValueType.DateTime)
                                 {
                                     DateTime timevalue;
-                                    if (!string.IsNullOrEmpty(parameter.value))
+                                    if (!string.IsNullOrEmpty(parameter.Value))
                                     {
-                                        timevalue = DateTime.Parse(parameter.value);
+                                        timevalue = DateTime.Parse(parameter.Value);
                                     }
                                     else if (parameter.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                     {
@@ -385,9 +399,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     OracleParameter para = new(parameter.ParameterIdentifier, OracleDbType.Varchar2,
                                         ParameterDirection.Input)
                                     {
-                                        Value = parameter.value
+                                        Value = parameter.Value
                                     };
-                                    if (string.IsNullOrEmpty(parameter.value))
+                                    if (string.IsNullOrEmpty(parameter.Value))
                                     {
                                         para.Value = DBNull.Value;
                                         cmd.Parameters.Add(para);
@@ -399,6 +413,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                 }
                             }
                         }
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
 
                         cmd.BindByName = true;
                         dbConnector.DbCommand = cmd;
@@ -409,11 +424,12 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                         }
                         dbConnector.IntializationQueries.Add("alter session set nls_date_format = 'DD/MM/YYYY HH24:MI:SS'  ");
                     }
-                    else if (connectionInfo.TypeDb == TypeDb.SQLServer)
+                    else if (connectionInfo.TypeDb == TypeDb.SqlServer)
                     {
                         dbConnector.DbConnection = new SqlConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new SqlDataAdapter();
                         var cmd = new SqlCommand { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
                         if (run.QueryCommandParameters.Any())
                         {
                             foreach (var parameter in run.QueryCommandParameters)
@@ -422,9 +438,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     or QueryCommandParameterValueType.DateTime)
                                 {
                                     DateTime timevalue;
-                                    if (!string.IsNullOrEmpty(parameter.value))
+                                    if (!string.IsNullOrEmpty(parameter.Value))
                                     {
-                                        timevalue = DateTime.Parse(parameter.value);
+                                        timevalue = DateTime.Parse(parameter.Value);
                                     }
                                     else if (parameter.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                     {
@@ -445,9 +461,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                 {
                                     SqlParameter para = new(parameter.ParameterIdentifier, SqlDbType.VarChar)
                                     {
-                                        Value = parameter.value
+                                        Value = parameter.Value
                                     };
-                                    if (string.IsNullOrEmpty(parameter.value))
+                                    if (string.IsNullOrEmpty(parameter.Value))
                                     {
                                         para.Value = DBNull.Value;
                                         cmd.Parameters.Add(para);
@@ -459,10 +475,11 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                 }
                             }
                         }
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
 
                         dbConnector.DbCommand = cmd;
                     }
-                    else if (connectionInfo.TypeDb == TypeDb.DB2)
+                    else if (connectionInfo.TypeDb == TypeDb.Db2)
                     {
                         dbConnector.DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new OleDbDataAdapter();
@@ -473,6 +490,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                         dbConnector.DbConnection = new MySqlConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new MySqlDataAdapter();
                         var cmd = new MySqlCommand { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
                         if (run.QueryCommandParameters.Any())
                         {
                             foreach (var parameter in run.QueryCommandParameters)
@@ -481,9 +499,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                     or QueryCommandParameterValueType.DateTime)
                                 {
                                     DateTime timevalue;
-                                    if (!string.IsNullOrEmpty(parameter.value))
+                                    if (!string.IsNullOrEmpty(parameter.Value))
                                     {
-                                        timevalue = DateTime.Parse(parameter.value);
+                                        timevalue = DateTime.Parse(parameter.Value);
                                     }
                                     else if (parameter.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                     {
@@ -504,9 +522,9 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                 {
                                     MySqlParameter para = new(parameter.ParameterIdentifier, MySqlDbType.VarChar)
                                     {
-                                        Value = parameter.value
+                                        Value = parameter.Value
                                     };
-                                    if (string.IsNullOrEmpty(parameter.value))
+                                    if (string.IsNullOrEmpty(parameter.Value))
                                     {
                                         para.Value = DBNull.Value;
                                         cmd.Parameters.Add(para);
@@ -518,6 +536,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                                 }
                             }
                         }
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
 
                         dbConnector.DbCommand = cmd;
                     }
@@ -533,7 +552,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                     {
                         fill = _fillTimeStamp;
                     }
-                    DateTime end = DateTime.Now;
+                    var end = DateTime.Now;
                     if (!run.Test)
                     {
                         ApplicationLogQueryExecution logQuery = new()
@@ -544,7 +563,7 @@ namespace Report_App_BlazorServ.Services.RemoteDb
                             CommandTimeOut = connectionInfo.CommandTimeOut,
                             StartDateTime = start,
                             TotalDuration = end - start,
-                            SQLExcecutionDuration = fill - start,
+                            SqlExcecutionDuration = fill - start,
                             DownloadDuration = end - fill,
                             EndDateTime = end,
                             TransferBeginDateTime = fill,

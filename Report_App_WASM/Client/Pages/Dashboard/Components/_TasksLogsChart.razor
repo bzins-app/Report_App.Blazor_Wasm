@@ -1,36 +1,36 @@
-﻿@using ApexCharts
-
-
-@if (TaskLogs == null)
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@using ApexCharts
+@using Color = MudBlazor.Color
+@if (_taskLogs == null)
 {
-    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
     <ApexChart TItem="TaksLogsValues"
-           Title="@localizer.Get("Background taks")"
+           Title="@Localizer.Get("Background taks")"
            XAxisType="XAxisType.Datetime" Height="@Height"
-           Options="options" @ref="chart">
+           Options="_options" @ref="_chart">
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="TaskLogs"
-                     Name="@localizer.Get("Nbr of jobs")"
+                     Items="_taskLogs"
+                     Name="@Localizer.Get("Nbr of jobs")"
                      SeriesType="SeriesType.Line"
                      XValue="@(e => e.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="TaskLogs"
-                     Name="@localizer.Get("Nbr of errors")"
+                     Items="_taskLogs"
+                     Name="@Localizer.Get("Nbr of errors")"
                      SeriesType="SeriesType.Line"
                      XValue="@(e => e.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.NbrErrors))"
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="TaskLogs"
-                     Name="@localizer.Get("Job duration")"
+                     Items="_taskLogs"
+                     Name="@Localizer.Get("Job duration")"
                      SeriesType="SeriesType.Line"
                      XValue="@(e => e.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.TotalDuration/60))"
@@ -40,19 +40,19 @@ else
 
 
 @code {
-    [Parameter] public string Height { get; set; } = null;
-    private List<TaksLogsValues>? TaskLogs;
-    private ApexChartOptions<TaksLogsValues> options = new ApexChartOptions<TaksLogsValues>();
-    private ApexChart<TaksLogsValues> chart;
+    [Parameter] public string? Height { get; set; } = null;
+    private List<TaksLogsValues>? _taskLogs;
+    private ApexChartOptions<TaksLogsValues> _options = new();
+    private ApexChart<TaksLogsValues>? _chart;
 
     protected override async Task OnInitializedAsync()
     {
-        TaskLogs = await dataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
         //options.Chart.Stacked = true;
-        options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
-        options.Theme = new Theme { Palette = PaletteType.Palette7 };
-        options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
-        options.Stroke=new Stroke { Curve = Curve.Smooth, Width=2 };
+        _options.Tooltip = new() { X = new() { Format = @"dd \ MM \ yyyy" } };
+        _options.Theme = new() { Palette = PaletteType.Palette7 };
+        _options.Colors = new() { "#008FFB", "#FF4560", "#FEB019" };
+        _options.Stroke=new() { Curve = Curve.Smooth, Width=2 };
         //Stacked 100% test
         //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
         //options.Chart.Toolbar = new Toolbar { Show = false };

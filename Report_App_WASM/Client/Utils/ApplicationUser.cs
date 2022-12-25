@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Client.Utils
 {
-    public partial class ApplicationUser : IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<Guid>
     {
         //override identity user, add new column
         public bool IsBaseUser { get; set; } = false;

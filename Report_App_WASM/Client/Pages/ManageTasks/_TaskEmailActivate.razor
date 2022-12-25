@@ -1,15 +1,15 @@
 ﻿@inject ISnackbar Snackbar
 @inject HttpClient Http
 
-<MudSwitch Checked="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+<MudSwitch Checked="@Item!.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
 
 @code {
     [Parameter]
-    public TaskHeaderDTO Item { get; set; }
+    public TaskHeaderDto? Item { get; set; }
 
     private async Task ChangeStatusAsync(bool value)
     {
-        Item.SendByEmail = value;
+        Item!.SendByEmail = value;
 
         if (Item.SendByEmail)
         {
@@ -18,12 +18,12 @@
             if (!emailsConfigured)
             {
                 Item.SendByEmail = false;
-                Snackbar.Add(Item.TaskName + " " + localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
+                Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
                 return;
             }
         }
-        await dataService.PostValues(Item, "TaskHeaderUpdate");
+        await DataService.PostValues(Item, "TaskHeaderUpdate");
 
-        Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " + localizer.Get("send by email") + " " + localizer.Get("enabled") : Item.TaskName + " " + localizer.Get("send by email") + " " + localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
+        Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " + Localizer.Get("send by email") + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("send by email") + " " + Localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
     }
     }

@@ -1,56 +1,57 @@
 ﻿@inject HttpClient Http
+@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@localizer.Get("File deposit path")</PageTitle>
+<PageTitle>@Localizer.Get("File deposit path")</PageTitle>
 
 <ErrorBoundary>
-    @if (!string.IsNullOrEmpty(errorMessage))
+    @if (!string.IsNullOrEmpty(_errorMessage))
     {
-        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@localizer.Get("An error has occurred"): @errorMessage</b></MudText>
+        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@Localizer.Get("An error has occurred"): @_errorMessage</b></MudText>
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@localizer.Get("File deposit path")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("File deposit path")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering"/>
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@localizer.Get("Configuration name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.FilePath)" Title="@localizer.Get("File path")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.TryToCreateFolder)" Title="@(localizer.Get("Try to create folder") + "?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.UseSFTPProtocol)"Title="@(localizer.Get("Use sFTP protocol") + "?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.IsReachable)" Title="@(localizer.Get("Is reachable") + "?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.FilePath)" Title="@Localizer.Get("File path")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.TryToCreateFolder)" Title="@(Localizer.Get("Try to create folder") + "?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.UseSftpProtocol)"Title="@(Localizer.Get("Use Sftp protocol") + "?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.IsReachable)" Title="@(Localizer.Get("Is reachable") + "?")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
-            <Paginator Value="@pagination" FieldsContent="@Translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -58,45 +59,45 @@
 @code
 {
     #nullable enable
-    GridItemsProvider<FileDepositPathConfigurationDTO>? _ItemsProvider;
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent Translations = default!;
+    GridItemsProvider<FileDepositPathConfigurationDto>? _itemsProvider;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = default!;
     private bool _processing = false;
-    SimpleGrid<FileDepositPathConfigurationDTO> _grid = default!;
-    private string errorMessage = default!;
-    private bool rendering = false;
+    SimpleGrid<FileDepositPathConfigurationDto> _grid = default!;
+    private string? _errorMessage = default!;
+    private bool _rendering = false;
 
     protected override void OnInitialized()
     {
-        _ItemsProvider = async req =>
+        _itemsProvider = async req =>
         {
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<FileDepositPathConfigurationDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<FileDepositPathConfigurationDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
-        Translations = appService.GetGridTranslations();
+        _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<FileDepositPathConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<FileDepositPathConfigurationDTO> req)
+    private async Task<ApiResponse<FileDepositPathConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<FileDepositPathConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
-        var OdataQuery = _grid?.GetODataQuery();
-        string url = "odata/DepositPath?";
-        if (string.IsNullOrEmpty(OdataQuery))
+        var odataQuery = _grid?.GetODataQuery();
+        var url = "odata/DepositPath?";
+        if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
-            url += OdataQuery;
+            url += odataQuery;
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<FileDepositPathConfigurationDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<FileDepositPathConfigurationDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -107,16 +108,16 @@
 
     private async Task OnRefresh()
     {
-        rendering = true;
+        _rendering = true;
         await _grid.RefreshDataAsync();
-        rendering = false;
+        _rendering = false;
     }
 
     private async Task RemoveFilters()
     {
-        rendering = true;
+        _rendering = true;
         await _grid.RemoveFilters();
-        rendering = false;
+        _rendering = false;
     }
 
     public async ValueTask DisposeAsync()
@@ -125,89 +126,89 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(FileDepositPathConfigurationDTO value)
+    private async Task OpenEditDialog(FileDepositPathConfigurationDto value)
     {
-        var item = new FileDepositPathConfigurationDTO
+        var item = new FileDepositPathConfigurationDto
             {
 
                 ConfigurationName = value.ConfigurationName,
                 FilePath = value.FilePath,
                 TryToCreateFolder = value.TryToCreateFolder,
-                UseSFTPProtocol = value.UseSFTPProtocol
+                UseSftpProtocol = value.UseSftpProtocol
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_FileDepositPathFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
+            _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
             value.FilePath = item.FilePath;
             value.TryToCreateFolder = item.TryToCreateFolder;
-            value.UseSFTPProtocol = item.UseSFTPProtocol;
-            value.SFTPConfiguration = item?.SFTPConfiguration;
+            value.UseSftpProtocol = item.UseSftpProtocol;
+            value.SftpConfiguration = item.SftpConfiguration;
 
-            var result = await dataService.PostValues(value, "DepositPathUpdate");
+            var result = await DataService.PostValues(value, "DepositPathUpdate");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }
 
-    private async Task OpenDeleteDialog(FileDepositPathConfigurationDTO value)
+    private async Task OpenDeleteDialog(FileDepositPathConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = DialogService.Show<_FileDepositPathFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
-            var result = await dataService.PostValues(value, "DepositPathDelete");
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "DepositPathDelete");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }
 
     private async Task OpenCreateDialog()
     {
-        var value = new FileDepositPathConfigurationDTO();
+        var value = new FileDepositPathConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_FileDepositPathFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
-            var result = await dataService.PostValues(value, "DepositPathInsert");
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "DepositPathInsert");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object added"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Shared;
@@ -27,7 +26,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadAsync(IFormFile file)
         {
-            string returnedFiledPath = "";
+            var returnedFiledPath = "";
             if (file.Length > 0)
             {
                 var filePath = GetUploadedFilePath(file.FileName);
@@ -48,7 +47,7 @@ namespace Report_App_WASM.Server.Controllers
         {
             var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "upload");
             var filePath = Path.Combine(uploads, fileName);
-            string savePath = "upload/" + fileName;
+            var savePath = "upload/" + fileName;
             Tuple<string, string> result = new(savePath, filePath);
             return result;
         }

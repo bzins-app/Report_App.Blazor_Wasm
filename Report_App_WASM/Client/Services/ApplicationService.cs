@@ -1,5 +1,5 @@
 ﻿using Blazor.SimpleGrid;
-using Report_App_WASM.Client.Services.States;
+using Report_App_WASM.Client.Services.Implementations;
 using Report_App_WASM.Client.Utils;
 using System.Net.Http.Json;
 
@@ -9,13 +9,13 @@ namespace Report_App_WASM.Client.Services
     {
         private readonly CommonLocalizationService _localizer;
         private readonly HttpClient _httpClient;
-        private readonly IdentityAuthenticationStateProvider _AuthenticationStateProvider;
+        private readonly IdentityAuthenticationStateProvider _authenticationStateProvider;
 
-        public ApplicationService(CommonLocalizationService localizer, HttpClient httpClient, IdentityAuthenticationStateProvider AuthenticationStateProvider)
+        public ApplicationService(CommonLocalizationService localizer, HttpClient httpClient, IdentityAuthenticationStateProvider authenticationStateProvider)
         {
             _localizer = localizer;
             _httpClient = httpClient;
-            _AuthenticationStateProvider = AuthenticationStateProvider;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public SimpleGridFieldsContent GetGridTranslations()
@@ -44,7 +44,7 @@ namespace Report_App_WASM.Client.Services
                 Reset = _localizer.Get("Reset"),
                 StartsWith = _localizer.Get("Starts with"),
                 TheSameDateWith = _localizer.Get("The same date with"),
-                ItemsPerPage=_localizer.Get("Rows per page")
+                ItemsPerPage = _localizer.Get("Rows per page")
             };
         }
 
@@ -56,32 +56,33 @@ namespace Report_App_WASM.Client.Services
                    + Path.GetExtension(fileName);
         }
 
-        public async Task<Tuple<string, string>> GetFilePath(string fileNameToUrl, bool unique = true)
+        public async Task<Tuple<string, string>?> GetFilePath(string fileNameToUrl, bool unique = true)
         {
-            string fileName = fileNameToUrl;
+            var fileName = fileNameToUrl;
             if (unique)
             {
                 fileName = GetUniqueName(fileNameToUrl);
             }
-            string uri = $"{ApiControllers.ApplicationParametersApi}GetUploadedFilePath?fileName={fileName}";
+            var uri = $"{ApiControllers.ApplicationParametersApi}GetUploadedFilePath?fileName={fileName}";
             return await _httpClient.GetFromJsonAsync<Tuple<string, string>>(uri);
         }
 
-        private async Task<string> GetUserIdAsync()
+        private async Task<string?> GetUserIdAsync()
         {
-            return (await _AuthenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
+            return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         public async Task<bool> GetUserTheme()
         {
-            var user = await _AuthenticationStateProvider.GetUserInfo();
+            var user = await _authenticationStateProvider.GetUserInfo();
             if (user == null)
             {
-                if (user.AppTheme == "Dark")
+                if (user?.AppTheme == "Dark")
                     return true;
-                else return false;
+                return false;
             }
-            else return false;
+
+            return false;
         }
     }
 }

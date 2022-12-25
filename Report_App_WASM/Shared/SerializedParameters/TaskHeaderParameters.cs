@@ -2,10 +2,10 @@
 {
     public class TaskHeaderParameters
     {
-        public string Delimiter { get; set; } = ";";
+        public string? Delimiter { get; set; } = ";";
         public bool UseASpecificFileNaming { get; set; } = false;
         public bool AlertOccurenceByTime { get; set; }
-        public int NbrOFMinutesBeforeResendAlertEmail { get; set; } = 60;
+        public int NbrOfMinutesBeforeResendAlertEmail { get; set; } = 60;
         public int NbrOfOccurencesBeforeResendAlertEmail { get; set; } = 5;
         public string? ValidationSheetText { get; set; }
         public bool UseAnExcelTemplate { get; set; } = false;

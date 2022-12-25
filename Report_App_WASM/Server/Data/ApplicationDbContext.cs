@@ -13,7 +13,9 @@ namespace Report_App_WASM.Server.Data
 
         public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
         public virtual DbSet<ApplicationUniqueKey> ApplicationUniqueKey { get; set; }
-        public virtual DbSet<ApplicationParameters> ApplicationParameters { get; set; }
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
+        public virtual DbSet<ApplicationParameters?> ApplicationParameters { get; set; }
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
         public virtual DbSet<ApplicationLogTask> ApplicationLogTask { get; set; }
         public virtual DbSet<ApplicationLogTaskDetails> ApplicationLogTaskDetails { get; set; }
         public virtual DbSet<ApplicationLogQueryExecution> ApplicationLogQueryExecution { get; set; }
@@ -27,10 +29,12 @@ namespace Report_App_WASM.Server.Data
         public virtual DbSet<TaskDetail> TaskDetail { get; set; }
         public virtual DbSet<TaskEmailRecipient> TaskEmailRecipient { get; set; }
         public virtual DbSet<ServicesStatus> ServicesStatus { get; set; }
-        public virtual DbSet<SMTPConfiguration> SMTPConfiguration { get; set; }
-        public virtual DbSet<LDAPConfiguration> LDAPConfiguration { get; set; }
+        public virtual DbSet<SmtpConfiguration> SmtpConfiguration { get; set; }
+        public virtual DbSet<LdapConfiguration> LdapConfiguration { get; set; }
         public virtual DbSet<FileDepositPathConfiguration> FileDepositPathConfiguration { get; set; }
-        public virtual DbSet<SFTPConfiguration> SFTPConfiguration { get; set; }
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
+        public virtual DbSet<SftpConfiguration?> SftpConfiguration { get; set; }
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
         public virtual DbSet<QueryStore> QueryStore { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

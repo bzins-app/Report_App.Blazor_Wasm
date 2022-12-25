@@ -1,35 +1,36 @@
-﻿@using ApexCharts
-
-@if (TaskLogs == null)
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@using ApexCharts
+@using Color = MudBlazor.Color
+@if (_taskLogs == null)
 {
-    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
     <ApexChart TItem="TaksLogsValues"
-           Title="@localizer.Get("Tasks per type")"
+           Title="@Localizer.Get("Tasks per type")"
            XAxisType="XAxisType.Datetime" Height="@Height"
-           Options="options" @ref="chart">
+           Options="_options" @ref="_chart">
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="TaskLogs.Where(a=>a.TypeTask.Contains(reportFilter))"
-                     Name="@localizer.Get("Reports")"
+                     Items="_taskLogs.Where(a=>a.TypeTask!.Contains(_reportFilter))"
+                     Name="@Localizer.Get("Reports")"
                      SeriesType="SeriesType.Bar"
                      XValue="@(e => e.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="TaskLogs.Where(a=>a.TypeTask.Contains(alertFilter))"
-                     Name="@localizer.Get("Alerts")"
+                     Items="_taskLogs.Where(a=>a.TypeTask!.Contains(_alertFilter))"
+                     Name="@Localizer.Get("Alerts")"
                      SeriesType="SeriesType.Bar"
                      XValue="@(e => e.Date.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
                      OrderBy="e=>e.X" />
 
         <ApexPointSeries TItem="TaksLogsValues"
-                     Items="TaskLogs.Where(a=>a.TypeTask.Contains(dataFilter))"
-                     Name="@localizer.Get("Data transfer")"
+                     Items="_taskLogs.Where(a=>a.TypeTask!.Contains(_dataFilter))"
+                     Name="@Localizer.Get("Data transfer")"
                      SeriesType="SeriesType.Bar"
                      XValue="@(e => e.Date.Date.ToLocalTime())"
                      YAggregate="@(e => e.Sum(a=>a.NbrTasks))"
@@ -39,22 +40,22 @@ else
 
 
 @code {
-    [Parameter] public string Height { get; set; } = null;
-    private List<TaksLogsValues>? TaskLogs;
-    private ApexChartOptions<TaksLogsValues> options = new ApexChartOptions<TaksLogsValues>();
-    private ApexChart<TaksLogsValues> chart;
-    private string reportFilter="Report";
-    private string alertFilter = "Alert";
-    private string dataFilter = "Data";
+    [Parameter] public string? Height { get; set; } = null;
+    private List<TaksLogsValues>? _taskLogs;
+    private ApexChartOptions<TaksLogsValues> _options = new();
+    private ApexChart<TaksLogsValues>? _chart;
+    private string _reportFilter="Report";
+    private string _alertFilter = "Alert";
+    private string _dataFilter = "Data";
 
     protected override async Task OnInitializedAsync()
     {
-        TaskLogs = await dataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
-        options.Chart.Stacked = true;
-        options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
-        options.Theme = new Theme { Palette = PaletteType.Palette8 };
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
+        _options.Chart.Stacked = true;
+        _options.Tooltip = new() { X = new() { Format = @"dd \ MM \ yyyy" } };
+        _options.Theme = new() { Palette = PaletteType.Palette8 };
         //options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
-        options.Stroke=new Stroke { Curve = Curve.Smooth, Width=2 };
+        _options.Stroke=new() { Curve = Curve.Smooth, Width=2 };
         //Stacked 100% test
         //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
         //options.Chart.Toolbar = new Toolbar { Show = false };

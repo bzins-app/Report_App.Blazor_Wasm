@@ -1,13 +1,10 @@
-﻿@using Report_App_WASM.Client.Shared.Theme;
-@using Report_App_WASM.Client.Utils;
+﻿@using Report_App_WASM.Client.Shared.Theme
 @inherits LayoutComponentBase
-@inject NavigationManager navigationManager
-@inject IdentityAuthenticationStateProvider authStateProvider
 @inject HttpClient Http
-@inject IJSRuntime jsInterop
+@inject IJSRuntime JsInterop
 @attribute [Authorize]
 
-<MudThemeProvider IsDarkMode="_isDarkMode" Theme="AppTheme" />
+<MudThemeProvider IsDarkMode="_isDarkMode" Theme="_appTheme" />
 <MudDialogProvider FullWidth="true"
                    MaxWidth="MaxWidth.Small"
                    CloseButton="true"
@@ -21,16 +18,16 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
         <img src="@ApplicationConstants.ApplicationLogo" alt="@ApplicationConstants.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />
         <MudSpacer />
-        <MudTooltip Duration="1000" Text="@(_isDarkMode ? localizer.Get("Switch to Light Theme") : localizer.Get("Switch to Dark Theme"))">
-            <MudIconButton Icon="@(_isDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(()=>DarkModeChange(!UserAppTheme.DarkTheme))" />
+        <MudTooltip Duration="1000" Text="@(_isDarkMode ? Localizer.Get("Switch to Light Theme") : Localizer.Get("Switch to Dark Theme"))">
+            <MudIconButton Icon="@(_isDarkMode ? Icons.Rounded.LightMode : Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(()=>DarkModeChange(!UserAppTheme.DarkTheme))" />
         </MudTooltip>
         <LanguageSwitch />
         <LoginDisplay />
     </MudAppBar>
     <AuthorizeView>
         <Authorized>
-            <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Never">
-                <NavMenu  _isDarkMode="_isDarkMode" />
+            <MudDrawer @bind-Open="DrawerOpen" Elevation="25" ClipMode="DrawerClipMode.Never">
+                <NavMenu  IsDarkMode="_isDarkMode" />
             </MudDrawer>
         </Authorized>
     </AuthorizeView>
@@ -41,24 +38,23 @@
     </MudMainContent>
 </MudLayout>
 @code{
-    private string userName { get; set; }
-    readonly MudTheme AppTheme = ApplicationTheme.ApplicationMudTheme();
+    readonly MudTheme _appTheme = ApplicationTheme.ApplicationMudTheme();
 
     private bool _isDarkMode;
-    public bool _drawerOpen = true;
+    public bool DrawerOpen = true;
 
     protected override async Task OnInitializedAsync()
     {
         var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
-        ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
-        ApplicationConstants.ApplicationName = values.ApplicationName;
-        ApplicationConstants.LDAPLogin = values.LDAPLogin;
+        ApplicationConstants.ApplicationLogo = values?.ApplicationLogo;
+        ApplicationConstants.ApplicationName = values?.ApplicationName;
+        ApplicationConstants.LdapLogin = values!.LdapLogin;
         _isDarkMode=UserAppTheme.DarkTheme;
     }
 
     void DrawerToggle()
     {
-        _drawerOpen = !_drawerOpen;
+        DrawerOpen = !DrawerOpen;
     }
 
     private async Task DarkModeChange(bool dark)
@@ -67,11 +63,11 @@
         UserAppTheme.DarkTheme = dark;
         if (!dark)
         {
-            await jsInterop.InvokeVoidAsync("AppTheme.set", "Light");
+            await JsInterop.InvokeVoidAsync("AppTheme.set", "Light");
         }
         else
         {
-            await jsInterop.InvokeVoidAsync("AppTheme.set", "Dark");
+            await JsInterop.InvokeVoidAsync("AppTheme.set", "Dark");
         }
     }
 }

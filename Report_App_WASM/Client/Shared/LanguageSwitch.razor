@@ -1,14 +1,13 @@
-﻿@using System.Globalization
-@using Microsoft.AspNetCore.Builder
+﻿@using Microsoft.AspNetCore.Builder
 @using Microsoft.Extensions.Options
 @inject NavigationManager NavigationManager
 @inject IOptions<RequestLocalizationOptions> LocOptions
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
-<MudTooltip Text="@localizer.Get("Language")">
+<MudTooltip Text="@Localizer.Get("Language")">
     <MudMenu Class="mx-1" Icon="@Icons.Material.Outlined.Translate" Color="Color.Default" Direction="Direction.Bottom" OffsetY="true" AnchorOrigin="Origin.BottomLeft"
              Dense="true">
-        @foreach (var culture in supportedCultures)
+        @foreach (var culture in _supportedCultures)
         {
             if (culture.Name == _language)
             {
@@ -23,13 +22,12 @@
 </MudTooltip>
 
 @code {
-    private string _language;
-    private CultureInfo[] supportedCultures = new[]
-    {
-                    new CultureInfo("fr"),
-                    new CultureInfo("en"),
-                    new CultureInfo("de"),
-                    new CultureInfo("nl"),
+    private string? _language;
+    private CultureInfo[] _supportedCultures = {
+                    new("fr"),
+                    new("en"),
+                    new("de"),
+                    new("nl"),
     };
 
     protected override void OnInitialized()
@@ -49,7 +47,7 @@
         {
             if (CultureInfo.CurrentCulture != value)
             {
-                var js = (IJSInProcessRuntime)JSRuntime;
+                var js = (IJSInProcessRuntime)JsRuntime;
                 js.InvokeVoid("cultureInfo.set", value.Name);
 
                 NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);

@@ -6,24 +6,22 @@ namespace Report_App_WASM.Client.Services
 {
     public class CommonLocalizationService
     {
-        private readonly IStringLocalizer localizer;
+        private readonly IStringLocalizer _localizer;
         public CommonLocalizationService(IStringLocalizerFactory factory)
         {
             var assemblyName = new AssemblyName(typeof(CommonResources).GetTypeInfo().Assembly.FullName);
-            localizer = factory.Create(nameof(CommonResources), assemblyName.Name);
+            _localizer = factory.Create(nameof(CommonResources), assemblyName.Name);
         }
 
-        public string Get(string key)
+        public string Get(string? key)
         {
             if (!string.IsNullOrEmpty(key))
             {
-                return localizer[key];
+                return _localizer[key];
             }
-            else
-            {
-                string defaultkey = "en";
-                return localizer[defaultkey];
-            }
+
+            var defaultkey = "en";
+            return _localizer[defaultkey];
         }
     }
 }

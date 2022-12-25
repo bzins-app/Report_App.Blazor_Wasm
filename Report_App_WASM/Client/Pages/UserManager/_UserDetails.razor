@@ -1,24 +1,35 @@
-﻿@inject ISnackbar Snackbar
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@inject ISnackbar Snackbar
 @inject HttpClient Http
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action==CrudAction.Update? Icons.Material.Filled.Edit:Action==CrudAction.Create?Icons.Material.Filled.Create:Icons.Material.Filled.DeleteForever )" Class="mr-3 mb-n1" />
-            @localizer.Get(Action == CrudAction.Update ? "Edit" : Action == CrudAction.Create ? "Add" : "Delete")
+            <MudIcon Icon="@(Action switch
+                           {
+                               CrudAction.Update => Icons.Material.Filled.Edit,
+                               CrudAction.Create => Icons.Material.Filled.Create,
+                               _ => Icons.Material.Filled.DeleteForever
+                               } )" Class="mr-3 mb-n1" />
+            @Localizer.Get(Action switch
+            {
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+                })
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="Item.UserName" Label="@localizer.Get("Name")" Disabled />
-        <MudTextField @bind-Value="Item.Email" Label="@localizer.Get("Email")" Disabled />
+        <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("Name")" Disabled />
+        <MudTextField @bind-Value="Item!.Email" Label="@Localizer.Get("Email")" Disabled />
         <MudCard Elevation=0>
             <MudCardContent>
                 <MudGrid Style="min-height:300px">
                     <MudItem xs=5 sm=5 md=5>
-                        <MudText Typo="Typo.h5">@localizer.Get("Roles available")</MudText>
-                        <MudTable Items="@rolesAvailable" Dense="true" MultiSelection="true" @bind-SelectedItems="rolesToAssign" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
+                        <MudText Typo="Typo.h5">@Localizer.Get("Roles available")</MudText>
+                        <MudTable Items="@_rolesAvailable" Dense="true" MultiSelection="true" @bind-SelectedItems="_rolesToAssign" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
                             <HeaderContent>
-                                <MudTh>@localizer.Get("Name")</MudTh>
+                                <MudTh>@Localizer.Get("Name")</MudTh>
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd DataLabel="Nr">@context</MudTd>
@@ -42,10 +53,10 @@
                         </MudContainer>
                     </MudItem>
                     <MudItem xs=5 sm=5 md=5>
-                        <MudText Typo="Typo.h5">@localizer.Get("Roles assigned")</MudText>
-                        <MudTable Items="@rolesAssigned" Dense="true" MultiSelection="true" @bind-SelectedItems="rolesToRemove" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
+                        <MudText Typo="Typo.h5">@Localizer.Get("Roles assigned")</MudText>
+                        <MudTable Items="@_rolesAssigned" Dense="true" MultiSelection="true" @bind-SelectedItems="_rolesToRemove" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
                             <HeaderContent>
-                                <MudTh>@localizer.Get("Name")</MudTh>
+                                <MudTh>@Localizer.Get("Name")</MudTh>
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd DataLabel="Nr">@context</MudTd>
@@ -57,25 +68,22 @@
         </MudCard>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Back")</MudButton>
+        <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Back")</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public ApplicationUser Item { get; set; }
+    [Parameter] public ApplicationUser? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
-    private MudForm form = default!;
-    private HashSet<string> rolesToAssign = new HashSet<string>();
-    private readonly List<string> rolesAvailable = new List<string>();
+    private MudForm _form = default!;
+    private HashSet<string> _rolesToAssign = new();
+    private readonly List<string> _rolesAvailable = new();
 
-    private HashSet<string> rolesToRemove = new HashSet<string>();
-    private readonly List<string> rolesAssigned = new List<string>();
+    private HashSet<string> _rolesToRemove = new();
+    private readonly List<string> _rolesAssigned = new();
 
-    //private List<TransferItem> dataSource = new List<TransferItem>();
-    private List<string> targetKeys = new List<string>();
-    private string[] selectedKeys = Array.Empty<string>();
-    private string[] titles;
+    private string?[]? _titles;
 
     private void Cancel()
     {
@@ -84,42 +92,42 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string uri = $"{ApiControllers.UserManagerApi}GetRolesList";
+        var uri = $"{ApiControllers.UserManagerApi}GetRolesList";
         var roles = await Http.GetFromJsonAsync<List<string>>(uri);
 
-        foreach (var r in roles)
+        foreach (var r in roles!)
         {
-            rolesAvailable.Add(r);
+            _rolesAvailable.Add(r);
         }
 
-        string uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item.UserName}";
+        var uriUser = $"{ApiControllers.UserManagerApi}GetRolesListPerUser?UserName={Item?.UserName}";
         var userRoles = await Http.GetFromJsonAsync<List<string>>(uriUser);
 
-        foreach (var ur in userRoles)
+        foreach (var ur in userRoles!)
         {
-            rolesAssigned.Add(ur);
-            rolesAvailable.Remove(ur);
+            _rolesAssigned.Add(ur);
+            _rolesAvailable.Remove(ur);
         }
 
-        titles = new string[] { localizer.Get("Roles available"), localizer.Get("Roles assigned") };
-        base.OnInitialized();
+        _titles = new[] { Localizer.Get("Roles available"), Localizer.Get("Roles assigned") };
+        await base.OnInitializedAsync();
     }
 
     private async Task AssignRoles()
     {
-        if (rolesToAssign != null)
+        if (_rolesToAssign != null)
         {
-            ChangeRolePayload values = new ChangeRolePayload { UserName = Item.UserName, Roles = rolesToAssign.ToList() };
-            var result = await dataService.PostValues(values, "AddRoles", ApiControllers.UserManagerApi);
+            var values = new ChangeRolePayload { UserName = Item?.UserName, Roles = _rolesToAssign.ToList() };
+            var result = await DataService.PostValues(values, "AddRoles", ApiControllers.UserManagerApi);
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Roles :") + string.Join(", ", rolesToAssign.Select(x => x)) + " " + localizer.Get("Role added"), Severity.Success);
-                foreach (var t in rolesToAssign)
+                Snackbar.Add(Localizer.Get("Roles :") + string.Join(", ", _rolesToAssign.Select(x => x)) + " " + Localizer.Get("Role added"), Severity.Success);
+                foreach (var t in _rolesToAssign)
                 {
-                    rolesAvailable.Remove(t);
-                    rolesAssigned.Add(t);
+                    _rolesAvailable.Remove(t);
+                    _rolesAssigned.Add(t);
                 }
-                rolesToAssign = null;
+                _rolesToAssign = null;
             }
             StateHasChanged();
         }
@@ -127,19 +135,19 @@
 
     private async Task RemoveRoles()
     {
-        if (rolesToRemove != null)
+        if (_rolesToRemove != null)
         {
-            ChangeRolePayload values = new ChangeRolePayload { UserName = Item.UserName, Roles = rolesToRemove.ToList() };
-            var result = await dataService.PostValues(values, "RemoveRoles", ApiControllers.UserManagerApi);
+            var values = new ChangeRolePayload { UserName = Item.UserName, Roles = _rolesToRemove.ToList() };
+            var result = await DataService.PostValues(values, "RemoveRoles", ApiControllers.UserManagerApi);
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Roles :") + string.Join(", ", rolesToRemove.Select(x => x)) + " " + localizer.Get("Role removed"), Severity.Info);
-                foreach (var t in rolesToRemove)
+                Snackbar.Add(Localizer.Get("Roles :") + string.Join(", ", _rolesToRemove.Select(x => x)) + " " + Localizer.Get("Role removed"), Severity.Info);
+                foreach (var t in _rolesToRemove)
                 {
-                    rolesAssigned.Remove(t);
-                    rolesAvailable.Add(t);
+                    _rolesAssigned.Remove(t);
+                    _rolesAvailable.Add(t);
                 }
-                rolesToRemove = null;
+                _rolesToRemove = null!;
             }
             StateHasChanged();
         }

@@ -11,11 +11,18 @@ namespace Report_App_WASM.Server.Models
         [Required]
         [MaxLength(60)]
         public string? ActivityName { get; set; }
-        public ActivityType ActivityType { get; set; } = ActivityType.SourceDB;
+        public ActivityType ActivityType { get; set; } = ActivityType.SourceDb;
         private string? _activityTypeName;
 
         [MaxLength(20)]
-        public string? ActivityTypeName { get => _activityTypeName; set { _activityTypeName = ActivityType.ToString(); } }
+        public string? ActivityTypeName
+        {
+            get => _activityTypeName; set
+            {
+                _activityTypeName = value;
+                _activityTypeName = ActivityType.ToString();
+            }
+        }
         public bool IsActivated { get; set; }
         public bool Display { get; set; }
         public string? ActivityLogo { get; set; }

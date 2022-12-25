@@ -6,6 +6,7 @@ namespace Report_App_WASM.Server.Models
     public class ApplicationLogTask : IExcludeAuditTrail
     {
         public int Id { get; set; }
+        public int TaskId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int DurationInSeconds { get; set; }

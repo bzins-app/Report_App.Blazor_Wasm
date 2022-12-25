@@ -1,5 +1,6 @@
 ﻿using Report_App_WASM.Client.Services.Contracts;
 using Report_App_WASM.Shared;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace Report_App_WASM.Client.Services.Implementations
@@ -17,15 +18,15 @@ namespace Report_App_WASM.Client.Services.Implementations
         {
             //var stringContent = new StringContent(JsonSerializer.Serialize(loginParameters), Encoding.UTF8, "application/json");
             var result = await _httpClient.PostAsJsonAsync("api/Authorize/Login", loginParameters);
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            if (result.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task LoginLDAP(LoginParameters loginParameters)
+        public async Task LoginLdap(LoginParameters loginParameters)
         {
             //var stringContent = new StringContent(JsonSerializer.Serialize(loginParameters), Encoding.UTF8, "application/json");
-            var result = await _httpClient.PostAsJsonAsync("api/Authorize/LDAPLogin", loginParameters);
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            var result = await _httpClient.PostAsJsonAsync("api/Authorize/LdapLogin", loginParameters);
+            if (result.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
         }
 
@@ -39,11 +40,11 @@ namespace Report_App_WASM.Client.Services.Implementations
         {
             //var stringContent = new StringContent(JsonSerializer.Serialize(registerParameters), Encoding.UTF8, "application/json");
             var result = await _httpClient.PostAsJsonAsync("api/Authorize/Register", registerParameters);
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            if (result.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task<UserInfo> GetUserInfo()
+        public async Task<UserInfo?> GetUserInfo()
         {
             var result = await _httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");
             return result;

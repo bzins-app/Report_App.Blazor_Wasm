@@ -5,21 +5,21 @@
         </MudStack>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Info" OnClick="Cancel">@localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Validate">@localizer.Get("Validate")</MudButton>
+        <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Validate">@Localizer.Get("Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string Value { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [Parameter] public string? Value { get; set; }
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private void Validate()
     {
-        MudDialog.Close(DialogResult.Ok(Value));
+        MudDialog?.Close(DialogResult.Ok(Value));
     }
 }

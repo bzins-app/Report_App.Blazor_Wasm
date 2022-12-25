@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager navigationManager
 @inject HttpClient Http
 
 <MudThemeProvider/>
@@ -27,8 +26,8 @@
     protected override async Task OnInitializedAsync()
     {
         var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
-        ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
-        ApplicationConstants.ApplicationName = values.ApplicationName;
-        ApplicationConstants.LDAPLogin = values.LDAPLogin;
+        ApplicationConstants.ApplicationLogo = values?.ApplicationLogo;
+        ApplicationConstants.ApplicationName = values?.ApplicationName;
+        if (values != null) ApplicationConstants.LdapLogin = values.LdapLogin;
     }
 }

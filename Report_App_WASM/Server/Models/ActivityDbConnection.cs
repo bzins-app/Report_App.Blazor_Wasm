@@ -14,14 +14,21 @@ namespace Report_App_WASM.Server.Models
         private string? _typeDbName;
 
         [MaxLength(20)]
-        public string? TypeDbName { get => _typeDbName; set { _typeDbName = TypeDb.ToString(); } }
+        public string? TypeDbName
+        {
+            get => _typeDbName; set
+            {
+                _typeDbName = value;
+                _typeDbName = TypeDb.ToString();
+            }
+        }
         [Required]
         public string? ConnectionPath { get; set; }
         public int Port { get; set; }
         [MaxLength(100)]
         public string? ConnectionLogin { get; set; }
         private string? _password;
-        public string Password
+        public string? Password
         {
             get => _password;
             set
@@ -37,7 +44,7 @@ namespace Report_App_WASM.Server.Models
             }
         }
         public bool UseDbSchema { get; set; }
-        public bool ADAuthentication { get; set; } = false;
+        public bool AdAuthentication { get; set; } = false;
         public bool IntentReadOnly { get; set; }
         [MaxLength(100)]
         public string? DbSchema { get; set; }

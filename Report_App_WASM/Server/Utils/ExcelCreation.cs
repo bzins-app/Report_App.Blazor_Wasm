@@ -5,15 +5,15 @@ namespace Report_App_WASM.Server.Utils
 {
     public struct ExcelCreationDatatable : IDisposable
     {
-        public string TabName;
+        public string? TabName;
         public ExcelTemplate ExcelTemplate;
         public DataTable Data;
 
-        public ExcelCreationDatatable(string TabName, ExcelTemplate ExcelTemplate, DataTable Data)
+        public ExcelCreationDatatable(string? tabName, ExcelTemplate excelTemplate, DataTable data)
         {
-            this.TabName = TabName;
-            this.ExcelTemplate = ExcelTemplate;
-            this.Data = Data;
+            TabName = tabName;
+            ExcelTemplate = excelTemplate;
+            Data = data;
         }
 
         public void Dispose()
@@ -24,10 +24,10 @@ namespace Report_App_WASM.Server.Utils
 
     public class ExcelCreationData : IDisposable
     {
-        public string? FileName { get; set; }
-        public bool ValidationSheet { get; set; }
-        public string? ValidationText { get; set; }
-        public IList<ExcelCreationDatatable>? Data { get; set; }
+        public string? FileName { get; init; }
+        public bool ValidationSheet { get; init; }
+        public string? ValidationText { get; init; }
+        public IList<ExcelCreationDatatable>? Data { get; init; }
 
         public void Dispose()
         {

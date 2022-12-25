@@ -1,11 +1,11 @@
-﻿@using ApexCharts
-
-<MudTable Items="TaskLogs.GroupBy(e => e.ActivityName).OrderByDescending(a=>a.Sum(a=>a.NbrTasks))" Height="460px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@using ApexCharts
+<MudTable Items="_taskLogs!.GroupBy(e => e.ActivityName).OrderByDescending(a=>a.Sum(taksLogsValues=>taksLogsValues.NbrTasks))" Height="460px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
     <HeaderContent>
-        <MudTh>@localizer.Get("Activity")</MudTh>
-        <MudTh>@localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
-        <MudTh>@localizer.Get("Type of tasks")</MudTh>
-        <MudTh>@localizer.Get("Tasks per day")</MudTh>
+        <MudTh>@Localizer.Get("Activity")</MudTh>
+        <MudTh>@Localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
+        <MudTh>@Localizer.Get("Type of tasks")</MudTh>
+        <MudTh>@Localizer.Get("Tasks per day")</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.Key</MudTd>
@@ -18,7 +18,7 @@
 
                 <ApexPointSeries TItem="TaksLogsValues"
                                  Items="context.ToList()"
-                                 Name="@localizer.Get("Type of tasks")"
+                                 Name="@Localizer.Get("Type of tasks")"
                                  SeriesType="SeriesType.Pie"
                                  XValue="@(e => e.TypeTask)"
                                  YAggregate="@(e => e.Sum(a=>a.NbrTasks))" />
@@ -34,7 +34,7 @@
 
                 <ApexPointSeries TItem="TaksLogsValues"
                                  Items="context.ToList()"
-                                 Name="@localizer.Get("Tasks per day")"
+                                 Name="@Localizer.Get("Tasks per day")"
                                  SeriesType="SeriesType.Bar"
                                  XValue="@(e => e.Date.ToLocalTime())"
                                  YAggregate="@(e => e.Count())"
@@ -45,29 +45,29 @@
 </MudTable>
 
 @code {
-    private List<TaksLogsValues>? TaskLogs = new();
+    private List<TaksLogsValues>? _taskLogs = new();
 
     protected override async Task OnInitializedAsync()
     {
-        TaskLogs = await dataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
     }
 
     private ApexChartOptions<TaksLogsValues> GetPieOptions()
     {
         var options = new ApexChartOptions<TaksLogsValues>();
-        options.Stroke = new Stroke { Width = 1 };
-        options.Tooltip = new Tooltip { Fixed = new TooltipFixed { Enabled = false } };
-        options.Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } };
-        options.PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { ExpandOnClick = false } };
+        options.Stroke = new() { Width = 1 };
+        options.Tooltip = new() { Fixed = new() { Enabled = false } };
+        options.Chart = new() { Sparkline = new(), Animations = new() { Enabled = false } };
+        options.PlotOptions = new() { Pie = new() { ExpandOnClick = false } };
         return options;
     }
 
     private ApexChartOptions<TaksLogsValues> GetBarOptions()
     {
         var options = new ApexChartOptions<TaksLogsValues>();
-        options.Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } };
-        options.PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%", } };
-        options.Tooltip = new Tooltip { X = new TooltipX { Format = @" dd \ MM \ yyyy" } };
+        options.Chart = new() { Sparkline = new(), Animations = new() { Enabled = false } };
+        options.PlotOptions = new() { Bar = new() { ColumnWidth = "85%", } };
+        options.Tooltip = new() { X = new() { Format = @" dd \ MM \ yyyy" } };
 
         return options;
     }

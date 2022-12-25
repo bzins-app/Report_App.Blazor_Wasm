@@ -1,135 +1,137 @@
-﻿@inject IDialogService DialogService
+﻿@using CronExpressionDescriptor
+@inject IDialogService DialogService
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@localizer.Get("Crons")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Crons")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@Elements.AsQueryable()" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid Items="@_elements.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.CronValue)" Title="@localizer.Get("Cron expression")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CronDescription)" Title="@localizer.Get("Cron description")"  Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CronValue)" Title="@Localizer.Get("Cron expression")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CronDescription)" Title="@Localizer.Get("Cron description")"  Sortable="true" />
                 </SimpleGrid>
             </div>
-            <Paginator Value="@pagination" FieldsContent="@Translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
 
 @code {
-    [Parameter] public TaskHeaderDTO Item { get; set; }
-    [Parameter] public bool changePending { get; set; }
-    [Parameter] public EventCallback<bool> changePendingChanged { get; set; }
-    private List<CronParameters> crons = new List<CronParameters>();
-    SimpleGrid<CronEditView> _grid;
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent Translations = default!;
-    private List<CronEditView> Elements = new List<CronEditView>();
-    DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Large, FullWidth = true };
-    private bool disable;
+    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
+    private List<CronParameters>? _crons = new();
+    SimpleGrid<CronEditView>? _grid;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = default!;
+    private List<CronEditView> _elements = new();
+    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+    private bool _disable;
 
     private class CronEditView
     {
-        public string CronValue { get; set; }
-        public string CronDescription { get; set; }
+        public string? CronValue { get; set; }
+        public string? CronDescription { get; set; }
     }
 
 
     protected override void OnParametersSet()
     {
         UpdateElements();
-        Translations = appService.GetGridTranslations();
+        _translations = AppService.GetGridTranslations();
     }
 
     private void UpdateElements()
     {
-        if (!string.IsNullOrEmpty(Item.CronParameters))
-        {
-            crons = JsonSerializer.Deserialize<List<CronParameters>>(Item.CronParameters);
-            PopulateCronsItems();
-        }
+        if (string.IsNullOrEmpty(Item?.CronParameters)) return;
+        _crons = JsonSerializer.Deserialize<List<CronParameters>>(Item.CronParameters);
+        PopulateCronsItems();
     }
 
     private void PopulateCronsItems()
     {
-        Elements.Clear();
-        foreach (var t in crons)
+        _elements.Clear();
+        foreach (var t in _crons!)
         {
-            Elements.Add(new CronEditView { CronValue = t.CronValue, CronDescription = CronExpressionDescriptor.ExpressionDescriptor.GetDescription(t.CronValue) });
+            _elements.Add(new() { CronValue = t?.CronValue, CronDescription = ExpressionDescriptor.GetDescription(t?.CronValue) });
         }
     }
 
     private async Task OpenEditDialog(CronEditView value)
     {
-        disable = true;
+        _disable = true;
         var dataBefore = value.CronValue;
         var parameters = new DialogParameters { ["Value"] = value.CronValue };
 
-        var dialog = DialogService.Show<_cronEditorDialog>(localizer.Get("Configure the scheduler"), parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            var toUpdate = crons.FirstOrDefault(a => a.CronValue == dataBefore);
-            toUpdate.CronValue = feedback.Data.ToString();
-            changePending = true;
-            await changePendingChanged.InvokeAsync(changePending);
+            if (_crons != null)
+            {
+                var toUpdate = _crons.FirstOrDefault(a => a?.CronValue == dataBefore);
+                if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
+            }
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
             UpdateElements();
         }
-        disable = false;
+        _disable = false;
     }
 
     private async Task OpenDeleteDialog(CronEditView value)
     {
-        disable = true;
+        _disable = true;
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        bool? result = await DialogService.ShowMessageBox(localizer.Get("Warning"), localizer.Get("Are you sure?"), localizer.Get("Delete"), null, cancelText: localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
         {
-            var toRemove = crons.FirstOrDefault(a => a.CronValue == value.CronValue);
-            crons.Remove(toRemove);
-            changePending = true;
-            await changePendingChanged.InvokeAsync(changePending);
+            var toRemove = _crons!.FirstOrDefault(a => a.CronValue == value.CronValue);
+             _crons?.Remove(toRemove!);
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
             UpdateElements();
         }
-        disable = false;
+        _disable = false;
     }
 
 
     private async Task OpenCreateDialog()
     {
-        string value = null;
+        string? value = null;
         var parameters = new DialogParameters { ["Value"] = value };
 
-        var dialog = DialogService.Show<_cronEditorDialog>(localizer.Get("Configure the scheduler"), parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            crons.Add(new CronParameters { CronValue = feedback.Data.ToString() });
-            changePending = true;
-            await changePendingChanged.InvokeAsync(changePending);
+            _crons?.Add(new() { CronValue = feedback.Data.ToString() });
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
             UpdateElements();
         }
@@ -137,9 +139,9 @@
 
     private void SetItemCronValues()
     {
-        if (crons.Any())
+        if (_crons!.Any())
         {
-            Item.CronParameters = JsonSerializer.Serialize(crons);
+            Item!.CronParameters = JsonSerializer.Serialize(_crons);
         }
     }
 
@@ -150,7 +152,7 @@
 
     private void RemoveFilters()
     {
-        _grid.RefreshDataAsync();
+        _grid?.RefreshDataAsync();
         UpdateElements();
     }
 }

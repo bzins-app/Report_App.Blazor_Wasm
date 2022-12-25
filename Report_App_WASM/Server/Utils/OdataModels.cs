@@ -12,15 +12,15 @@ namespace Report_App_WASM.Server.Utils
             ODataConventionModelBuilder builder = new();
             builder.EntitySet<ApplicationLogSystem>("SystemLogs");
             builder.EntitySet<ApplicationLogEmailSender>("EmailLogs");
-            builder.EntitySet<ApplicationLogQueryExecutionDTO>("QueryExecutionLogs");
+            builder.EntitySet<ApplicationLogQueryExecutionDto>("QueryExecutionLogs");
             builder.EntitySet<ApplicationLogReportResult>("ReportResultLogs");
             builder.EntitySet<ApplicationLogTask>("TaskLogs");
             builder.EntitySet<ApplicationAuditTrail>("AuditTrail");
 
 
-            builder.EntitySet<LDAPConfiguration>("LDAP");
-            builder.EntitySet<SMTPConfiguration>("SMTP");
-            builder.EntitySet<SFTPConfiguration>("SFTP");
+            builder.EntitySet<LdapConfiguration>("Ldap");
+            builder.EntitySet<SmtpConfiguration>("Smtp");
+            builder.EntitySet<SftpConfiguration>("Sftp");
             builder.EntitySet<FileDepositPathConfiguration>("DepositPath");
             builder.EntitySet<Activity>("Activities");
             builder.EntitySet<TaskHeader>("TaskHeader");

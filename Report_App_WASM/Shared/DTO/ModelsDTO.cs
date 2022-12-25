@@ -2,7 +2,7 @@
 
 namespace Report_App_WASM.Shared.DTO
 {
-    public class ApplicationParametersDTO : BaseTraceabilityDTO, IDTO
+    public class ApplicationParametersDto : BaseTraceabilityDto, IDto
     {
         public int Id { get; set; }
         [Required]
@@ -21,10 +21,10 @@ namespace Report_App_WASM.Shared.DTO
         public string? AlertEmailPrefix { get; set; }
         public int LogsRetentionInDays { get; set; } = 90;
     }
-    public class SFTPConfigurationDTO : BaseTraceabilityDTO, IDTO
+    public class SftpConfigurationDto : BaseTraceabilityDto, IDto
     {
-        public int SFTPConfigurationId { get; set; }
-        public bool UseFTPProtocol { get; set; }
+        public int SftpConfigurationId { get; set; }
+        public bool UseFtpProtocol { get; set; }
         [Required]
         [MaxLength(60)]
         public string? ConfigurationName { get; set; }
@@ -33,14 +33,14 @@ namespace Report_App_WASM.Shared.DTO
         public string? UserName { get; set; }
         public string? Password { get; set; }
     }
-    public class ActivityDTO : BaseTraceabilityDTO, IDTO
+    public class ActivityDto : BaseTraceabilityDto, IDto
     {
 
         public int ActivityId { get; set; }
         [Required]
         [MaxLength(60)]
         public string? ActivityName { get; set; }
-        public ActivityType ActivityType { get; set; } = ActivityType.SourceDB;
+        public ActivityType ActivityType { get; set; } = ActivityType.SourceDb;
         [MaxLength(20)]
         public string? ActivityTypeName { get; set; }
         public bool IsActivated { get; set; }
@@ -48,11 +48,11 @@ namespace Report_App_WASM.Shared.DTO
         public string? ActivityLogo { get; set; }
         [MaxLength(60)]
         public string? ActivityRoleId { get; set; }
-        public virtual ICollection<ActivityDbConnectionDTO> ActivityDbConnections { get; set; } = new List<ActivityDbConnectionDTO>();
-        public virtual ICollection<TaskHeaderDTO> TaskHeaders { get; set; } = new List<TaskHeaderDTO>();
+        public virtual ICollection<ActivityDbConnectionDto> ActivityDbConnections { get; set; } = new List<ActivityDbConnectionDto>();
+        public virtual ICollection<TaskHeaderDto> TaskHeaders { get; set; } = new List<TaskHeaderDto>();
     }
 
-    public class ActivityDbConnectionDTO : BaseTraceabilityDTO, IDTO
+    public class ActivityDbConnectionDto : BaseTraceabilityDto, IDto
     {
         public int Id { get; set; }
         [MaxLength(20)]
@@ -67,17 +67,17 @@ namespace Report_App_WASM.Shared.DTO
         public string? ConnectionLogin { get; set; }
         public string? Password { get; set; }
         public bool UseDbSchema { get; set; }
-        public bool ADAuthentication { get; set; } = false;
+        public bool AdAuthentication { get; set; } = false;
         public bool IntentReadOnly { get; set; }
         [MaxLength(100)]
         public string? DbSchema { get; set; }
         public int CommandTimeOut { get; set; } = 300;
         public int CommandFetchSize { get; set; } = 131072;
         public string DbConnectionParameters { get; set; } = "[]";
-        public virtual ActivityDTO? Activity { get; set; }
+        public virtual ActivityDto? Activity { get; set; }
     }
 
-    public class FileDepositPathConfigurationDTO : BaseTraceabilityDTO, IDTO
+    public class FileDepositPathConfigurationDto : BaseTraceabilityDto, IDto
     {
         public int FileDepositPathConfigurationId { get; set; }
         [Required]
@@ -87,11 +87,11 @@ namespace Report_App_WASM.Shared.DTO
         public string FilePath { get; set; } = ".";
         public bool IsReachable { get; set; }
         public bool TryToCreateFolder { get; set; }
-        public bool UseSFTPProtocol { get; set; } = false;
-        public virtual SFTPConfigurationDTO? SFTPConfiguration { get; set; }
+        public bool UseSftpProtocol { get; set; } = false;
+        public virtual SftpConfigurationDto? SftpConfiguration { get; set; }
     }
 
-    public class ServicesStatusDTO : BaseTraceabilityDTO, IDTO
+    public class ServicesStatusDto : BaseTraceabilityDto, IDto
     {
         public int Id { get; set; }
         public bool EmailService { get; set; }
@@ -102,7 +102,7 @@ namespace Report_App_WASM.Shared.DTO
 
     }
 
-    public class SMTPConfigurationDTO : BaseTraceabilityDTO, IDTO
+    public class SmtpConfigurationDto : BaseTraceabilityDto, IDto
     {
         public int Id { get; set; }
         [Required]
@@ -115,7 +115,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? SmtpHost { get; set; }
         [Required]
         public int SmtpPort { get; set; }
-        public bool SmtpSSL { get; set; }
+        public bool SmtpSsl { get; set; }
         [Required]
         [MaxLength(100)]
         public string? FromEmail { get; set; }
@@ -125,7 +125,7 @@ namespace Report_App_WASM.Shared.DTO
         public bool IsActivated { get; set; }
     }
 
-    public class LDAPConfigurationDTO : BaseTraceabilityDTO, IDTO
+    public class LdapConfigurationDto : BaseTraceabilityDto, IDto
     {
         public int Id { get; set; }
         [Required]
@@ -139,7 +139,7 @@ namespace Report_App_WASM.Shared.DTO
         public bool IsActivated { get; set; }
     }
 
-    public class TaskDetailDTO : BaseTraceabilityDTO, IDTO
+    public class TaskDetailDto : BaseTraceabilityDto, IDto
     {
         public int TaskDetailId { get; set; }
         [Required]
@@ -151,24 +151,30 @@ namespace Report_App_WASM.Shared.DTO
         public string QueryParameters { get; set; } = "[]";
         public int DetailSequence { get; set; } = 99;
         public DateTime? LastRunDateTime { get; set; } = null;
-        public int NbrOFCumulativeOccurences { get; set; }
-        public virtual TaskHeaderDTO? TaskHeader { get; set; }
+        public int NbrOfCumulativeOccurences { get; set; }
+        public virtual TaskHeaderDto? TaskHeader { get; set; }
     }
 
-    public class TaskEmailRecipientDTO : BaseTraceabilityDTO, IDTO
+    public class TaskEmailRecipientDto : BaseTraceabilityDto, IDto
     {
         public int TaskEmailRecipientId { get; set; }
         public string? Email { get; set; }
         public string? Message { get; set; }
-        public virtual TaskHeaderDTO? TaskHeader { get; set; }
+        public virtual TaskHeaderDto? TaskHeader { get; set; }
     }
 
-    public class TaskHeaderDTO : BaseTraceabilityDTO, IDTO
+    public sealed class TaskHeaderDto : BaseTraceabilityDto, IDto
     {
-        public TaskHeaderDTO()
+#pragma warning disable CS8618 // Non-nullable property 'ActivityName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning disable CS8618 // Non-nullable property 'Activity' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning disable CS8618 // Non-nullable property 'TaskName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+        public TaskHeaderDto()
+#pragma warning restore CS8618 // Non-nullable property 'TaskName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning restore CS8618 // Non-nullable property 'Activity' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning restore CS8618 // Non-nullable property 'ActivityName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
         {
-            TaskDetails = new HashSet<TaskDetailDTO>();
-            TaskEmailRecipients = new HashSet<TaskEmailRecipientDTO>();
+            TaskDetails = new HashSet<TaskDetailDto>();
+            TaskEmailRecipients = new HashSet<TaskEmailRecipientDto>();
         }
         public int TaskHeaderId { get; set; }
         [Required]
@@ -196,12 +202,12 @@ namespace Report_App_WASM.Shared.DTO
         public string QueryParameters { get; set; } = "[]";
         public DateTime? LastRunDateTime { get; set; } = null;
         public int FileDepositPathConfigurationId { get; set; }
-        public virtual ICollection<TaskDetailDTO> TaskDetails { get; set; } = new List<TaskDetailDTO>();
-        public virtual ICollection<TaskEmailRecipientDTO> TaskEmailRecipients { get; set; } = new List<TaskEmailRecipientDTO>();
-        public virtual ActivityDTO Activity { get; set; }
+        public ICollection<TaskDetailDto> TaskDetails { get; set; } = new List<TaskDetailDto>();
+        public ICollection<TaskEmailRecipientDto> TaskEmailRecipients { get; set; } = new List<TaskEmailRecipientDto>();
+        public ActivityDto Activity { get; set; }
     }
 
-    public class ApplicationLogQueryExecutionDTO : IDTO
+    public class ApplicationLogQueryExecutionDto : IDto
     {
         public int Id { get; set; }
         public string? TypeDb { get; set; }
@@ -216,16 +222,17 @@ namespace Report_App_WASM.Shared.DTO
         public DateTime TransferBeginDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public string? TotalDuration { get; set; }
-        public string? SQLExcecutionDuration { get; set; }
+        public string? SqlExcecutionDuration { get; set; }
         public string? DownloadDuration { get; set; }
         public int NbrOfRows { get; set; }
         public string? RunBy { get; set; }
         public string? TypeJob { get; set; }
     }
 
-    public class ApplicationLogTaskDTO : IDTO
+    public class ApplicationLogTaskDto : IDto
     {
         public int Id { get; set; }
+        public int TaskId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int DurationInSeconds { get; set; }
@@ -241,7 +248,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? RunBy { get; set; }
     }
 
-    public class ApplicationLogTaskDetailsDTO : IDTO
+    public class ApplicationLogTaskDetailsDto : IDto
     {
         public int Id { get; set; }
         public int TaskId { get; set; }
@@ -250,7 +257,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? Info { get; set; }
     }
 
-    public class ApplicationLogEmailSenderDTO : IDTO
+    public class ApplicationLogEmailSenderDto : IDto
     {
         public int Id { get; set; }
         public DateTime StartDateTime { get; set; }
@@ -263,7 +270,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? RecipientList { get; set; }
     }
 
-    public class ApplicationAuditTrailDTO : IDTO
+    public class ApplicationAuditTrailDto : IDto
     {
         public int Id { get; set; }
         public string? UserId { get; set; }
@@ -276,7 +283,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? PrimaryKey { get; set; }
     }
 
-    public class ApplicationLogSystemDTO : IDTO
+    public class ApplicationLogSystemDto : IDto
     {
         public int Id { get; set; }
         public DateTime TimeStampAppHour { get; set; } = DateTime.Now;
@@ -298,7 +305,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? Name { get; set; }
     }
 
-    public class ApplicationLogReportResultDTO : IDTO
+    public class ApplicationLogReportResultDto : IDto
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -317,11 +324,11 @@ namespace Report_App_WASM.Shared.DTO
         [MaxLength(100)]
         public string? FileName { get; set; }
         public string? ReportPath { get; set; }
-        private double _FileSizeInMB;
-        public double FileSizeInMB
+        private double _fileSizeInMb;
+        public double FileSizeInMb
         {
-            get { return _FileSizeInMB; }
-            set { _FileSizeInMB = Math.Round(value, 2); }
+            get { return _fileSizeInMb; }
+            set { _fileSizeInMb = Math.Round(value, 2); }
         }
         public bool IsAvailable { get; set; } = true;
         public string? Result { get; set; }

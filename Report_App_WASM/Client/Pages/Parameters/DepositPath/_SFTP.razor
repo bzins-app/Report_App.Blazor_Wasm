@@ -1,54 +1,55 @@
-﻿@implements IAsyncDisposable
+﻿@using Report_App_WASM.Shared.ApiExchanges
+@implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@localizer.Get("SFTP configuration")</PageTitle>
+<PageTitle>@Localizer.Get("Sftp configuration")</PageTitle>
 
 <ErrorBoundary>
-    @if (!string.IsNullOrEmpty(errorMessage))
+    @if (!string.IsNullOrEmpty(_errorMessage))
     {
-        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@localizer.Get("An error has occurred"): @errorMessage</b></MudText>
+        <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@Localizer.Get("An error has occurred"): @_errorMessage</b></MudText>
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@localizer.Get("SFTP configuration")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Sftp configuration")</MudText>
             <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@localizer.Get("Refresh")" Disabled="@rendering"/>
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@localizer.Get("Remove filters")" Disabled="@rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid ItemsProvider="@_ItemsProvider" BuildInFilter="true" Pagination="@pagination" FieldsContent="@Translations" @ref="_grid">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@localizer.Get("Configuration name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Host)" Title="@localizer.Get("SFTP host")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Port)" Title="@localizer.Get("SFTP port")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Host)" Title="@Localizer.Get("Sftp host")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Port)" Title="@Localizer.Get("Sftp port")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
-            <Paginator Value="@pagination" FieldsContent="@Translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -56,44 +57,44 @@
 @code
 {
     #nullable enable
-    GridItemsProvider<SFTPConfigurationDTO>? _ItemsProvider;
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    SimpleGridFieldsContent Translations = default!;
-    SimpleGrid<SFTPConfigurationDTO> _grid = default!;
-    private string errorMessage = default!;
-    private bool rendering = false;
+    GridItemsProvider<SftpConfigurationDto>? _itemsProvider;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations = default!;
+    SimpleGrid<SftpConfigurationDto> _grid = default!;
+    private string? _errorMessage = default!;
+    private bool _rendering = false;
 
     protected override void OnInitialized()
     {
-        _ItemsProvider = async req =>
+        _itemsProvider = async req =>
         {
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<SFTPConfigurationDTO>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<SftpConfigurationDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
-        Translations = appService.GetGridTranslations();
+        _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<SFTPConfigurationDTO>?> GetRemoteData(GridItemsProviderRequest<SFTPConfigurationDTO> req)
+    private async Task<ApiResponse<SftpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SftpConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
-        var OdataQuery = _grid?.GetODataQuery();
-        string url = "odata/SFTP?";
-        if (string.IsNullOrEmpty(OdataQuery))
+        var odataQuery = _grid?.GetODataQuery();
+        var url = "odata/Sftp?";
+        if (string.IsNullOrEmpty(odataQuery))
         {
-            url += $"$count=true&$top=10";
+            url += "$count=true&$top=10";
         }
         else
         {
-            url += OdataQuery;
+            url += odataQuery;
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<SFTPConfigurationDTO>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<SftpConfigurationDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -104,17 +105,17 @@
 
     private async Task OnRefresh()
     {
-        rendering = true;
+        _rendering = true;
         await _grid.RefreshDataAsync();
-        rendering = false;
+        _rendering = false;
     }
 
 
     private async Task RemoveFilters()
     {
-        rendering = true;
+        _rendering = true;
         await _grid.RemoveFilters();
-        rendering = false;
+        _rendering = false;
     }
 
     public async ValueTask DisposeAsync()
@@ -123,9 +124,9 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(SFTPConfigurationDTO value)
+    private async Task OpenEditDialog(SftpConfigurationDto value)
     {
-        var item = new SFTPConfigurationDTO
+        var item = new SftpConfigurationDto
             {
 
                 ConfigurationName = value.ConfigurationName,
@@ -133,82 +134,82 @@
                 Port = value.Port,
                 UserName = value.UserName,
                 Password = value.Password,
-                UseFTPProtocol = value.UseFTPProtocol
+                UseFtpProtocol = value.UseFtpProtocol
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = DialogService.Show<_SFTPFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
+            _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
             value.Host = item.Host;
             value.Port = item.Port;
             value.UserName = item.UserName;
             value.Password = item.Password;
-            value.UseFTPProtocol = item.UseFTPProtocol;
+            value.UseFtpProtocol = item.UseFtpProtocol;
 
-            var result = await dataService.PostValues(value, "SFTPUpdate");
+            var result = await DataService.PostValues(value, "SftpUpdate");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object updated"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }
 
-    private async Task OpenDeleteDialog(SFTPConfigurationDTO value)
+    private async Task OpenDeleteDialog(SftpConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = DialogService.Show<_SFTPFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
-            var result = await dataService.PostValues(value, "SFTPDelete");
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "SftpDelete");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object deleted"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }
 
     private async Task OpenCreateDialog()
     {
-        var value = new SFTPConfigurationDTO();
+        var value = new SftpConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = DialogService.Show<_SFTPFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
-            errorMessage = string.Empty;
-            var result = await dataService.PostValues(value, "SFTPInsert");
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "SftpInsert");
             if (result.Success)
             {
-                Snackbar.Add(localizer.Get("Object added"), Severity.Success);
+                Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
                 await OnRefresh();
             }
             else
             {
-                Snackbar.Add(localizer.Get("An error has occurred"), Severity.Error);
-                errorMessage = result.Message;
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
             }
         }
     }

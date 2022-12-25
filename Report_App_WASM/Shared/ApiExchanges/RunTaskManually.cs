@@ -1,17 +1,12 @@
 ﻿using Report_App_WASM.Shared.SerializedParameters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Report_App_WASM.Shared
+namespace Report_App_WASM.Shared.ApiExchanges
 {
     public class RunTaskManually
     {
-        public int TaskHeaderId { get; set; }
-        public List<EmailRecipient>? Emails { get; set; }
-        public List<QueryCommandParameter>? CustomQueryParameters { get; set; }
-        public bool GenerateFiles { get; set; } = false;
+        public int TaskHeaderId { get; init; }
+        public List<EmailRecipient>? Emails { get; init; }
+        public List<QueryCommandParameter>? CustomQueryParameters { get; init; }
+        public bool GenerateFiles { get; init; } = false;
     }
 }

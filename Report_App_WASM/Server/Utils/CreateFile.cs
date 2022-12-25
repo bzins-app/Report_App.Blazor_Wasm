@@ -11,22 +11,22 @@ namespace Report_App_WASM.Server.Utils
 {
     public static class CreateFile
     {
-        public static FileContentResult ExcelFromDatable(string FileName, ExcelCreationDatatable value)
+        public static FileContentResult ExcelFromDatable(string? fileName, ExcelCreationDatatable value)
         {
             MemoryStream outputStream = new();
             using ExcelPackage excel = new(outputStream);
             excel.Workbook.Properties.Author = "Report Service";
-            excel.Workbook.Properties.Title = FileName;
-            excel.Workbook.Properties.Subject = FileName;
+            excel.Workbook.Properties.Title = fileName;
+            excel.Workbook.Properties.Subject = fileName;
             excel.Workbook.Properties.Created = DateTime.Now;
             excel.Workbook.Properties.LastModifiedBy = "Report Service";
 
-            ExcelWorksheet workSheet = excel.Workbook.Worksheets.Add(value.TabName);
+            var workSheet = excel.Workbook.Worksheets.Add(value.TabName);
             if (value.Data.Rows.Count > 0)
             {
                 value.Data.TableName = value.TabName.RemoveSpecialCharacters();
                 workSheet.Cells[1, 1].LoadFromDataTable(value.Data, true, TableStyles.Light13);
-                int colNumber = 1;
+                var colNumber = 1;
 
                 foreach (DataColumn col in value.Data.Columns)
                 {
@@ -46,9 +46,9 @@ namespace Report_App_WASM.Server.Utils
             excel.Save();
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
-                FileDownloadName = FileName
+                FileDownloadName = fileName
             };
         }
         public static FileContentResult ExcelTemplateFromSeveralDatable(ExcelCreationData dataExcel, FileInfo file)
@@ -61,9 +61,9 @@ namespace Report_App_WASM.Server.Utils
             excel.Workbook.Properties.Created = DateTime.Now;
             excel.Workbook.Properties.LastModifiedBy = "Report Service";
 
-            foreach (var value in dataExcel.Data)
+            foreach (var value in dataExcel.Data!)
             {
-                ExcelWorksheet workSheet = excel.Workbook.Worksheets[value.TabName];
+                var workSheet = excel.Workbook.Worksheets[value.TabName];
                 if (value.Data.Rows.Count > 0)
                 {
                     if (value.ExcelTemplate.UseAnExcelDataTable)
@@ -105,7 +105,7 @@ namespace Report_App_WASM.Server.Utils
             excel.SaveAs(outputStream);
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = dataExcel.FileName
             };
@@ -121,23 +121,23 @@ namespace Report_App_WASM.Server.Utils
             excel.Workbook.Properties.Created = DateTime.Now;
             excel.Workbook.Properties.LastModifiedBy = "Report Service";
 
-            ExcelWorksheet workSheetValidation = excel.Workbook.Worksheets.Add("Report information");
+            var workSheetValidation = excel.Workbook.Worksheets.Add("Report information");
             workSheetValidation.Cells["A1"].Value = dataExcel.ValidationText;
             workSheetValidation.Cells["A4"].Value = "Report title";
             workSheetValidation.Cells["B4"].Value = "Created at (UTC Time)";
             workSheetValidation.Cells["C4"].Value = "Created by";
             workSheetValidation.Cells["D4"].Value = "Nbr of lines with header";
 
-            int excelLine = 5;
-            foreach (var value in dataExcel.Data)
+            var excelLine = 5;
+            foreach (var value in dataExcel.Data!)
             {
-                ExcelWorksheet workSheet = excel.Workbook.Worksheets.Add(value.TabName);
+                var workSheet = excel.Workbook.Worksheets.Add(value.TabName);
                 if (value.Data.Rows.Count > 0)
                 {
                     value.Data.TableName = ExcelAddressUtil.GetValidName(value.TabName.RemoveSpecialCharacters());
 
                     workSheet.Cells[1, 1].LoadFromDataTable(value.Data, true, TableStyles.Light13);
-                    int colNumber = 1;
+                    var colNumber = 1;
 
                     foreach (DataColumn col in value.Data.Columns)
                     {
@@ -167,19 +167,19 @@ namespace Report_App_WASM.Server.Utils
 
             if (dataExcel.ValidationSheet)
             {
-                int firstRow = 4;
-                int lastRow = workSheetValidation.Dimension.End.Row;
-                int firstColumn = 1;
-                int lastColumn = workSheetValidation.Dimension.End.Column;
-                ExcelRange rg = workSheetValidation.Cells[firstRow, firstColumn, lastRow, lastColumn];
-                string tableName = "TableValidation";
+                var firstRow = 4;
+                var lastRow = workSheetValidation.Dimension.End.Row;
+                var firstColumn = 1;
+                var lastColumn = workSheetValidation.Dimension.End.Column;
+                var rg = workSheetValidation.Cells[firstRow, firstColumn, lastRow, lastColumn];
+                var tableName = "TableValidation";
                 workSheetValidation.Column(2).Style.Numberformat.Format = "dd/MM/yyyy HH:mm:ss";
                 workSheetValidation.Cells["A1:A1"].Style.Font.Size = 13;
                 workSheetValidation.Cells["A1:A1"].Style.Font.Name = "Calibri";
                 workSheetValidation.Cells["A1:A1"].Style.Font.Bold = true;
 
                 //Ading a table to a Range
-                ExcelTable tab = workSheetValidation.Tables.Add(rg, tableName);
+                var tab = workSheetValidation.Tables.Add(rg, tableName);
 
                 //Formating the table style
                 tab.TableStyle = TableStyles.Light8;
@@ -211,16 +211,16 @@ namespace Report_App_WASM.Server.Utils
             excel.Save();
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = dataExcel.FileName
             };
         }
 
-        public static FileContentResult JsonFromDatable(string FileName, DataTable data, string encoding)
+        public static FileContentResult JsonFromDatable(string fileName, DataTable data, string encoding)
         {
             var strJson = JsonConvert.SerializeObject(data);
-            string cleaned = strJson.Replace("\n", "").Replace("\r", "");
+            var cleaned = strJson.Replace("\n", "").Replace("\r", "");
             byte[] bytes;
             switch (encoding)
             {
@@ -229,30 +229,30 @@ namespace Report_App_WASM.Server.Utils
                     bytes = Encoding.Convert(Encoding.UTF8, Encoding.Latin1, toConvert);
                     break;
                 case "UTF32":
-                    var toConvertUTF32 = Encoding.UTF32.GetBytes(cleaned);
-                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.UTF32, toConvertUTF32);
+                    var toConvertUtf32 = Encoding.UTF32.GetBytes(cleaned);
+                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.UTF32, toConvertUtf32);
                     break;
                 case "UTF16":
                     var toConvertUnicode = Encoding.Unicode.GetBytes(cleaned);
                     bytes = Encoding.Convert(Encoding.UTF8, Encoding.Unicode, toConvertUnicode);
                     break;
                 case "ASCII":
-                    var toConvertASCII = Encoding.ASCII.GetBytes(cleaned);
-                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.ASCII, toConvertASCII);
+                    var toConvertAscii = Encoding.ASCII.GetBytes(cleaned);
+                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.ASCII, toConvertAscii);
                     break;
                 default:
                     bytes = Encoding.UTF8.GetBytes(cleaned);
                     break;
             }
-            return new FileContentResult(bytes, "application/json")
+            return new(bytes, "application/json")
             {
-                FileDownloadName = FileName
+                FileDownloadName = fileName
             };
         }
 
-        public static FileContentResult CsvFromDatable(string FileName, DataTable data, string encoding, string delimiter = ";", bool removeHeader = false)
+        public static FileContentResult CsvFromDatable(string fileName, DataTable data, string? encoding, string? delimiter = ";", bool removeHeader = false)
         {
-            string delimitervalue = delimiter;
+            var delimitervalue = delimiter;
 
             StringBuilder sb = new();
 
@@ -264,9 +264,9 @@ namespace Report_App_WASM.Server.Utils
 
             foreach (DataRow row in data.Rows)
             {
-                IEnumerable<string> fields
+                IEnumerable<string?> fields
                     = row.ItemArray.Select(
-                    field => field.ToString().Replace("\n", "").Replace("\r", ""));
+                    field => field?.ToString()?.Replace("\n", "").Replace("\r", ""));
                 sb.AppendLine(string.Join(delimitervalue, fields));
             }
 
@@ -278,29 +278,29 @@ namespace Report_App_WASM.Server.Utils
                     bytes = Encoding.Convert(Encoding.UTF8, Encoding.Latin1, toConvert);
                     break;
                 case "UTF32":
-                    var toConvertUTF32 = Encoding.UTF32.GetBytes(sb.ToString());
-                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.UTF32, toConvertUTF32);
+                    var toConvertUtf32 = Encoding.UTF32.GetBytes(sb.ToString());
+                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.UTF32, toConvertUtf32);
                     break;
                 case "UTF16":
                     var toConvertUnicode = Encoding.Unicode.GetBytes(sb.ToString());
                     bytes = Encoding.Convert(Encoding.UTF8, Encoding.Unicode, toConvertUnicode);
                     break;
                 case "ASCII":
-                    var toConvertASCII = Encoding.ASCII.GetBytes(sb.ToString());
-                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.ASCII, toConvertASCII);
+                    var toConvertAscii = Encoding.ASCII.GetBytes(sb.ToString());
+                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.ASCII, toConvertAscii);
                     break;
                 default:
                     bytes = Encoding.UTF8.GetBytes(sb.ToString());
                     break;
             }
 
-            return new FileContentResult(bytes, "text/csv")
+            return new(bytes, "text/csv")
             {
-                FileDownloadName = FileName
+                FileDownloadName = fileName
             };
         }
 
-        public static FileContentResult XMLFromDatable(string datatableName, string FileName, string encoding, DataTable data)
+        public static FileContentResult XmlFromDatable(string? datatableName, string fileName, string? encoding, DataTable data)
         {
             data.TableName = datatableName;
             string result;
@@ -318,39 +318,39 @@ namespace Report_App_WASM.Server.Utils
                     bytes = Encoding.Convert(Encoding.UTF8, Encoding.Latin1, toConvert);
                     break;
                 case "UTF32":
-                    var toConvertUTF32 = Encoding.UTF32.GetBytes(result);
-                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.UTF32, toConvertUTF32);
+                    var toConvertUtf32 = Encoding.UTF32.GetBytes(result);
+                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.UTF32, toConvertUtf32);
                     break;
                 case "UTF16":
                     var toConvertUnicode = Encoding.Unicode.GetBytes(result);
                     bytes = Encoding.Convert(Encoding.UTF8, Encoding.Unicode, toConvertUnicode);
                     break;
                 case "ASCII":
-                    var toConvertASCII = Encoding.ASCII.GetBytes(result);
-                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.ASCII, toConvertASCII);
+                    var toConvertAscii = Encoding.ASCII.GetBytes(result);
+                    bytes = Encoding.Convert(Encoding.UTF8, Encoding.ASCII, toConvertAscii);
                     break;
                 default:
                     bytes = Encoding.UTF8.GetBytes(result);
                     break;
             }
-            return new FileContentResult(bytes, "application/xml")
+            return new(bytes, "application/xml")
             {
-                FileDownloadName = FileName
+                FileDownloadName = fileName
             };
         }
 
-        public static FileContentResult ExcelFromCollection<TEntity>(string FileName, string TabName, List<TEntity> Data) where TEntity : class
+        public static FileContentResult ExcelFromCollection<TEntity>(string fileName, string tabName, List<TEntity> data) where TEntity : class
         {
             MemoryStream outputStream = new();
             ExcelPackage excel = new();
-            ExcelWorksheet workSheet = excel.Workbook.Worksheets.Add(TabName);
-            workSheet.Cells[1, 1].LoadFromCollection(Data, true, TableStyles.Light13);
-            if (Data.Any())
+            var workSheet = excel.Workbook.Worksheets.Add(tabName);
+            workSheet.Cells[1, 1].LoadFromCollection(data, true, TableStyles.Light13);
+            if (data.Any())
             {
-                var ValueType = Data[0].GetType().GetProperties().Select(p => new { data = p.Name, type = p.PropertyType.Name.StartsWith("String") ? "text" : p.PropertyType.Name.StartsWith("Date") ? "date" : "numeric" }).ToList();
+                var valueType = data[0].GetType().GetProperties().Select(p => new { data = p.Name, type = p.PropertyType.Name.StartsWith("String") ? "text" : p.PropertyType.Name.StartsWith("Date") ? "date" : "numeric" }).ToList();
 
-                int colNumber = 1;
-                foreach (var t in ValueType)
+                var colNumber = 1;
+                foreach (var t in valueType)
                 {
                     if (t.type == "date")
                     {
@@ -359,14 +359,14 @@ namespace Report_App_WASM.Server.Utils
                     colNumber++;
                 }
 
-                if (Data.Count < 10000)
+                if (data.Count < 10000)
                     workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
             }
             excel.Save();
-            string fName = string.Format(FileName + "-{0}", DateTime.Now.ToString("s") + ".xlsx");
+            var fName = string.Format(fileName + "-{0}", DateTime.Now.ToString("s") + ".xlsx");
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = fName
             };
