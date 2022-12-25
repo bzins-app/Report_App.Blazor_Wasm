@@ -20,7 +20,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<IdentityAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
 builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<DataInteractionService>();
 builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddMudServices();
@@ -38,12 +38,12 @@ var result = await jsInterop.InvokeAsync<string>("cultureInfo.get");
 CultureInfo culture;
 if (result != null)
 {
-    culture = new(result);
+    culture = new CultureInfo(result);
 }
 else
 {
     var browserLanguage = await jsInterop.InvokeAsync<string>("getBrowserLanguage");
-    culture = new(browserLanguage[..2]);
+    culture = new CultureInfo(browserLanguage[..2]);
     await jsInterop.InvokeVoidAsync("cultureInfo.set", browserLanguage[..2]);
 }
 CultureInfo.DefaultThreadCurrentCulture = culture;
@@ -51,7 +51,7 @@ CultureInfo.DefaultThreadCurrentUICulture = culture;
 var resultTheme = await jsInterop.InvokeAsync<string>("AppTheme.get");
 if (resultTheme != null)
 {
-    UserAppTheme.DarkTheme = resultTheme == "Dark";
+    UserAppTheme.DarkTheme = resultTheme == "Dark" ? true : false;
 }
 else
 {

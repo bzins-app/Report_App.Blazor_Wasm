@@ -20,7 +20,7 @@ namespace Report_App_WASM.Client.Services
 
         public SimpleGridFieldsContent GetGridTranslations()
         {
-            return new()
+            return new SimpleGridFieldsContent
             {
                 LessThan = _localizer.Get("Less than"),
                 Condition = _localizer.Get("Condition"),

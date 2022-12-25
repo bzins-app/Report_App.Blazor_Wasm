@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS8602: Déréférencement d'une éventuelle référence null.
+dotnet_diagnostic.CS8602.severity = silent
