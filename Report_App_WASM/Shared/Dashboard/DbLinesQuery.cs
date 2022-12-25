@@ -2,7 +2,7 @@
 {
     public class DbLinesQuery
     {
-        public DateTime Date { get; set; }
-        public int NbrOfRows { get; set; }
+        public DateTime Date { get; init; }
+        public int NbrOfRows { get; init; }
     }
 }

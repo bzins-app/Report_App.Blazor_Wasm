@@ -1,7 +1,7 @@
-﻿using System.Net.Http.Json;
-using Blazor.SimpleGrid;
+﻿using Blazor.SimpleGrid;
 using Report_App_WASM.Client.Services.Implementations;
 using Report_App_WASM.Client.Utils;
+using System.Net.Http.Json;
 
 namespace Report_App_WASM.Client.Services
 {
@@ -20,7 +20,7 @@ namespace Report_App_WASM.Client.Services
 
         public SimpleGridFieldsContent GetGridTranslations()
         {
-            return new SimpleGridFieldsContent
+            return new()
             {
                 LessThan = _localizer.Get("Less than"),
                 Condition = _localizer.Get("Condition"),
@@ -44,7 +44,7 @@ namespace Report_App_WASM.Client.Services
                 Reset = _localizer.Get("Reset"),
                 StartsWith = _localizer.Get("Starts with"),
                 TheSameDateWith = _localizer.Get("The same date with"),
-                ItemsPerPage=_localizer.Get("Rows per page")
+                ItemsPerPage = _localizer.Get("Rows per page")
             };
         }
 

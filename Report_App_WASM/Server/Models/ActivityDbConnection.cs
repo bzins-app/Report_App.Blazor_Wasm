@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Report_App_WASM.Server.Models.AuditModels;
+﻿using Report_App_WASM.Server.Models.AuditModels;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Shared;
+using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Server.Models
 {
@@ -14,11 +14,14 @@ namespace Report_App_WASM.Server.Models
         private string? _typeDbName;
 
         [MaxLength(20)]
-        public string? TypeDbName { get => _typeDbName; set
+        public string? TypeDbName
         {
-            _typeDbName = value;
-            _typeDbName = TypeDb.ToString();
-        } }
+            get => _typeDbName; set
+            {
+                _typeDbName = value;
+                _typeDbName = TypeDb.ToString();
+            }
+        }
         [Required]
         public string? ConnectionPath { get; set; }
         public int Port { get; set; }

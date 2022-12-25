@@ -1,7 +1,5 @@
 ﻿@using Report_App_WASM.Client.Shared.Theme
 @inherits LayoutComponentBase
-@inject NavigationManager NavigationManager
-@inject IdentityAuthenticationStateProvider AuthStateProvider
 @inject HttpClient Http
 @inject IJSRuntime JsInterop
 @attribute [Authorize]
@@ -40,7 +38,7 @@
     </MudMainContent>
 </MudLayout>
 @code{
-    private string UserName { get; set; }
+    private string? UserName { get; set; }
     readonly MudTheme _appTheme = ApplicationTheme.ApplicationMudTheme();
 
     private bool _isDarkMode;
@@ -49,9 +47,9 @@
     protected override async Task OnInitializedAsync()
     {
         var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
-        ApplicationConstants.ApplicationLogo = values.ApplicationLogo;
-        ApplicationConstants.ApplicationName = values.ApplicationName;
-        ApplicationConstants.LdapLogin = values.LdapLogin;
+        ApplicationConstants.ApplicationLogo = values?.ApplicationLogo;
+        ApplicationConstants.ApplicationName = values?.ApplicationName;
+        ApplicationConstants.LdapLogin = values!.LdapLogin;
         _isDarkMode=UserAppTheme.DarkTheme;
     }
 

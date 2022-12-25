@@ -92,7 +92,7 @@ namespace Report_App_WASM.Server.Controllers
 
             try
             {
-                _logger.LogInformation("Grid extraction: Start "+ values.FunctionName, values.FunctionName);
+                _logger.LogInformation("Grid extraction: Start " + values.FunctionName, values.FunctionName);
                 var items = await finalQ.AsQueryable().Take(values.MaxResult).ToListAsync();
                 var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
@@ -161,7 +161,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("odata/Sftp")]
         public IQueryable<SftpConfiguration?> GetSftp()
         {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
             return _context.SftpConfiguration.AsNoTracking();
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
         }
 
         [EnableQuery]
@@ -175,7 +177,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("odata/Activities")]
         public IQueryable<Activity> GetActivities()
         {
-            return _context.Activity.Where(a=>a.ActivityType==ActivityType.SourceDb).Include(a => a.ActivityDbConnections).AsNoTracking();
+            return _context.Activity.Where(a => a.ActivityType == ActivityType.SourceDb).Include(a => a.ActivityDbConnections).AsNoTracking();
         }
 
         [EnableQuery(EnsureStableOrdering = false)]

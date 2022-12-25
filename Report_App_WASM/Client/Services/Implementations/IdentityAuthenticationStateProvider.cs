@@ -1,7 +1,7 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using Report_App_WASM.Client.Services.Contracts;
 using Report_App_WASM.Shared;
+using System.Security.Claims;
 
 namespace Report_App_WASM.Client.Services.Implementations
 {
@@ -53,18 +53,24 @@ namespace Report_App_WASM.Client.Services.Implementations
             try
             {
                 var userInfo = await GetUserInfo();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 if (userInfo.IsAuthenticated)
                 {
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'value' in 'Claim.Claim(string type, string value)'.
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'value' in 'Claim.Claim(string type, string value)'.
                     var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }.Concat(userInfo.ExposedClaims!.Select(c => new Claim(c.Type!, c.Value)));
-                    identity = new ClaimsIdentity(claims, "Server authentication");
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'value' in 'Claim.Claim(string type, string value)'.
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'value' in 'Claim.Claim(string type, string value)'.
+                    identity = new(claims, "Server authentication");
                 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine("Request failed:" + ex);
             }
 
-            return new AuthenticationState(new ClaimsPrincipal(identity));
+            return new(new(identity));
         }
     }
 }

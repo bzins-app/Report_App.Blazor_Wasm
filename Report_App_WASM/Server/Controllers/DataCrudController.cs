@@ -51,7 +51,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<SftpConfiguration?> GetStfpConfigurationAsync(int sftpConfigurationId)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             return await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == sftpConfigurationId).FirstOrDefaultAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
         [HttpGet]
@@ -60,9 +62,9 @@ namespace Report_App_WASM.Server.Controllers
             var targetInfo = await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).Include(a => a.ActivityDbConnections).FirstOrDefaultAsync();
             if (targetInfo == null)
             {
-                List<ActivityDbConnection> connections = new List<ActivityDbConnection>();
-                targetInfo = new Activity { ActivityName = "Data transfer", ActivityType = ActivityType.TargetDb };
-                connections.Add(new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDb.SqlServer });
+                List<ActivityDbConnection> connections = new();
+                targetInfo = new() { ActivityName = "Data transfer", ActivityType = ActivityType.TargetDb };
+                connections.Add(new() { Activity = targetInfo, TypeDb = TypeDb.SqlServer });
                 targetInfo.ActivityDbConnections = connections;
             }
             return targetInfo;
@@ -71,7 +73,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<ServicesStatus> GetServiceStatusAsync()
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         [HttpPost]
@@ -79,9 +83,11 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
                 _context.Update(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
-                ApplicationConstants.ApplicationName = values.EntityValue.ApplicationName;
+                ApplicationConstants.ApplicationName = values.EntityValue!.ApplicationName;
                 ApplicationConstants.ApplicationLogo = values.EntityValue.ApplicationLogo;
                 return Ok(new SubmitResult { Success = true });
             }
@@ -96,7 +102,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SmtpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.SmtpConfiguration?' doesn't match 'class' constraint.
                 await _context.AddAsync(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SmtpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.SmtpConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -111,7 +119,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-                _context.Remove(values.EntityValue);
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SmtpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SmtpConfiguration?' doesn't match 'class' constraint.
+                if (_context != null) _context.Remove(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SmtpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SmtpConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -126,7 +136,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SmtpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SmtpConfiguration?' doesn't match 'class' constraint.
                 _context.Update(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SmtpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SmtpConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -142,7 +154,7 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 var updateValues = values.EntityValue;
-                if (updateValues.IsActivated)
+                if (updateValues!.IsActivated)
                 {
                     var others = await _context.SmtpConfiguration.Where(a => a.Id != updateValues.Id).OrderBy(a => a.Id).ToListAsync();
                     foreach (var item in others)
@@ -168,6 +180,7 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 var updateValues = values.EntityValue;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 if (updateValues.IsActivated)
                 {
                     var others = await _context.LdapConfiguration.Where(a => a.Id != updateValues.Id).OrderBy(a => a.Id).ToListAsync();
@@ -177,6 +190,7 @@ namespace Report_App_WASM.Server.Controllers
                         _context.Entry(item).State = EntityState.Modified;
                     }
                 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                 _context.Entry(updateValues).State = EntityState.Modified;
                 await SaveDbAsync(values.UserName);
@@ -193,7 +207,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 await _context.AddAsync(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -208,8 +224,10 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 _context.Remove(values.EntityValue);
-                if (values.EntityValue.IsActivated)
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
+                if (values.EntityValue!.IsActivated)
                 {
                     ApplicationConstants.LdapLogin = false;
                 }
@@ -228,9 +246,13 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 _context.Update(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 ApplicationConstants.LdapLogin = values.EntityValue.IsActivated;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -244,9 +266,13 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-                if (!await _roleManager.RoleExistsAsync(values.EntityValue.ActivityName))
+                if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ActivityName!))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole<Guid>(values.EntityValue.ActivityName));
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'roleName' in 'IdentityRole<Guid>.IdentityRole(string roleName)'.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                    await _roleManager.CreateAsync(new(values.EntityValue.ActivityName));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'roleName' in 'IdentityRole<Guid>.IdentityRole(string roleName)'.
                     var users = await _userManager.GetUsersInRoleAsync("Admin");
 
                     foreach (var user in users)
@@ -258,10 +284,10 @@ namespace Report_App_WASM.Server.Controllers
                         }
                     }
                 }
-                if (string.IsNullOrEmpty(values.EntityValue.ActivityRoleId))
+                if (string.IsNullOrEmpty(values.EntityValue?.ActivityRoleId))
                 {
-                    var newRole = await _roleManager.FindByNameAsync(values.EntityValue.ActivityName);
-                    values.EntityValue.ActivityRoleId = newRole.Id.ToString();
+                    var newRole = await _roleManager.FindByNameAsync(values.EntityValue?.ActivityName!);
+                    values.EntityValue!.ActivityRoleId = newRole!.Id.ToString();
                 }
 
                 await _context.AddAsync(values.EntityValue);
@@ -280,7 +306,11 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'roleName' in 'Task<IdentityRole<Guid>?> RoleManager<IdentityRole<Guid>>.FindByNameAsync(string roleName)'.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var role = await _roleManager.FindByNameAsync(values.EntityValue.ActivityName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'roleName' in 'Task<IdentityRole<Guid>?> RoleManager<IdentityRole<Guid>>.FindByNameAsync(string roleName)'.
                 if (role != null)
                 {
                     await _roleManager.DeleteAsync(role);
@@ -302,19 +332,23 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-                var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue.ActivityRoleId);
+                var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue?.ActivityRoleId!);
                 if (roleActivity != null)
                 {
-                    if (roleActivity.Name != values.EntityValue.ActivityName)
+                    if (roleActivity.Name != values.EntityValue!.ActivityName)
                     {
                         roleActivity.Name = values.EntityValue.ActivityName;
                         await _roleManager.UpdateAsync(roleActivity);
                     }
                 }
 
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.Activity?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.Activity?' doesn't match 'class' constraint.
                 _context.Update(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.Activity?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.Activity?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.Activity?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.Activity?' doesn't match 'class' constraint.
                 _context.Entry(values.EntityValue).State = EntityState.Detached;
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.Activity?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.Activity?' doesn't match 'class' constraint.
 
                 return Ok(new SubmitResult { Success = true });
             }
@@ -327,7 +361,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<TaskHeader> GetTaskHeaderAsync(int taskHeaderId)
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return await _context.TaskHeader.Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Include(a => a.Activity).Where(a => a.TaskHeaderId == taskHeaderId).OrderBy(a => a).FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         [HttpGet]
@@ -341,9 +377,17 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-                _context.Entry(values.EntityValue).State = EntityState.Added;
-                await SaveDbAsync(values.UserName);
-                _context.Entry(values.EntityValue).State = EntityState.Detached;
+                if (_context != null)
+                {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.TaskHeader?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskHeader?' doesn't match 'class' constraint.
+                    _context.Entry(values.EntityValue).State = EntityState.Added;
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.TaskHeader?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskHeader?' doesn't match 'class' constraint.
+                    await SaveDbAsync(values.UserName);
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.TaskHeader?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskHeader?' doesn't match 'class' constraint.
+                    _context.Entry(values.EntityValue).State = EntityState.Detached;
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.TaskHeader?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskHeader?' doesn't match 'class' constraint.
+                }
+
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -357,7 +401,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.TaskHeader?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskHeader?' doesn't match 'class' constraint.
                 _context.Entry(values.EntityValue).State = EntityState.Deleted;
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.TaskHeader?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskHeader?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -372,10 +418,12 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var dbItem = await _context.TaskHeader.Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients).Where(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (dbItem != null)
                 {
-                    dbItem.TaskName = values.EntityValue.Name;
+                    dbItem.TaskName = values.EntityValue!.Name;
                     dbItem.IsActivated = false;
                     dbItem.SendByEmail = false;
                     dbItem.FileDepositPathConfigurationId = 0;
@@ -416,7 +464,11 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 values.EntityValue.Activity = await _context.Activity.Where(a => a.ActivityId == values.EntityValue.IdActivity).FirstOrDefaultAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8601 // Possible null reference assignment.
                 _context.Entry(values.EntityValue).State = EntityState.Modified;
                 _context.UpdateRange(values.EntityValue.TaskDetails);
                 _context.UpdateRange(values.EntityValue.TaskEmailRecipients);
@@ -435,7 +487,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.TaskDetail?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskDetail?' doesn't match 'class' constraint.
                 _context.Entry(values.EntityValue).State = EntityState.Deleted;
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.TaskDetail?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.TaskDetail?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -450,7 +504,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
                 await _context.AddAsync(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -465,7 +521,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
                 _context.Remove(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -480,7 +538,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
                 _context.Update(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -495,7 +555,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' doesn't match 'class' constraint.
                 await _context.AddAsync(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.AddAsync<TEntity>(TEntity, CancellationToken)'. Nullability of type argument 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -510,7 +572,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' doesn't match 'class' constraint.
                 _context.Remove(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -525,7 +589,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' doesn't match 'class' constraint.
                 _context.Update(values.EntityValue);
+#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.FileDepositPathConfiguration?' doesn't match 'class' constraint.
                 await SaveDbAsync(values.UserName);
                 return Ok(new SubmitResult { Success = true });
             }
@@ -535,7 +601,7 @@ namespace Report_App_WASM.Server.Controllers
             }
         }
 
-        private async Task SaveDbAsync(string userId = "system")
+        private async Task SaveDbAsync(string? userId = "system")
         {
             await _context.SaveChangesAsync(userId);
         }

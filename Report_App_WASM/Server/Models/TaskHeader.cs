@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Report_App_WASM.Server.Models.AuditModels;
+﻿using Report_App_WASM.Server.Models.AuditModels;
 using Report_App_WASM.Shared;
+using System.ComponentModel.DataAnnotations;
 
 namespace Report_App_WASM.Server.Models
 {
-    public class TaskHeader : BaseTraceability
+    public sealed class TaskHeader : BaseTraceability
     {
         public TaskHeader()
         {
@@ -14,10 +14,12 @@ namespace Report_App_WASM.Server.Models
         public int TaskHeaderId { get; set; }
         [Required]
         [MaxLength(100)]
-        public string TaskName { get; set; }
+        public string? TaskName { get; set; } = null!;
+
         [Required]
         [MaxLength(60)]
-        public string ActivityName { get; set; }
+        public string ActivityName { get; set; } = null!;
+
         public int IdActivity { get; set; }
         [MaxLength(60)]
         public string? TaskNamePrefix { get; set; }
@@ -39,8 +41,8 @@ namespace Report_App_WASM.Server.Models
         public string QueryParameters { get; set; } = "[]";
         public DateTime? LastRunDateTime { get; set; } = null;
         public int FileDepositPathConfigurationId { get; set; }
-        public virtual ICollection<TaskDetail> TaskDetails { get; set; } = new List<TaskDetail>();
-        public virtual ICollection<TaskEmailRecipient> TaskEmailRecipients { get; set; } = new List<TaskEmailRecipient>();
-        public virtual Activity Activity { get; set; }
+        public ICollection<TaskDetail> TaskDetails { get; set; } = new List<TaskDetail>();
+        public ICollection<TaskEmailRecipient> TaskEmailRecipients { get; set; } = new List<TaskEmailRecipient>();
+        public Activity Activity { get; set; } = null!;
     }
 }

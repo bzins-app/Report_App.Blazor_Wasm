@@ -2,7 +2,7 @@
 @inject ISnackbar Snackbar
 
 
-<MudSwitch Checked="@Item.IsActivated" Color="Color.Primary"  ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+<MudSwitch Checked="@Item!.IsActivated" Color="Color.Primary"  ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
 
  @code {
     [Parameter]
@@ -10,7 +10,7 @@
 
     private async Task ChangeStatusAsync(bool value)
     {
-        Item.IsActivated = value;
+        Item!.IsActivated = value;
         await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/");
         await DataService.PostValues(Item, "ActivityUpdate");
 

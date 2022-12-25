@@ -17,7 +17,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm Model="@Model" @ref="@_form" Validation="@(_userValidator.ValidateValue)" >
+        <MudForm Model="@Model" @ref="@_form" Validation="@(_userValidator?.ValidateValue)" >
             <MudTextField @bind-Value="Model.UserName" Label="@Localizer.Get("Name")" For="@(()=>Model.UserName)" Disabled="Action==CrudAction.Create?false:true" />
             <MudTextField @bind-Value="Model.Email" Label="@Localizer.Get("Email")" For="@(()=>Model.Email)" InputType="InputType.Email" Disabled="Action==CrudAction.Create?false:true" />
             <MudTextField @bind-Value="Model.Password" Label="@Localizer.Get("Password")" For="@(()=>Model.Password)" InputType="InputType.Password" Disabled="Action==CrudAction.Create?false:true" />
@@ -34,14 +34,14 @@
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
     [Parameter] public ApplicationUser Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
     private UserFormModel Model { get; set; } = new();
-    private string _deletionValidation;
-    private UserFormModelValidator _userValidator ;
+    private string? _deletionValidation;
+    private UserFormModelValidator? _userValidator ;
 
     protected override void OnParametersSet()
     {
@@ -59,7 +59,7 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private async Task Validate()
@@ -68,7 +68,7 @@
         {
             if (_deletionValidation == "Validate")
             {
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
@@ -90,7 +90,7 @@
             Item.CreateDateTime = DateTime.Now;
             Item.ModDateTime = DateTime.Now;
 
-            MudDialog.Close(DialogResult.Ok(Item));
+            MudDialog?.Close(DialogResult.Ok(Item));
         }
     }
 }

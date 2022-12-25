@@ -51,11 +51,11 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private void ConfirmText()
     {
-        MudDialog.Close(DialogResult.Ok(HtmlText));
+        MudDialog?.Close(DialogResult.Ok(HtmlText));
     }
 }

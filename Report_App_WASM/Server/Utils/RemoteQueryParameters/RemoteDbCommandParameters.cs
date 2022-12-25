@@ -1,5 +1,5 @@
-﻿using System.Data.Common;
-using Report_App_WASM.Shared;
+﻿using Report_App_WASM.Shared;
+using System.Data.Common;
 
 namespace Report_App_WASM.Server.Utils.RemoteQueryParameters
 {
@@ -7,11 +7,11 @@ namespace Report_App_WASM.Server.Utils.RemoteQueryParameters
     public class RemoteConnectionParameter
     {
         public string? ConnnectionString { get; set; }
-        public TypeDb TypeDb { get; set; }
-        public string? Schema { get; set; }
-        public bool UseDbSchema { get; set; }
-        public int CommandTimeOut { get; set; } = 300;
-        public int CommandFetchSize { get; set; } = 2000;
+        public TypeDb TypeDb { get; init; }
+        public string? Schema { get; init; }
+        public bool UseDbSchema { get; init; }
+        public int CommandTimeOut { get; init; } = 300;
+        public int CommandFetchSize { get; init; } = 2000;
     }
 
     public class DbGenericParameters

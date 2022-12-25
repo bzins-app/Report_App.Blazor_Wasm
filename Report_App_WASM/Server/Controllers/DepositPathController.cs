@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Services.FilesManagement;
-using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
 
 namespace Report_App_WASM.Server.Controllers
@@ -33,9 +32,11 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value)
         {
 
-            if (value.EntityValue.UseSftpProtocol)
+            if (value.EntityValue!.UseSftpProtocol)
             {
-                var config = await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == value.EntityValue.SftpConfigurationId).Select(a => a.UseFtpProtocol).FirstOrDefaultAsync();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                var config = await _context.SftpConfiguration.Where(a => a!.SftpConfigurationId == value.EntityValue.SftpConfigurationId).Select(a => a.UseFtpProtocol).FirstOrDefaultAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (config)
                 {
                     using var deposit = new FtpService(_context);
@@ -45,13 +46,17 @@ namespace Report_App_WASM.Server.Controllers
                 else
                 {
                     using var deposit = new SftpService(_context);
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'remoteFilePath' in 'Task<SubmitResult> SftpService.TestDirectoryAsync(int sftpconfigurationId, string remoteFilePath, bool tryCreateFolder = false)'.
                     var result = await _sftpService.TestDirectoryAsync(value.EntityValue.SftpConfigurationId, value.EntityValue.FilePath, value.EntityValue.TryToCreateFolder);
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'remoteFilePath' in 'Task<SubmitResult> SftpService.TestDirectoryAsync(int sftpconfigurationId, string remoteFilePath, bool tryCreateFolder = false)'.
                     return Ok(result);
                 }
             }
 
             {
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'remoteFilePath' in 'Task<SubmitResult> LocalFilesService.TestDirectory(string remoteFilePath, bool tryCreateFolder = false)'.
                 var result = await _fileService.TestDirectory(value.EntityValue.FilePath, value.EntityValue.TryToCreateFolder);
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'remoteFilePath' in 'Task<SubmitResult> LocalFilesService.TestDirectory(string remoteFilePath, bool tryCreateFolder = false)'.
                 return Ok(result);
             }
         }

@@ -1,18 +1,20 @@
-﻿using System.Net;
-using System.Net.Mail;
-using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.Extensions;
+using System.Net;
+using System.Net.Mail;
+using System.Text.Json;
 
 namespace Report_App_WASM.Server.Services.EmailSender
 {
     public interface IEmailSender
     {
-        Task<SubmitResult> SendEmailAsync(List<EmailRecipient>? email, string subject, string message, List<Attachment> attachment = null);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Task<SubmitResult> SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         Task GenerateErrorEmailAsync(string? errorMessage, string subjectSuffix);
     }
     public class EmailSender : IEmailSender
@@ -25,23 +27,30 @@ namespace Report_App_WASM.Server.Services.EmailSender
 
         public async Task GenerateErrorEmailAsync(string? errorMessage, string subjectSuffix)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var emailInfos = await Context.ApplicationParameters.Select(a => new { a.ErrorEmailPrefix, a.ErrorEMailMessage, a.AdminEmails }).FirstOrDefaultAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (emailInfos != null && emailInfos.AdminEmails != "[]")
             {
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'json' in 'List<EmailRecipient>? JsonSerializer.Deserialize<List<EmailRecipient>>(string json, JsonSerializerOptions? options = null)'.
                 List<EmailRecipient>? emails = JsonSerializer.Deserialize<List<EmailRecipient>>(emailInfos.AdminEmails);
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'json' in 'List<EmailRecipient>? JsonSerializer.Deserialize<List<EmailRecipient>>(string json, JsonSerializerOptions? options = null)'.
                 var subject = $@"{emailInfos.ErrorEmailPrefix}-{subjectSuffix}";
-                var messageMail = string.Format(emailInfos.ErrorEMailMessage, errorMessage);
+                var messageMail = string.Format(emailInfos.ErrorEMailMessage!, errorMessage);
                 await SendEmailAsync(emails, subject, messageMail);
             }
         }
 
-        public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient>? email, string subject, string message, List<Attachment> attachment = null)
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         {
             var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).FirstOrDefaultAsync();
             var emailservice = await Context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
 
-            var result= new SubmitResult();
+            var result = new SubmitResult();
             //Smtp is become default
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<EmailRecipient>(IEnumerable<EmailRecipient> source)'.
             if (smtp != null && email.Any() && emailservice)
             {
 
@@ -58,22 +67,25 @@ namespace Report_App_WASM.Server.Services.EmailSender
                     }
                     if (size > 20)
                     {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                         attachment = null;
-                        message = message + Environment.NewLine + string.Format("The size of the attachment is too high: {0}MB. Maximum is {1} ", Math.Round(size, 2), 20);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                        message = message + Environment.NewLine +
+                                  $"The size of the attachment is too high: {Math.Round(size, 2)}MB. Maximum is {20} ";
                     }
 
-                    ProcessEmailAsync(smtp.FromEmail,
-                                                 smtp.FromFullName,
+                    ProcessEmailAsync(smtp.FromEmail!,
+                                                 smtp.FromFullName!,
                                                  subject,
                                                  message,
                                                  email,
                                                  email,
-                                                 smtp.SmtpUserName,
+                                                 smtp.SmtpUserName!,
                                                  EncryptDecrypt.DecryptString(smtp.SmtpPassword),
                                                  smtp.SmtpHost,
                                                  smtp.SmtpPort,
                                                  smtp.SmtpSsl,
-                                                 attachment)
+                                                 attachment!)
                                                  .Wait();
 
                     log.Result = "Ok";
@@ -95,28 +107,35 @@ namespace Report_App_WASM.Server.Services.EmailSender
             else
             {
                 result.Success = false;
-                result.Message= "Smtp not configured or is not activated";
+                result.Message = "Smtp not configured or is not activated";
             }
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<EmailRecipient>(IEnumerable<EmailRecipient> source)'.
 
 
 
             return result;
         }
 
-        private async Task ProcessEmailAsync(string fromEmail, string fromFullName, string subject, string messageBody, List<EmailRecipient>? toEmail, List<EmailRecipient>? toFullName, string smtpUser, string smtpPassword, string smtpHost, int smtpPort, bool smtpSsl, List<Attachment> attachment = null)
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        private async Task ProcessEmailAsync(string fromEmail, string fromFullName, string? subject, string messageBody, List<EmailRecipient>? toEmail, List<EmailRecipient>? toFullName, string smtpUser, string? smtpPassword, string? smtpHost, int smtpPort, bool smtpSsl, List<Attachment> attachment = null)
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         {
             var body = messageBody;
             var message = new MailMessage();
-            foreach (var t in toEmail.Where(a => a.Bcc == false))
+            foreach (var t in toEmail!.Where(a => a.Bcc == false))
             {
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'address' in 'MailAddress.MailAddress(string address, string? displayName)'.
                 message.To.Add(new MailAddress(t.Email, t.Email));
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'address' in 'MailAddress.MailAddress(string address, string? displayName)'.
             }
 
-            foreach (var t in toEmail.Where(a => a.Bcc))
+            foreach (var t in toEmail!.Where(a => a.Bcc))
             {
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'address' in 'MailAddress.MailAddress(string address, string? displayName)'.
                 message.Bcc.Add(new MailAddress(t.Email, t.Email));
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'address' in 'MailAddress.MailAddress(string address, string? displayName)'.
             }
-            message.From = new MailAddress(fromEmail, fromFullName);
+            message.From = new(fromEmail, fromFullName);
             message.Subject = subject;
             message.Body = body;
 
@@ -137,7 +156,9 @@ namespace Report_App_WASM.Server.Services.EmailSender
                 Password = smtpPassword
             };
             smtp.Credentials = credential;
+#pragma warning disable CS8601 // Possible null reference assignment.
             smtp.Host = smtpHost;
+#pragma warning restore CS8601 // Possible null reference assignment.
             smtp.Port = smtpPort;
             smtp.EnableSsl = smtpSsl;
             await smtp.SendMailAsync(message).ConfigureAwait(true);

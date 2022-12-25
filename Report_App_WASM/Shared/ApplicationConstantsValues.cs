@@ -2,8 +2,8 @@
 {
     public class ApplicationConstantsValues
     {
-        public string? ApplicationName { get; set; }
-        public string? ApplicationLogo { get; set; }
-        public bool LdapLogin { get; set; }
+        public string? ApplicationName { get; init; }
+        public string? ApplicationLogo { get; init; }
+        public bool LdapLogin { get; init; }
     }
 }

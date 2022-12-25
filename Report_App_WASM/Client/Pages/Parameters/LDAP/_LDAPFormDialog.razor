@@ -18,10 +18,10 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false" />
-            <MudTextField @bind-Value="Item.Domain" Label="@Localizer.Get("Domain")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false"/>
-            <MudTextField @bind-Value="Item.UserName" Label="@Localizer.Get("User name")" Disabled />
-            <MudTextField @bind-Value="Item.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled />
+            <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
+            <MudTextField @bind-Value="Item!.Domain" Label="@Localizer.Get("Domain")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("User name")" Disabled />
+            <MudTextField @bind-Value="Item!.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled />
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
@@ -34,16 +34,16 @@
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public LdapConfigurationDto Item { get; set; }
+    [Parameter] public LdapConfigurationDto? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
-    private string _deletionValidation;
+    private string? _deletionValidation;
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private async Task Validate()
@@ -52,7 +52,7 @@
         {
             if (_deletionValidation=="Validate")
             {
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
@@ -60,7 +60,7 @@
             await _form.Validate();
             if (_form.IsValid)
             {
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
     }

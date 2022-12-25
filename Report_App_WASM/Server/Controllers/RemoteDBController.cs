@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
-using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
 using Report_App_WASM.Shared.DTO;
 using Report_App_WASM.Shared.Extensions;
@@ -24,9 +23,9 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TestConnection(ApiCrudPayload<ActivityDbConnectionDto> value)
+        public async Task<IActionResult> TestConnection(ApiCrudPayload<ActivityDbConnectionDto?> value)
         {
-            value.EntityValue.Password = EncryptDecrypt.DecryptString(value.EntityValue.Password!);
+            value.EntityValue!.Password = EncryptDecrypt.DecryptString(value.EntityValue.Password!);
             var result = await _remoteDb.TestConnectionAsync(value.EntityValue);
             return Ok(result);
         }
@@ -41,7 +40,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload values, CancellationToken ct)
         {
-            var data = await _remoteDb.RemoteDbToDatableAsync(values.Values, ct);
+            var data = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
             return Ok(data.ToDictionnary());
         }
     }

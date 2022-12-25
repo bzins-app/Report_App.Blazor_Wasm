@@ -15,7 +15,7 @@ namespace Report_App_WASM.Server.Controllers
                 HttpContext.Response.Cookies.Append(
                     CookieRequestCultureProvider.DefaultCookieName,
                     CookieRequestCultureProvider.MakeCookieValue(
-                        new RequestCulture(culture)));
+                        new(culture)));
             }
 
             return LocalRedirect(redirectUri);

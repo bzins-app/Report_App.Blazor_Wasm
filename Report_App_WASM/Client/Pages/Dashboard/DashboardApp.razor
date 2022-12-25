@@ -103,7 +103,7 @@
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
                     <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
-                    <MudText Typo="Typo.h6">@string.Format("{0:0.00}",_metrics.SizeFilesStoredLocally) MB</MudText>
+                    <MudText Typo="Typo.h6">@($"{_metrics.SizeFilesStoredLocally:0.00}") MB</MudText>
                 </div>
             </MudPaper>
         </MudItem>

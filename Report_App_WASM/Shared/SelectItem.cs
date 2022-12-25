@@ -2,17 +2,17 @@
 {
     public class SelectItemActivitiesInfo
     {
-        public int ActivityId { get; set; }
-        public string? ActivityName { get; set; }
+        public int ActivityId { get; init; }
+        public string? ActivityName { get; init; }
         public string? LogoPath { get; set; }
         public bool HasALogo { get; set; }
-        public bool IsVisible { get; set; }
-        public bool IsActivated { get; set; }
+        public bool IsVisible { get; init; }
+        public bool IsActivated { get; init; }
     }
 
-	public class SelectItem
-	{
-		public int Id { get; set; }
-		public string? Name { get; set; }
-	}
+    public class SelectItem
+    {
+        public int Id { get; init; }
+        public string? Name { get; init; }
+    }
 }

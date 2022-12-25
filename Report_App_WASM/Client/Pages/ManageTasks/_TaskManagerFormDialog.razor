@@ -18,18 +18,18 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item.TaskName" Label="@(Item.TypeName==TaskType.Report.ToString()? Localizer.Get("Report title"):Item.TypeName==TaskType.DataTransfer.ToString()?  Localizer.Get("Job title"): Localizer.Get("Alert title"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
-            <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item.ActivityName" AnchorOrigin="Origin.BottomCenter"
+            <MudTextField @bind-Value="Item!.TaskName" Label="@(Item?.TypeName==TaskType.Report.ToString()? Localizer.Get("Report title"):Item?.TypeName==TaskType.DataTransfer.ToString()?  Localizer.Get("Job title"): Localizer.Get("Alert title"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
+            <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ActivityName" AnchorOrigin="Origin.BottomCenter"
                        Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
                 @foreach (var value in _activities)
                 {
                     <MudSelectItem Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
                 }
             </MudSelect>
-            @if (Item.TypeName == TaskType.Report.ToString())
+            @if (Item?.TypeName == TaskType.Report.ToString())
             {
                 <MudSelect  Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile" AnchorOrigin="Origin.BottomCenter"
-                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete?true:false">
+                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
                     @foreach (FileType item in Enum.GetValues(typeof(FileType)))
                     {
                         <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -49,12 +49,12 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public TaskHeaderDto Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
-    private string _deletionValidation;
+    private string? _deletionValidation;
     private List<SelectItemActivitiesInfo> _activities = new();
 
     protected override async Task OnInitializedAsync()
@@ -64,7 +64,7 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private async Task Validate()
@@ -73,19 +73,19 @@
         {
             if (_deletionValidation == "Validate")
             {
-                Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
-                MudDialog.Close(DialogResult.Ok(Item));
+                Item!.Activity = new() { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
-            Item.Activity = new ActivityDto { ActivityId=_activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
+            Item!.Activity = new() { ActivityId=_activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
             Item.IdActivity = Item.Activity.ActivityId;
             await _form.Validate();
             if (_form.IsValid&&Item.Activity is not null)
             {
                 
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
     }

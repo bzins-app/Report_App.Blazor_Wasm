@@ -2,14 +2,14 @@
 {
     public class ChangeRolePayload
     {
-        public string UserName { get; set; }
-        public IEnumerable<string> Roles { get; set; }
+        public string? UserName { get; init; }
+        public IEnumerable<string>? Roles { get; init; }
     }
 
     public class UserPayload
     {
-        public string UserName { get; set; }
-        public string? UserMail { get; set; }
-        public string Password { get; set; }
+        public string? UserName { get; init; }
+        public string? UserMail { get; init; }
+        public string? Password { get; init; }
     }
 }

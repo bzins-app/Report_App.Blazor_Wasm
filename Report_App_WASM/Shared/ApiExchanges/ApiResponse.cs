@@ -2,7 +2,7 @@
 
 namespace Report_App_WASM.Shared.ApiExchanges
 {
-    public class ApiResponse<T> where T:class
+    public class ApiResponse<T> where T : class
     {
         [JsonPropertyName("@odata.count")]
         public int Count { get; set; }

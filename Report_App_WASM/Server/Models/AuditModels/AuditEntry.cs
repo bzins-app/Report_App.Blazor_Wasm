@@ -10,11 +10,11 @@ namespace Report_App_WASM.Server.Models.AuditModels
             Entry = entry;
         }
         public EntityEntry Entry { get; }
-        public string UserId { get; set; } = null!;
-        public string TableName { get; set; } = null!;
-        public Dictionary<string, object> KeyValues { get; } = new();
-        public Dictionary<string, object> OldValues { get; } = new();
-        public Dictionary<string, object> NewValues { get; } = new();
+        public string? UserId { get; init; } = null!;
+        public string TableName { get; init; } = null!;
+        public Dictionary<string, object?> KeyValues { get; } = new();
+        public Dictionary<string, object?> OldValues { get; } = new();
+        public Dictionary<string, object?> NewValues { get; } = new();
         public AuditType AuditType { get; set; }
         public List<string> ChangedColumns { get; } = new();
         public ApplicationAuditTrail ToAudit()

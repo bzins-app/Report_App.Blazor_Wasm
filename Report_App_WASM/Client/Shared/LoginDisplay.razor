@@ -1,7 +1,7 @@
 ﻿<AuthorizeView>
     <Authorized>
         <MudMenu AnchorOrigin="Origin.BottomRight"
-                 Icon="@Icons.Filled.PermIdentity" title="@context.User.Identity.Name"
+                 Icon="@Icons.Filled.PermIdentity" title="@context.User.Identity!.Name"
                  Class="mx-1"
                  LockScroll="true"
                  TransformOrigin="Origin.TopRight">
@@ -12,11 +12,11 @@
                         <MudCardHeader>
                             <CardHeaderAvatar>
                                 <MudAvatar Size="Size.Medium" Color="Color.Primary" Class="ma-2">
-                                    @(string.Concat(context.User.Identity.Name?.ToUpper().Split(".").FirstOrDefault().First(), context.User.Identity.Name?.Split(".").Length > 1 ? context.User.Identity.Name?.ToUpper().Split(".").Skip(1).FirstOrDefault().First() : ""))
+                                    @string.Concat(context.User.Identity?.Name?.ToUpper().Split(".").FirstOrDefault()!.First(), context.User.Identity?.Name?.Split(".").Length > 1 ? context.User.Identity.Name?.ToUpper().Split(".").Skip(1).FirstOrDefault()!.First() : "")
                                 </MudAvatar>
                             </CardHeaderAvatar>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.body1">@context.User.Identity.Name</MudText>
+                                <MudText Typo="Typo.body1">@context.User.Identity?.Name</MudText>
                             </CardHeaderContent>
                         </MudCardHeader>
                     </MudCard>

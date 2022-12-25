@@ -63,7 +63,7 @@ namespace Report_App_WASM.Server
             {
                 if (!await _roleManager.RoleExistsAsync(t).ConfigureAwait(true))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole<Guid>(t)).ConfigureAwait(true);
+                    await _roleManager.CreateAsync(new(t)).ConfigureAwait(true);
                 }
             }
         }
@@ -71,7 +71,7 @@ namespace Report_App_WASM.Server
         private async Task CreateDefaultSuperAdmin()
         {
             await _userManager.CreateAsync(
-                new ApplicationUser
+                new()
                 {
                     Email = _baseUser.Email,
                     UserName = _baseUser.Email,
@@ -83,16 +83,14 @@ namespace Report_App_WASM.Server
                     ModDateTime = DateTime.Now,
                     CreateDateTime = DateTime.Now
                 }
-                , _baseUser.Password);
+                , _baseUser.Password!);
 
             //loop all the roles and then fill to SuperAdmin so he become powerfull
-            var selectedUser = await _userManager.FindByEmailAsync(_baseUser.Email).ConfigureAwait(true);
-            List<string> roles = new();
+            var selectedUser = await _userManager.FindByEmailAsync(_baseUser.Email!).ConfigureAwait(true);
             if (selectedUser != null)
             {
-                roles = _roleManager.Roles.Select(a => a.Name).ToList();
-                await _userManager.AddToRolesAsync(selectedUser, roles).ConfigureAwait(true);
-
+                List<string?> roles = _roleManager.Roles.Select(a => a.Name).ToList();
+                await _userManager.AddToRolesAsync(selectedUser, roles!).ConfigureAwait(true);
             }
         }
 

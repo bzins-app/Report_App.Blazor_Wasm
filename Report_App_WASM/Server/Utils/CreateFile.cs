@@ -1,17 +1,17 @@
-﻿using System.Data;
-using System.Text;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
 using OfficeOpenXml.Table;
 using Report_App_WASM.Shared.Extensions;
+using System.Data;
+using System.Text;
 
 namespace Report_App_WASM.Server.Utils
 {
     public static class CreateFile
     {
-        public static FileContentResult ExcelFromDatable(string fileName, ExcelCreationDatatable value)
+        public static FileContentResult ExcelFromDatable(string? fileName, ExcelCreationDatatable value)
         {
             MemoryStream outputStream = new();
             using ExcelPackage excel = new(outputStream);
@@ -46,7 +46,7 @@ namespace Report_App_WASM.Server.Utils
             excel.Save();
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = fileName
             };
@@ -105,7 +105,7 @@ namespace Report_App_WASM.Server.Utils
             excel.SaveAs(outputStream);
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = dataExcel.FileName
             };
@@ -211,7 +211,7 @@ namespace Report_App_WASM.Server.Utils
             excel.Save();
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = dataExcel.FileName
             };
@@ -244,13 +244,13 @@ namespace Report_App_WASM.Server.Utils
                     bytes = Encoding.UTF8.GetBytes(cleaned);
                     break;
             }
-            return new FileContentResult(bytes, "application/json")
+            return new(bytes, "application/json")
             {
                 FileDownloadName = fileName
             };
         }
 
-        public static FileContentResult CsvFromDatable(string fileName, DataTable data, string encoding, string? delimiter = ";", bool removeHeader = false)
+        public static FileContentResult CsvFromDatable(string fileName, DataTable data, string? encoding, string? delimiter = ";", bool removeHeader = false)
         {
             var delimitervalue = delimiter;
 
@@ -294,13 +294,13 @@ namespace Report_App_WASM.Server.Utils
                     break;
             }
 
-            return new FileContentResult(bytes, "text/csv")
+            return new(bytes, "text/csv")
             {
                 FileDownloadName = fileName
             };
         }
 
-        public static FileContentResult XmlFromDatable(string datatableName, string fileName, string encoding, DataTable data)
+        public static FileContentResult XmlFromDatable(string? datatableName, string fileName, string? encoding, DataTable data)
         {
             data.TableName = datatableName;
             string result;
@@ -333,7 +333,7 @@ namespace Report_App_WASM.Server.Utils
                     bytes = Encoding.UTF8.GetBytes(result);
                     break;
             }
-            return new FileContentResult(bytes, "application/xml")
+            return new(bytes, "application/xml")
             {
                 FileDownloadName = fileName
             };
@@ -366,7 +366,7 @@ namespace Report_App_WASM.Server.Utils
             var fName = string.Format(fileName + "-{0}", DateTime.Now.ToString("s") + ".xlsx");
             outputStream.Position = 0;
 
-            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = fName
             };

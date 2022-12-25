@@ -2,28 +2,28 @@
 {
     public class TaksLogsValues
     {
-        public DateTime Date { get; set; }
-        public string? ActivityName { get; set; }
-        public string? TypeTask { get; set; }
-        public int TotalDuration { get; set; }
-        public int NbrTasks { get; set; }
-        public int NbrErrors { get; set; }
+        public DateTime Date { get; init; }
+        public string? ActivityName { get; init; }
+        public string? TypeTask { get; init; }
+        public int TotalDuration { get; init; }
+        public int NbrTasks { get; init; }
+        public int NbrErrors { get; init; }
     }
 
     public class TaksSystemValues
     {
-        public DateTime Date { get; set; }
-        public int NbrWarnings { get; set; }
-        public int NbrErrors { get; set; }
-        public int NbrCriticals { get; set; }
+        public DateTime Date { get; init; }
+        public int NbrWarnings { get; init; }
+        public int NbrErrors { get; init; }
+        public int NbrCriticals { get; init; }
     }
 
     public class EmailsLogsalues
     {
-        public DateTime Date { get; set; }
-        public int NbrEmails { get; set; }
-        public int NbrErrors { get; set; }
-        public int TotalDuration { get; set; }
+        public DateTime Date { get; init; }
+        public int NbrEmails { get; init; }
+        public int NbrErrors { get; init; }
+        public int TotalDuration { get; init; }
     }
 }
 

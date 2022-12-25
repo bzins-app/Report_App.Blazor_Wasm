@@ -114,7 +114,7 @@
     private async Task OpenCreateDialog()
     {
         var value = new TaskDetailDto();
-        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
+        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
@@ -134,7 +134,7 @@
 
     private void RemoveFilters()
     {
-        _grid.RefreshDataAsync();
+        _grid?.RefreshDataAsync();
         UpdateElements();
     }
 }

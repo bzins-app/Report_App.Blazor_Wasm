@@ -5,7 +5,7 @@
             <MudCard>
                 <MudCardContent>
                     <MudText Typo="Typo.body2">@Localizer.Get("Emails")</MudText>
-                    @if (RecipientsEmails.Count > 0)
+                    @if (RecipientsEmails!.Count > 0)
                     {
                         <MudStack Row="true">
                             <p>@Localizer.Get("Send for me")</p>
@@ -15,7 +15,7 @@
                     }
                     @if (!SendForReportRecipients)
                     {
-                        foreach (var str in UserEmail)
+                        foreach (var str in UserEmail!)
                         {
                             <MudTextField Value="str" Label="@Localizer.Get("Email")" Disabled />
                         }
@@ -34,7 +34,7 @@
                 <MudCard>
                     <MudCardContent>
                         <MudText Typo="Typo.body2">@Localizer.Get("Query parameters")</MudText>
-                        @foreach (var t in QueryParameters)
+                        @foreach (var t in QueryParameters!)
                         {
                             @if (t.ValueType == QueryCommandParameterValueType.Date)
                             {
@@ -75,12 +75,12 @@
     [Parameter]
     public List<QueryCommandParameter>? QueryParameters { get; set; }
     [Parameter]
-    public List<string> RecipientsEmails { get; set; }
+    public List<string>? RecipientsEmails { get; set; }
 
 
     protected override void OnInitialized()
     {
-        foreach (var t in QueryParameters.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
+        foreach (var t in QueryParameters!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
         {
             if (t.ValueType == QueryCommandParameterValueType.Date)
             {
@@ -95,7 +95,7 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
 
@@ -104,8 +104,8 @@
         await _form.Validate();
         if (_form.IsValid)
         {
-            Tuple<bool, List<QueryCommandParameter>?> payload = new Tuple<bool, List<QueryCommandParameter>?>(SendForReportRecipients, QueryParameters);
-            MudDialog.Close(DialogResult.Ok(payload));
+            Tuple<bool, List<QueryCommandParameter>?> payload = new(SendForReportRecipients, QueryParameters);
+            MudDialog?.Close(DialogResult.Ok(payload));
         }
     }
 }

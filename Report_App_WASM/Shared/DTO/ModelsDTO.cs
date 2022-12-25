@@ -163,9 +163,15 @@ namespace Report_App_WASM.Shared.DTO
         public virtual TaskHeaderDto? TaskHeader { get; set; }
     }
 
-    public class TaskHeaderDto : BaseTraceabilityDto, IDto
+    public sealed class TaskHeaderDto : BaseTraceabilityDto, IDto
     {
+#pragma warning disable CS8618 // Non-nullable property 'ActivityName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning disable CS8618 // Non-nullable property 'Activity' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning disable CS8618 // Non-nullable property 'TaskName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
         public TaskHeaderDto()
+#pragma warning restore CS8618 // Non-nullable property 'TaskName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning restore CS8618 // Non-nullable property 'Activity' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+#pragma warning restore CS8618 // Non-nullable property 'ActivityName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
         {
             TaskDetails = new HashSet<TaskDetailDto>();
             TaskEmailRecipients = new HashSet<TaskEmailRecipientDto>();
@@ -196,9 +202,9 @@ namespace Report_App_WASM.Shared.DTO
         public string QueryParameters { get; set; } = "[]";
         public DateTime? LastRunDateTime { get; set; } = null;
         public int FileDepositPathConfigurationId { get; set; }
-        public virtual ICollection<TaskDetailDto> TaskDetails { get; set; } = new List<TaskDetailDto>();
-        public virtual ICollection<TaskEmailRecipientDto> TaskEmailRecipients { get; set; } = new List<TaskEmailRecipientDto>();
-        public virtual ActivityDto Activity { get; set; }
+        public ICollection<TaskDetailDto> TaskDetails { get; set; } = new List<TaskDetailDto>();
+        public ICollection<TaskEmailRecipientDto> TaskEmailRecipients { get; set; } = new List<TaskEmailRecipientDto>();
+        public ActivityDto Activity { get; set; }
     }
 
     public class ApplicationLogQueryExecutionDto : IDto
