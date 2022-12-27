@@ -1,5 +1,4 @@
 ﻿@page "/RetrieveReports/{ActivityName}/{ActivityId:int}"
-@using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
@@ -71,7 +70,7 @@
     protected override async Task OnParametersSetAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (!user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
         {
             NavigationManager.NavigateTo("/403");
         }

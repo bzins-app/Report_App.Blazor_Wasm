@@ -12,7 +12,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
 #pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public static string? EncryptString(string? text)
+        public static string EncryptString(string? text)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -49,7 +49,7 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
             return Convert.ToBase64String(result);
         }
 
-        public static string? DecryptString(string? cipherText)
+        public static string DecryptString(string? cipherText)
         {
             if (string.IsNullOrEmpty(cipherText))
             {

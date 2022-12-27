@@ -3,36 +3,35 @@
 @inject IDialogService DialogService
 @inject IdentityAuthenticationStateProvider IdentityProvider
 
-<MudIconButton Icon="@Icons.Outlined.Sync" OnClick="(()=>OpenRunConfirmationComponent())"><MudText>@Localizer.Get("Run")</MudText></MudIconButton>
+<MudIconButton Icon="@Icons.Outlined.Sync" OnClick="(OpenRunConfirmationComponent)"><MudText>@Localizer.Get("Run")</MudText></MudIconButton>
 
 @code {
     [Parameter]
-    public TaskHeaderDto Item { get; set; }
+    public TaskHeaderDto? Item { get; set; }
 
     private string? _email;
 
     private async Task OpenRunConfirmationComponent()
     {
-        var sendForReportRecipients = false;
-        List<string> userEmail = new();
+        List<string?> userEmail = new();
         List<string> recipientsEmails = new();
 
-        var currentUserEmail = (await IdentityProvider.GetUserInfo()).UserMail;
+        var currentUserEmail = (await IdentityProvider.GetUserInfo())?.UserMail;
         userEmail.Add(currentUserEmail);
         _email = currentUserEmail;
 
-        //var recipients = await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == Item.TaskHeaderId).AsNoTracking().FirstOrDefaultAsync();
-        //if (Item != null&&recipients!=null)
-        //{
-        //    if (!string.IsNullOrEmpty(recipients.Email))
-        //    {
-        //        var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
-        //        recipientsEmails.AddRange(emails.Where(a => a.BCC == false).Select(a => a.Email).ToList());
-        //    }
-        //}
+        var recipients = (await DataService.GetValues<TaskEmailRecipientDto>($"GetTaskEmailRecipient?taskHeaderId={Item!.TaskHeaderId}")).FirstOrDefault();
+        if (Item != null&&recipients!=null)
+        {
+            if (!string.IsNullOrEmpty(recipients.Email))
+            {
+                var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
+                recipientsEmails.AddRange(emails!.Where(a => a.Bcc == false).Select(a => a.Email).ToList()!);
+            }
+        }
 
         var queryParameters = new List<QueryCommandParameter>();
-        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        if (Item?.QueryParameters != "[]" && !string.IsNullOrEmpty(Item?.QueryParameters))
         {
             queryParameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
         }
@@ -55,7 +54,7 @@
             else
             {
                 emails.Add(new() { Email = _email, Bcc = false });
-                var payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
+                var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
             Snackbar.Add(Localizer.Get("Alert") + " " + Localizer.Get("Job on going"), Severity.Success);

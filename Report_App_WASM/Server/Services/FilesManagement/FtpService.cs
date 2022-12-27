@@ -65,8 +65,8 @@ namespace Report_App_WASM.Server.Services.FilesManagement
                     await client.CreateDirectory(remoteDirectory);
                 }
                 var destinationPath = Path.Combine(remoteDirectory, fileName);
-                using FileStream fs = new(localFilePath, FileMode.Open);
-                await client.UploadStream(fs, destinationPath); ;
+                await using FileStream fs = new(localFilePath, FileMode.Open);
+                await client.UploadStream(fs, destinationPath);
                 // _logger.LogInformation($"Finished uploading file [{localFilePath}] to [{remoteDirectory}]");
             }
             catch (Exception exception)

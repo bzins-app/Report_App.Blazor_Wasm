@@ -1,5 +1,4 @@
-﻿@using Report_App_WASM.Shared.ApiExchanges
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
 @inject HttpClient Http
 
 <MudDialog>
@@ -87,7 +86,7 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     protected override async Task OnInitializedAsync()
@@ -137,7 +136,7 @@
     {
         if (_rolesToRemove != null)
         {
-            var values = new ChangeRolePayload { UserName = Item.UserName, Roles = _rolesToRemove.ToList() };
+            var values = new ChangeRolePayload { UserName = Item?.UserName, Roles = _rolesToRemove.ToList() };
             var result = await DataService.PostValues(values, "RemoveRoles", ApiControllers.UserManagerApi);
             if (result.Success)
             {

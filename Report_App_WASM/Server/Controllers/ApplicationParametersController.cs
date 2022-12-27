@@ -37,7 +37,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("SftpInfo")]
         public async Task<IEnumerable<SelectItem>> GetSftpInfo()
         {
-            return await _context.SftpConfiguration.Select(a => new SelectItem { Id = a!.SftpConfigurationId, Name = a.ConfigurationName }).ToListAsync();
+            return await _context.SftpConfiguration.Select(a => new SelectItem { Id = a.SftpConfigurationId, Name = a.ConfigurationName }).ToListAsync();
         }
 
         [Authorize]

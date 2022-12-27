@@ -11,31 +11,27 @@ namespace Report_App_WASM.Server.Data
         {
         }
 
-        public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
-        public virtual DbSet<ApplicationUniqueKey> ApplicationUniqueKey { get; set; }
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
-        public virtual DbSet<ApplicationParameters?> ApplicationParameters { get; set; }
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
-        public virtual DbSet<ApplicationLogTask> ApplicationLogTask { get; set; }
-        public virtual DbSet<ApplicationLogTaskDetails> ApplicationLogTaskDetails { get; set; }
-        public virtual DbSet<ApplicationLogQueryExecution> ApplicationLogQueryExecution { get; set; }
-        public virtual DbSet<ApplicationLogEmailSender> ApplicationLogEmailSender { get; set; }
-        public virtual DbSet<ApplicationAuditTrail> ApplicationAuditTrail { get; set; }
-        public virtual DbSet<ApplicationLogReportResult> ApplicationLogReportResult { get; set; }
-        public virtual DbSet<ApplicationLogSystem> ApplicationLogSystem { get; set; }
-        public virtual DbSet<Activity> Activity { get; set; }
-        public virtual DbSet<ActivityDbConnection> ActivityDbConnection { get; set; }
-        public virtual DbSet<TaskHeader> TaskHeader { get; set; }
-        public virtual DbSet<TaskDetail> TaskDetail { get; set; }
-        public virtual DbSet<TaskEmailRecipient> TaskEmailRecipient { get; set; }
-        public virtual DbSet<ServicesStatus> ServicesStatus { get; set; }
-        public virtual DbSet<SmtpConfiguration> SmtpConfiguration { get; set; }
-        public virtual DbSet<LdapConfiguration> LdapConfiguration { get; set; }
-        public virtual DbSet<FileDepositPathConfiguration> FileDepositPathConfiguration { get; set; }
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
-        public virtual DbSet<SftpConfiguration?> SftpConfiguration { get; set; }
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbSet<TEntity>'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
-        public virtual DbSet<QueryStore> QueryStore { get; set; }
+        public virtual DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
+        public virtual DbSet<ApplicationUniqueKey> ApplicationUniqueKey { get; set; } = null!;
+       public virtual DbSet<ApplicationParameters> ApplicationParameters { get; set; } = null!;
+        public virtual DbSet<ApplicationLogTask> ApplicationLogTask { get; set; } = null!;
+        public virtual DbSet<ApplicationLogTaskDetails> ApplicationLogTaskDetails { get; set; } = null!;
+        public virtual DbSet<ApplicationLogQueryExecution> ApplicationLogQueryExecution { get; set; } = null!;
+        public virtual DbSet<ApplicationLogEmailSender> ApplicationLogEmailSender { get; set; } = null!;
+        public virtual DbSet<ApplicationAuditTrail> ApplicationAuditTrail { get; set; } = null!;
+        public virtual DbSet<ApplicationLogReportResult> ApplicationLogReportResult { get; set; } = null!;
+        public virtual DbSet<ApplicationLogSystem> ApplicationLogSystem { get; set; } = null!;
+        public virtual DbSet<Activity> Activity { get; set; } = null!;
+        public virtual DbSet<ActivityDbConnection> ActivityDbConnection { get; set; } = null!;
+        public virtual DbSet<TaskHeader> TaskHeader { get; set; } = null!;
+        public virtual DbSet<TaskDetail> TaskDetail { get; set; } = null!;
+        public virtual DbSet<TaskEmailRecipient> TaskEmailRecipient { get; set; } = null!;
+        public virtual DbSet<ServicesStatus> ServicesStatus { get; set; } = null!;
+        public virtual DbSet<SmtpConfiguration> SmtpConfiguration { get; set; } = null!;
+        public virtual DbSet<LdapConfiguration> LdapConfiguration { get; set; } = null!;
+        public virtual DbSet<FileDepositPathConfiguration> FileDepositPathConfiguration { get; set; } = null!;
+        public virtual DbSet<SftpConfiguration> SftpConfiguration { get; set; } = null!;
+        public virtual DbSet<QueryStore> QueryStore { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

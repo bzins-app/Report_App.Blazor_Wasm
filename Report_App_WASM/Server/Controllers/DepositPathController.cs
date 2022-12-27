@@ -35,7 +35,7 @@ namespace Report_App_WASM.Server.Controllers
             if (value.EntityValue!.UseSftpProtocol)
             {
 
-                var config = await _context.SftpConfiguration.Where(a => a!.SftpConfigurationId == value.EntityValue.SftpConfigurationId).Select(a => a.UseFtpProtocol).FirstOrDefaultAsync();
+                var config = await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == value.EntityValue.SftpConfigurationId).Select(a => a.UseFtpProtocol).FirstOrDefaultAsync();
 
                 if (config)
                 {

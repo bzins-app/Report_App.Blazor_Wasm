@@ -260,7 +260,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         public async Task DeleteLogsAsync()
         {
             ApplicationLogTask logTask = new() { StartDateTime = DateTime.Now, JobDescription = "Logs cleaner", Type = "Cleaner service" };
-            var rententionDays = await _context.ApplicationParameters.Select(a => a!.LogsRetentionInDays).FirstOrDefaultAsync();
+            var rententionDays = await _context.ApplicationParameters.Select(a => a.LogsRetentionInDays).FirstOrDefaultAsync();
             await _context.ApplicationLogSystem.Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-rententionDays)).ForEachAsync(a => _context.Remove(a));
             await _context.ApplicationLogTask.Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-rententionDays)).ForEachAsync(a => _context.Remove(a));
             await _context.ApplicationLogTaskDetails.Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-rententionDays)).ForEachAsync(a => _context.Remove(a));

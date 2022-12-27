@@ -38,7 +38,7 @@
 
     [Parameter] public ApplicationUserDto Item { get; set; } = null!;
     [Parameter] public CrudAction Action { get; set; }
-    private MudForm? _form = default!;
+    private MudForm? _form;
     private UserFormModel Model { get; set; } = new();
     private string? _deletionValidation;
     private UserFormModelValidator? _userValidator ;
@@ -73,14 +73,14 @@
         }
         else
         {
-            await _form.Validate();
+            await _form?.Validate()!;
             if (_form.IsValid)
             {
                 Item.Email = Model.Email;
                 Item.UserName = Model.UserName;
                 Item.PasswordHash = Model.Password;
                 Item.Email = Model.Email;
-                MudDialog.Close(DialogResult.Ok(Item));
+                MudDialog?.Close(DialogResult.Ok(Item));
             }
 
             Item.Email = Model.Email;

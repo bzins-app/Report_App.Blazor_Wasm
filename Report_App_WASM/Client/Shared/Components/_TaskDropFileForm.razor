@@ -2,24 +2,22 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-<MudIconButton Icon="@Icons.Outlined.FileDownload" OnClick="(()=>OpenRunConfirmationComponent())" Disabled="Item.FileDepositPathConfigurationId == 0 ? true : false"><MudText>@Localizer.Get("Drop file")</MudText> </MudIconButton>
+<MudIconButton Icon="@Icons.Outlined.FileDownload" OnClick="(OpenRunConfirmationComponent)" Disabled="Item!.FileDepositPathConfigurationId == 0"><MudText>@Localizer.Get("Drop file")</MudText> </MudIconButton>
 
 @code {
     [Parameter]
-    public TaskHeaderDto Item { get; set; }
+    public TaskHeaderDto? Item { get; set; }
 
     private async Task OpenRunConfirmationComponent()
     {
-        var result = false;
-
         var feedback = await DialogService.ShowMessageBox(
         Localizer.Get("Confirm manual job"),
         Localizer.Get("Caution !") + " " + Localizer.Get("Are you sure you want to create a file to the directory? It could interfer with other processes"),
         yesText: Localizer.Get("Validate"), cancelText: Localizer.Get("Cancel"));
-        result = feedback == null ? false : true;
+        var result = feedback != null;
         if (result)
         {
-            var payload = new RunTaskManually { TaskHeaderId = Item.TaskHeaderId, Emails = new(), CustomQueryParameters = new(), GenerateFiles=true };
+            var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = new(), CustomQueryParameters = new(), GenerateFiles=true };
             await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             Snackbar.Add(Localizer.Get(Item.TypeName) + " " + Localizer.Get("Job on going"), Severity.Success);
         }

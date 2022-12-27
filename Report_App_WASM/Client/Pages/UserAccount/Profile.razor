@@ -2,7 +2,6 @@
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
-@using Report_App_WASM.Shared.ApiExchanges
 
 <PageTitle>@Localizer.Get("Manage your account")</PageTitle>
 
@@ -26,7 +25,7 @@
                 </MudForm>
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Change password")">
-                <MudForm Model="@Changepassword" @ref="@_passwordform" Validation="@(_passwordValidator.ValidateValue)" Style="display: flex;align-content: center;  align-items: center; flex-direction: column;">
+                <MudForm Model="@Changepassword" @ref="@_passwordform" Validation="@(_passwordValidator?.ValidateValue)" Style="display: flex;align-content: center;  align-items: center; flex-direction: column;">
                     <MudGrid Justify="Justify.FlexStart" Style="max-width:600px">
                         <MudItem sm="12" xs="12">
                             <MudTextField Immediate="true"
@@ -115,7 +114,6 @@
     private readonly UserProfileEditValidator _userValidator = new();
     private ChangePasswordModel Changepassword { get; set; } = new();
     private ChangePasswordModelValidator? _passwordValidator;
-    private readonly UserInfo _user = new();
 
     private bool _ldapSignin;
     private string? _passwordForDeletion;
@@ -143,11 +141,11 @@
     protected override async Task OnInitializedAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-        Model.Options = await AppService.GetIdentityOptionsAsync();
+        Model.Options = (await AppService.GetIdentityOptionsAsync())!;
         Changepassword.Options = await AppService.GetIdentityOptionsAsync();
-        Model.UserName = user.UserName;
+        Model.UserName = user?.UserName;
         // Model.Id = user.Id;
-        Model.Email = user.UserMail;
+        Model.Email = user?.UserMail;
         _ldapSignin = ApplicationConstants.LdapLogin;
         _passwordValidator = new(Localizer);
     }
@@ -158,10 +156,9 @@
         await _form.Validate();
         if (_form.IsValid)
         {
-            var action = "UserUpDate";
-            // await DataService.PostValues(,action, ApiControllers.UserManagerApi);
+    // await DataService.PostValues(,action, ApiControllers.UserManagerApi);
 
-            Snackbar.Add($"Data updated", MudBlazor.Severity.Info);
+            Snackbar.Add($"Data updated", Severity.Info);
         }
 
     }

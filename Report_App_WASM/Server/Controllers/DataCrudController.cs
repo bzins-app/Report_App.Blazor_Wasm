@@ -51,9 +51,13 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<SftpConfiguration?> GetStfpConfigurationAsync(int sftpConfigurationId)
         {
-
             return await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == sftpConfigurationId).FirstOrDefaultAsync();
+        }
 
+        [HttpGet]
+        public async Task<TaskEmailRecipient?> GetTaskEmailRecipientAsync(int taskHeaderId)
+        {
+            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).FirstOrDefaultAsync();
         }
 
         [HttpGet]
@@ -224,9 +228,7 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 _context.Remove(values.EntityValue);
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Remove<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 if (values.EntityValue!.IsActivated)
                 {
                     ApplicationConstants.LdapLogin = false;
@@ -246,10 +248,8 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
                 _context.Update(values.EntityValue);
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.LdapConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Update<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.LdapConfiguration?' doesn't match 'class' constraint.
-                await SaveDbAsync(values.UserName);
+               await SaveDbAsync(values.UserName);
 
                 ApplicationConstants.LdapLogin = values.EntityValue.IsActivated;
 

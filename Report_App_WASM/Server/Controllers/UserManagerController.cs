@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.BackgroundWorker;
@@ -46,9 +45,9 @@ namespace Report_App_WASM.Server.Controllers
             return (await _roleManager.Roles.Select(a => a.Name).ToListAsync())!;
         }
         [HttpGet]
-        public async Task<IEnumerable<string>> GetRolesListPerUserAsync(string userName)
+        public async Task<IEnumerable<string?>> GetRolesListPerUserAsync(string userName)
         {
-            List<string> userRoles = new();
+            List<string?> userRoles = new();
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {

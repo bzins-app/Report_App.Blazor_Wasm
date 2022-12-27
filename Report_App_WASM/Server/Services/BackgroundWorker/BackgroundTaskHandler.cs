@@ -535,7 +535,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 }
                 if (sendEmail || _jobParameters.ManualRun)
                 {
-                    var emailPrefix = await _context.ApplicationParameters.Select(a => a!.AlertEmailPrefix).FirstOrDefaultAsync();
+                    var emailPrefix = await _context.ApplicationParameters.Select(a => a.AlertEmailPrefix).FirstOrDefaultAsync();
                     if ((_header.SendByEmail && _header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]"))
                     {
                         var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
@@ -600,7 +600,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             if (_emails!.Any() && _fileResults.Any())
             {
-                var emailPrefix = await _context.ApplicationParameters.Select(a => a!.EmailPrefix).FirstOrDefaultAsync();
+                var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                 var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;
 
                 List<Attachment> listAttach = new();
