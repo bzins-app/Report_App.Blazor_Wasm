@@ -11,5 +11,6 @@
         public string? UserName { get; init; }
         public string? UserMail { get; init; }
         public string? Password { get; init; }
+        public string? NewPassword { get; init; }
     }
 }

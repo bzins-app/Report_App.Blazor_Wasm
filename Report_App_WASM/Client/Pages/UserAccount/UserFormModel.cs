@@ -27,21 +27,12 @@ namespace Report_App_WASM.Client.Pages.UserAccount
                  .MaximumLength(256)
                  .NotEmpty()
                  .EmailAddress();
-
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             RuleFor(p => p.Password).NotEmpty().WithMessage(localizer.Get("Your password cannot be empty"))
                      .MinimumLength(6).WithMessage(localizer.Get("Your password length must be at least 6"))
                      .Matches(@"[A-Z]+").When(v => v.Options.Password.RequireUppercase).WithMessage(localizer.Get("Your password must contain at least one uppercase letter"))
                      .Matches(@"[a-z]+").When(v => v.Options.Password.RequireLowercase).WithMessage(localizer.Get("Your password must contain at least one lowercase letter"))
                      .Matches(@"[0-9]+").When(v => v.Options.Password.RequireDigit).WithMessage(localizer.Get("Your password must contain at least one number"))
                      .Matches(@"[\!\?\*\.]+").When(v => v.Options.Password.RequireNonAlphanumeric).WithMessage(localizer.Get("Your password must contain at least one (!? *.)"));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             RuleFor(x => x.ConfirmPassword)
                  .Equal(x => x.Password).WithMessage(localizer.Get("The passwords entered must be equal"));
         }

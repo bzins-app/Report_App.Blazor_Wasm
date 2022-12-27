@@ -1,12 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Report_App_WASM.Client.Pages.UserManager;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.ApiExchanges;
 using System.DirectoryServices.AccountManagement;
 using System.Globalization;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -19,15 +25,17 @@ namespace Report_App_WASM.Server.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<AuthorizeController> _logger;
+        private readonly IBackgroundWorkers _emailSender;
 
         public AuthorizeController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, ApplicationDbContext context,
-            ILogger<AuthorizeController> logger)
+            ILogger<AuthorizeController> logger, IBackgroundWorkers emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         [HttpPost]
@@ -124,6 +132,80 @@ namespace Report_App_WASM.Server.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ApiCrudPayload<UserPayload> item)
+        {
+            try
+            {
+                if (item != null)
+                {
+                    var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!);
+                    await _userManager.ResetPasswordAsync(user!, item.EntityValue.UserName!, item.EntityValue.Password!);
+                }
+                return Ok(new SubmitResult { Success = true, Message = "Ok" });
+            }
+            catch (Exception e)
+            {
+                return Ok(new SubmitResult { Success = false, Message = e.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordEmail(ApiCrudPayload<UserPayload> item)
+        {
+            try
+            {
+                if (item != null)
+                {
+                    var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!).ConfigureAwait(true);
+                    if (user == null || !(await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(true)))
+                    {
+                        // Don't reveal that the user does not exist or is not confirmed
+                        return RedirectToPage("./ForgotPasswordConfirmation");
+                    }
+
+                    // For more information on how to enable account confirmation and password reset please 
+                    // visit https://go.microsoft.com/fwlink/?LinkID=532713
+                    var code = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(true);
+                    var callbackUrl = Url.Page(
+                        "/ResetPassword",
+                        pageHandler: null,
+                        values: new { code },
+                        protocol: Request.Scheme);
+
+                    List<EmailRecipient> ListEmail = new()
+                {
+                    new EmailRecipient { Email = item.EntityValue.UserMail }
+                };
+                    string Title = "Reset Password";
+                    string Body = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
+
+                    _emailSender.SendEmail(ListEmail, Title, Body);
+                }
+                return Ok(new SubmitResult { Success = true, Message = "Ok" });
+            }
+            catch (Exception e)
+            {
+                return Ok(new SubmitResult { Success = false, Message = e.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ConfirmEmail(ApiCrudPayload<ConfirmEmailValues> value)
+        {
+            var user = await _userManager.FindByIdAsync(value.EntityValue.UserId!).ConfigureAwait(true);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{value.EntityValue.UserId!}'.");
+            }
+
+             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(value.EntityValue.Code!));
+            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(true);
+            return Ok(new SubmitResult { Success = result.Succeeded, Message = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email." });
+        }
+
         [HttpGet]
         public async Task<UserInfo> UserInfoAsync()
         {
@@ -131,6 +213,12 @@ namespace Report_App_WASM.Server.Controllers
             return await BuildUserInfoAsync();
         }
 
+        [HttpGet]
+        public IdentityOptions GetIdentityOptionsAsync()
+        {
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            return  _userManager.Options;
+        }
 
         private async Task<UserInfo> BuildUserInfoAsync()
         {

@@ -1,5 +1,8 @@
 ﻿@page "/Profile"
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
+@inject NavigationManager UriHelper
+@using Report_App_WASM.Shared.ApiExchanges
 
 <PageTitle>@Localizer.Get("Manage your account")</PageTitle>
 
@@ -140,10 +143,10 @@
     protected override async Task OnInitializedAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-       // model.Options = _userManager.Options;
-      //  changepassword.Options = _userManager.Options;
+        Model.Options = await AppService.GetIdentityOptionsAsync();
+        Changepassword.Options = await AppService.GetIdentityOptionsAsync();
         Model.UserName = user.UserName;
-        //model.Id = user.Id;
+        // Model.Id = user.Id;
         Model.Email = user.UserMail;
         _ldapSignin = ApplicationConstants.LdapLogin;
         _passwordValidator = new(Localizer);
@@ -152,55 +155,47 @@
 
     private async Task Submit()
     {
-        //await form.Validate();
-        //if (form.IsValid)
-        //{
-        //    var user = await _userManager.FindByIdAsync(model.Id);
-        //    await _userManager.UpdateAsync(user);
+        await _form.Validate();
+        if (_form.IsValid)
+        {
+            var action = "UserUpDate";
+            // await DataService.PostValues(,action, ApiControllers.UserManagerApi);
 
-        //    //   Snackbar.Add($"{ToastText.UPDATESUCCESS}", MudBlazor.Severity.Info);
-        //}
+            Snackbar.Add($"Data updated", MudBlazor.Severity.Info);
+        }
 
     }
     private async Task ChangePassword()
     {
-        //await passwordform.Validate();
-        //if (passwordform.IsValid)
-        //{
-        //    var user = await _userManager.FindByIdAsync(model.Id);
-        //    var result = await _userManager.ChangePasswordAsync(user, changepassword.CurrentPassword, changepassword.NewPassword);
-        //    if (result.Succeeded)
-        //    {
-        //        Snackbar.Add($"{Localizer.Get("Changed password successfully")}", Severity.Info);
-        //    }
-        //    else
-        //    {
-        //        Snackbar.Add($"{string.Join(",", result.Errors.Select(x => x.Description).ToArray())}", Severity.Error);
-        //    }
-        //}
+        await _passwordform.Validate();
+        if (_passwordform.IsValid)
+        {
+            var Payload = new UserPayload { UserMail = Model.UserName, NewPassword = Changepassword.NewPassword, Password = Changepassword.CurrentPassword };
+            var result = await DataService.PostValues(Payload, "ChangePassword", ApiControllers.UserManagerApi);
+            if (result.Success)
+            {
+                Snackbar.Add($"{Localizer.Get("Changed password successfully")}", Severity.Info);
+            }
+            else
+            {
+                Snackbar.Add($"{result.Message}", Severity.Error);
+            }
+        }
     }
 
     private async Task DeleteAccount()
     {
-        //if (string.IsNullOrEmpty(passwordForDeletion))
-        //{
-        //    deletionPasswordResult = Localizer.Get("Incorrect password");
-        //    return;
-        //}
-        //if (!await _userManager.CheckPasswordAsync(user, passwordForDeletion))
-        //{
-        //    deletionPasswordResult = Localizer.Get("Incorrect password");
-        //    return;
-        //}
-        //deletionPasswordResult = "";
-        //var result = await _userManager.DeleteAsync(user);
-        //var userId = await _userManager.GetUserIdAsync(user);
-        //if (!result.Succeeded)
-        //{
-        //    deletionPasswordResult = $"Unexpected error occurred deleting user with ID '{userId}'.";
-        //}
+        var Payload = new UserPayload { UserMail = Model.UserName, NewPassword = _passwordForDeletion };
 
-        //await _signInManager.SignOutAsync().ConfigureAwait(true);
-        //uriHelper.NavigateTo("/");
+        var result = await DataService.PostValues(Payload, "UserDeleteProfile", ApiControllers.UserManagerApi);
+        if (!result.Success)
+        {
+            _deletionPasswordResult = Localizer.Get(result.Message);
+            return;
+        }
+
+        _deletionPasswordResult = "";
+        await AuthenticationStateProvider.Logout();
+        UriHelper.NavigateTo("/");
     }
 }

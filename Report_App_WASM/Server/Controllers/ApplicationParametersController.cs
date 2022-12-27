@@ -65,9 +65,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("CheckTaskHeaderEmail")]
         public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             return await _context.TaskEmailRecipient.Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() == "[]" || !await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
         }
 
 
@@ -86,11 +86,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("GetApplicationParameters")]
         public async Task<ApplicationParameters?> GetApplicationParametersAsync()
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTrackingWithIdentityResolution<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
-            return await _context.ApplicationParameters.OrderBy(a => a.Id).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync();
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.ApplicationParameters?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTrackingWithIdentityResolution<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.ApplicationParameters?' doesn't match 'class' constraint.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            return await _context.ApplicationParameters.OrderBy(a => a.Id).FirstOrDefaultAsync();
         }
     }
 }

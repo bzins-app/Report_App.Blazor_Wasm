@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@layout LoginLayout
+@layout _LoginLayout
 @inject NavigationManager NavigationManager
 @inject IdentityAuthenticationStateProvider AuthStateProvider
 @inject HttpClient Http
@@ -96,7 +96,6 @@ else
         {
             if (_ldap)
             {
-              //  await AuthStateProvider.Login(loginParameters);
                 await AuthStateProvider.LoginLdap(LoginParameters);
             }
             else

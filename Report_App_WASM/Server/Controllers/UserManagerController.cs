@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.BackgroundWorker;
@@ -56,9 +57,7 @@ namespace Report_App_WASM.Server.Controllers
             var roles = await _context.UserRoles.Where(a => a.UserId == user.Id).Select(a => a.RoleId).ToListAsync();
             foreach (var role in roles)
             {
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'item' in 'void List<string>.Add(string item)'.
                 userRoles.Add(await _roleManager.Roles.Where(a => a.Id == role).Select(a => a.Name).FirstOrDefaultAsync());
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'item' in 'void List<string>.Add(string item)'.
             }
             return userRoles;
         }
@@ -73,33 +72,25 @@ namespace Report_App_WASM.Server.Controllers
                 appUser.CreateUser = item.UserName;
                 appUser.ModDateTime = DateTime.Now;
                 appUser.ModificationUser = item.UserName;
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 appUser.Email = item.EntityValue.UserMail;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 appUser.UserName = item.EntityValue.UserName;
                 var password = item.EntityValue.Password;
                 appUser.PasswordHash = "";
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'password' in 'Task<IdentityResult> UserManager<ApplicationUser>.CreateAsync(ApplicationUser user, string password)'.
-                var result = await _userManager.CreateAsync(appUser, password);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'password' in 'Task<IdentityResult> UserManager<ApplicationUser>.CreateAsync(ApplicationUser user, string password)'.
+                var result = await _userManager.CreateAsync(appUser, password!);
                 if (result.Succeeded)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
+                        "/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = appUser.Id, code },
+                        values: new { userId = appUser.Id, code },
                         protocol: Request.Scheme);
                     List<EmailRecipient> listEmail = new();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                     var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
                     listEmail.Add(new() { Email = appUser.Email });
                     var title = emailPrefix + " - Confirm your email";
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'value' in 'string TextEncoder.Encode(string value)'.
-                    var body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'value' in 'string TextEncoder.Encode(string value)'.
+                    var body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
                     _backgroundWorker.SendEmail(listEmail, title, body);
                 }
 
@@ -115,28 +106,18 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IActionResult> AddRolesAsync(ApiCrudPayload<ChangeRolePayload> item)
         {
             var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'user' in 'Task<IdentityResult> UserManager<ApplicationUser>.AddToRolesAsync(ApplicationUser user, IEnumerable<string> roles)'.
-            var result = await _userManager.AddToRolesAsync(user, item.EntityValue?.Roles!);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'user' in 'Task<IdentityResult> UserManager<ApplicationUser>.AddToRolesAsync(ApplicationUser user, IEnumerable<string> roles)'.
+            var result = await _userManager.AddToRolesAsync(user!, item.EntityValue?.Roles!);
             // await _SignIn.RefreshSignInAsync(user);
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'values' in 'string string.Join(string? separator, IEnumerable<string?> values)'.
-            _logger.Log(LogLevel.Warning, $"User {item.EntityValue!.UserName} get new roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles));
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'values' in 'string string.Join(string? separator, IEnumerable<string?> values)'.
+            _logger.Log(LogLevel.Warning, $"User {item.EntityValue!.UserName} get new roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles!));
             return Ok(new SubmitResult { Success = result.Succeeded });
         }
         [HttpPost]
         public async Task<IActionResult> RemoveRolesAsync(ApiCrudPayload<ChangeRolePayload> item)
         {
             var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'user' in 'Task<IdentityResult> UserManager<ApplicationUser>.RemoveFromRolesAsync(ApplicationUser user, IEnumerable<string> roles)'.
-            var result = await _userManager.RemoveFromRolesAsync(user, item.EntityValue?.Roles!);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'user' in 'Task<IdentityResult> UserManager<ApplicationUser>.RemoveFromRolesAsync(ApplicationUser user, IEnumerable<string> roles)'.
+            var result = await _userManager.RemoveFromRolesAsync(user!, item.EntityValue?.Roles!);
             // await _SignIn.RefreshSignInAsync(user);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'values' in 'string string.Join(string? separator, IEnumerable<string?> values)'.
-            _logger.Log(LogLevel.Warning, $"User {item.EntityValue?.UserName} has been removed from roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles));
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'values' in 'string string.Join(string? separator, IEnumerable<string?> values)'.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            _logger.Log(LogLevel.Warning, $"User {item.EntityValue?.UserName} has been removed from roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles!));
             return Ok(new SubmitResult { Success = result.Succeeded });
         }
 
@@ -148,9 +129,7 @@ namespace Report_App_WASM.Server.Controllers
                 if (item != null)
                 {
                     var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'user' in 'Task<IdentityResult> UserManager<ApplicationUser>.DeleteAsync(ApplicationUser user)'.
-                    await _userManager.DeleteAsync(user);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'user' in 'Task<IdentityResult> UserManager<ApplicationUser>.DeleteAsync(ApplicationUser user)'.
+                    await _userManager.DeleteAsync(user!);
                 }
                 return Ok(new SubmitResult { Success = true, Message = "Ok" });
             }
@@ -160,5 +139,79 @@ namespace Report_App_WASM.Server.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UserUpdate(ApiCrudPayload<UserPayload> item)
+        {
+            try
+            {
+                if (item != null)
+                {
+                    var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
+                     _context.Update(user!);
+                    await _context.SaveChangesAsync(item.UserName);
+                }
+                return Ok(new SubmitResult { Success = true, Message = "Ok" });
+            }
+            catch (Exception e)
+            {
+                return Ok(new SubmitResult { Success = false, Message = e.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ApiCrudPayload<UserPayload> item)
+        {
+            try
+            {
+                if (item != null)
+                {
+                    var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
+                   await  _userManager.ChangePasswordAsync(user!, item.EntityValue.Password!, item.EntityValue.NewPassword!);
+                }
+                return Ok(new SubmitResult { Success = true, Message = "Ok" });
+            }
+            catch (Exception e)
+            {
+                return Ok(new SubmitResult { Success = false, Message = e.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserDeleteProfile(ApiCrudPayload<UserPayload> item)
+        {
+            try
+            {
+                var message = "";
+                if (item != null)
+                {
+                    if (string.IsNullOrEmpty(item.EntityValue.Password))
+                    {
+                        message = "Incorrect password";
+                        return Ok(new SubmitResult { Success = true, Message = message });
+                    }
+                    var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
+                    if (!await _userManager.CheckPasswordAsync(user!, item.EntityValue.Password))
+                    {
+                        message ="Incorrect password";
+                        return Ok(new SubmitResult { Success = true, Message = message });
+                    }
+                    message = "";
+                    var result = await _userManager.DeleteAsync(user!);
+                    var userId = await _userManager.GetUserIdAsync(user!);
+                    if (!result.Succeeded)
+                    {
+                        message = $"Unexpected error occurred deleting user with ID '{userId}'.";
+                        return Ok(new SubmitResult { Success = true, Message = message });
+                    }
+                    
+                    await _userManager.DeleteAsync(user!);
+                }
+                return Ok(new SubmitResult { Success = true, Message = "Ok" });
+            }
+            catch (Exception e)
+            {
+                return Ok(new SubmitResult { Success = false, Message = e.Message });
+            }
+        }
     }
 }

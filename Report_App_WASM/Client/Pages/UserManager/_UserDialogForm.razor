@@ -38,7 +38,7 @@
 
     [Parameter] public ApplicationUserDto Item { get; set; } = null!;
     [Parameter] public CrudAction Action { get; set; }
-    private MudForm _form = default!;
+    private MudForm? _form = default!;
     private UserFormModel Model { get; set; } = new();
     private string? _deletionValidation;
     private UserFormModelValidator? _userValidator ;
@@ -49,9 +49,9 @@
         base.OnParametersSet();
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Model.Options = new();
+        Model.Options = await AppService.GetIdentityOptionsAsync();
         Model.UserName = Item.UserName;
         Model.Id = Item.Id.ToString();
         Model.Email = Item.Email;
@@ -73,15 +73,15 @@
         }
         else
         {
-            //await form.Validate();
-            //if (form.IsValid)
-            //{
-            //    Item.Email = model.Email;
-            //    Item.UserName = model.UserName;
-            //    Item.PasswordHash = model.Password;
-            //    Item.Email = model.Email;
-            //    MudDialog.Close(DialogResult.Ok(Item));
-            //}
+            await _form.Validate();
+            if (_form.IsValid)
+            {
+                Item.Email = Model.Email;
+                Item.UserName = Model.UserName;
+                Item.PasswordHash = Model.Password;
+                Item.Email = Model.Email;
+                MudDialog.Close(DialogResult.Ok(Item));
+            }
 
             Item.Email = Model.Email;
             Item.UserName = Model.UserName;

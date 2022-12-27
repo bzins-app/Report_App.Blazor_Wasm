@@ -7,7 +7,7 @@ namespace Report_App_WASM.Shared.Extensions
         public static string RemoveSpecialCharacters(this string? str)
         {
             StringBuilder sb = new();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             foreach (var c in str)
             {
                 if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == 'é' || c == 'è' || c == 'à' || c == 'ù')
@@ -15,14 +15,14 @@ namespace Report_App_WASM.Shared.Extensions
                     sb.Append(c);
                 }
             }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             return sb.ToString();
         }
 
         public static string RemoveSpecialExceptSpaceCharacters(this string? str)
         {
             StringBuilder sb = new();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             foreach (var c in str)
             {
                 if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == 'é' || c == 'è' || c == 'à' || c == 'ù' || c == ' ' || c == '-')
@@ -30,7 +30,7 @@ namespace Report_App_WASM.Shared.Extensions
                     sb.Append(c);
                 }
             }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             return sb.ToString();
         }
 

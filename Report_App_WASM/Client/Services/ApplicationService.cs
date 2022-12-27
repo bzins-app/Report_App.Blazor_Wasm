@@ -1,4 +1,5 @@
 ﻿using Blazor.SimpleGrid;
+using Microsoft.AspNetCore.Identity;
 using Report_App_WASM.Client.Services.Implementations;
 using Report_App_WASM.Client.Utils;
 using System.Net.Http.Json;
@@ -83,6 +84,12 @@ namespace Report_App_WASM.Client.Services
             }
 
             return false;
+        }
+
+        public async Task<IdentityOptions?> GetIdentityOptionsAsync()
+        {
+            var uri = $"{ApiControllers.AuthorizeApi}GetIdentityOptions";
+            return await _httpClient.GetFromJsonAsync<IdentityOptions>(uri);
         }
     }
 }

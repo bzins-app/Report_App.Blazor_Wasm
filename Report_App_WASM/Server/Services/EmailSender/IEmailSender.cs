@@ -27,9 +27,9 @@ namespace Report_App_WASM.Server.Services.EmailSender
 
         public async Task GenerateErrorEmailAsync(string? errorMessage, string subjectSuffix)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             var emailInfos = await Context.ApplicationParameters.Select(a => new { a.ErrorEmailPrefix, a.ErrorEMailMessage, a.AdminEmails }).FirstOrDefaultAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             if (emailInfos != null && emailInfos.AdminEmails != "[]")
             {
 #pragma warning disable CS8604 // Possible null reference argument for parameter 'json' in 'List<EmailRecipient>? JsonSerializer.Deserialize<List<EmailRecipient>>(string json, JsonSerializerOptions? options = null)'.

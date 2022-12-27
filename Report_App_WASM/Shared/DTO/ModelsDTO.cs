@@ -25,12 +25,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? ApplicationTheme { get; set; }
         [MaxLength(5)]
         public string Culture { get; set; } = "en";
-        public DateTime CreateDateTime { get; set; } = DateTime.Now;
-        [MaxLength(100)]
-        public string? CreateUser { get; set; }
-        [MaxLength(100)]
-        public DateTime ModDateTime { get; set; }
-        public string? ModificationUser { get; set; }
+
     }
     public class ApplicationParametersDto : BaseTraceabilityDto, IDto
     {

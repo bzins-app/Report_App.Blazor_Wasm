@@ -34,9 +34,9 @@ namespace Report_App_WASM.Server.Controllers
 
             if (value.EntityValue!.UseSftpProtocol)
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
                 var config = await _context.SftpConfiguration.Where(a => a!.SftpConfigurationId == value.EntityValue.SftpConfigurationId).Select(a => a.UseFtpProtocol).FirstOrDefaultAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
                 if (config)
                 {
                     using var deposit = new FtpService(_context);

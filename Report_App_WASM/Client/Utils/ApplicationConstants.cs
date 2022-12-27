@@ -21,5 +21,6 @@
         public const string UserManagerApi = "api/UserManager/";
         public const string FilesApi = "api/Files/";
         public const string DepositPathApi = "api/DepositPath/";
+        public const string AuthorizeApi = "api/Authorize/";
     }
 }

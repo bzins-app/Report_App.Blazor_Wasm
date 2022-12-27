@@ -20,19 +20,19 @@ namespace Report_App_WASM.Server.Services.FilesManagement
 
         private async Task<SftpConfiguration?> GetSftpConfigurationAsync(int sftpconfigurationId)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
 #pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
             return await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == sftpconfigurationId).AsNoTracking().FirstOrDefaultAsync();
 #pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
         }
 
         public async Task<IEnumerable<FtpListItem>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
         {
             var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             using var client = new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
 #pragma warning disable CS0168 // The variable 'exception' is declared but never used
             try
             {
@@ -54,9 +54,9 @@ namespace Report_App_WASM.Server.Services.FilesManagement
         public async Task<SubmitResult> UploadFileAsync(int sftpconfigurationId, string localFilePath, string remoteDirectory, string fileName, bool tryCreateFolder = false)
         {
             var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             using var client = new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             try
             {
                 await client.Connect();
@@ -84,9 +84,9 @@ namespace Report_App_WASM.Server.Services.FilesManagement
         public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath, string localFilePath)
         {
             var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             using var client = new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             try
             {
                 await client.Connect();
@@ -108,9 +108,9 @@ namespace Report_App_WASM.Server.Services.FilesManagement
         public async Task<SubmitResult> DeleteFileAsync(int sftpconfigurationId, string remoteFilePath)
         {
             var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             using var client = new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             try
             {
                 await client.Connect();
@@ -132,9 +132,9 @@ namespace Report_App_WASM.Server.Services.FilesManagement
         public async Task<SubmitResult> TestDirectoryAsync(int sftpconfigurationId, string? remoteFilePath, bool tryCreateFolder = false)
         {
             var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             using var client = new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             bool checkAcces;
             try
             {

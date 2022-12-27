@@ -22,13 +22,13 @@ namespace Report_App_WASM.Server.Services.FilesManagement
 
         private async Task<SftpConfiguration> GetSftpConfigurationAsync(int sftpconfigurationId)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
 #pragma warning disable CS8603 // Possible null reference return.
 #pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
             return await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == sftpconfigurationId).AsNoTracking().FirstOrDefaultAsync();
 #pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
 #pragma warning restore CS8603 // Possible null reference return.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
         }
 
         public async Task<IEnumerable<SftpFile>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")

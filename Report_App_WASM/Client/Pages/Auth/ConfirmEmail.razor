@@ -1,0 +1,51 @@
+﻿@page "/ConfirmEmail"
+@using System.Text
+@layout _LoginLayout
+@inject NavigationManager NavigationManager
+
+<PageTitle>@Localizer.Get("Confirm email")</PageTitle>
+
+<div class="auth-wrapper offline">
+    <div class="text-center">
+        <h1 class="mb-4">@Localizer.Get("Confirm email")</h1>
+        @if (string.IsNullOrEmpty(error))
+        {
+            <h5 class="text-muted mb-4">@Localizer.Get("Thank you for confirming your email.")</h5>
+            <button @onclick="BacktoHome" class="btn btn-primary mb-4">@Localizer.Get("Back to home")</button>
+        }
+        else
+        {
+            <h5 class="text-muted mb-4">@Localizer.Get(error)</h5>
+        }
+    </div>
+</div>
+
+
+@code {
+    [SupplyParameterFromQuery]
+    public string userId { get; set; } = string.Empty;
+
+    [SupplyParameterFromQuery]
+    public string code { get; set; } = string.Empty;
+
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (userId == null || code == null)
+        {
+            NavigationManager.NavigateTo("/Index");
+        }
+        var payload = new ConfirmEmailValues { UserId = userId, Code = code };
+        var result = await DataService.PostValues(payload, "ConfirmEmail", ApiControllers.AuthorizeApi);
+        if (!result.Success)
+        {
+            error = result.Message;
+        }
+    }
+
+    private void BacktoHome()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}

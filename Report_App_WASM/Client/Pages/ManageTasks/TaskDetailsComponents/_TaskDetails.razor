@@ -18,7 +18,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow:auto">
-                <SimpleGrid Items="@_elements.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
+                <SimpleGrid Items="@_elements!.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
                             <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />

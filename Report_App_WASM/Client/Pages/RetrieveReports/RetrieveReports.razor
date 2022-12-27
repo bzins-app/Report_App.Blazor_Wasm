@@ -2,6 +2,8 @@
 @using Report_App_WASM.Shared.ApiExchanges
 @implements IAsyncDisposable
 @inject HttpClient Http
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @attribute [Authorize]
 
 <PageTitle>@_title</PageTitle>
@@ -57,8 +59,6 @@
     #nullable enable
     [Parameter] public int ActivityId { get; set; }
     [Parameter] public string? ActivityName { get; set; }
-   // [CascadingParameter]
-   // private Task<AuthenticationState> authenticationStateTask { get; set; } = default!;
     private string? _title;
     GridItemsProvider<ApplicationLogReportResultDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
@@ -70,11 +70,11 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        //var user = (await authenticationStateTask).User;
-        //if (!user.IsInRole(ActivityName) && !user.IsInRole("Admin"))
-        //{
-        //    uriHelper.NavigateTo("/403");
-        //}
+        var user = await AuthenticationStateProvider.GetUserInfo();
+        if (!user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        {
+            NavigationManager.NavigateTo("/403");
+        }
         _title = Localizer.Get("Retrieve reports") + ": " + ActivityName;
     }
 

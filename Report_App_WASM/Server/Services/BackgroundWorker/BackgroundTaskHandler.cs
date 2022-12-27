@@ -607,12 +607,12 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 listAttach.AddRange(_fileResults.Select(a => new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
 
                 //to remove dirty code
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
                 if (_header.TaskName.StartsWith("#"))
                 {
                     subject = _header.TaskName;
                 }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
                 //
                 var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
                 if (listAttach.Any())

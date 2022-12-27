@@ -116,9 +116,9 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IActionResult> ActivateCleanerService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
         {
             var item = await GetServiceStatusAsync();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             item.CleanerService = value.EntityValue.Activate;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.Cleaner);
             await UpdateServicesAsync(item, value.UserName);
             return Ok(result);

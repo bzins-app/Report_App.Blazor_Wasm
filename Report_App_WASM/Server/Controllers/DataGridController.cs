@@ -161,7 +161,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("odata/Sftp")]
         public IQueryable<SftpConfiguration?> GetSftp()
         {
-            return _context.SftpConfiguration.AsNoTracking();
+            return _context.SftpConfiguration;
         }
 
         [EnableQuery]

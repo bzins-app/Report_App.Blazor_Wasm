@@ -174,9 +174,9 @@ namespace Report_App_WASM.Server.Services.RemoteDb
 
         private RemoteConnectionParameter CreateConnectionString(ActivityDbConnectionDto? parameter)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             RemoteConnectionParameter value = new() { Schema = parameter.DbSchema, UseDbSchema = parameter.UseDbSchema, TypeDb = parameter.TypeDb, CommandFetchSize = parameter.CommandFetchSize, CommandTimeOut = parameter.CommandTimeOut };
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             if (parameter.TypeDb == TypeDb.Oracle)
             {
                 value.ConnnectionString = $"User ID={parameter.ConnectionLogin};Password={parameter.Password}; Data Source={parameter.ConnectionPath};";
@@ -234,9 +234,9 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         private RemoteConnectionParameter GetConnectionString(int activityId)
         {
             ActivityDbConnectionDto? conValue = new();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDto>(_mapper.ConfigurationProvider).SingleOrDefault();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             conValue!.Password = EncryptDecrypt.DecryptString(conValue.Password);
 
             return CreateConnectionString(conValue);
@@ -268,12 +268,12 @@ namespace Report_App_WASM.Server.Services.RemoteDb
 
         private async Task<DataTable> DbToDataTableAsync(DbGenericParameters dbConnector, RemoteDbCommandParameters run, DataTable dataTable, CancellationToken cts)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             await dbConnector.DbConnection.OpenAsync(cts);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+
             dbConnector.DbCommand.Connection = dbConnector.DbConnection;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             foreach (var query in dbConnector.IntializationQueries)
             {
                 dbConnector.DbCommand.CommandText = query;
@@ -281,9 +281,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             }
 
             using var ctr = cts.Register(() => dbConnector.DbCommand.Cancel());
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             dbConnector.DbDataAdapter.SelectCommand = dbConnector.DbCommand;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             using (dbConnector.DbDataAdapter)
             {
                 dbConnector.DbCommand.CommandText = run.QueryToRun + Environment.NewLine;//newline to avoid empty feedback when a comment is open at the last line without CR
@@ -315,9 +313,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             try
             {
                 var conParam = CreateConnectionString(parameter);
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'connectionString' in 'Task RemoteDbConnection.TryConnectAsync(TypeDb typeDb, string connectionString)'.
-                await TryConnectAsync(conParam.TypeDb, conParam.ConnnectionString);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'connectionString' in 'Task RemoteDbConnection.TryConnectAsync(TypeDb typeDb, string connectionString)'.
+                await TryConnectAsync(conParam.TypeDb, conParam.ConnnectionString!);
                 return new() { Success = true, Message = "OK" };
             }
             catch (Exception e)
@@ -347,7 +343,6 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             do
             {
                 var activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId).Select(a => a.ActivityName).FirstOrDefaultAsync();
-                // ApplicationLogTask logTask = new() { ActivityId = run.ActivityId, ActivityName = activityName, StartDateTime = DateTime.Now, JobDescription = run.QueryInfo, Type = "Attempt" };
                 var logTask = new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
                 try
                 {
@@ -365,8 +360,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                         dbConnector.DbConnection = new OracleConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new OracleDataAdapter();
                         var cmd = new OracleCommand { FetchSize = connectionInfo.CommandFetchSize, CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
-                        if (run.QueryCommandParameters.Any())
+                        if (run.QueryCommandParameters!.Any())
                         {
                             foreach (var parameter in run.QueryCommandParameters)
                             {
@@ -413,7 +407,6 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                                 }
                             }
                         }
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
 
                         cmd.BindByName = true;
                         dbConnector.DbCommand = cmd;
@@ -429,8 +422,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                         dbConnector.DbConnection = new SqlConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new SqlDataAdapter();
                         var cmd = new SqlCommand { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
-                        if (run.QueryCommandParameters.Any())
+                        if (run.QueryCommandParameters!.Any())
                         {
                             foreach (var parameter in run.QueryCommandParameters)
                             {
@@ -475,7 +467,6 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                                 }
                             }
                         }
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
 
                         dbConnector.DbCommand = cmd;
                     }
@@ -490,8 +481,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                         dbConnector.DbConnection = new MySqlConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new MySqlDataAdapter();
                         var cmd = new MySqlCommand { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
-                        if (run.QueryCommandParameters.Any())
+                        if (run.QueryCommandParameters!.Any())
                         {
                             foreach (var parameter in run.QueryCommandParameters)
                             {

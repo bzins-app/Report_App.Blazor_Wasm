@@ -72,7 +72,7 @@
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
     [Parameter] public ApplicationUserDto? Item { get; set; }
     [Parameter] public CrudAction Action { get; set; }
@@ -127,7 +127,7 @@
                     _rolesAvailable.Remove(t);
                     _rolesAssigned.Add(t);
                 }
-                _rolesToAssign = null;
+                _rolesToAssign = null!;
             }
             StateHasChanged();
         }
