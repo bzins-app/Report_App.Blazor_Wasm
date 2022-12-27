@@ -36,7 +36,7 @@
 @code {
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public ApplicationUser Item { get; set; } = null!;
+    [Parameter] public ApplicationUserDto Item { get; set; } = null!;
     [Parameter] public CrudAction Action { get; set; }
     private MudForm _form = default!;
     private UserFormModel Model { get; set; } = new();

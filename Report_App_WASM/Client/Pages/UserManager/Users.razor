@@ -59,10 +59,10 @@
 
 @code {
     #nullable enable
-    GridItemsProvider<ApplicationUser>? _itemsProvider;
+    GridItemsProvider<ApplicationUserDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<ApplicationUser> _grid = default!;
+    SimpleGrid<ApplicationUserDto> _grid = default!;
     private string? _errorMessage;
     private bool _rendering;
 
@@ -73,14 +73,14 @@
             var response = await GetRemoteData(req);
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationUser>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ApplicationUserDto>(), 0);
             }
-            return GridItemsProviderResult.From(response.Value, response.Count);
+            return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationUser>?> GetRemoteData(GridItemsProviderRequest<ApplicationUser> req)
+    private async Task<ApiResponse<ApplicationUserDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationUserDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -96,7 +96,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<ApplicationUser>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<ApplicationUserDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -105,13 +105,13 @@
         }
     }
     readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Large, FullWidth = true };
-    private void OpenEditDialog(ApplicationUser value)
+    private void OpenEditDialog(ApplicationUserDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Update };
         DialogService.Show<_UserDetails>("Edit", parameters, _maxWidth);
     }
 
-    private async Task OpenDeleteDialog(ApplicationUser value)
+    private async Task OpenDeleteDialog(ApplicationUserDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
@@ -138,7 +138,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new ApplicationUser();
+        var value = new ApplicationUserDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_UserDialogForm>("Create", parameters);

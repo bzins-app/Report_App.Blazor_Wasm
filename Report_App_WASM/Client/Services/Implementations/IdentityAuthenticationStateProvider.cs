@@ -55,7 +55,7 @@ namespace Report_App_WASM.Client.Services.Implementations
                 var userInfo = await GetUserInfo();
                 if (userInfo.IsAuthenticated)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }.Concat(userInfo.ExposedClaims!.Select(c => new Claim(c.Type!, c.Value)));
+                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName!) }.Concat(userInfo.ExposedClaims!.Select(c => new Claim(c.Type!, c.Value!)));
                     identity = new ClaimsIdentity(claims, "Server authentication");
                 }
             }

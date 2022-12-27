@@ -161,9 +161,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("odata/Sftp")]
         public IQueryable<SftpConfiguration?> GetSftp()
         {
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
             return _context.SftpConfiguration.AsNoTracking();
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.SftpConfiguration?' cannot be used as type parameter 'TEntity' in the generic type or method 'EntityFrameworkQueryableExtensions.AsNoTracking<TEntity>(IQueryable<TEntity>)'. Nullability of type argument 'Report_App_WASM.Server.Models.SftpConfiguration?' doesn't match 'class' constraint.
         }
 
         [EnableQuery]
@@ -189,9 +187,9 @@ namespace Report_App_WASM.Server.Controllers
 
         [EnableQuery(EnsureStableOrdering = false)]
         [HttpGet("odata/Users")]
-        public IQueryable<ApplicationUser> GetUsers()
+        public IQueryable<ApplicationUserDto> GetUsers()
         {
-            return _context.ApplicationUser.Where(a => !a.IsBaseUser).OrderByDescending(a => a).AsNoTracking();
+            return _context.ApplicationUser.Where(a => !a.IsBaseUser).ProjectTo<ApplicationUserDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.CreateDateTime).AsQueryable();
         }
 
     }

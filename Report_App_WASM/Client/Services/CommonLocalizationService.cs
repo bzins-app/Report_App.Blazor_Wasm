@@ -9,8 +9,8 @@ namespace Report_App_WASM.Client.Services
         private readonly IStringLocalizer _localizer;
         public CommonLocalizationService(IStringLocalizerFactory factory)
         {
-            var assemblyName = new AssemblyName(typeof(CommonResources).GetTypeInfo().Assembly.FullName);
-            _localizer = factory.Create(nameof(CommonResources), assemblyName.Name);
+            var assemblyName = new AssemblyName(typeof(CommonResources).GetTypeInfo().Assembly.FullName!);
+            _localizer = factory.Create(nameof(CommonResources), assemblyName.Name!);
         }
 
         public string Get(string? key)

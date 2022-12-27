@@ -48,11 +48,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("TasksLogs")]
         public async Task<List<TaksLogsValues>> GetTasksLogsAsync()
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             return await _context.ApplicationLogTask.AsNoTracking()
                 .Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > DateTime.Today.AddDays(-20) && !a.Result.Contains("attempt"))
                 .GroupBy(a => new { a.Type, a.ActivityName, a.EndDateTime.Date }).Select(a => new TaksLogsValues { Date = a.Key.Date, ActivityName = a.Key.ActivityName, TypeTask = a.Key.Type, TotalDuration = a.Sum(a => a.DurationInSeconds), NbrTasks = a.Count(), NbrErrors = a.Sum(a => a.Error ? 1 : 0) }).ToListAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
         [HttpGet("SystemLogs")]

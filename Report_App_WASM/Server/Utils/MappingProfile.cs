@@ -27,6 +27,7 @@ namespace Report_App_WASM.Server.Utils
             CreateMap<ApplicationLogSystem, ApplicationLogSystemDto>();
             CreateMap<ApplicationAuditTrail, ApplicationAuditTrailDto>();
             CreateMap<ApplicationLogTaskDetails, ApplicationLogTaskDetailsDto>();
+            CreateMap<ApplicationUser, ApplicationUserDto>();
         }
     }
 }
