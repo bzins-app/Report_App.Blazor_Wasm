@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Identity;
+using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Client.Pages.UserAccount
 {
@@ -12,7 +12,7 @@ namespace Report_App_WASM.Client.Pages.UserAccount
         public string? Password { get; set; }
         public string? ConfirmPassword { get; set; }
         public DateTimeOffset? LockoutEnd { get; set; }
-        public IdentityOptions Options { get; set; } = default!;
+        public IdentityDefaultOptions Options { get; set; } = default!;
 
     }
 

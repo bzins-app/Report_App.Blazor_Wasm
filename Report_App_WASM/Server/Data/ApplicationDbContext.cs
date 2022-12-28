@@ -13,7 +13,7 @@ namespace Report_App_WASM.Server.Data
 
         public virtual DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
         public virtual DbSet<ApplicationUniqueKey> ApplicationUniqueKey { get; set; } = null!;
-       public virtual DbSet<ApplicationParameters> ApplicationParameters { get; set; } = null!;
+        public virtual DbSet<ApplicationParameters> ApplicationParameters { get; set; } = null!;
         public virtual DbSet<ApplicationLogTask> ApplicationLogTask { get; set; } = null!;
         public virtual DbSet<ApplicationLogTaskDetails> ApplicationLogTaskDetails { get; set; } = null!;
         public virtual DbSet<ApplicationLogQueryExecution> ApplicationLogQueryExecution { get; set; } = null!;

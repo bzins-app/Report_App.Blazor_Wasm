@@ -1,4 +1,4 @@
-﻿namespace Report_App_WASM.Server.Utils.SettingsConfiguration
+﻿namespace Report_App_WASM.Shared
 {
     public class IdentityDefaultOptions
     {

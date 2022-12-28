@@ -15,7 +15,7 @@ using System.Text.Encodings.Web;
 
 namespace Report_App_WASM.Server.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
+    // [ApiExplorerSettings(IgnoreApi = true)]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthorizeController : ControllerBase
@@ -200,7 +200,7 @@ namespace Report_App_WASM.Server.Controllers
                 return NotFound($"Unable to load user with ID '{value.EntityValue.UserId!}'.");
             }
 
-             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(value.EntityValue.Code!));
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(value.EntityValue.Code!));
             var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(true);
             return Ok(new SubmitResult { Success = result.Succeeded, Message = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email." });
         }
@@ -213,10 +213,30 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet]
-        public IdentityOptions GetIdentityOptionsAsync()
+        public IdentityDefaultOptions GetIdentityOptionsAsync()
         {
             //var user = await _userManager.GetUserAsync(HttpContext.User);
-            return  _userManager.Options;
+            var identityDefaultOptions = new IdentityDefaultOptions();
+            var options = _userManager.Options;
+
+            identityDefaultOptions.PasswordRequireDigit = options.Password.RequireDigit;
+            identityDefaultOptions.PasswordRequiredLength = options.Password.RequiredLength;
+            identityDefaultOptions.PasswordRequireNonAlphanumeric = options.Password.RequireNonAlphanumeric;
+            identityDefaultOptions.PasswordRequireUppercase = options.Password.RequireUppercase;
+            identityDefaultOptions.PasswordRequireLowercase = options.Password.RequireLowercase;
+            identityDefaultOptions.PasswordRequiredUniqueChars = options.Password.RequiredUniqueChars;
+
+            // Lockout settings
+            identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes = options.Lockout.DefaultLockoutTimeSpan.Minutes;
+            identityDefaultOptions.LockoutMaxFailedAccessAttempts = options.Lockout.MaxFailedAccessAttempts;
+            identityDefaultOptions.LockoutAllowedForNewUsers = options.Lockout.AllowedForNewUsers;
+
+            // User settings
+            identityDefaultOptions.UserRequireUniqueEmail = options.User.RequireUniqueEmail;
+
+            // email confirmation require
+            identityDefaultOptions.SignInRequireConfirmedEmail = options.SignIn.RequireConfirmedEmail;
+            return identityDefaultOptions;
         }
 
         private async Task<UserInfo> BuildUserInfoAsync()

@@ -146,7 +146,7 @@ namespace Report_App_WASM.Server.Controllers
                 if (item != null)
                 {
                     var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
-                     _context.Update(user!);
+                    _context.Update(user!);
                     await _context.SaveChangesAsync(item.UserName);
                 }
                 return Ok(new SubmitResult { Success = true, Message = "Ok" });
@@ -165,7 +165,7 @@ namespace Report_App_WASM.Server.Controllers
                 if (item != null)
                 {
                     var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
-                   await  _userManager.ChangePasswordAsync(user!, item.EntityValue.Password!, item.EntityValue.NewPassword!);
+                    await _userManager.ChangePasswordAsync(user!, item.EntityValue.Password!, item.EntityValue.NewPassword!);
                 }
                 return Ok(new SubmitResult { Success = true, Message = "Ok" });
             }
@@ -191,7 +191,7 @@ namespace Report_App_WASM.Server.Controllers
                     var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
                     if (!await _userManager.CheckPasswordAsync(user!, item.EntityValue.Password))
                     {
-                        message ="Incorrect password";
+                        message = "Incorrect password";
                         return Ok(new SubmitResult { Success = true, Message = message });
                     }
                     message = "";
@@ -202,7 +202,7 @@ namespace Report_App_WASM.Server.Controllers
                         message = $"Unexpected error occurred deleting user with ID '{userId}'.";
                         return Ok(new SubmitResult { Success = true, Message = message });
                     }
-                    
+
                     await _userManager.DeleteAsync(user!);
                 }
                 return Ok(new SubmitResult { Success = true, Message = "Ok" });

@@ -249,7 +249,7 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 _context.Update(values.EntityValue);
-               await SaveDbAsync(values.UserName);
+                await SaveDbAsync(values.UserName);
 
                 ApplicationConstants.LdapLogin = values.EntityValue.IsActivated;
 
