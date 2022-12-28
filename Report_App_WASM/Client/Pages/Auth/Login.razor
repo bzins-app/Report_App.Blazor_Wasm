@@ -64,7 +64,7 @@ else
         <div>
             <button type="submit" class="btn btn-primary shadow-2 mb-4">@Localizer.Get("Login")</button>
         </div>
-
+        <p class="mb-2 text-muted">@Localizer.Get("Forgot password?") <MudLink OnClick="RedirectForgotPassword" id="forgot-password">@Localizer.Get("Reset")</MudLink></p>
 
         <label class="text-danger">@Error</label>
 
@@ -81,7 +81,6 @@ else
     {
         var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
         if (values != null) _ldap = values.LdapLogin;
-    // StateHasChanged();
     }
 
     void ChangeTypeLogin()
@@ -102,12 +101,17 @@ else
             {
                 await AuthStateProvider.Login(LoginParameters);
             }
-            
+
             NavigationManager.NavigateTo("");
         }
         catch (Exception ex)
         {
             Error = ex.Message;
         }
+    }
+
+    private void RedirectForgotPassword()
+    {
+        NavigationManager.NavigateTo("/ForgotPassword");
     }
 }
