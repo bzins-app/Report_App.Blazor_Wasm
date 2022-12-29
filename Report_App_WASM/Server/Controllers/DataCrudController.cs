@@ -56,9 +56,9 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<TaskEmailRecipient?> GetTaskEmailRecipientAsync(int taskHeaderId)
+        public async Task<IEnumerable<TaskEmailRecipient?>> GetTaskEmailRecipientAsync(int taskHeaderId)
         {
-            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).FirstOrDefaultAsync();
+            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).ToListAsync();
         }
 
         [HttpGet]

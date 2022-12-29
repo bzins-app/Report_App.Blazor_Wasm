@@ -48,8 +48,9 @@
             queryParameters = feedback.Item2;
             if (resultValidation)
             {
-                // var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
-                // _BGW.RunManuallyTask(Item.TaskHeaderId, user.Email, emailsRecipients, queryParameters);
+                 var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Email!);
+                var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
+                await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
             else
             {
