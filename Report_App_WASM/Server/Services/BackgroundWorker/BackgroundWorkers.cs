@@ -90,25 +90,19 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         if (taskHeader.Type == TaskType.Report && services!.ReportService)
                         {
                             var queueName = "report";
-#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             options.QueueName = queueName;
-#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
                         if (taskHeader.Type == TaskType.Alert && services!.AlertService)
                         {
                             var queueName = "alert";
-#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             options.QueueName = queueName;
-#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
                         if (taskHeader.Type == TaskType.DataTransfer && services!.DataTransferService)
                         {
                             var queueName = "datatransfer";
-#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             options.QueueName = queueName;//to remove in version 2.0
-#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
                             RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue, options);
                         }
 
@@ -130,9 +124,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         public async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type)
         {
             var queueName = type.ToString().ToLower();
-#pragma warning disable CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
             var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local, QueueName = queueName };
-#pragma warning restore CS0618 // 'RecurringJobOptions.QueueName' is obsolete: 'Please use non-obsolete AddOrUpdate with the explicit `queue` parameter instead. Will be removed in 2.0.0.'
             SubmitResult result = new();
             if (activate)
             {
@@ -198,9 +190,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             {
                 var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'context' in 'BackgroundTaskHandler.BackgroundTaskHandler(ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment)'.
                 using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper, _hostingEnvironment);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'context' in 'BackgroundTaskHandler.BackgroundTaskHandler(ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment)'.
                 await handler.HandleTask(parameters);
                 handler.Dispose();
             }

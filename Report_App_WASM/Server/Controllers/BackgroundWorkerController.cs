@@ -43,13 +43,9 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.ServicesStatus?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.ServicesStatus?' doesn't match 'class' constraint.
-                _context.Entry(status.EntityValue).State = EntityState.Modified;
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.ServicesStatus?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.ServicesStatus?' doesn't match 'class' constraint.
+                _context.Entry(status.EntityValue!).State = EntityState.Modified;
                 await SaveDbAsync(status.UserName);
-#pragma warning disable CS8634 // The type 'Report_App_WASM.Server.Models.ServicesStatus?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.ServicesStatus?' doesn't match 'class' constraint.
-                _context.Entry(status.EntityValue).State = EntityState.Detached;
-#pragma warning restore CS8634 // The type 'Report_App_WASM.Server.Models.ServicesStatus?' cannot be used as type parameter 'TEntity' in the generic type or method 'DbContext.Entry<TEntity>(TEntity)'. Nullability of type argument 'Report_App_WASM.Server.Models.ServicesStatus?' doesn't match 'class' constraint.
+                _context.Entry(status.EntityValue!).State = EntityState.Detached;
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -75,9 +71,7 @@ namespace Report_App_WASM.Server.Controllers
 
         private async Task<ServicesStatus> GetServiceStatusAsync()
         {
-#pragma warning disable CS8603 // Possible null reference return.
-            return await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync();
-#pragma warning restore CS8603 // Possible null reference return.
+            return (await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync())!;
         }
 
         [HttpPost]

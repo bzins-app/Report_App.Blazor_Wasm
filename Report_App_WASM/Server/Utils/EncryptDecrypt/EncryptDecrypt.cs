@@ -72,12 +72,10 @@ namespace Report_App_WASM.Server.Utils.EncryptDecrypt
                 aesAlg.Padding = PaddingMode.PKCS7;
                 using var decryptor = aesAlg.CreateDecryptor(key, iv);
                 string? result;
-                using (var msDecrypt = new MemoryStream(cipher))
-                {
-                    using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
-                    using var srDecrypt = new StreamReader(csDecrypt);
-                    result = srDecrypt.ReadToEnd();
-                }
+                using var msDecrypt = new MemoryStream(cipher);
+                using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+                using var srDecrypt = new StreamReader(csDecrypt);
+                result = srDecrypt.ReadToEnd();
 
                 return result;
             }

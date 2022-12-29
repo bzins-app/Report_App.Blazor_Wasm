@@ -9,11 +9,11 @@ using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.Extensions;
+using Report_App_WASM.Shared.RemoteQueryParameters;
 using Report_App_WASM.Shared.SerializedParameters;
 using System.Data;
 using System.Net.Mail;
 using System.Text.Json;
-using Report_App_WASM.Shared.RemoteQueryParameters;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
@@ -150,46 +150,43 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
         private async Task FetchData(TaskDetail detail)
         {
-            using (var remoteDb = new RemoteDbConnection(_context, _mapper))
+            using var remoteDb = new RemoteDbConnection(_context, _mapper);
+            var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!);
+            List<QueryCommandParameter>? param = new();
+            if (_jobParameters.CustomQueryParameters!.Any())
             {
-                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!);
-                List<QueryCommandParameter>? param = new();
-                if (_jobParameters.CustomQueryParameters!.Any())
-                {
-                    param = _jobParameters.CustomQueryParameters;
-                }
-                else
-                if (_header.UseGlobalQueryParameters && _header.QueryParameters != "[]" &&
-                    !string.IsNullOrEmpty(_header.QueryParameters))
-                {
-                    param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.QueryParameters);
-                }
+                param = _jobParameters.CustomQueryParameters;
+            }
+            else
+            if (_header.UseGlobalQueryParameters && _header.QueryParameters != "[]" &&
+                !string.IsNullOrEmpty(_header.QueryParameters))
+            {
+                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.QueryParameters);
+            }
 
-                if (detail.QueryParameters != "[]" && !string.IsNullOrEmpty(detail.QueryParameters))
+            if (detail.QueryParameters != "[]" && !string.IsNullOrEmpty(detail.QueryParameters))
+            {
+                var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(detail.QueryParameters);
+                foreach (var value in desParam!)
                 {
-                    var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(detail.QueryParameters);
-                    foreach (var value in desParam!)
+                    if (param!.All(a => a.ParameterIdentifier?.ToLower() != value.ParameterIdentifier?.ToLower()))
                     {
-                        if (param!.All(a => a.ParameterIdentifier?.ToLower() != value.ParameterIdentifier?.ToLower()))
-                        {
-                            param?.Add(value);
-                        }
+                        param?.Add(value);
                     }
                 }
-                var table = await remoteDb.RemoteDbToDatableAsync(new RemoteDbCommandParameters { ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, _jobParameters.Cts, _taskId);
-                await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Fetch data completed", Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count });
+            }
+            var table = await remoteDb.RemoteDbToDatableAsync(new RemoteDbCommandParameters { ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, _jobParameters.Cts, _taskId);
+            await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Fetch data completed", Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count });
 
-                if (detailParam!.GenerateIfEmpty || table.Rows.Count > 0)
-                {
-                    _fetchedData.Add(detail, table);
-                }
+            if (detailParam!.GenerateIfEmpty || table.Rows.Count > 0)
+            {
+                _fetchedData.Add(detail, table);
+            }
 
-                if (_jobParameters.GenerateFiles)
-                {
-                    detail.LastRunDateTime = DateTime.Now;
-                    _context.Entry(detail).State = EntityState.Modified;
-                }
-
+            if (_jobParameters.GenerateFiles)
+            {
+                detail.LastRunDateTime = DateTime.Now;
+                _context.Entry(detail).State = EntityState.Modified;
             }
         }
         private async Task WriteFileAsync(FileContentResult fileResult, string fName, bool useDepositConfiguration, string? subName = null)

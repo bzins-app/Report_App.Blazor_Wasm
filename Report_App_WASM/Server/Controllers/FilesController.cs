@@ -31,10 +31,8 @@ namespace Report_App_WASM.Server.Controllers
             {
                 var filePath = GetUploadedFilePath(file.FileName);
                 returnedFiledPath = filePath.Item1;
-                using (var stream = System.IO.File.Create(filePath.Item2))
-                {
-                    await file.CopyToAsync(stream);
-                }
+                using var stream = System.IO.File.Create(filePath.Item2);
+                await file.CopyToAsync(stream);
             }
             // Process uploaded files
             // Don't rely on or trust the FileName property without validation.

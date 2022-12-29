@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
+using System.Text.Json;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -303,7 +303,7 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IEnumerable<EmailRecipient>> GetEmailsPerActivityAsync(int activityId)
         {
             List<EmailRecipient> emails = new();
-            var listTask= await _context.TaskEmailRecipient.Where(a=>a.TaskHeader.Activity.ActivityId== activityId &&a.Email!="[]").Select(a=>a.Email ).ToListAsync();
+            var listTask = await _context.TaskEmailRecipient.Where(a => a.TaskHeader.Activity.ActivityId == activityId && a.Email != "[]").Select(a => a.Email).ToListAsync();
             if (listTask != null)
             {
                 foreach (var taskEmails in listTask.Select(value => JsonSerializer.Deserialize<List<EmailRecipient>>(value)))
@@ -440,7 +440,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileDepositPathConfiguration> values)
         {
-            return Ok( await  UpdateEntity(values.EntityValue, values.UserName!));
+            return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
         }
 
         private async Task<SubmitResult> InsertEntity<T>(T EntityValue, string UserName)
@@ -457,7 +457,7 @@ namespace Report_App_WASM.Server.Controllers
             }
         }
 
-        private async Task<SubmitResult> DeleteEntity<T>(T EntityValue,string UserName) 
+        private async Task<SubmitResult> DeleteEntity<T>(T EntityValue, string UserName)
         {
             try
             {

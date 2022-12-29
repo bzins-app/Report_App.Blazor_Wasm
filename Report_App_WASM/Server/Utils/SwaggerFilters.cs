@@ -9,7 +9,7 @@ namespace Report_App_WASM.Server.Utils
         {
             //remove paths those start with /api/abp prefix
             swaggerDoc.Paths
-                .Where(x => x.Key.ToLowerInvariant().StartsWith("/api")|| x.Key.ToLowerInvariant().StartsWith("/odata"))
+                .Where(x => x.Key.ToLowerInvariant().StartsWith("/api") || x.Key.ToLowerInvariant().StartsWith("/odata"))
                 .ToList()
                 .ForEach(x => swaggerDoc.Paths.Remove(x.Key));
         }

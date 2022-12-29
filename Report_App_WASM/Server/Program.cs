@@ -1,5 +1,6 @@
 using AutoMapper;
 using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,6 @@ using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
 using Report_App_WASM.Shared;
 using System.Text.Json.Serialization;
-using Hangfire.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
