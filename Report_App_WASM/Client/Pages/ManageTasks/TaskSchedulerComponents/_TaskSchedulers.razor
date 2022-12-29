@@ -72,7 +72,7 @@
         _elements.Clear();
         foreach (var t in _crons!)
         {
-            _elements.Add(new() { CronValue = t?.CronValue, CronDescription = ExpressionDescriptor.GetDescription(t?.CronValue) });
+            _elements.Add(new CronEditView { CronValue = t?.CronValue, CronDescription = ExpressionDescriptor.GetDescription(t?.CronValue) });
         }
     }
 
@@ -129,7 +129,7 @@
 
         if (!feedback.Cancelled)
         {
-            _crons?.Add(new() { CronValue = feedback.Data.ToString() });
+            _crons?.Add(new CronParameters { CronValue = feedback.Data.ToString() });
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();

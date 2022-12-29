@@ -5,6 +5,7 @@ using Report_App_WASM.Client.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -40,21 +41,23 @@ namespace Report_App_WASM.Client.Services
             ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
             {
-                JsonSerializerOptions options = new();
-                options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                JsonSerializerOptions options = new()
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                };
                 var response = await _httpClient.PostAsJsonAsync(uri, payload, options);
-                if (response.StatusCode == HttpStatusCode.BadRequest) throw new(await response.Content.ReadAsStringAsync());
+                if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync());
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     return (await response.Content.ReadFromJsonAsync<SubmitResult>())!;
                 }
 
-                return new() { Success = false };
+                return new SubmitResult { Success = false };
             }
             catch (Exception ex)
             {
-                return new() { Success = false, Message = ex.Message };
+                return new SubmitResult { Success = false, Message = ex.Message };
             }
         }
 
@@ -92,11 +95,11 @@ namespace Report_App_WASM.Client.Services
                     return response;
                 }
 
-                return new();
+                return new List<T>();
             }
             catch
             {
-                return new();
+                return new List<T>();
             }
         }
 
@@ -129,7 +132,7 @@ namespace Report_App_WASM.Client.Services
                             new StreamContent(file.OpenReadStream(maxFileSize));
 
                 fileContent.Headers.ContentType =
-                    new(file.ContentType);
+                    new MediaTypeHeaderValue(file.ContentType);
                 content.Add(
                             content: fileContent,
                             name: "\"file\"",
@@ -139,7 +142,7 @@ namespace Report_App_WASM.Client.Services
             }
             catch (Exception ex)
             {
-                return new() { Success = false, Message = ex.Message };
+                return new SubmitResult { Success = false, Message = ex.Message };
             }
 
         }

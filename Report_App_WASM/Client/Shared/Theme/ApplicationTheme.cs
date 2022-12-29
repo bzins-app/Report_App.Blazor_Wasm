@@ -8,7 +8,7 @@ namespace Report_App_WASM.Client.Shared.Theme
         {
             var theme = new MudTheme
             {
-                Palette = new()
+                Palette = new Palette
                 {
                     DrawerBackground = "#001529",
                     DrawerText = "#FFFFFF7F",
@@ -63,7 +63,7 @@ namespace Report_App_WASM.Client.Shared.Theme
                 //    OverlayLight = "#1e1e2d80",
                 //    Divider = "#5c5c6a"
                 //},
-                PaletteDark = new()
+                PaletteDark = new Palette
                 {
                     Primary = "#7e6fff",
                     Dark = "#343a40",
@@ -101,9 +101,9 @@ namespace Report_App_WASM.Client.Shared.Theme
                     AppbarHeight = "80px",
                     DefaultBorderRadius = "6px",
                 },*/
-                Typography = new()
+                Typography = new Typography
                 {
-                    Default = new()
+                    Default = new Default
                     {
                         FontSize = ".8125rem",
                         FontWeight = 400,
@@ -111,49 +111,49 @@ namespace Report_App_WASM.Client.Shared.Theme
                         LetterSpacing = "normal",
                         // FontFamily = new string[] { "Public Sans", "Roboto", "Arial", "sans-serif" }
                     },
-                    H1 = new()
+                    H1 = new H1
                     {
                         FontSize = "4rem",
                         FontWeight = 700,
                         LineHeight = 1.167,
                         LetterSpacing = "-.01562em"
                     },
-                    H2 = new()
+                    H2 = new H2
                     {
                         FontSize = "3.75rem",
                         FontWeight = 300,
                         LineHeight = 1.2,
                         LetterSpacing = "-.00833em"
                     },
-                    H3 = new()
+                    H3 = new H3
                     {
                         FontSize = "3rem",
                         FontWeight = 600,
                         LineHeight = 1.167,
                         LetterSpacing = "0"
                     },
-                    H4 = new()
+                    H4 = new H4
                     {
                         FontSize = "1.8rem",
                         FontWeight = 400,
                         LineHeight = 1.235,
                         LetterSpacing = ".00735em"
                     },
-                    H5 = new()
+                    H5 = new H5
                     {
                         FontSize = "1.5rem",
                         FontWeight = 400,
                         LineHeight = 1.334,
                         LetterSpacing = "0"
                     },
-                    H6 = new()
+                    H6 = new H6
                     {
                         FontSize = "1.125rem",
                         FontWeight = 400,
                         LineHeight = 1.6,
                         LetterSpacing = ".0075em"
                     },
-                    Button = new()
+                    Button = new Button
                     {
                         FontSize = ".8125rem",
                         FontWeight = 500,
@@ -163,42 +163,42 @@ namespace Report_App_WASM.Client.Shared.Theme
 
 
                     },
-                    Subtitle1 = new()
+                    Subtitle1 = new Subtitle1
                     {
                         FontSize = "1rem",
                         FontWeight = 400,
                         LineHeight = 1.75,
                         LetterSpacing = ".00938em"
                     },
-                    Subtitle2 = new()
+                    Subtitle2 = new Subtitle2
                     {
                         FontSize = ".875rem",
                         FontWeight = 500,
                         LineHeight = 1.57,
                         LetterSpacing = ".00714em"
                     },
-                    Body1 = new()
+                    Body1 = new Body1
                     {
                         FontSize = "0.875rem",
                         FontWeight = 400,
                         LineHeight = 1.5,
                         LetterSpacing = ".00938em"
                     },
-                    Body2 = new()
+                    Body2 = new Body2
                     {
                         FontSize = ".8125rem",
                         FontWeight = 400,
                         LineHeight = 1.43,
                         LetterSpacing = ".01071em"
                     },
-                    Caption = new()
+                    Caption = new Caption
                     {
                         FontSize = ".75rem",
                         FontWeight = 400,
                         LineHeight = 1.66,
                         LetterSpacing = ".03333em"
                     },
-                    Overline = new()
+                    Overline = new Overline
                     {
                         FontSize = ".75rem",
                         FontWeight = 400,
@@ -206,7 +206,7 @@ namespace Report_App_WASM.Client.Shared.Theme
                         LetterSpacing = ".08333em"
                     }
                 },
-                Shadows = new()
+                Shadows = new Shadow
                 {
                     Elevation = new[]
                  {

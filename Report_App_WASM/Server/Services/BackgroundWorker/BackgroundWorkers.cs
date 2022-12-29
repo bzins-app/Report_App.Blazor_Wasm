@@ -37,9 +37,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             _scopeFactory = scopeFactory;
         }
 
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        public void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+        public void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment>? attachment = null)
+
         {
             BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment));
         }
@@ -189,7 +189,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
         public void RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient>? emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
         {
-            BackgroundJob.Enqueue(() => RunTaskJobAsync(new() { TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles, CustomEmails = emails ?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters, ManualRun = true, RunBy = runBy }));
+            BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters { TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles, CustomEmails = emails ?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters, ManualRun = true, RunBy = runBy }));
         }
 
         public async Task RunTaskJobAsync(TaskJobParameters parameters)

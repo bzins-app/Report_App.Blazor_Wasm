@@ -28,8 +28,12 @@
             </MudSelect>
             @if (Item?.TypeName == TaskType.Report.ToString())
             {
-                <MudSelect  Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile" AnchorOrigin="Origin.BottomCenter"
-                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
+                <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile" AnchorOrigin="Origin.BottomCenter"
+                           Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
+                    @if (Item.TypeFile == 0)
+                    {
+                        <MudSelectItem Value="Item.TypeFile">@Localizer.Get("Type of file")</MudSelectItem>
+                    }
                     @foreach (FileType item in Enum.GetValues(typeof(FileType)))
                     {
                         <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -73,19 +77,25 @@
         {
             if (_deletionValidation == "Validate")
             {
-                Item!.Activity = new() { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+                Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
-            Item!.Activity = new() { ActivityId=_activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
+            Item!.Activity = new ActivityDto { ActivityId=_activities.Where(a=>a.ActivityName==Item.ActivityName).Select(a=>a.ActivityId).FirstOrDefault(), ActivityName=Item.ActivityName};
             Item.IdActivity = Item.Activity.ActivityId;
             await _form.Validate();
-            if (_form.IsValid&&Item.Activity is not null)
+            if (_form.IsValid && Item.Activity is not null)
             {
-                
-                MudDialog?.Close(DialogResult.Ok(Item));
+                if (Item.Type != TaskType.Report)
+                {
+                    MudDialog?.Close(DialogResult.Ok(Item));
+                }
+                else if (Item.TypeFile > 0)
+                {
+                    MudDialog?.Close(DialogResult.Ok(Item));
+                }
             }
         }
     }

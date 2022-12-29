@@ -46,7 +46,7 @@ namespace Report_App_WASM.Server.Utils
             excel.Save();
             outputStream.Position = 0;
 
-            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = fileName
             };
@@ -105,7 +105,7 @@ namespace Report_App_WASM.Server.Utils
             excel.SaveAs(outputStream);
             outputStream.Position = 0;
 
-            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = dataExcel.FileName
             };
@@ -211,7 +211,7 @@ namespace Report_App_WASM.Server.Utils
             excel.Save();
             outputStream.Position = 0;
 
-            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = dataExcel.FileName
             };
@@ -244,7 +244,7 @@ namespace Report_App_WASM.Server.Utils
                     bytes = Encoding.UTF8.GetBytes(cleaned);
                     break;
             }
-            return new(bytes, "application/json")
+            return new FileContentResult(bytes, "application/json")
             {
                 FileDownloadName = fileName
             };
@@ -252,14 +252,12 @@ namespace Report_App_WASM.Server.Utils
 
         public static FileContentResult CsvFromDatable(string fileName, DataTable data, string? encoding, string? delimiter = ";", bool removeHeader = false)
         {
-            var delimitervalue = delimiter;
-
             StringBuilder sb = new();
 
             if (!removeHeader)
             {
                 IEnumerable<string> columnNames = data.Columns.Cast<DataColumn>().Select(column => column.ColumnName);
-                sb.AppendLine(string.Join(delimitervalue, columnNames));
+                sb.AppendLine(string.Join(delimiter, columnNames));
             }
 
             foreach (DataRow row in data.Rows)
@@ -267,7 +265,7 @@ namespace Report_App_WASM.Server.Utils
                 IEnumerable<string?> fields
                     = row.ItemArray.Select(
                     field => field?.ToString()?.Replace("\n", "").Replace("\r", ""));
-                sb.AppendLine(string.Join(delimitervalue, fields));
+                sb.AppendLine(string.Join(delimiter, fields));
             }
 
             byte[] bytes;
@@ -294,7 +292,7 @@ namespace Report_App_WASM.Server.Utils
                     break;
             }
 
-            return new(bytes, "text/csv")
+            return new FileContentResult(bytes, "text/csv")
             {
                 FileDownloadName = fileName
             };
@@ -333,7 +331,7 @@ namespace Report_App_WASM.Server.Utils
                     bytes = Encoding.UTF8.GetBytes(result);
                     break;
             }
-            return new(bytes, "application/xml")
+            return new FileContentResult(bytes, "application/xml")
             {
                 FileDownloadName = fileName
             };
@@ -366,7 +364,7 @@ namespace Report_App_WASM.Server.Utils
             var fName = string.Format(fileName + "-{0}", DateTime.Now.ToString("s") + ".xlsx");
             outputStream.Position = 0;
 
-            return new(excel.GetAsByteArray(), "application/vnd.ms-excel")
+            return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
             {
                 FileDownloadName = fName
             };

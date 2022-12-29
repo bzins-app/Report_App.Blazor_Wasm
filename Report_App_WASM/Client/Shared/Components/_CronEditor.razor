@@ -174,18 +174,18 @@
         await GenerateCronValue();
         for (var i = 0; i < 60; i++)
         {
-            _listMinutesSelect.Add(new() { Value = i, DisplayValue = i < 10 ? "0" + i : i.ToString() });
+            _listMinutesSelect.Add(new SelectItem { Value = i, DisplayValue = i < 10 ? "0" + i : i.ToString() });
         }
         for (var i = 0; i < 24; i++)
         {
-            _listHoursSelect.Add(new() { Value = i, DisplayValue = i < 10 ? "0" + i : i.ToString() });
+            _listHoursSelect.Add(new SelectItem { Value = i, DisplayValue = i < 10 ? "0" + i : i.ToString() });
         }
         for (var i = 1; i < 32; i++)
         {
-            _listDayOfMonthSelect.Add(new() { Value = i, DisplayValue = i < 10 ? "0" + i : i.ToString() });
+            _listDayOfMonthSelect.Add(new SelectItem { Value = i, DisplayValue = i < 10 ? "0" + i : i.ToString() });
         }
 
-        _listMonthSelect = new()
+        _listMonthSelect = new List<SelectItem>
         {
         new() { Value = 1, DisplayValue ="Jan"},
         new() { Value = 2, DisplayValue ="Feb"},
@@ -200,7 +200,7 @@
         new() { Value = 11, DisplayValue ="Nov"},
         new() { Value = 12, DisplayValue ="Dec"}
         };
-        _listDayOfWeekSelect = new()
+        _listDayOfWeekSelect = new List<SelectItem>
         {
         new() { Value = 0, DisplayValue ="Sunday"},
         new() { Value = 1, DisplayValue ="Monday"},

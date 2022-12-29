@@ -3,6 +3,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Report_App_WASM.Server;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
@@ -14,6 +15,7 @@ using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
 using Report_App_WASM.Shared;
 using System.Text.Json.Serialization;
+using Hangfire.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,7 +93,13 @@ options => options.AddRouteComponents(
 builder.Services.AddRazorPages();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Reporting tool", Version = "v1" });
+    c.DocumentFilter<SwaggerFilters>();
+
+});
+
 
 // Add Hangfire services.
 builder.Services.AddHangfire(configuration => configuration
@@ -99,7 +107,7 @@ builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
     {
         CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
         SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
@@ -205,12 +213,12 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHangfireDashboard("/Hangfire", new()
+app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 {
     Authorization = new[] { new HangfireAuthorizationFilter() }
 });
 
-app.UseHangfireDashboard("/HangfireRead", new()
+app.UseHangfireDashboard("/HangfireRead", new DashboardOptions
 {
     IsReadOnlyFunc = context => true,
     Authorization = new[] { new HangfireAuthorizationFilterRead() }

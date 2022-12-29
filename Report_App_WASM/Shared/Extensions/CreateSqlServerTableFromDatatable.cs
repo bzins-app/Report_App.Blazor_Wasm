@@ -34,9 +34,8 @@ namespace Report_App_WASM.Shared.Extensions
                 // Add AllowNull information.
                 if (primaryKeys != null)
                 {
-                    var keyCheck = primaryKeys;
-                    keyCheck.ForEach(x => x?.ToLower());
-                    sqlCmd.Append((keyCheck.Contains(col.ColumnName, StringComparer.OrdinalIgnoreCase) ? "NOT " : "") + "NULL," +
+                    primaryKeys.ForEach(x => x?.ToLower());
+                    sqlCmd.Append((primaryKeys.Contains(col.ColumnName, StringComparer.OrdinalIgnoreCase) ? "NOT " : "") + "NULL," +
                     Environment.NewLine);
                 }
                 else

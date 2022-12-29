@@ -13,6 +13,7 @@ using Report_App_WASM.Shared.SerializedParameters;
 using System.Data;
 using System.Net.Mail;
 using System.Text.Json;
+using Report_App_WASM.Shared.RemoteQueryParameters;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
@@ -134,7 +135,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             }
             catch (Exception ex)
             {
-                logTask.Result = new(ex.Message.Take(2000).ToArray());
+                logTask.Result = new string(ex.Message.Take(2000).ToArray());
                 logTask.Error = true;
                 logTask.EndDateTime = DateTime.Now;
                 logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
@@ -175,7 +176,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         }
                     }
                 }
-                var table = await remoteDb.RemoteDbToDatableAsync(new() { ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, _jobParameters.Cts, _taskId);
+                var table = await remoteDb.RemoteDbToDatableAsync(new RemoteDbCommandParameters { ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName, PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param }, _jobParameters.Cts, _taskId);
                 await _context.AddAsync(new ApplicationLogTaskDetails { TaskId = _taskId, Step = "Fetch data completed", Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count });
 
                 if (detailParam!.GenerateIfEmpty || table.Rows.Count > 0)
@@ -424,7 +425,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!);
                 if (string.IsNullOrEmpty(detailParam?.FileName))
                 {
-                    fName = $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss")}";
+                    fName = $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HH_mm_ss}";
                 }
                 else
                 {
@@ -439,7 +440,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         fName += fExtension;
                         List<ExcelCreationDatatable> excelCreationDatatables = new()
                         {
-                            new() { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
+                            new ExcelCreationDatatable { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
                         };
                         ExcelCreationData dataExcel = new() { FileName = fName, Data = excelCreationDatatables, ValidationSheet = detailParam.AddValidationSheet, ValidationText = headerParam?.ValidationSheetText };
 
@@ -467,7 +468,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         {
                             tabName = detailParam.ExcelTabName ?? d.Key.QueryName;
                         }
-                        excelMultipleTabs.Add(new() { TabName = tabName, ExcelTemplate = template, Data = d.Value });
+                        excelMultipleTabs.Add(new ExcelCreationDatatable { TabName = tabName, ExcelTemplate = template, Data = d.Value });
                         continue;
                     }
                 }
@@ -540,7 +541,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     {
                         var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
                         var message = "";
-                        List<Attachment> listAttach = new();
+                        List<Attachment>? listAttach = new();
                         var counter = 0;
                         foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
                         {
@@ -565,7 +566,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                                 var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader?.TaskName, dataExcel);
                                 var fName =
                                     $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
-                                listAttach.Add(new(new MemoryStream(fileResult.FileContents), fName, fileResult.ContentType));
+                                listAttach.Add(new Attachment(new MemoryStream(fileResult.FileContents), fName, fileResult.ContentType));
                             }
                         }
 
@@ -603,7 +604,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                 var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;
 
-                List<Attachment> listAttach = new();
+                List<Attachment>? listAttach = new();
                 listAttach.AddRange(_fileResults.Select(a => new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
 
                 //to remove dirty code

@@ -82,16 +82,18 @@
 
     private async Task ConnectionTest()
     {
-        var tryConn = new ActivityDbConnectionDto();
-        tryConn.AdAuthentication = _dbCon.AdAuthentication;
-        tryConn.ConnectionLogin = _dbCon.ConnectionLogin;
-        tryConn.ConnectionPath = _dbCon.ConnectionPath;
-        tryConn.IntentReadOnly = _dbCon.IntentReadOnly;
-        tryConn.DbSchema = _dbCon.DbSchema;
-        tryConn.TypeDb = _dbCon.TypeDb;
-        tryConn.Port = _dbCon.Port;
-        tryConn.UseDbSchema = _dbCon.UseDbSchema;
-        tryConn.Password = _dbCon.Password;
+        var tryConn = new ActivityDbConnectionDto
+        {
+            AdAuthentication = _dbCon.AdAuthentication,
+            ConnectionLogin = _dbCon.ConnectionLogin,
+            ConnectionPath = _dbCon.ConnectionPath,
+            IntentReadOnly = _dbCon.IntentReadOnly,
+            DbSchema = _dbCon.DbSchema,
+            TypeDb = _dbCon.TypeDb,
+            Port = _dbCon.Port,
+            UseDbSchema = _dbCon.UseDbSchema,
+            Password = _dbCon.Password
+        };
         var result = await DataService.PostValues(tryConn, "TestConnection", ApiControllers.RemoteDbApi);
         _connectionTestResult = result.Message ?? "Ok!";
     }

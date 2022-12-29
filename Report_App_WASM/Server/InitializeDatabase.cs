@@ -28,8 +28,8 @@ namespace Report_App_WASM.Server
         }
         public async Task InitializeAsync()
         {
-            _context.Database.Migrate();
-            _context.Database.EnsureCreated();
+            await _context.Database.MigrateAsync();
+            await _context.Database.EnsureCreatedAsync();
 
             // check for users
             if (_context.ApplicationUser.Any())
@@ -63,7 +63,7 @@ namespace Report_App_WASM.Server
             {
                 if (!await _roleManager.RoleExistsAsync(t).ConfigureAwait(true))
                 {
-                    await _roleManager.CreateAsync(new(t)).ConfigureAwait(true);
+                    await _roleManager.CreateAsync(new IdentityRole<Guid>(t)).ConfigureAwait(true);
                 }
             }
         }
@@ -71,7 +71,7 @@ namespace Report_App_WASM.Server
         private async Task CreateDefaultSuperAdmin()
         {
             await _userManager.CreateAsync(
-                new()
+                new ApplicationUser
                 {
                     Email = _baseUser.Email,
                     UserName = _baseUser.Email,

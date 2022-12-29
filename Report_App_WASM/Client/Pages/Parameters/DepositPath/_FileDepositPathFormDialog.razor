@@ -66,7 +66,7 @@
     {
         var controllerActionListConfigs = "SftpInfo";
         _listConfigs = await DataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
-        Item!.SftpConfiguration = new();
+        Item!.SftpConfiguration = new SftpConfigurationDto();
         if (Action != CrudAction.Create && Item.FileDepositPathConfigurationId>0)
         {
             var contollerSftpConfig = $"GetSTFPConfiguration?SftpConfigurationId={Item.FileDepositPathConfigurationId}";

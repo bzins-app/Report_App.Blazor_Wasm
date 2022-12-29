@@ -66,13 +66,15 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
-                var appUser = new ApplicationUser();
-                appUser.CreateDateTime = DateTime.Now;
-                appUser.CreateUser = item.UserName;
-                appUser.ModDateTime = DateTime.Now;
-                appUser.ModificationUser = item.UserName;
-                appUser.Email = item.EntityValue.UserMail;
-                appUser.UserName = item.EntityValue.UserName;
+                var appUser = new ApplicationUser
+                {
+                    CreateDateTime = DateTime.Now,
+                    CreateUser = item.UserName,
+                    ModDateTime = DateTime.Now,
+                    ModificationUser = item.UserName,
+                    Email = item.EntityValue.UserMail,
+                    UserName = item.EntityValue.UserName
+                };
                 var password = item.EntityValue.Password;
                 appUser.PasswordHash = "";
                 var result = await _userManager.CreateAsync(appUser, password!);
@@ -87,7 +89,7 @@ namespace Report_App_WASM.Server.Controllers
                         protocol: Request.Scheme);
                     List<EmailRecipient> listEmail = new();
                     var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
-                    listEmail.Add(new() { Email = appUser.Email });
+                    listEmail.Add(new EmailRecipient { Email = appUser.Email });
                     var title = emailPrefix + " - Confirm your email";
                     var body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
                     _backgroundWorker.SendEmail(listEmail, title, body);

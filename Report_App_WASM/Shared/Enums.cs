@@ -3,13 +3,6 @@
 namespace Report_App_WASM.Shared
 {
 
-    public static class StaticAppLists
-    {
-        public static List<string> GetDataTransferBasicBehaviour = Enum.GetValues(typeof(DataTransferBasicBehaviour)).Cast<DataTransferBasicBehaviour>().Select(v => v.ToString()).ToList();
-        public static List<string> GetDataTransferAdvancedBehaviour = Enum.GetValues(typeof(DataTransferAdvancedBehaviour)).Cast<DataTransferAdvancedBehaviour>().Select(v => v.ToString()).ToList();
-        public static List<string> GetEncodingType = Enum.GetValues(typeof(EncodingType)).Cast<EncodingType>().Select(v => v.ToString()).ToList();
-    }
-
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TypeDb
     {

@@ -53,7 +53,7 @@
             }
             else
             {
-                emails.Add(new() { Email = _email, Bcc = false });
+                emails.Add(new EmailRecipient { Email = _email, Bcc = false });
                 var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }

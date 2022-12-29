@@ -51,7 +51,7 @@ CultureInfo.DefaultThreadCurrentUICulture = culture;
 var resultTheme = await jsInterop.InvokeAsync<string>("AppTheme.get");
 if (resultTheme != null)
 {
-    UserAppTheme.DarkTheme = resultTheme == "Dark" ? true : false;
+    UserAppTheme.DarkTheme = resultTheme == "Dark";
 }
 else
 {

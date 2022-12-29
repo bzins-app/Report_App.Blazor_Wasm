@@ -157,7 +157,7 @@
     {
         if (!_emails!.Select(a => a.Email).Contains(_email))
         {
-            _emails?.Add(new() { Email = _email });
+            _emails?.Add(new EmailRecipient { Email = _email });
         }
         _email = "";
         _emailNotValidated = true;

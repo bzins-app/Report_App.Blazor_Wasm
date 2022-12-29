@@ -41,7 +41,7 @@ namespace Report_App_WASM.Server.Models
         {
             get => _typeFileName; set
             {
-                _typeName = value;
+                _typeFileName = value;
                 _typeFileName = TypeFile.ToString();
             }
         }

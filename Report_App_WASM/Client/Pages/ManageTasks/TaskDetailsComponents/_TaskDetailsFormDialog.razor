@@ -223,7 +223,8 @@
             _typeDbActivity = response.Select(a => a.TypeDb).First();
         }
         _loading = false;
-        _opt = new() { IsReadOnly = false, Language = _typeDbActivity switch
+        _opt = new AceEditorOptions
+        { IsReadOnly = false, Language = _typeDbActivity switch
         {
             TypeDb.MySql => AceLanguage.mysql,
             TypeDb.MariaDb => AceLanguage.mysql,
@@ -262,7 +263,7 @@
     {
         try
         {
-            _cts = new();
+            _cts = new CancellationTokenSource();
             List<QueryCommandParameter>? param = new();
             _refQuery?.UpdateParameters();
             if (Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]" ||
@@ -292,14 +293,14 @@
             }
             else
             {
-                _data = new();
+                _data = new List<Dictionary<string, object>>();
             }
             _queryTestResult = null!;
             _testResult = true;
         }
         catch (Exception ex)
         {
-            _data = new();
+            _data = new List<Dictionary<string, object>>();
             _queryTestResult = ex.Message;
             _testResult = false;
         }

@@ -54,20 +54,24 @@
 
     private ApexChartOptions<TaksLogsValues> GetPieOptions()
     {
-        var options = new ApexChartOptions<TaksLogsValues>();
-        options.Stroke = new() { Width = 1 };
-        options.Tooltip = new() { Fixed = new() { Enabled = false } };
-        options.Chart = new() { Sparkline = new(), Animations = new() { Enabled = false } };
-        options.PlotOptions = new() { Pie = new() { ExpandOnClick = false } };
+        var options = new ApexChartOptions<TaksLogsValues>
+        {
+            Stroke = new Stroke { Width = 1 },
+            Tooltip = new Tooltip { Fixed = new TooltipFixed { Enabled = false } },
+            Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
+            PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { ExpandOnClick = false } }
+        };
         return options;
     }
 
     private ApexChartOptions<TaksLogsValues> GetBarOptions()
     {
-        var options = new ApexChartOptions<TaksLogsValues>();
-        options.Chart = new() { Sparkline = new(), Animations = new() { Enabled = false } };
-        options.PlotOptions = new() { Bar = new() { ColumnWidth = "85%", } };
-        options.Tooltip = new() { X = new() { Format = @" dd \ MM \ yyyy" } };
+        var options = new ApexChartOptions<TaksLogsValues>
+        {
+            Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
+            PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%", } },
+            Tooltip = new Tooltip { X = new TooltipX { Format = @" dd \ MM \ yyyy" } }
+        };
 
         return options;
     }

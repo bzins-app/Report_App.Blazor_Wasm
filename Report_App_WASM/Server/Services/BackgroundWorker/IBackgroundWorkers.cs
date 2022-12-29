@@ -7,9 +7,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public interface IBackgroundWorkers
     {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+        void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment>? attachment = null);
+
         void DeleteFile(string filePath);
         Task SwitchBackgroundTasksPerActivityAsync(int activityId, bool activate);
         Task SwitchBackgroundTaskAsync(int taskHeaderId, bool activate);

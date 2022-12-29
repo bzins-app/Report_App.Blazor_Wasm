@@ -49,10 +49,10 @@ else
     {
         _logs = await DataService.GetValues<TaksSystemValues>("SystemLogs", "api/Dashboard/");
         _options.Chart.Stacked = true;
-        _options.Tooltip = new() { X = new() { Format = @"dd \ MM \ yyyy" } };
-        _options.Theme = new() { Palette = PaletteType.Palette3};
-        _options.Colors = new() { "#008FFB", "#FEB019", "#FF4560" };
-        _options.Chart.Toolbar = new() { Show = false };
-        _options.Stroke = new() { Curve = Curve.Smooth, Width = 2 };
+        _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
+        _options.Theme = new Theme { Palette = PaletteType.Palette3};
+        _options.Colors = new List<string> { "#008FFB", "#FEB019", "#FF4560" };
+        _options.Chart.Toolbar = new Toolbar { Show = false };
+        _options.Stroke = new Stroke { Curve = Curve.Smooth, Width = 2 };
     }
 }

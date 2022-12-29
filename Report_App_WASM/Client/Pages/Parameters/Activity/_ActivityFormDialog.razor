@@ -19,6 +19,10 @@
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action==CrudAction.Delete" />
             <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" HelperText="@Localizer.Get("Please select a Db type")" Disabled="Action==CrudAction.Delete">
+                @if (DbCon.TypeDb == 0)
+                {
+                    <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
+                }
                 @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
                 {
                     <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -133,7 +137,7 @@
         else
         {
             await _form.Validate();
-            if (_form.IsValid)
+            if (_form.IsValid && DbCon.TypeDb> 0)
             {
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
@@ -160,16 +164,18 @@
 
     private async Task ConnectionTest()
     {
-        var tryConn = new ActivityDbConnectionDto();
-        tryConn.AdAuthentication = DbCon.AdAuthentication;
-        tryConn.ConnectionLogin = DbCon.ConnectionLogin;
-        tryConn.ConnectionPath = DbCon.ConnectionPath;
-        tryConn.IntentReadOnly = DbCon.IntentReadOnly;
-        tryConn.DbSchema = DbCon.DbSchema;
-        tryConn.TypeDb = DbCon.TypeDb;
-        tryConn.Port = DbCon.Port;
-        tryConn.UseDbSchema = DbCon.UseDbSchema;
-        tryConn.Password = DbCon.Password;
+        var tryConn = new ActivityDbConnectionDto
+        {
+            AdAuthentication = DbCon.AdAuthentication,
+            ConnectionLogin = DbCon.ConnectionLogin,
+            ConnectionPath = DbCon.ConnectionPath,
+            IntentReadOnly = DbCon.IntentReadOnly,
+            DbSchema = DbCon.DbSchema,
+            TypeDb = DbCon.TypeDb,
+            Port = DbCon.Port,
+            UseDbSchema = DbCon.UseDbSchema,
+            Password = DbCon.Password
+        };
         var result = await DataService.PostValues(tryConn, "TestConnection",ApiControllers.RemoteDbApi);
         _connectionTestResult = result.Message?? "Ok!";
     }

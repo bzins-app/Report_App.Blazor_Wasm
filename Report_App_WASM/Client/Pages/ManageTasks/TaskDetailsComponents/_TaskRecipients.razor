@@ -5,8 +5,8 @@
     <MudCardContent>
         <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Edit email message")</MudButton>
         <MudForm Model="@_email" @ref="_form">
-            <MudTextField T="string" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email"
-                          Validation="@(new EmailAddressAttribute {ErrorMessage = Localizer.Get("The email address is invalid")})" Required RequiredError="@Localizer.Get("Required")"/>
+            <MudAutocomplete T="string" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email"
+                             Validation="@(new EmailAddressAttribute {ErrorMessage = Localizer.Get("The email address is invalid")})" Required RequiredError="@Localizer.Get("Required")"  CoerceText="true" CoerceValue="true" SearchFunc="@SearchEmail" />
             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
                        OnClick="Add">@Localizer.Get("Add recipient")</MudButton>
         </MudForm>
@@ -35,8 +35,9 @@
     private TaskEmailRecipientDto _recipients = new();
     private MudForm _form = default!;
     private string _email = "";
+    private List<string> _activityEmails = new();
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         _recipients = Item?.TaskEmailRecipients.FirstOrDefault()!;
         if (_recipients != null)
@@ -49,9 +50,10 @@
         }
         else
         {
-            _recipients = new() { TaskHeader = Item, Email = "[]", Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
+            _recipients = new TaskEmailRecipientDto { TaskHeader = Item, Email = "[]", Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
             Item.TaskEmailRecipients = new List<TaskEmailRecipientDto> { _recipients };
         }
+        _activityEmails =( await DataService.GetValues<EmailRecipient>($"GetEmailsPerActivity?activityId={Item.IdActivity!}")).Select(a=>a.Email).ToList();
     }
 
     private void PopulateEmailItems()
@@ -87,7 +89,7 @@
         {
             if (!_emails!.Select(a => a.Email).Contains(_email))
             {
-                _emails?.Add(new() { Email = _email });
+                _emails?.Add(new EmailRecipient { Email = _email });
                 _recipients.Email = JsonSerializer.Serialize(_emails);
                 PopulateEmailItems();
                 ChangePending = true;
@@ -121,4 +123,12 @@
         }
     }
 
+
+    private async Task<IEnumerable<string>> SearchEmail(string value)
+    {
+        await Task.Delay(1);
+        if (string.IsNullOrEmpty(value))
+            return Array.Empty<string>();
+        return _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
 }

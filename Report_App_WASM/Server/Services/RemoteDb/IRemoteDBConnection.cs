@@ -233,9 +233,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
 
         private RemoteConnectionParameter GetConnectionString(int activityId)
         {
-            ActivityDbConnectionDto? conValue = new();
-
-            conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDto>(_mapper.ConfigurationProvider).SingleOrDefault();
+            var conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDto>(_mapper.ConfigurationProvider).SingleOrDefault();
 
             conValue!.Password = EncryptDecrypt.DecryptString(conValue.Password);
 
@@ -244,24 +242,13 @@ namespace Report_App_WASM.Server.Services.RemoteDb
 
         private async Task TryConnectAsync(TypeDb typeDb, string connectionString)
         {
-            DbConnection conn;
-
-            if (typeDb == TypeDb.Oracle)
+            DbConnection conn = typeDb switch
             {
-                conn = new OracleConnection(connectionString);
-            }
-            else if (typeDb == TypeDb.SqlServer)
-            {
-                conn = new SqlConnection(connectionString);
-            }
-            else if (typeDb == TypeDb.Db2)
-            {
-                conn = new OleDbConnection(connectionString);
-            }
-            else
-            {
-                conn = new MySqlConnection(connectionString);
-            }
+                TypeDb.Oracle => new OracleConnection(connectionString),
+                TypeDb.SqlServer => new SqlConnection(connectionString),
+                TypeDb.Db2 => new OleDbConnection(connectionString),
+                _ => new MySqlConnection(connectionString)
+            };
             await conn.OpenAsync();
             await conn.DisposeAsync();
         }
@@ -280,7 +267,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                 await dbConnector.DbCommand.ExecuteReaderAsync(cts);
             }
 
-            using var ctr = cts.Register(() => dbConnector.DbCommand.Cancel());
+            await using var ctr = cts.Register(() => dbConnector.DbCommand.Cancel());
             dbConnector.DbDataAdapter.SelectCommand = dbConnector.DbCommand;
             using (dbConnector.DbDataAdapter)
             {
@@ -314,11 +301,11 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             {
                 var conParam = CreateConnectionString(parameter);
                 await TryConnectAsync(conParam.TypeDb, conParam.ConnnectionString!);
-                return new() { Success = true, Message = "OK" };
+                return new SubmitResult { Success = true, Message = "OK" };
             }
             catch (Exception e)
             {
-                return new() { Success = false, Message = e.Message };
+                return new SubmitResult { Success = false, Message = e.Message };
             }
 
         }
@@ -526,7 +513,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                                 }
                             }
                         }
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'source' in 'bool Enumerable.Any<QueryCommandParameter>(IEnumerable<QueryCommandParameter> source)'.
+
 
                         dbConnector.DbCommand = cmd;
                     }

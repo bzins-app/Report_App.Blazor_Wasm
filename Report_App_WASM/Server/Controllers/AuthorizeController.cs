@@ -14,8 +14,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 
 namespace Report_App_WASM.Server.Controllers
-{
-    // [ApiExplorerSettings(IgnoreApi = true)]
+{ 
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthorizeController : ControllerBase
@@ -108,15 +108,17 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterParameters parameters)
         {
-            var user = new ApplicationUser();
-            user.UserName = parameters.UserName;
+            var user = new ApplicationUser
+            {
+                UserName = parameters.UserName
+            };
             if (parameters.Password != null)
             {
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
             }
 
-            return await Login(new()
+            return await Login(new LoginParameters
             {
                 UserName = parameters.UserName,
                 Password = parameters.Password
@@ -242,7 +244,7 @@ namespace Report_App_WASM.Server.Controllers
         private async Task<UserInfo> BuildUserInfoAsync()
         {
             var userData = await _userManager.GetUserAsync(User);
-            return new()
+            return new UserInfo
             {
                 IsAuthenticated = User.Identity!.IsAuthenticated,
                 UserName = User.Identity.Name,

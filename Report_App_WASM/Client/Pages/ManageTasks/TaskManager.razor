@@ -1,6 +1,7 @@
 ﻿@page "/TaskManager/{typeTask}"
 @page "/TasksPerActivity/{typeTask}/{activityId:int}/{activityName}"
 @inject NavigationManager UriHelper
+@implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -298,7 +299,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new TaskHeaderDto { TypeName = TypeTask };
+        var value = new TaskHeaderDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert};
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
@@ -327,3 +328,4 @@
         }
     }
 }
+

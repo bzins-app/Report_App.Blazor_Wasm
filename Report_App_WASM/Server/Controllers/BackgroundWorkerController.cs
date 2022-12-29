@@ -65,11 +65,11 @@ namespace Report_App_WASM.Server.Controllers
                 _context.Entry(item).State = EntityState.Modified;
                 await SaveDbAsync(userName);
                 _context.Entry(item).State = EntityState.Detached;
-                return new() { Success = true };
+                return new SubmitResult { Success = true };
             }
             catch (Exception ex)
             {
-                return new() { Success = false, Message = ex.Message };
+                return new SubmitResult { Success = false, Message = ex.Message };
             }
         }
 
@@ -141,11 +141,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public IActionResult RunManually(ApiCrudPayload<RunTaskManually> value)
         {
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'customQueryParameters' in 'void IBackgroundWorkers.RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient> emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)'.
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'emails' in 'void IBackgroundWorkers.RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient> emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)'.
-            _backgroundWorkers.RunManuallyTask(value.EntityValue!.TaskHeaderId, value.UserName, value.EntityValue.Emails, value.EntityValue.CustomQueryParameters, value.EntityValue.GenerateFiles);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'emails' in 'void IBackgroundWorkers.RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient> emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)'.
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'customQueryParameters' in 'void IBackgroundWorkers.RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient> emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)'.
+            _backgroundWorkers.RunManuallyTask(value.EntityValue!.TaskHeaderId, value.UserName, value.EntityValue.Emails!, value.EntityValue.CustomQueryParameters!, value.EntityValue.GenerateFiles);
             return Ok(new SubmitResult { Success = true });
         }
 

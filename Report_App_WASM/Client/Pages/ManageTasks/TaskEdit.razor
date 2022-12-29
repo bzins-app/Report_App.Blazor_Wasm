@@ -12,10 +12,10 @@
                 <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
                 @Localizer.Get(Item.Type switch
                 {
-                    TaskType.Report => "Edit a report",
-                    TaskType.Alert => "Edit an alert",
-                    _ => "Edit a data transfer"
-                    })
+                TaskType.Report => "Edit a report",
+                TaskType.Alert => "Edit an alert",
+                _ => "Edit a data transfer"
+                })
             </MudText>
         </CardHeaderContent>
         <CardHeaderActions>
@@ -33,14 +33,17 @@
             <MudGrid>
                 <MudItem sm="12" lg="6" xl="6">
                     <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text" />
-                    <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@_activityId"
+                    @if (_activities.Any())
+                    {
+                        <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@_activityId"
                                AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="(OnSelectedItemChangedHandler)"
                                Required>
-                        @foreach (var value in _activities)
-                        {
-                            <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
-                        }
-                    </MudSelect>
+                            @foreach (var value in _activities)
+                            {
+                                <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
                     @if (Item.Type == TaskType.Report)
                     {
                         <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")" />
@@ -204,21 +207,24 @@
 
     private async Task UpdateValues()
     {
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        var controllerActionDepositPath = "DepositPathInfo";
-        _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
         var uriAction = $"GetTaskHeader?taskHeaderId={TaskHeaderId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
-        if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters!="[]")
+        _activityId = Item.Activity.ActivityId;
+        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+
+        var controllerActionDepositPath = "DepositPathInfo";
+        _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
+
+        if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters != "[]")
         {
             _param = JsonSerializer.Deserialize<TaskHeaderParameters>(Item.TaskHeaderParameters);
         }
 
         if (Item.FileDepositPathConfigurationId != 0)
         {
-            _depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault(); 
+            _depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault();
         }
-        _activityId = Item.Activity.ActivityId;
+
         var uri = $"GetActivityDbConnection?ActivityId={Item.Activity.ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         if (response.Any())
@@ -283,19 +289,19 @@
         {
             uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.Activity.ActivityId}/{Item.Activity.ActivityName}",
                 new Dictionary<string, object>
-                {
-                    ["Page"] = Page!,
-                    ["PageSize"] = PageSize!
-                }!);
+                    {
+                        ["Page"] = Page!,
+                        ["PageSize"] = PageSize!
+                    }!);
         }
         else
         {
             uri = UriHelper.GetUriWithQueryParameters("TaskManager/" + Item.Type,
              new Dictionary<string, object>
-             {
-                 ["Page"] = Page!,
-                 ["PageSize"] = PageSize!
-             }!);
+                 {
+                     ["Page"] = Page!,
+                     ["PageSize"] = PageSize!
+                 }!);
         }
 
         if (_changesToSave)
@@ -315,7 +321,7 @@
     private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
     {
         _activityId = actId.FirstOrDefault();
-        Item.Activity = new() { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
         Item.IdActivity = Item.Activity.ActivityId;
         Item.ActivityName = Item.Activity.ActivityName;
     }
@@ -326,7 +332,7 @@
         foreach (var file in e.GetMultipleFiles())
         {
             var result = await DataService.PostFile(file);
-            if(result.Success)
+            if (result.Success)
             {
                 _param!.ExcelTemplatePath = result.Message;
             }

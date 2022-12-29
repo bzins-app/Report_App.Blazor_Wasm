@@ -147,7 +147,7 @@
         // Model.Id = user.Id;
         Model.Email = user?.UserMail;
         _ldapSignin = ApplicationConstants.LdapLogin;
-        _passwordValidator = new(Localizer);
+        _passwordValidator = new ChangePasswordModelValidator(Localizer);
     }
 
 
