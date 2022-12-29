@@ -41,12 +41,17 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IActionResult> Login(LoginParameters parameters)
         {
             var user = await _userManager.FindByNameAsync(parameters.UserName!);
-            if (user == null) return BadRequest("User does not exist");
+            if (user == null)
+            {
+                user = await _userManager.FindByEmailAsync(parameters.UserName!);
+                if (user == null)
+                    return BadRequest("User does not exist");
+            }
             var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password!, false);
             if (!singInResult.Succeeded) return BadRequest("Invalid password");
 
             await _signInManager.SignInAsync(user, parameters.RememberMe);
-
+            _logger.LogInformation("User logged in:" + parameters.UserName);
             return Ok();
         }
 
@@ -85,6 +90,7 @@ namespace Report_App_WASM.Server.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(userNew, rememberMe);
+                    _logger.LogInformation("User logged in:" + parameters.UserName);
                     return Ok();
                 }
                 foreach (var error in result.Errors)
