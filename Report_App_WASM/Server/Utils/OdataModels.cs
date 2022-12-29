@@ -24,7 +24,7 @@ namespace Report_App_WASM.Server.Utils
             builder.EntitySet<FileDepositPathConfiguration>("DepositPath");
             builder.EntitySet<Activity>("Activities");
             builder.EntitySet<TaskHeader>("TaskHeader");
-            builder.EntitySet<ApplicationUser>("Users");
+            builder.EntitySet<ApplicationUserDto>("Users");
 
             builder.Action("ExtractLogs");
             return builder.GetEdmModel();
