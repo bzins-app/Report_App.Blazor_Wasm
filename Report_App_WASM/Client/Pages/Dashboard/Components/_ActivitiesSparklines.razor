@@ -45,12 +45,12 @@
 </MudTable>
 
 @code {
-    private List<TaksLogsValues>? _taskLogs = new();
+    [Parameter] public List<TaksLogsValues>? _taskLogs { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
-    }
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
+    //}
 
     private ApexChartOptions<TaksLogsValues> GetPieOptions()
     {

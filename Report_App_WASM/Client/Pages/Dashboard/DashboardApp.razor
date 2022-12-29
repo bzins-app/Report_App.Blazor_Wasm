@@ -71,13 +71,27 @@
         <MudItem xs="12" sm="12" md="12" lg="6">
             <MudGrid Spacing="2">
                 <MudItem xs="12" sm="12" md="6" lg="6">
-                    <MudPaper Elevation="2" Class="pa-2" Style="height:240px">
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%"/>
+                    <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
+                        @if (_taskLogs == null)
+                        {
+                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                        }
+                        else
+                        {
+                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" />
+                        }
                     </MudPaper>
                 </MudItem>
                 <MudItem xs="12" sm="12" md="6" lg="6">
-                    <MudPaper Elevation="2" Class="pa-2" Style="height:240px">
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" />
+                    <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
+                        @if (_taskLogs == null)
+                        {
+                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                        }
+                        else
+                        {
+                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" />
+                        }
                     </MudPaper>
                 </MudItem>
                 <MudItem xs="12" sm="12" md="12" lg="12">
@@ -88,8 +102,15 @@
             </MudGrid>
         </MudItem>
         <MudItem xs="12" sm="12" md="12" lg="6">
-            <MudPaper Elevation="2" Class="pa-2" Style="height: 100%;min-height: 200px;max-height:484px">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines />
+            <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; min-height: 200px; max-height: 484px">
+                @if (_taskLogs == null)
+                {
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                }
+                else
+                {
+                    <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs" />
+                }
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6" md="6" xl="4">
@@ -122,9 +143,11 @@
 
 @code {
     AppMetrics _metrics = new();
+    private List<TaksLogsValues>? _taskLogs;
 
     protected override async Task OnInitializedAsync()
     {
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", "api/Dashboard/");
     }
 

@@ -16,7 +16,7 @@
 <MudLayout>
     <MudAppBar Color="Color.Surface">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
-        <img src="@ApplicationConstants.ApplicationLogo" alt="@ApplicationConstants.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />
+        <img src="@_appConst?.ApplicationLogo" alt="@_appConst?.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />
         <MudSpacer />
         <MudTooltip Duration="1000" Text="@(_isDarkMode ? Localizer.Get("Switch to Light Theme") : Localizer.Get("Switch to Dark Theme"))">
             <MudIconButton Icon="@(_isDarkMode ? Icons.Rounded.LightMode : Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(()=>DarkModeChange(!UserAppTheme.DarkTheme))" />
@@ -42,13 +42,11 @@
 
     private bool _isDarkMode;
     public bool DrawerOpen = true;
+    private ApplicationConstantsValues? _appConst;
 
     protected override async Task OnInitializedAsync()
     {
-        var values =await  Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
-        ApplicationConstants.ApplicationLogo = values?.ApplicationLogo;
-        ApplicationConstants.ApplicationName = values?.ApplicationName;
-        ApplicationConstants.LdapLogin = values!.LdapLogin;
+        _appConst = await AppService.GetApplicationConstantsValues();
         _isDarkMode=UserAppTheme.DarkTheme;
     }
 

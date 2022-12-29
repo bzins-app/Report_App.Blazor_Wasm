@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Blazor-ApexCharts" Version="0.9.16-beta" />
     <PackageReference Include="Blazor.AceEditorJs" Version="1.1.1" />
-    <PackageReference Include="Blazor.SimpleGrid" Version="7.0.0.44" />
+    <PackageReference Include="Blazor.SimpleGrid" Version="7.0.0.45" />
     <PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageReference Include="CronExpressionDescriptor" Version="2.19.0" />
     <PackageReference Include="FluentValidation" Version="11.4.0" />

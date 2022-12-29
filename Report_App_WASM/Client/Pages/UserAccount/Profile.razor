@@ -2,6 +2,7 @@
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
+@attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Manage your account")</PageTitle>
 
@@ -146,7 +147,8 @@
         Model.UserName = user?.UserName;
         // Model.Id = user.Id;
         Model.Email = user?.UserMail;
-        _ldapSignin = ApplicationConstants.LdapLogin;
+        var _appConst = await AppService.GetApplicationConstantsValues();
+        _ldapSignin = _appConst!.LdapLogin;
         _passwordValidator = new ChangePasswordModelValidator(Localizer);
     }
 

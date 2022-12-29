@@ -202,7 +202,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _isDarkMode = await AppService.GetUserTheme();
+        _isDarkMode = UserAppTheme.DarkTheme;
         _taskType = Header?.TypeName;
         _fileType = Header?.TypeFileName;
         if (Item!.TaskDetailParameters != "[]" && !string.IsNullOrEmpty(Item.TaskDetailParameters))

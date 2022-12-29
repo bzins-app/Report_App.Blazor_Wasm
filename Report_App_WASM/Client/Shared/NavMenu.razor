@@ -10,7 +10,7 @@
                     <img src="images/AppLogo.png" style="-webkit-filter:invert(100%)" alt="" height="30">
                 </span>
                 <span class="logo-lg" style="flex: none;">
-                    <span style="color:white; padding-left:5px">@ApplicationConstants.ApplicationName</span>
+                    <span style="color:white; padding-left:5px">@_appConst?.ApplicationName</span>
                 </span>
             </div>
         </a>
@@ -88,9 +88,11 @@
 
     [Parameter] public bool IsDarkMode { get; set; }
     private List<SelectItemActivitiesInfo> _activities = new();
+    private ApplicationConstantsValues? _appConst;
 
     protected override async Task OnInitializedAsync()
     {
+        _appConst = await AppService.GetApplicationConstantsValues();
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 

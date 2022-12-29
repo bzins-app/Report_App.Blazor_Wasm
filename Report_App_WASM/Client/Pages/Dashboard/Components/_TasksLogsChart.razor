@@ -41,13 +41,13 @@ else
 
 @code {
     [Parameter] public string? Height { get; set; } = null;
-    private List<TaksLogsValues>? _taskLogs;
+    [Parameter] public List<TaksLogsValues>? _taskLogs { get; set; }
     private ApexChartOptions<TaksLogsValues> _options = new();
     private ApexChart<TaksLogsValues>? _chart;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
+      //  _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
         //options.Chart.Stacked = true;
         _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
         _options.Theme = new Theme { Palette = PaletteType.Palette7 };

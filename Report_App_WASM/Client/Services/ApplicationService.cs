@@ -3,6 +3,7 @@ using Report_App_WASM.Client.Services.Implementations;
 using Report_App_WASM.Client.Utils;
 using Report_App_WASM.Shared;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace Report_App_WASM.Client.Services
 {
@@ -11,6 +12,7 @@ namespace Report_App_WASM.Client.Services
         private readonly CommonLocalizationService _localizer;
         private readonly HttpClient _httpClient;
         private readonly IdentityAuthenticationStateProvider _authenticationStateProvider;
+        private ApplicationConstantsValues? _constantsValuesCache;
 
         public ApplicationService(CommonLocalizationService localizer, HttpClient httpClient, IdentityAuthenticationStateProvider authenticationStateProvider)
         {
@@ -90,6 +92,16 @@ namespace Report_App_WASM.Client.Services
         {
             var uri = $"{ApiControllers.AuthorizeApi}GetIdentityOptions";
             return await _httpClient.GetFromJsonAsync<IdentityDefaultOptions>(uri);
+        }
+
+        public async Task<ApplicationConstantsValues?> GetApplicationConstantsValues()
+        {
+            if (_constantsValuesCache == null)
+            {
+              return  (_constantsValuesCache =await _httpClient.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants"))!;
+            }
+
+            return _constantsValuesCache;
         }
     }
 }

@@ -18,10 +18,10 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Model" @ref="@_form" Validation="@(_userValidator?.ValidateValue)" >
-            <MudTextField @bind-Value="Model.UserName" Label="@Localizer.Get("Name")" For="@(()=>Model.UserName)" Disabled="Action==CrudAction.Create?false:true" />
-            <MudTextField @bind-Value="Model.Email" Label="@Localizer.Get("Email")" For="@(()=>Model.Email)" InputType="InputType.Email" Disabled="Action==CrudAction.Create?false:true" />
-            <MudTextField @bind-Value="Model.Password" Label="@Localizer.Get("Password")" For="@(()=>Model.Password)" InputType="InputType.Password" Disabled="Action==CrudAction.Create?false:true" />
-            <MudTextField @bind-Value="Model.ConfirmPassword" Label="@Localizer.Get("Confirm Password")" For="@(()=>Model.ConfirmPassword)" InputType="InputType.Password" Disabled="Action==CrudAction.Create?false:true" />
+            <MudTextField @bind-Value="Model.UserName" Label="@Localizer.Get("Name")" For="@(()=>Model.UserName)" Disabled="Action != CrudAction.Create" />
+            <MudTextField @bind-Value="Model.Email" Label="@Localizer.Get("Email")" For="@(()=>Model.Email)" InputType="InputType.Email" Disabled="Action != CrudAction.Create" />
+            <MudTextField @bind-Value="Model.Password" Label="@Localizer.Get("Password")" For="@(()=>Model.Password)" InputType="InputType.Password" Disabled="Action != CrudAction.Create" />
+            <MudTextField @bind-Value="Model.ConfirmPassword" Label="@Localizer.Get("Confirm Password")" For="@(()=>Model.ConfirmPassword)" InputType="InputType.Password" Disabled="Action != CrudAction.Create" />
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
