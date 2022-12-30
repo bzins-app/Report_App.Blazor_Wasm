@@ -1,5 +1,4 @@
-﻿@using Report_App_WASM.Shared.ApiExchanges
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
 <MudIconButton Icon="@Icons.Outlined.FileDownload" OnClick="(OpenRunConfirmationComponent)" Disabled="Item!.FileDepositPathConfigurationId == 0"><MudText>@Localizer.Get("Drop file")</MudText> </MudIconButton>

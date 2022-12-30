@@ -147,8 +147,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
-        _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", "api/Dashboard/");
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
+        _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
     }
 
     public void Dispose()

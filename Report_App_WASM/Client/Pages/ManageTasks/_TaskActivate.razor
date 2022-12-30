@@ -1,5 +1,4 @@
-﻿@using Report_App_WASM.Shared.ApiExchanges
-@inject HttpClient Http
+﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
 
 <MudSwitch Checked="@Item!.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />

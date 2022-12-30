@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Client.Pages.UserManager;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.BackgroundWorker;
@@ -12,7 +11,6 @@ using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
 using System.Text;
 using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Components.Routing;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -78,7 +76,7 @@ namespace Report_App_WASM.Server.Controllers
                     UserName = item.EntityValue.UserName
                 };
                 var password = item.EntityValue.Password;
-               // appUser.PasswordHash = "";
+                // appUser.PasswordHash = "";
                 var result = await _userManager.CreateAsync(appUser, password!);
                 if (result.Succeeded)
                 {

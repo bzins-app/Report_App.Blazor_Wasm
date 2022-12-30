@@ -32,6 +32,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _logs = await DataService.GetValues<ApplicationLogReportResultDto>("StorageInfo", "api/Dashboard/");
+        _logs = await DataService.GetValues<ApplicationLogReportResultDto>("StorageInfo", ApiControllers.DashboardApi);
     }
 }

@@ -289,14 +289,26 @@
             var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
             if(response.IsSuccessStatusCode)
             {
-                _data = await response.Content.ReadFromJsonAsync<List<Dictionary<string, object>>>();
+                var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                if (result.Success)
+                {
+                    _data = result.Value;
+                    _queryTestResult = null!;
+                    _testResult = true;
+                }
+                else
+                {
+                    _queryTestResult = result.Message;
+                    _data = new List<Dictionary<string, object>>();
+                    _testResult = false;
+                }
             }
             else
             {
                 _data = new List<Dictionary<string, object>>();
+                _testResult = false;
             }
-            _queryTestResult = null!;
-            _testResult = true;
+            
         }
         catch (Exception ex)
         {

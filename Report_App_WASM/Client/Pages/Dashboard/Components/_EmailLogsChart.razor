@@ -1,5 +1,4 @@
-﻿@using Report_App_WASM.Shared.ApiExchanges
-@using ApexCharts
+﻿@using ApexCharts
 @using Color = MudBlazor.Color
 @if (_logs == null)
 {
@@ -48,7 +47,7 @@ else
 
 	 protected override async Task OnInitializedAsync()
 	{
-		_logs = await DataService.GetValues<EmailsLogsalues>("EmailLogs", "api/Dashboard/");
+		_logs = await DataService.GetValues<EmailsLogsalues>("EmailLogs", ApiControllers.DashboardApi);
 		_options.Chart.Stacked = true;
 		_options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
 		_options.Theme = new Theme { Palette = PaletteType.Palette3 };

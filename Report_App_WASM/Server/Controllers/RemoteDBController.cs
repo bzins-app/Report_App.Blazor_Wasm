@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
+using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
 using Report_App_WASM.Shared.DTO;
 using Report_App_WASM.Shared.Extensions;
@@ -40,8 +41,17 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload values, CancellationToken ct)
         {
-            var data = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
-            return Ok(data.ToDictionnary());
+            try
+            {
+                var data = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
+                var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
+                return Ok(result);
+            }
+            catch(Exception e)
+            {
+                var result = new SubmitResultRemoteData { Success = false, Message = e.Message, Value = new()};
+                return Ok(result);
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ using Report_App_WASM.Client.Services.Implementations;
 using Report_App_WASM.Client.Utils;
 using Report_App_WASM.Shared;
 using System.Net.Http.Json;
-using static System.Net.WebRequestMethods;
 
 namespace Report_App_WASM.Client.Services
 {
@@ -98,7 +97,7 @@ namespace Report_App_WASM.Client.Services
         {
             if (_constantsValuesCache == null)
             {
-              return  (_constantsValuesCache =await _httpClient.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants"))!;
+                return (_constantsValuesCache = await _httpClient.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants"))!;
             }
 
             return _constantsValuesCache;

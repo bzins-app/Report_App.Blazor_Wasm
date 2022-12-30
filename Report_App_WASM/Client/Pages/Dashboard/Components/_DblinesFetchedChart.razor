@@ -33,7 +33,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", "api/Dashboard/");
+        _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", ApiControllers.DashboardApi);
         _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
     }
 }

@@ -1,0 +1,255 @@
+﻿@page "/QueryTest"
+@using Blazor.AceEditorJs
+@using Report_App_WASM.Client.Pages.ManageTasks.TaskDetailsComponents
+@using Report_App_WASM.Shared.RemoteQueryParameters
+@using System.Net
+@inject HttpClient Http
+
+<h3>QueryTest</h3> 
+<MudButton Disabled="@_loading" OnClick="REun" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+    @if (_loading)
+    {
+        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+    }
+    else
+    {
+        <MudText>@Localizer.Get("Test query")</MudText>
+    }
+</MudButton>
+@if (_loading)
+{
+    <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">@Localizer.Get("Cancel")</MudButton>
+}
+<div class="form-group">
+    <p style="color:red">@_queryTestResult</p>
+</div>
+<MudGrid>
+    <MudItem sm="12" md="6">
+        @if (_typeDbTask != TypeDb.Db2)
+        {
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
+                <MudTabPanel Text="SQL">
+                    <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@_query" Options="@_opt" />
+                </MudTabPanel>
+                <MudTabPanel Text="@Localizer.Get("Query parameters")">
+                    @*<_QueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery"/>*@
+                </MudTabPanel>
+            </MudTabs>
+        }
+        else
+        {
+            <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@_query" Options="@_opt" />
+        }
+    </MudItem>
+    <MudItem sm="12" md="6">
+        <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="75vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20">
+                <HeaderContent>
+                    @if (_values?.Any() == true)
+                    {
+                        @foreach (var key in _values?.FirstOrDefault()?.Keys!)
+                        {
+                            <MudTh>@key</MudTh>
+                        }
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    @if (_values?.Any() == true)
+                    {
+                        @foreach (var t in context)
+                        {
+                            <MudTd>@t</MudTd>
+                        }
+                    }
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager  PageSizeOptions="_pageSizeOptions" />
+                </PagerContent>
+            </MudTable>
+            <hr />
+    </MudItem>
+</MudGrid>
+
+@code {
+    private TypeDb _typeDbTask;
+    private bool _querySuccessed;
+    private List<Dictionary<string, object>>? _values = new();
+    private string? _queryTestResult { get; set; }
+    private bool _isDarkMode;
+    private AceEditorOptions? _opt;
+    private string? _query;
+    private _QueryParameters? _refQuery;
+    private CancellationTokenSource? _cts;
+    private int _activityId;
+    private bool _loading;
+    MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
+    int[] _pageSizeOptions = {10,20,50,100};
+
+    protected override async Task OnInitializedAsync()
+    {
+        _activityId = 1;
+        var uri = $"GetActivityDbConnection?ActivityId={_activityId}";
+        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+        if (response.Any())
+        {
+            _typeDbTask = response.Select(a => a.TypeDb).First();
+        }
+        _isDarkMode = UserAppTheme.DarkTheme;
+        _opt = new AceEditorOptions
+            {
+                IsReadOnly = false,
+                Language = _typeDbTask switch
+        {
+            TypeDb.MySql => AceLanguage.mysql,
+            TypeDb.MariaDb => AceLanguage.mysql,
+            TypeDb.SqlServer => AceLanguage.sqlserver,
+            _ => AceLanguage.sql
+            }, Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver };
+    }
+
+
+    private async Task ReloadTable(int pagsize)
+    {
+        await RunSql();
+    }
+
+    private async Task REun()
+    {
+        if (string.IsNullOrEmpty(_query))
+        {
+            _queryTestResult = "query is not set";
+        }
+        else
+        {
+            _table.CurrentPage = 0;
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task RunSql()
+    {
+        _loading = true;
+        try
+        {
+            
+            var currentPage= _table.CurrentPage;
+            var pageSize= _table.RowsPerPage;
+            _cts = new CancellationTokenSource();
+            List<QueryCommandParameter>? param = new();
+            //_refQuery?.UpdateParameters();
+            //if (Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]" ||
+            //    !string.IsNullOrEmpty(Header.QueryParameters))
+            //{
+            //    param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.QueryParameters);
+            //}
+
+            //if (CategoryTypes.Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(CategoryTypes.Item.QueryParameters))
+            //{
+            //    var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(CategoryTypes.Item.QueryParameters);
+            //    foreach (var value in desParam!)
+            //    {
+            //        if (param!.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
+            //        {
+            //            param?.Add(value);
+            //        }
+            //    }
+            //}
+            var run = new RemoteDbCommandParameters { ActivityId = _activityId, QueryToRun = _query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize+1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+            var remoteDataPayload = new RemoteDataPayload { Values = run };
+            var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
+            var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
+            if (response.IsSuccessStatusCode)
+            {
+                _values = await response.Content.ReadFromJsonAsync<List<Dictionary<string, object>>>();
+            }
+            else
+            {
+                _values = new List<Dictionary<string, object>>();
+            }
+            _queryTestResult = null!;
+            _table.TotalItems = currentPage * pageSize+pageSize+1;
+            _querySuccessed = true;
+        }
+        catch (Exception ex)
+        {
+            _values = new List<Dictionary<string, object>>();
+            _queryTestResult = ex.Message;
+            _querySuccessed = false;
+        }
+        _loading = false;
+    }
+
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    {
+        _loading = true;       
+        var currentPage = state.Page;
+        var pageSize = state.PageSize;
+        if (string.IsNullOrEmpty(_query))
+        {
+            _values = new List<Dictionary<string, object>>();
+        }
+        else
+        {
+            try
+            {
+                _cts = new CancellationTokenSource();
+                List<QueryCommandParameter>? param = new();
+    //_refQuery?.UpdateParameters();
+    //if (Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]" ||
+    //    !string.IsNullOrEmpty(Header.QueryParameters))
+    //{
+    //    param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.QueryParameters);
+    //}
+
+    //if (CategoryTypes.Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(CategoryTypes.Item.QueryParameters))
+    //{
+    //    var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(CategoryTypes.Item.QueryParameters);
+    //    foreach (var value in desParam!)
+    //    {
+    //        if (param!.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
+    //        {
+    //            param?.Add(value);
+    //        }
+    //    }
+    //}
+                var run = new RemoteDbCommandParameters { ActivityId = _activityId, QueryToRun = _query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var remoteDataPayload = new RemoteDataPayload { Values = run };
+                var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
+                var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                    if (result.Success)
+                    {
+                        _values = result.Value;
+                        _queryTestResult = null!;
+                    }
+                    else
+                    {
+                        _queryTestResult = result.Message;
+                        _values = new List<Dictionary<string, object>>();
+                    }
+                }
+                else
+                {
+                    _values = new List<Dictionary<string, object>>();
+                    _queryTestResult = response.Content.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                _values = new List<Dictionary<string, object>>();
+                _queryTestResult = ex.Message;
+                _querySuccessed = false;
+            }
+        }
+        _loading = false;
+        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+    }
+
+
+    void CancelQuery()
+    {
+        _cts?.Cancel();
+    }
+}

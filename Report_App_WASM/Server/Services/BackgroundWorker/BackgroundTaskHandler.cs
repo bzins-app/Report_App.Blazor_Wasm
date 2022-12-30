@@ -538,7 +538,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     {
                         var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
                         var message = "";
-                        List<Attachment>? listAttach = new();
+                        List<Attachment> listAttach = new();
                         var counter = 0;
                         foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
                         {
@@ -601,7 +601,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                 var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;
 
-                List<Attachment>? listAttach = new();
+                List<Attachment> listAttach = new();
                 listAttach.AddRange(_fileResults.Select(a => new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
 
                 //to remove dirty code
