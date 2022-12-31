@@ -102,7 +102,7 @@
         string customFilters = $"TypeName eq '{_typeTask}'";
         if (ActivityId.HasValue)
         {
-            customFilters += $" and  ActivityName eq tolower('{ActivityName}')";
+            customFilters += $" and  IdActivity eq {ActivityId.Value})";
         }
 
         url += "$count=true";

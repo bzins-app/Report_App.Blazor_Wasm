@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace Report_App_WASM.Shared.DTO
 {
@@ -45,6 +46,8 @@ namespace Report_App_WASM.Shared.DTO
         [MaxLength(200)]
         public string? AlertEmailPrefix { get; set; }
         public int LogsRetentionInDays { get; set; } = 90;
+        public bool ActivateTaskSchedulerModule { get; set; }
+        public bool ActivateAdHocQueriesModule { get; set; }
     }
     public class SftpConfigurationDto : BaseTraceabilityDto, IDto
     {
@@ -60,7 +63,6 @@ namespace Report_App_WASM.Shared.DTO
     }
     public class ActivityDto : BaseTraceabilityDto, IDto
     {
-
         public int ActivityId { get; set; }
         [Required]
         [MaxLength(60)]
@@ -75,10 +77,26 @@ namespace Report_App_WASM.Shared.DTO
         public string? ActivityRoleId { get; set; }
         public virtual ICollection<ActivityDbConnectionDto> ActivityDbConnections { get; set; } = new List<ActivityDbConnectionDto>();
         public virtual ICollection<TaskHeaderDto> TaskHeaders { get; set; } = new List<TaskHeaderDto>();
+        public virtual ICollection<QueryStoreDto> QueryStores { get; set; } = new List<QueryStoreDto>();
+    }
+
+
+    public class QueryStoreDto : BaseTraceabilityDto, IDto
+    {
+        public int Id { get; set; }
+        public int IdActivity { get; set; }
+        public string? QueryName { get; set; }
+        public string? Query { get; set; }
+        public string QueryParameters { get; set; } = "[]";
+        public virtual ActivityDto? Activity { get; set; }
     }
 
     public class ActivityDbConnectionDto : BaseTraceabilityDto, IDto
     {
+        public ActivityDbConnectionDto()
+        {
+            DbTableDescriptions = new HashSet<DbTableDescriptionsDto>();
+        }
         public int Id { get; set; }
         [MaxLength(20)]
         public string ConnectionType { get; set; } = "SQL";
@@ -99,7 +117,19 @@ namespace Report_App_WASM.Shared.DTO
         public int CommandTimeOut { get; set; } = 300;
         public int CommandFetchSize { get; set; } = 131072;
         public string DbConnectionParameters { get; set; } = "[]";
+        public bool UseTablesDescriptions { get; set; } = false;
         public virtual ActivityDto? Activity { get; set; }
+        public virtual ICollection<DbTableDescriptionsDto>? DbTableDescriptions { get; set; } = new List<DbTableDescriptionsDto>();
+    }
+
+    public class DbTableDescriptionsDto : BaseTraceabilityDto, IDto
+    {
+        public int Id { get; set; }
+        public string? TableName { get; set; }
+        public string? TableDescription { get; set; }
+        public string? ColumnName { get; set; }
+        public string? ColumnDescription { get; set; }
+        public virtual ActivityDbConnectionDto? ActivityDbConnection { get; set; }
     }
 
     public class FileDepositPathConfigurationDto : BaseTraceabilityDto, IDto

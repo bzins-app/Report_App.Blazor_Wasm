@@ -57,7 +57,7 @@ namespace Report_App_WASM.Server
         {
             List<string> roles = new();
             string[] role = { "Admin",
-                "Supervisor"};
+                "Supervisor","ApiAccess"};
             roles.AddRange(role);
             foreach (var t in roles)
             {

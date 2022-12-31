@@ -180,7 +180,7 @@
     private string? _deletionValidation;
     private _QueryParameters? _refQuery;
 
-    private TaskDetailParameters? _param = new();
+    private TaskDetailParameters _param = new();
     private TaskHeaderParameters? _paramHeader = new();
     private TypeDb _typeDbActivity;
     private string? _taskType;
@@ -290,7 +290,7 @@
             if(response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
-                if (result.Success)
+                if (result!.Success)
                 {
                     _data = result.Value;
                     _queryTestResult = null!;
@@ -298,7 +298,7 @@
                 }
                 else
                 {
-                    _queryTestResult = result.Message;
+                    _queryTestResult = result!.Message;
                     _data = new List<Dictionary<string, object>>();
                     _testResult = false;
                 }

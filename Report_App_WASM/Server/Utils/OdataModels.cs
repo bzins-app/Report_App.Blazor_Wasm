@@ -25,6 +25,7 @@ namespace Report_App_WASM.Server.Utils
             builder.EntitySet<Activity>("Activities");
             builder.EntitySet<TaskHeader>("TaskHeader");
             builder.EntitySet<ApplicationUserDto>("Users");
+            builder.EntitySet<QueryStore>("Queries");
 
             builder.Action("ExtractLogs");
             return builder.GetEdmModel();

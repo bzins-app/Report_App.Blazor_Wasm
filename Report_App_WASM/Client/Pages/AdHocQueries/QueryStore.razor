@@ -1,5 +1,4 @@
-﻿@page "/TaskManager/{TypeTask}"
-@page "/TasksPerActivity/{TypeTask}/{ActivityId:int}/{ActivityName}"
+﻿@page "/QueryStore/{activityId:int}/{activityName}"
 @inject NavigationManager UriHelper
 @implements IAsyncDisposable
 @inject HttpClient Http
@@ -42,41 +41,17 @@
                             <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.TaskHeaderId)" Title="Task Id" Sortable="true" />
-                    @if (string.IsNullOrEmpty(ActivityName))
-                    {
-                        <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true" />
-                    }
-                    <PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true" />
-                    @if (TypeTask == TaskType.Report.ToString())
-                    {
-                        <PropertyColumn Property="@(p => p.TypeFileName)" Title="@Localizer.Get("Type of file")" Sortable="true" />
-                    }
-                    <TemplateColumn Title="@Localizer.Get("Run manually")">
-                        <_TaskRunForm Item="context" />
+                    <PropertyColumn Property="@(p => p.Id)" Title="Task Id" Sortable="true" />
+                    <TemplateColumn Title="@Localizer.Get("Run query")">
+                        <MudIconButton Icon="@Icons.Outlined.Kitesurfing" OnClick="()=>RunQuery(context)" Title="@Localizer.Get("Run query")" />
                     </TemplateColumn>
-                    <TemplateColumn Title="@Localizer.Get("Is activated?")">
-                        <_TaskActivate Item="context" />
-                    </TemplateColumn>
-                    @if (TypeTask == TaskType.Report.ToString())
-                    {
-                        <TemplateColumn Title="@Localizer.Get("Send by email?")">
-                            <_TaskEmailActivate Item="context" />
-                        </TemplateColumn>
-                    }
-                    @if (TypeTask == TaskType.Report.ToString())
-                    {
-                        <PropertyColumn Property="@(p => p.FileDepositPathConfigurationId)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
-                        <TemplateColumn Title="@Localizer.Get("Create file manually")">
-                            <_TaskDropFileForm Item="context" />
-                        </TemplateColumn>
-                        <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true" />
-                    }
-                    <TemplateColumn Title="@Localizer.Get("Duplicate")">
+                    <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
+
+@*                    <TemplateColumn Title="@Localizer.Get("Duplicate")">
                         <CascadingValue Value="@_grid">
                             <_TaskDuplicateForm Item="context" />
                         </CascadingValue>
-                    </TemplateColumn>
+                    </TemplateColumn>*@
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
@@ -88,44 +63,25 @@
     </MudCard>
 </ErrorBoundary>
 
-@code
-{
-#nullable enable
-    [Parameter] public string TypeTask { get; set; } = default!;
+@code {
     [Parameter] public string ActivityName { get; set; } = default!;
-    [Parameter] public int? ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? Page { get; set; }
-
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? PageSize { get; set; }
-
-
-    GridItemsProvider<TaskHeaderDto>? _itemsProvider;
+    GridItemsProvider<QueryStoreDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<TaskHeaderDto>? _grid;
+    SimpleGrid<QueryStoreDto>? _grid;
     private string? _errorMessage;
     private string? _pageTitle;
     private bool _rendering;
-
     bool _empty;
-
 
     protected override async Task OnParametersSetAsync()
     {
-        _pageTitle = TypeTask == TaskType.Report.ToString() ? Localizer.Get("Manage reports") : TypeTask == TaskType.Alert.ToString() ? Localizer.Get("Manage alerts") : Localizer.Get("Manage data transfers");
+        _pageTitle = Localizer.Get("Queries store");
         if (!string.IsNullOrEmpty(ActivityName))
         {
             _pageTitle += ": " + ActivityName;
-        }
-        if (Page.HasValue && PageSize.HasValue)
-        {
-            _pagination.ItemsPerPage = PageSize.Value;
-            await _pagination.SetCurrentPageIndexAsync(Page.Value);
         }
 
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
@@ -137,7 +93,7 @@
                     if (response is null)
                     {
                         _empty = true;
-                        return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
+                        return GridItemsProviderResult.From(Array.Empty<QueryStoreDto>(), 0);
                     }
 
                     _empty = !response.Value!.Any();
@@ -155,7 +111,7 @@
             if (response is null)
             {
                 _empty = true;
-                return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<QueryStoreDto>(), 0);
             }
             if (response.Value!.Any())
             {
@@ -170,21 +126,17 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<TaskHeaderDto>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDto> req)
+    private async Task<ApiResponse<QueryStoreDto>?> GetRemoteData(GridItemsProviderRequest<QueryStoreDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
-        var url = "odata/TaskHeader?";
+        var url = "odata/Queries?";
 
 
-        var customFilters = $"TypeName eq '{TypeTask}'";
-        if (ActivityId.HasValue)
-        {
-            customFilters += $" and  IdActivity eq {ActivityId.Value})";
-        }
+        var customFilters = $"IdActivity eq {ActivityId}";
 
         url += "$count=true";
         if (!string.IsNullOrEmpty(odataPagination))
@@ -206,7 +158,7 @@
 
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<TaskHeaderDto>>(url, req.CancellationToken);
+            return await Http.GetFromJsonAsync<ApiResponse<QueryStoreDto>>(url, req.CancellationToken);
         }
         catch
         {
@@ -235,18 +187,18 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenDeleteDialog(TaskHeaderDto value)
+    private async Task OpenDeleteDialog(QueryStoreDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
             // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
-            var result = await DataService.PostValues(value, "TaskHeaderDelete");
+            var result = await DataService.PostValues(value, "QueryStoreDelete");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
@@ -260,37 +212,42 @@
         }
     }
 
-    private void EditItem(TaskHeaderDto value)
+    private void RunQuery(QueryStoreDto value)
     {
-        var uri = UriHelper.GetUriWithQueryParameters("TaskEdit/" + value.TaskHeaderId,
-           new Dictionary<string, object>
-           {
-               ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
-               ["Page"] = _pagination.CurrentPageIndex,
-               ["PageSize"] = _pagination.ItemsPerPage
-           }!);
-        UriHelper.NavigateTo(uri);
+        UriHelper.NavigateTo("RunQuery/" + value.Id);
+    }
+
+    private void EditItem(QueryStoreDto value)
+    {
+        //var uri = UriHelper.GetUriWithQueryParameters("QueryEdit/" + value.Id,
+        //   new Dictionary<string, object>
+        //       {
+        //           ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
+        //           ["Page"] = _pagination.CurrentPageIndex,
+        //           ["PageSize"] = _pagination.ItemsPerPage
+        //       }!);
+        UriHelper.NavigateTo("QueryEdit/" + value.Id);
     }
 
     private async Task OpenCreateDialog()
     {
-        var value = new TaskHeaderDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert};
+        var value = new QueryStoreDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!feedback.Cancelled)
         {
             _errorMessage = string.Empty;
-            var result = await DataService.PostValues(value, "TaskHeaderInsert");
+            var result = await DataService.PostValues(value, "QueryStoreInsert");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
                 if (result.Value != null)
                 {
-                    var item = (TaskHeaderDto)Convert.ChangeType(result.Value, typeof(TaskHeaderDto));
-                    UriHelper.NavigateTo("TaskEdit/" + item.TaskHeaderId);
+                    var item = (QueryStoreDto)Convert.ChangeType(result.Value, typeof(QueryStoreDto));
+                    UriHelper.NavigateTo("QueryEdit/" + item.Id);
                 }
                 else
                     await OnRefresh();
@@ -303,4 +260,3 @@
         }
     }
 }
-

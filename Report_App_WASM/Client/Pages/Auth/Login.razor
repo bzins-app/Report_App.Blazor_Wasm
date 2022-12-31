@@ -75,7 +75,7 @@ else
 @code {
     LoginParameters LoginParameters { get; set; } = new();
     string? Error { get; set; }
-    bool _ldap = true;
+    bool _ldap = false;
 
     protected override async Task OnInitializedAsync()
     {
