@@ -131,7 +131,14 @@
                         {
                             @foreach (var t in context)
                             {
-                                <MudTd>@t</MudTd>
+                                @if(t.ToString()=="{}")
+                                {
+                                    <MudTd></MudTd>
+                                }
+                                else
+                                {
+                                    <MudTd>@t</MudTd>
+                                }
                             }
                         }
                     </RowTemplate>
