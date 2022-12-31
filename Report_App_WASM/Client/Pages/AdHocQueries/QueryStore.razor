@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+@attribute [Authorize]
 
 <PageTitle>@_pageTitle</PageTitle>
 
@@ -37,25 +37,25 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>EditItem(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.Id)" Title="Task Id" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Id)" Title="Task Id" Sortable="true"/>
                     <TemplateColumn Title="@Localizer.Get("Run query")">
-                        <MudIconButton Icon="@Icons.Outlined.Kitesurfing" OnClick="()=>RunQuery(context)" Title="@Localizer.Get("Run query")" />
+                        <MudIconButton Icon="@Icons.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
 
-@*                    <TemplateColumn Title="@Localizer.Get("Duplicate")">
+                    @*                    <TemplateColumn Title="@Localizer.Get("Duplicate")">
                         <CascadingValue Value="@_grid">
                             <_TaskDuplicateForm Item="context" />
                         </CascadingValue>
                     </TemplateColumn>*@
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             <Paginator Value="@_pagination" FieldsContent="@_translations" />

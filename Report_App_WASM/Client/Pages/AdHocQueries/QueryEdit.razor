@@ -6,6 +6,8 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
 @inject HttpClient Http
+@implements IDisposable
+@attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Query editor")</PageTitle>
 
@@ -399,5 +401,10 @@
         var _activityId = actId.FirstOrDefault();
         Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
         Item.IdActivity = Item.Activity.ActivityId;
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
     }
 }
