@@ -50,7 +50,15 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("ApplicationConstants")]
         public ApplicationConstantsValues GetApplicationConstants()
         {
-            ApplicationConstantsValues values = new() { ApplicationLogo = ApplicationConstants.ApplicationLogo, ApplicationName = ApplicationConstants.ApplicationName, LdapLogin = ApplicationConstants.LdapLogin };
+            ApplicationConstantsValues values = new()
+            {
+                ApplicationLogo = ApplicationConstants.ApplicationLogo,
+                ApplicationName = ApplicationConstants.ApplicationName,
+                LdapLogin = ApplicationConstants.LdapLogin,
+                WindowsEnv = ApplicationConstants.WindowsEnv,
+                ActivateAdHocQueriesModule = ApplicationConstants.ActivateAdHocQueriesModule,
+                ActivateTaskSchedulerModule = ApplicationConstants.ActivateTaskSchedulerModule
+            };
             return values;
         }
 

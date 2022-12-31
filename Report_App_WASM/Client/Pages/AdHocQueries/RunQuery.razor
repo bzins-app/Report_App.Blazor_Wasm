@@ -9,7 +9,7 @@
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h6">
-                @Localizer.Get("Run query")
+                @Localizer.Get("Run query") @Item?.QueryName
             </MudText>
         </CardHeaderContent>
     </MudCardHeader>
@@ -67,7 +67,15 @@
                         {
                             @foreach (var t in context)
                             {
-                                <MudTd>@t</MudTd>
+                                @if(t.ToString()=="{}")
+                                {
+                                    <MudTd></MudTd>
+                                }
+                                else
+                                {
+                                    <MudTd>@t</MudTd>
+                                }
+
                             }
                         }
                     </RowTemplate>

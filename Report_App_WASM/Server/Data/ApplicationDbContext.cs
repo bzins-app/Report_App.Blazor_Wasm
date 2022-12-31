@@ -75,9 +75,9 @@ namespace Report_App_WASM.Server.Data
             modelBuilder.Entity<ApplicationAuditTrail>().HasIndex(b => b.DateTime);
             modelBuilder.Entity<ApplicationAuditTrail>().HasIndex(b => b.UserId);
             modelBuilder.Entity<ApplicationAuditTrail>().HasIndex(b => new { b.Type, b.TableName });
-            modelBuilder.Entity<QueryStore>().HasIndex(b => new { b.QueryName});
+            modelBuilder.Entity<QueryStore>().HasIndex(b => new { b.QueryName });
             modelBuilder.Entity<ApplicationLogTaskDetails>().HasIndex(b => new { b.TaskId, b.Id });
-            modelBuilder.Entity<DbTableDescriptions>().HasIndex(b => new {b.TableName,b.ColumnName });
+            modelBuilder.Entity<DbTableDescriptions>().HasIndex(b => new { b.TableName, b.ColumnName });
         }
     }
 }

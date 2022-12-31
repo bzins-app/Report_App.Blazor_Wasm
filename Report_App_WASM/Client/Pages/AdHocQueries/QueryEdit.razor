@@ -369,6 +369,7 @@
             var result = await DataService.PostValues(Item, "QueryStoreUpdate");
             if (result.Success)
             {
+                _changesToSave = false;
                 Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
             }
             else

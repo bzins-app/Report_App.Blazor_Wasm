@@ -64,7 +64,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<QueryStore?> GetQueryStoreAsync(int queryId)
         {
-            return await _context.QueryStore.Include(a=>a.Activity).Where(a => a.Id == queryId).FirstOrDefaultAsync();
+            return await _context.QueryStore.Include(a => a.Activity).Where(a => a.Id == queryId).FirstOrDefaultAsync();
         }
 
         [HttpGet]
@@ -94,6 +94,8 @@ namespace Report_App_WASM.Server.Controllers
                 await SaveDbAsync(values.UserName);
                 ApplicationConstants.ApplicationName = values.EntityValue!.ApplicationName;
                 ApplicationConstants.ApplicationLogo = values.EntityValue.ApplicationLogo;
+                ApplicationConstants.ActivateAdHocQueriesModule = values.EntityValue!.ActivateAdHocQueriesModule;
+                ApplicationConstants.ActivateTaskSchedulerModule = values.EntityValue.ActivateTaskSchedulerModule;
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -328,7 +330,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<bool> GetTaskHasDetailsAsync(int taskHeaderId)
         {
-            return await _context.TaskHeader.Where(a=>a.TaskHeaderId== taskHeaderId).Include(a => a.TaskDetails).OrderBy(a => a).Select(a => a.TaskDetails).AnyAsync();
+            return await _context.TaskHeader.Where(a => a.TaskHeaderId == taskHeaderId).Include(a => a.TaskDetails).OrderBy(a => a).Select(a => a.TaskDetails).AnyAsync();
         }
 
         [HttpPost]

@@ -47,9 +47,9 @@ namespace Report_App_WASM.Server.Controllers
                 var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
                 return Ok(result);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                var result = new SubmitResultRemoteData { Success = false, Message = e.Message, Value = new()};
+                var result = new SubmitResultRemoteData { Success = false, Message = e.Message, Value = new() };
                 return Ok(result);
             }
         }

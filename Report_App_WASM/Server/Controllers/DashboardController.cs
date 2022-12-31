@@ -88,8 +88,8 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<List<DbLinesQuery>> GetDbFetchMetricsAsync()
         {
             return await _context.ApplicationLogQueryExecution.Where(a => a.EndDateTime > DateTime.Today.AddDays(-10))
-                .GroupBy(a=>new { Date = new DateTime(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour, a.EndDateTime.Minute, 0)})
-                .Select(a => new DbLinesQuery { Date = a.Key.Date, NbrOfRows = a.Sum(b=>b.NbrOfRows) }).ToListAsync();
+                .GroupBy(a => new { Date = new DateTime(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour, a.EndDateTime.Minute, 0) })
+                .Select(a => new DbLinesQuery { Date = a.Key.Date, NbrOfRows = a.Sum(b => b.NbrOfRows) }).ToListAsync();
         }
     }
 }

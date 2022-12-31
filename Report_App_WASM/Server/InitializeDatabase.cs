@@ -109,7 +109,9 @@ namespace Report_App_WASM.Server
                 ErrorEmailPrefix = "!!!Error",
                 AlertEmailPrefix = "!!!Alert",
                 ErrorEMailMessage = "<p>Hello,</p><p>An error has been raised during the process:</p><p>{0}</p><p>Your IT Team</p>",
-                AdminEmails = "[]"
+                AdminEmails = "[]",
+                ActivateAdHocQueriesModule = true,
+                ActivateTaskSchedulerModule = true
             };
             await _context.AddAsync(parameters);
             await _context.SaveChangesAsync();
