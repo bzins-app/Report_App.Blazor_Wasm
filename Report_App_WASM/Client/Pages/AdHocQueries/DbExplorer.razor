@@ -41,7 +41,7 @@
                 }
                     <MudGrid>
                         <MudItem lg="7">
-                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<string, bool>(FilterFuncTables)" Height="70vh">
+                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<string, bool>(FilterFuncTables)" Height="70vh" Virtualize="true">
                                 <ToolBarContent>
                                     <MudTextField @bind-Value="searchTables" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                                 </ToolBarContent>
@@ -56,7 +56,7 @@
                             </MudTable>
                         </MudItem>
                         <MudItem lg="5">
-                            <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<string, bool>(FilterFuncCols)" Height="70vh">
+                        <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<string, bool>(FilterFuncCols)" Height="70vh" Virtualize="true">
                                 <ToolBarContent>
                                     <MudTextField @bind-Value="searchCols" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                                 </ToolBarContent>
@@ -97,7 +97,7 @@
                     }
                     <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh" />
 
-                    <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20">
+                    <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
                         <HeaderContent>
                             @if (_values?.Any() == true)
                             {
