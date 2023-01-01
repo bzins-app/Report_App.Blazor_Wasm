@@ -48,7 +48,7 @@
             if (resultValidation)
             {
                  var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Email!);
-                var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
+                var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emailsRecipients, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
             else

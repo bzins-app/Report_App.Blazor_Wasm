@@ -34,7 +34,7 @@ namespace Report_App_WASM.Client.Services
         }
 
 
-        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi) where T : class
+        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi) where T : class?
         {
             var uri = $"{controller}{controllerAction}";
 
@@ -103,7 +103,7 @@ namespace Report_App_WASM.Client.Services
             }
         }
 
-        public async Task<T> GetUniqueValue<T>(T value, string controllerAction, string controller = CrudApi) where T : class
+        public async Task<T> GetUniqueValue<T>(T value, string controllerAction, string controller = CrudApi) where T : class?
         {
             var uri = $"{controller}{controllerAction}";
             try

@@ -135,11 +135,17 @@
   <data name="Actions" xml:space="preserve">
     <value>Modifier</value>
   </data>
+  <data name="Activate Adhoc queries module?" xml:space="preserve">
+    <value>Activer le module de requêtes ad hoc ?</value>
+  </data>
   <data name="Activate report and email" xml:space="preserve">
     <value>Activer le rapport et l'email</value>
   </data>
   <data name="Activate SSL" xml:space="preserve">
     <value>Activer le SSL</value>
+  </data>
+  <data name="Activate Tasks scheduler module?" xml:space="preserve">
+    <value>Activer le module Planificateur de tâches ?</value>
   </data>
   <data name="Activate the alert" xml:space="preserve">
     <value>Activez l'alerte</value>
@@ -179,6 +185,9 @@
   </data>
   <data name="Activity parameters" xml:space="preserve">
     <value>Paramètres de l'activité</value>
+  </data>
+  <data name="Ad hoc queries" xml:space="preserve">
+    <value>Requêtes ad hoc</value>
   </data>
   <data name="Add" xml:space="preserve">
     <value>Ajouter</value>
@@ -513,6 +522,9 @@
   <data name="Column name" xml:space="preserve">
     <value>Nom de colonne</value>
   </data>
+  <data name="Columns" xml:space="preserve">
+    <value>Colonnes</value>
+  </data>
   <data name="Command behaviour" xml:space="preserve">
     <value>Type de commande</value>
   </data>
@@ -732,8 +744,14 @@
   <data name="Day of week" xml:space="preserve">
     <value>Jour de la semaine</value>
   </data>
+  <data name="DB explorer" xml:space="preserve">
+    <value>Explorateur de BD</value>
+  </data>
   <data name="DB schema" xml:space="preserve">
     <value>Schéma DB</value>
+  </data>
+  <data name="Db tables" xml:space="preserve">
+    <value>Tables de la BD</value>
   </data>
   <data name="Dec" xml:space="preserve">
     <value>Déc</value>
@@ -785,6 +803,9 @@
   </data>
   <data name="Display details" xml:space="preserve">
     <value>Afficher les détails</value>
+  </data>
+  <data name="Display table values" xml:space="preserve">
+    <value>Afficher les valeurs de la table</value>
   </data>
   <data name="Display until 10k lines" xml:space="preserve">
     <value>Affichage jusqu'à 10K lignes</value>
@@ -1118,6 +1139,9 @@
   </data>
   <data name="Get cron Data" xml:space="preserve">
     <value>Collecter la valeur du cron</value>
+  </data>
+  <data name="Get tables list" xml:space="preserve">
+    <value>Obtenir la liste des tables</value>
   </data>
   <data name="Global query parameters" xml:space="preserve">
     <value>Paramètres de requête globaux</value>
@@ -1659,11 +1683,17 @@
   <data name="Queries" xml:space="preserve">
     <value>Requêtes</value>
   </data>
+  <data name="Queries store" xml:space="preserve">
+    <value>Magasin de requêtes</value>
+  </data>
   <data name="Queries to seed DB" xml:space="preserve">
     <value>Requêtes externes</value>
   </data>
   <data name="Query" xml:space="preserve">
     <value>Requête</value>
+  </data>
+  <data name="Query editor" xml:space="preserve">
+    <value>Éditeur de requêtes</value>
   </data>
   <data name="Query execution logs" xml:space="preserve">
     <value>Journaux des requêtes</value>
@@ -1856,6 +1886,9 @@
   </data>
   <data name="Run manually" xml:space="preserve">
     <value>Lancer manuellement</value>
+  </data>
+  <data name="Run query" xml:space="preserve">
+    <value>Exécuter la requête</value>
   </data>
   <data name="Run reports manually" xml:space="preserve">
     <value>Exécuter les rapports manuellement</value>

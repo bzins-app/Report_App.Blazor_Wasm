@@ -31,7 +31,7 @@
             }
         </RowTemplate>
         <PagerContent>
-            <MudTablePager />
+            <MudTablePager RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}","{","}",Localizer.Get("of") )" />
         </PagerContent>
     </MudTable>
 }

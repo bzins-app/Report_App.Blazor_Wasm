@@ -96,10 +96,10 @@
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
-        string url = "odata/TaskHeader?";
+        var url = "odata/TaskHeader?";
 
 
-        string customFilters = $"TypeName eq '{_typeTask}'";
+        var customFilters = $"TypeName eq '{_typeTask}'";
         if (ActivityId.HasValue)
         {
             customFilters += $" and  IdActivity eq {ActivityId.Value})";

@@ -1,4 +1,4 @@
-﻿@page "/QueryStore/{activityId:int}/{activityName}"
+﻿@page "/QueryStore/{ActivityId:int}/{ActivityName}"
 @inject NavigationManager UriHelper
 @implements IAsyncDisposable
 @inject HttpClient Http
@@ -41,7 +41,7 @@
                             <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.Id)" Title="Task Id" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <TemplateColumn Title="@Localizer.Get("Run query")">
                         <MudIconButton Icon="@Icons.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
                     </TemplateColumn>
@@ -76,7 +76,7 @@
     private bool _rendering;
     bool _empty;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         _pageTitle = Localizer.Get("Queries store");
         if (!string.IsNullOrEmpty(ActivityName))
@@ -260,3 +260,6 @@
         }
     }
 }
+
+
+

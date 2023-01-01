@@ -32,55 +32,63 @@
         }
         @if (Item != null)
         {
-            <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Name")" InputType="InputType.Text" />
-            @if (_activities.Any())
-            {
-                <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
-                   AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="(OnSelectedItemChangedHandler)"
-                   Required>
-                    @foreach (var value in _activities)
+            <MudGrid>
+                <MudItem>
+                    <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" />
+                </MudItem>
+                <MudItem>
+                    @if (_activities.Any())
                     {
-                        <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                        <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
+                                   AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="(OnSelectedItemChangedHandler)"
+                                   Required>
+                            @foreach (var value in _activities)
+                            {
+                                <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                            }
+                        </MudSelect>
                     }
-                </MudSelect>
-            }
+                </MudItem>
+            </MudGrid>
+
         }
-        <MudButton Disabled="@_loading" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-            @if (_loading)
-            {
-                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-            }
-            else
-            {
-                <MudText>@Localizer.Get("Test query")</MudText>
-            }
-        </MudButton>
-        @if (_loading)
-        {
-            <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">@Localizer.Get("Cancel")</MudButton>
-        }
-        <div class="form-group">
-            <p style="color: red">@_queryTestResult</p>
-        </div>
         <MudGrid>
             <MudItem sm="12" md="6">
+                <MudButton Disabled="@_loading" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium">
+                    @if (_loading)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+                    }
+                    else
+                    {
+                        <MudText>@Localizer.Get("Test query")</MudText>
+                    }
+                </MudButton>
+                @if (_loading)
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
+                        <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText></MudButton>
+                }
+                <div class="form-group">
+                    <p style="color: red">@_queryTestResult</p>
+                </div>
                 @if (Item != null)
                 {
                     @if (_typeDbTask != TypeDb.Db2)
                     {
                         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
                             <MudTabPanel Text="SQL">
-                                <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 65vh" />
+                                <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 65vh"/>
                             </MudTabPanel>
                             <MudTabPanel Text="@Localizer.Get("Query parameters")">
-                                <_AdHocQueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery" />
+                                <_AdHocQueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery"/>
                             </MudTabPanel>
                         </MudTabs>
                     }
                     else
                     {
-                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 75vh" />
+                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 75vh"/>
                     }
                 }
             </MudItem>
@@ -145,7 +153,7 @@
                         }
                     </RowTemplate>
                     <PagerContent>
-                        <MudTablePager PageSizeOptions="_pageSizeOptions" />
+                        <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}","{","}",Localizer.Get("of") )" />
                     </PagerContent>
                 </MudTable>
             </MudItem>
@@ -170,7 +178,7 @@
     private string? _errorMessage;
     private List<SelectItemActivitiesInfo> _activities = new();
     private List<QueryCommandParameter> param = new();
-    private MudForm _validateParam;
+    private MudForm? _validateParam;
     bool _formParamValidated = true;
 
     protected override async Task OnInitializedAsync()
@@ -235,7 +243,7 @@
 
     private async Task RunSql()
     {
-        if (string.IsNullOrEmpty(Item.Query))
+        if (string.IsNullOrEmpty(Item?.Query))
         {
             _queryTestResult = "query is not set";
         }
@@ -247,12 +255,9 @@
             if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
             {
                 var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
-                foreach (var value in desParam!)
+                foreach (var value in desParam!.Where(value => param.All(a => a.ParameterIdentifier != value.ParameterIdentifier)))
                 {
-                    if (param!.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
-                    {
-                        param?.Add(value);
-                    }
+                    param?.Add(value);
                 }
                 foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
                 {
@@ -267,7 +272,7 @@
                 }
             }
             _table!.CurrentPage = 0;
-            if (param.Count > 0)
+            if (param!.Count > 0)
             {
                 await ConfirmText();
             }
@@ -281,9 +286,9 @@
 
     private async Task ConfirmText()
     {
-        await _validateParam.Validate();
+        await _validateParam?.Validate()!;
         _formParamValidated = _validateParam.IsValid;
-        await _table.ReloadServerData();
+        await _table?.ReloadServerData()!;
     }
 
     private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
@@ -342,7 +347,7 @@
             }
         }
         _loading = false;
-        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 
     void CancelQuery()
@@ -352,7 +357,7 @@
 
     private async Task Back()
     {
-        string uri = $"/QueryStore/{Item.IdActivity}/{Item.Activity!.ActivityName}";
+        var uri = $"/QueryStore/{Item!.IdActivity}/{Item.Activity!.ActivityName}";
 
         if (_changesToSave)
         {
@@ -399,7 +404,7 @@
     private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
     {
         var _activityId = actId.FirstOrDefault();
-        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
+        Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
         Item.IdActivity = Item.Activity.ActivityId;
     }
 

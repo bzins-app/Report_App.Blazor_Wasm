@@ -49,7 +49,22 @@
                                 }
                             </MudGrid>
                             <div style="padding-top: 5px">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@Localizer.Get("Validate")</MudButton>
+                        <MudButton Disabled="@_loading" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                                    @if (_loading)
+                                    {
+                                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+                                    }
+                                    else
+                                    {
+                                <MudText>@Localizer.Get("Validate")</MudText>
+                                    }
+                                </MudButton>
+                                @if (_loading)
+                                {
+                                    <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
+                                        <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText></MudButton>
+                                }
                             </div>
                         </MudForm>
                     </MudPaper>
@@ -81,7 +96,7 @@
                         }
                     </RowTemplate>
                     <PagerContent>
-                        <MudTablePager PageSizeOptions="_pageSizeOptions" />
+                <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}","{","}",Localizer.Get("of") )" />
                     </PagerContent>
                 </MudTable>
     </MudCardContent>
@@ -91,12 +106,11 @@
     [Parameter] public int QueryId { get; set; }
     private QueryStoreDto? Item;
     private List<QueryCommandParameter> param = new();
-    private MudForm _validateParam;
+    private MudForm? _validateParam;
     bool _formParamValidated = true;
     private CancellationTokenSource? _cts;
     private bool _loading;
     private List<Dictionary<string, object>>? _values = new();
-    private string? _queryTestResult { get; set; }
     MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _errorMessage;
@@ -132,9 +146,9 @@
 
     private async Task ConfirmText()
     {
-        await _validateParam.Validate();
+        await _validateParam?.Validate()!;
         _formParamValidated = _validateParam.IsValid;
-        _table.CurrentPage = 0;
+        _table!.CurrentPage = 0;
         await _table.ReloadServerData();
     }
 
@@ -172,28 +186,25 @@
                     if (result!.Success)
                     {
                         _values = result.Value;
-                        _queryTestResult = null!;
                     }
                     else
                     {
-                        _queryTestResult = result.Message;
                         _values = new List<Dictionary<string, object>>();
                     }
                 }
                 else
                 {
                     _values = new List<Dictionary<string, object>>();
-                    _queryTestResult = response.Content.ToString();
+                    response.Content.ToString();
                 }
             }
             catch (Exception ex)
             {
                 _values = new List<Dictionary<string, object>>();
-                _queryTestResult = ex.Message;
             }
         }
         _loading = false;
-        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 
     void CancelQuery()

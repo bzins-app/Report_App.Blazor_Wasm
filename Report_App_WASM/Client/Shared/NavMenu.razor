@@ -47,6 +47,7 @@
                 <AuthorizeView Roles=@(t.ActivityName)>
                     <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">
                         <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}") Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Queries store")</MudNavLink>
+                        <MudNavLink Href=@($"DbExplorer/{t.ActivityId}/{t.ActivityName}") Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("DB explorer")</MudNavLink>
                     </MudNavGroup>
                 </AuthorizeView>
             }
@@ -63,6 +64,14 @@
                     <MudNavLink Href="TaskManager/DataTransfer" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Data transfer")</MudNavLink>
                 </MudNavGroup>
             }
+            <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
+                <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
+                <MudNavLink Href="BackgroundTasksLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Background Tasks")</MudNavLink>
+                <MudNavLink Href="SystemLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("System")</MudNavLink>
+                <MudNavLink Href="QueryExecutionLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Query execution logs")</MudNavLink>
+                <MudNavLink Href="ReportsResultLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Reports Result")</MudNavLink>
+                <MudNavLink Href="EmailSenderLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Email Sender")</MudNavLink>
+            </MudNavGroup>
             <MudNavGroup Title="@Localizer.Get("Base parameters")" Icon="@Icons.Material.Outlined.SettingsApplications">
                 <MudNavLink Href="ApplicationParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
                 <MudNavLink Href="Activities" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Activities manager")</MudNavLink>
@@ -77,14 +86,6 @@
                 {
                     <MudNavLink Href="/swagger" Target="_blank" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Swagger")</MudNavLink>
                 }
-            </MudNavGroup>
-            <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
-                <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
-                <MudNavLink Href="BackgroundTasksLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Background Tasks")</MudNavLink>
-                <MudNavLink Href="SystemLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("System")</MudNavLink>
-                <MudNavLink Href="QueryExecutionLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Query execution logs")</MudNavLink>
-                <MudNavLink Href="ReportsResultLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Reports Result")</MudNavLink>
-                <MudNavLink Href="EmailSenderLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Email Sender")</MudNavLink>
             </MudNavGroup>
             <MudNavLink Href="UsersManagement" Icon="@Icons.Material.Outlined.SupervisedUserCircle">@Localizer.Get("Users")</MudNavLink>
         </Authorized>

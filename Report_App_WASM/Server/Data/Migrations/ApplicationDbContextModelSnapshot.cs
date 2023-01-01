@@ -223,6 +223,9 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<bool>("AdAuthentication")
                         .HasColumnType("bit");
 
+                    b.Property<int>("AdHocQueriesMaxNbrofRowsFetched")
+                        .HasColumnType("int");
+
                     b.Property<int>("CommandFetchSize")
                         .HasColumnType("int");
 
@@ -249,6 +252,9 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("DataTransferMaxNbrofRowsFetched")
+                        .HasColumnType("int");
+
                     b.Property<string>("DbConnectionParameters")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -271,6 +277,9 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Port")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaskSchedulerMaxNbrofRowsFetched")
                         .HasColumnType("int");
 
                     b.Property<int>("TypeDb")

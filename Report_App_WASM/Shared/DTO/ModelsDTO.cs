@@ -117,6 +117,9 @@ namespace Report_App_WASM.Shared.DTO
         public int CommandFetchSize { get; set; } = 131072;
         public string DbConnectionParameters { get; set; } = "[]";
         public bool UseTablesDescriptions { get; set; } = false;
+        public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
+        public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
+        public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
         public virtual ActivityDto? Activity { get; set; }
         public virtual ICollection<DbTableDescriptionsDto>? DbTableDescriptions { get; set; } = new List<DbTableDescriptionsDto>();
     }

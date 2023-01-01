@@ -207,7 +207,7 @@
         _fileType = Header?.TypeFileName;
         if (Item!.TaskDetailParameters != "[]" && !string.IsNullOrEmpty(Item.TaskDetailParameters))
         {
-            _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters);
+            _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters)!;
         }
         if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
         {
@@ -298,7 +298,7 @@
                 }
                 else
                 {
-                    _queryTestResult = result!.Message;
+                    _queryTestResult = result.Message!;
                     _data = new List<Dictionary<string, object>>();
                     _testResult = false;
                 }
@@ -344,7 +344,7 @@
     {
         if (!string.IsNullOrEmpty(_pKName))
         {
-            if (!_param!.DataTransferPk!.Contains(_pKName))
+            if (!_param.DataTransferPk!.Contains(_pKName))
             {
                 _param.DataTransferPk.Add(_pKName);
             }
@@ -366,6 +366,6 @@
 
     private void ResetCommandBehaviour()
     {
-        _param!.DataTransferCommandBehaviour = null;
+        _param.DataTransferCommandBehaviour = null;
     }
 }

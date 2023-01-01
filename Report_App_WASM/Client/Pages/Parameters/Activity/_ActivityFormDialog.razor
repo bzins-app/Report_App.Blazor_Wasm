@@ -117,7 +117,6 @@
     private ActivityDbConnectionDto DbCon { get; set; } = new();
     private string _connectionTestResult = null!;
     private List<SelectItemActivitiesInfo> _activities = new();
-    private string? _checkNameResult;
     private bool _loading;
 
     private void Cancel()
@@ -188,10 +187,9 @@
         }
         if (_activities.Any(a => a.ActivityName?.ToLower() == Item.ActivityName.ToLower()))
         {
-            _checkNameResult = Localizer.Get("Another activity with the same name already exists");
+            Localizer.Get("Another activity with the same name already exists");
             return false;
         }
-        _checkNameResult = null;
         return true;
     }
 

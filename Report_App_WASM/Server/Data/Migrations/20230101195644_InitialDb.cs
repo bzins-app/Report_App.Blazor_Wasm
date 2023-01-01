@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -387,6 +388,9 @@ namespace ReportAppWASM.Server.Migrations
                     CommandFetchSize = table.Column<int>(type: "int", nullable: false),
                     DbConnectionParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UseTablesDescriptions = table.Column<bool>(type: "bit", nullable: false),
+                    AdHocQueriesMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
+                    TaskSchedulerMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
+                    DataTransferMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
