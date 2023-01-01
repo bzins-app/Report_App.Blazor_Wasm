@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
@@ -18,6 +19,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
 using System.Text;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Report_App_WASM.Server.Services.RemoteDb
 {
@@ -30,6 +32,8 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         Task LoadDatatableToTable(DataTable data, string? targetTable);
         Task<MergeResult> MergeTables(string query);
         Task DeleteTable(string? tableName);
+        Task<string> GetAllTablesScript(int activityId);
+        Task<string> GetTableColummnInfoScript(int activityId, string tableName);
     }
     public class RemoteDbConnection : IRemoteDbConnection, IDisposable
     {
@@ -170,6 +174,55 @@ namespace Report_App_WASM.Server.Services.RemoteDb
 
             }
             await conn.DisposeAsync();
+        }
+
+        public async Task<string> GetAllTablesScript(int activityId)
+        {
+            string script = string.Empty;
+            var dbInfo = await _context.ActivityDbConnection.AsNoTracking().Where(a=>a.Activity.ActivityId== activityId).FirstOrDefaultAsync();
+            if (dbInfo.TypeDb == TypeDb.Oracle)
+            {
+                
+                if (dbInfo.UseDbSchema)
+                    script = $"SELECT table_name FROM all_tables where owner='{dbInfo.DbSchema}' order by 1"; 
+                else
+                {
+                    script = $"SELECT table_name FROM all_tables where  order by 1";
+                }
+            }
+            else if (dbInfo.TypeDb == TypeDb.SqlServer)
+            {
+                if(dbInfo.UseDbSchema)
+                    script = $"SELECT table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1";
+                else
+                {
+                    script = $"SELECT table_name FROM information_schema.tables order by 1";
+                }
+            }
+
+            return script;
+        }
+
+        public async Task<string> GetTableColummnInfoScript(int activityId, string tableName)
+        {
+            string script = string.Empty;
+            var dbInfo = await _context.ActivityDbConnection.AsNoTracking().Where(a => a.Activity.ActivityId == activityId).FirstOrDefaultAsync();
+            if (dbInfo.TypeDb == TypeDb.Oracle)
+            {
+                if (dbInfo.UseDbSchema)
+                    script = $"select column_name as Column_Name from ALL_TAB_COLUMNS where OWNER='{dbInfo.DbSchema}' and table_name='{tableName}'";
+                else
+                {
+                    script = $"select column_name as Column_Name from ALL_TAB_COLUMNS where table_name='{tableName}'";
+                }
+                
+            }
+            else if (dbInfo.TypeDb == TypeDb.SqlServer)
+            {
+                script= $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  where tab.name='{tableName}'";
+            }
+
+            return script;
         }
 
         private RemoteConnectionParameter CreateConnectionString(ActivityDbConnectionDto? parameter)

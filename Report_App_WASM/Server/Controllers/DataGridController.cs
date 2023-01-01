@@ -192,5 +192,12 @@ namespace Report_App_WASM.Server.Controllers
             return _context.ApplicationUser.Where(a => !a.IsBaseUser).ProjectTo<ApplicationUserDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.CreateDateTime).AsQueryable();
         }
 
+        [EnableQuery(EnsureStableOrdering = false)]
+        [HttpGet("odata/Queries")]
+        public IQueryable<QueryStore> GetQueries()
+        {
+            return _context.QueryStore.OrderByDescending(a => a.Id);
+        }
+
     }
 }

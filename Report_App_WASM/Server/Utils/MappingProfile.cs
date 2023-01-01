@@ -28,6 +28,8 @@ namespace Report_App_WASM.Server.Utils
             CreateMap<ApplicationAuditTrail, ApplicationAuditTrailDto>();
             CreateMap<ApplicationLogTaskDetails, ApplicationLogTaskDetailsDto>();
             CreateMap<ApplicationUser, ApplicationUserDto>();
+            CreateMap<DbTableDescriptions, DbTableDescriptionsDto>();
+            CreateMap<QueryStore, QueryStoreDto>();
         }
     }
 }

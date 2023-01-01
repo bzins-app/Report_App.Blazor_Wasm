@@ -13,7 +13,7 @@
 
         if (Item.SendByEmail)
         {
-            string uri = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
+            var uri = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
             var emailsConfigured = await Http.GetFromJsonAsync<bool>(uri);
             if (!emailsConfigured)
             {

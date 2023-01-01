@@ -190,8 +190,8 @@ namespace Report_App_WASM.Server.Controllers
                 {
                     new EmailRecipient { Email = item.EntityValue.UserMail }
                 };
-                    string Title = "Reset Password";
-                    string Body = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
+                    var Title = "Reset Password";
+                    var Body = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
 
                     _emailSender.SendEmail(ListEmail, Title, Body);
                 }

@@ -21,5 +21,7 @@ namespace Report_App_WASM.Server.Models
         [MaxLength(200)]
         public string? AlertEmailPrefix { get; init; }
         public int LogsRetentionInDays { get; set; } = 90;
+        public bool ActivateTaskSchedulerModule { get; set; }
+        public bool ActivateAdHocQueriesModule { get; set; }
     }
 }

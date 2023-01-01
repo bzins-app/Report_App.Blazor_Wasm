@@ -32,6 +32,7 @@ namespace Report_App_WASM.Server.Data
         public virtual DbSet<FileDepositPathConfiguration> FileDepositPathConfiguration { get; set; } = null!;
         public virtual DbSet<SftpConfiguration> SftpConfiguration { get; set; } = null!;
         public virtual DbSet<QueryStore> QueryStore { get; set; } = null!;
+        public virtual DbSet<DbTableDescriptions> DbTableDescriptions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +47,12 @@ namespace Report_App_WASM.Server.Data
             modelBuilder.Entity<Activity>()
             .HasMany(b => b.TaskHeaders)
             .WithOne(t => t.Activity).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Activity>()
+                .HasMany(b => b.QueryStores)
+                .WithOne(t => t.Activity).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ActivityDbConnection>()
+                .HasMany(b => b.DbTableDescriptions)
+                .WithOne(t => t.ActivityDbConnection).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<TaskHeader>()
             .HasMany(b => b.TaskDetails)
             .WithOne(t => t.TaskHeader).IsRequired().OnDelete(DeleteBehavior.Cascade);
@@ -68,8 +75,9 @@ namespace Report_App_WASM.Server.Data
             modelBuilder.Entity<ApplicationAuditTrail>().HasIndex(b => b.DateTime);
             modelBuilder.Entity<ApplicationAuditTrail>().HasIndex(b => b.UserId);
             modelBuilder.Entity<ApplicationAuditTrail>().HasIndex(b => new { b.Type, b.TableName });
-            modelBuilder.Entity<QueryStore>().HasIndex(b => new { b.Typoplogy, b.Area });
+            modelBuilder.Entity<QueryStore>().HasIndex(b => new { b.QueryName });
             modelBuilder.Entity<ApplicationLogTaskDetails>().HasIndex(b => new { b.TaskId, b.Id });
+            modelBuilder.Entity<DbTableDescriptions>().HasIndex(b => new { b.TableName, b.ColumnName });
         }
     }
 }

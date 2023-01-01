@@ -7,6 +7,10 @@ namespace Report_App_WASM.Server.Models
 {
     public class ActivityDbConnection : BaseTraceability
     {
+        public ActivityDbConnection()
+        {
+            DbTableDescriptions = new HashSet<DbTableDescriptions>();
+        }
         public int Id { get; set; }
         [MaxLength(20)]
         public string ConnectionType { get; set; } = "SQL";
@@ -51,6 +55,12 @@ namespace Report_App_WASM.Server.Models
         public int CommandTimeOut { get; set; } = 300;
         public int CommandFetchSize { get; set; } = 131072;
         public string DbConnectionParameters { get; set; } = "[]";
+        public bool UseTablesDescriptions { get; set; } = false;
+        public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
+        public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
+        public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
         public virtual Activity? Activity { get; set; }
+        public virtual ICollection<DbTableDescriptions> DbTableDescriptions { get; set; } = new List<DbTableDescriptions>();
+
     }
 }

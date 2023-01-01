@@ -62,6 +62,12 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet]
+        public async Task<QueryStore?> GetQueryStoreAsync(int queryId)
+        {
+            return await _context.QueryStore.Include(a => a.Activity).Where(a => a.Id == queryId).FirstOrDefaultAsync();
+        }
+
+        [HttpGet]
         public async Task<Activity> GetDataTransferInfoAsync()
         {
             var targetInfo = await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).Include(a => a.ActivityDbConnections).FirstOrDefaultAsync();
@@ -88,6 +94,8 @@ namespace Report_App_WASM.Server.Controllers
                 await SaveDbAsync(values.UserName);
                 ApplicationConstants.ApplicationName = values.EntityValue!.ApplicationName;
                 ApplicationConstants.ApplicationLogo = values.EntityValue.ApplicationLogo;
+                ApplicationConstants.ActivateAdHocQueriesModule = values.EntityValue!.ActivateAdHocQueriesModule;
+                ApplicationConstants.ActivateTaskSchedulerModule = values.EntityValue.ActivateTaskSchedulerModule;
                 return Ok(new SubmitResult { Success = true });
             }
             catch (Exception ex)
@@ -322,7 +330,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet]
         public async Task<bool> GetTaskHasDetailsAsync(int taskHeaderId)
         {
-            return await _context.TaskHeader.Include(a => a.TaskDetails).OrderBy(a => a).Select(a => a.TaskDetails).AnyAsync();
+            return await _context.TaskHeader.Where(a => a.TaskHeaderId == taskHeaderId).Include(a => a.TaskDetails).OrderBy(a => a).Select(a => a.TaskDetails).AnyAsync();
         }
 
         [HttpPost]
@@ -440,6 +448,25 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileDepositPathConfiguration> values)
         {
+            return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> QueryStoreInsert(ApiCrudPayload<QueryStore> values)
+        {
+            return Ok(await InsertEntity(values.EntityValue, values.UserName!));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> QueryStoreDelete(ApiCrudPayload<QueryStore> values)
+        {
+            return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> QueryStoreUpdate(ApiCrudPayload<QueryStore> values)
+        {
+            values.EntityValue.Activity = (await _context.Activity.Where(a => a.ActivityId == values.EntityValue.IdActivity).FirstOrDefaultAsync())!;
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
         }
 

@@ -1,6 +1,7 @@
-﻿#nullable disable
-
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
 
 namespace ReportAppWASM.Server.Migrations
 {
@@ -206,6 +207,8 @@ namespace ReportAppWASM.Server.Migrations
                     WelcomeEMailMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AlertEmailPrefix = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LogsRetentionInDays = table.Column<int>(type: "int", nullable: false),
+                    ActivateTaskSchedulerModule = table.Column<bool>(type: "bit", nullable: false),
+                    ActivateAdHocQueriesModule = table.Column<bool>(type: "bit", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -297,30 +300,6 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QueryStore",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TypeDb = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Typoplogy = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Area = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    QueryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Query = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    QueryParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NbrOfRuns = table.Column<int>(type: "int", nullable: false),
-                    LastRun = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QueryStore", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ServicesStatus",
                 columns: table => new
                 {
@@ -400,7 +379,7 @@ namespace ReportAppWASM.Server.Migrations
                     ConnectionPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Port = table.Column<int>(type: "int", nullable: false),
                     ConnectionLogin = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UseDbSchema = table.Column<bool>(type: "bit", nullable: false),
                     AdAuthentication = table.Column<bool>(type: "bit", nullable: false),
                     IntentReadOnly = table.Column<bool>(type: "bit", nullable: false),
@@ -408,6 +387,10 @@ namespace ReportAppWASM.Server.Migrations
                     CommandTimeOut = table.Column<int>(type: "int", nullable: false),
                     CommandFetchSize = table.Column<int>(type: "int", nullable: false),
                     DbConnectionParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UseTablesDescriptions = table.Column<bool>(type: "bit", nullable: false),
+                    AdHocQueriesMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
+                    TaskSchedulerMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
+                    DataTransferMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -419,6 +402,33 @@ namespace ReportAppWASM.Server.Migrations
                     table.PrimaryKey("PK_ActivityDbConnection", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ActivityDbConnection_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
+                        principalColumn: "ActivityId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QueryStore",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdActivity = table.Column<int>(type: "int", nullable: false),
+                    QueryName = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Query = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QueryParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
+                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QueryStore", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QueryStore_Activity_ActivityId",
                         column: x => x.ActivityId,
                         principalTable: "Activity",
                         principalColumn: "ActivityId",
@@ -600,6 +610,33 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DbTableDescriptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TableName = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TableDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ColumnName = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ColumnDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActivityDbConnectionId = table.Column<int>(type: "int", nullable: false),
+                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DbTableDescriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DbTableDescriptions_ActivityDbConnection_ActivityDbConnectionId",
+                        column: x => x.ActivityDbConnectionId,
+                        principalTable: "ActivityDbConnection",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TaskDetail",
                 columns: table => new
                 {
@@ -774,14 +811,29 @@ namespace ReportAppWASM.Server.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DbTableDescriptions_ActivityDbConnectionId",
+                table: "DbTableDescriptions",
+                column: "ActivityDbConnectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DbTableDescriptions_TableName_ColumnName",
+                table: "DbTableDescriptions",
+                columns: new[] { "TableName", "ColumnName" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FileDepositPathConfiguration_SftpConfigurationId",
                 table: "FileDepositPathConfiguration",
                 column: "SftpConfigurationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QueryStore_Typoplogy_Area",
+                name: "IX_QueryStore_ActivityId",
                 table: "QueryStore",
-                columns: new[] { "Typoplogy", "Area" });
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QueryStore_QueryName",
+                table: "QueryStore",
+                column: "QueryName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaskDetail_TaskHeaderId",
@@ -802,9 +854,6 @@ namespace ReportAppWASM.Server.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ActivityDbConnection");
-
             migrationBuilder.DropTable(
                 name: "ApplicationAuditTrail");
 
@@ -848,6 +897,9 @@ namespace ReportAppWASM.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "DbTableDescriptions");
+
+            migrationBuilder.DropTable(
                 name: "FileDepositPathConfiguration");
 
             migrationBuilder.DropTable(
@@ -873,6 +925,9 @@ namespace ReportAppWASM.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ActivityDbConnection");
 
             migrationBuilder.DropTable(
                 name: "SftpConfiguration");

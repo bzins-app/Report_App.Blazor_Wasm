@@ -99,7 +99,7 @@
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/ReportResultLogs?";
-        string customFilters = $"ActivityId eq {ActivityId} and IsAvailable eq true";
+        var customFilters = $"ActivityId eq {ActivityId} and IsAvailable eq true";
 
         url += "$count=true";
         if (!string.IsNullOrEmpty(odataPagination))

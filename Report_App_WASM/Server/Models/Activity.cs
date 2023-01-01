@@ -30,5 +30,6 @@ namespace Report_App_WASM.Server.Models
         public string? ActivityRoleId { get; set; }
         public virtual ICollection<ActivityDbConnection> ActivityDbConnections { get; set; } = new List<ActivityDbConnection>();
         public virtual ICollection<TaskHeader> TaskHeaders { get; set; } = new List<TaskHeader>();
+        public virtual ICollection<QueryStore> QueryStores { get; set; } = new List<QueryStore>();
     }
 }

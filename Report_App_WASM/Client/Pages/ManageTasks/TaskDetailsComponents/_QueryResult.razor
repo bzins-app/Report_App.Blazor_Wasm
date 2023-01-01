@@ -7,26 +7,33 @@
     <MudTable Items="_values?.Select(a => a.Values).ToList()" Virtualize="true" Hover="true" Dense="true" Height="400px" FixedHeader="true" HorizontalScrollbar="true">
         <HeaderContent>
             @if (_values?.Any() == true)
-        {
-            @foreach (var key in _values?.FirstOrDefault()?.Keys!)
             {
-                <MudTh>@key</MudTh>
-            }
-        }
-    </HeaderContent>
-    <RowTemplate>
-        @if (_values?.Any() == true)
-            {
-            @foreach (var t in context)
+                @foreach (var key in _values?.FirstOrDefault()?.Keys!)
                 {
-                <MudTd>@t</MudTd>
+                    <MudTh>@key</MudTh>
                 }
             }
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
+        </HeaderContent>
+        <RowTemplate>
+            @if (_values?.Any() == true)
+            {
+                @foreach (var t in context)
+                {
+                    @if (t.ToString() == "{}")
+                    {
+                        <MudTd></MudTd>
+                    }
+                    else
+                    {
+                        <MudTd>@t</MudTd>
+                    }
+                }
+            }
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}","{","}",Localizer.Get("of") )" />
+        </PagerContent>
+    </MudTable>
 }
 <hr />
 

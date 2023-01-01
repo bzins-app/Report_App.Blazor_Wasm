@@ -15,6 +15,7 @@ using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
 using Report_App_WASM.Shared;
+using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -171,8 +172,11 @@ using (var scope = app.Services.CreateScope())
         var parameters = context.ApplicationParameters.FirstOrDefault();
         ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
         ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
+        ApplicationConstants.ActivateAdHocQueriesModule = parameters.ActivateAdHocQueriesModule;
+        ApplicationConstants.ActivateTaskSchedulerModule = parameters.ActivateTaskSchedulerModule;
         var ldapParameters = context.LdapConfiguration.Any(a => a.IsActivated);
         ApplicationConstants.LdapLogin = ldapParameters!;
+        ApplicationConstants.WindowsEnv = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     }
     catch (Exception ex)
     {
@@ -220,7 +224,7 @@ app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 
 app.UseHangfireDashboard("/HangfireRead", new DashboardOptions
 {
-    IsReadOnlyFunc = context => true,
+    IsReadOnlyFunc = _ => true,
     Authorization = new[] { new HangfireAuthorizationFilterRead() }
 });
 
