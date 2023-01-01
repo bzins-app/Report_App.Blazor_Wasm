@@ -1,6 +1,7 @@
 ﻿@page "/Services"
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Services status")</PageTitle>
 

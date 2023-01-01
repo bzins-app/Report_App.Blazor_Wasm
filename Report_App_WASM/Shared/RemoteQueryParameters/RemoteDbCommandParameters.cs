@@ -12,8 +12,8 @@ namespace Report_App_WASM.Shared.RemoteQueryParameters
         public bool FillDatatableSchema { get; set; } = false;
         public bool Test { get; init; } = false;
         public bool PaginatedResult { get; init; } = false;
-        public int StartRecord { get; init; } = 0;
-        public int MaxSize { get; init; } = 1000000;
+        public int StartRecord { get; set; } = 0;
+        public int MaxSize { get; set; } = 1000000;
         public DateTime LastRunDateTime { get; init; } = DateTime.Now;
     }
 

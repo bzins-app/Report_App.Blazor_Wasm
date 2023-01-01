@@ -15,7 +15,7 @@ namespace Report_App_WASM.Server.Controllers
     [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class BackgroundWorkerController : ControllerBase
+    public class BackgroundWorkerController : ControllerBase, IDisposable
     {
         private readonly ILogger<DataGridController> _logger;
         private readonly ApplicationDbContext _context;
@@ -29,6 +29,11 @@ namespace Report_App_WASM.Server.Controllers
             _context = context;
             _mapper = mapper;
             _backgroundWorkers = backgroundWorkers;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
 
         private async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type)

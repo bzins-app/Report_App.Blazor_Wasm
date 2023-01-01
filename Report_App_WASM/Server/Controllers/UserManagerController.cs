@@ -18,7 +18,7 @@ namespace Report_App_WASM.Server.Controllers
     [Authorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class UserManagerController : ControllerBase
+    public class UserManagerController : ControllerBase,IDisposable
     {
         private readonly ILogger<UserManagerController> _logger;
         private readonly ApplicationDbContext _context;
@@ -37,6 +37,11 @@ namespace Report_App_WASM.Server.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
             _backgroundWorker = backgroundWorker;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
 
         [HttpGet]

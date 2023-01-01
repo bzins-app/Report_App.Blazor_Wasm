@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Report_App_WASM.Server.Services.RemoteDb;
+using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
@@ -17,12 +18,18 @@ namespace Report_App_WASM.Server.Controllers
     [Authorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class RemoteDbController : ControllerBase
+    public class RemoteDbController : ControllerBase, IDisposable
     {
         private readonly IRemoteDbConnection _remoteDb;
-        public RemoteDbController(IRemoteDbConnection remoteDb)
+        private readonly ILogger<RemoteDbController> _logger;
+        public RemoteDbController(IRemoteDbConnection remoteDb, ILogger<RemoteDbController> logger)
         {
             _remoteDb = remoteDb;
+            _logger = logger;
+        }
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
 
         [HttpPost]
@@ -56,6 +63,27 @@ namespace Report_App_WASM.Server.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<FileResult?> RemoteDbExtractValuesAsync(RemoteDbCommandParameters values, CancellationToken ct)
+        {
+            try
+            {
+                _logger.LogInformation("Grid extraction: Start " + values.FileName, values.FileName);
+                var items = await _remoteDb.RemoteDbToDatableAsync(values!, ct);
+                var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
+
+                var file = CreateFile.ExcelFromDatable(fileName, new ExcelCreationDatatable(fileName,new(),items));
+                _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines", $" {fileName} {items.Rows.Count} lines");
+                return File(file.FileContents, contentType: file.ContentType, file.FileDownloadName);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return null!;
+            }
+        }
+
         [HttpGet]
         public async Task<DbTablesColList> GetTablesListAsync(int activityId, CancellationToken ct)
         {
@@ -71,7 +99,7 @@ namespace Report_App_WASM.Server.Controllers
                     .ToList();
                 if (tables != null)
                 {
-                    foreach (var table in tables)
+                    foreach (var table in tables.Distinct())
                     {
                         listTables.Values.Add(table!,"empty");
                     }
@@ -97,7 +125,7 @@ namespace Report_App_WASM.Server.Controllers
                     .ToList();
                 if (tables != null)
                 {
-                    foreach (var table in tables)
+                    foreach (var table in tables.Distinct())
                     {
                         listCols.Values.Add(table!, null!);
                     }

@@ -14,7 +14,7 @@ else
            @ref=_chart>
 
         <ApexPointSeries TItem="DbLinesQuery"
-                     Items="_logs"
+                     Items="_logs.OrderBy(a=>a.Date)"
                      Name="@Localizer.Get("Nbr of rows")"
                      SeriesType="SeriesType.Line"
                      XValue="@(e => e.Date.ToLocalTime())"

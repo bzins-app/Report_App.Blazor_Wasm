@@ -9,7 +9,7 @@ namespace Report_App_WASM.Server.Controllers
     [Authorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class FilesController : ControllerBase
+    public class FilesController : ControllerBase, IDisposable
     {
         private readonly ILogger<FilesController> _logger;
         private readonly ApplicationDbContext _context;
@@ -21,6 +21,11 @@ namespace Report_App_WASM.Server.Controllers
             _logger = logger;
             _context = context;
             _hostingEnvironment = hostingEnvironment;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
 
         [HttpPost]

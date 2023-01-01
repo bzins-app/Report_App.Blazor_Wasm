@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Report_App_WASM.Client.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
+using Report_App_WASM.Shared.RemoteQueryParameters;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -66,6 +67,29 @@ namespace Report_App_WASM.Client.Services
             try
             {
                 var url = "odata/ExtractLogs";
+                var response = await _httpClient.PostAsJsonAsync(url, values);
+                if (response.IsSuccessStatusCode)
+                {
+                    var downloadresult = await _blazorDownloadFileService.DownloadFile(values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
+                    if (downloadresult.Succeeded)
+                    {
+                        response.Dispose();
+                    }
+                }
+            }
+            catch
+            {
+                // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+                //return null;
+            }
+        }
+
+
+        public async Task ExtractAdHocQuery(RemoteDbCommandParameters values, CancellationToken ct)
+        {
+            try
+            {                
+                var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
                 var response = await _httpClient.PostAsJsonAsync(url, values);
                 if (response.IsSuccessStatusCode)
                 {

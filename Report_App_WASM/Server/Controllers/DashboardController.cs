@@ -25,6 +25,11 @@ namespace Report_App_WASM.Server.Controllers
             _context = context;
         }
 
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+
         [HttpGet("Metrics")]
         public async Task<AppMetrics> GetAppMetricsAsync()
         {
@@ -70,18 +75,21 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet("EmailLogs")]
-        public async Task<List<EmailsLogsalues>> GetEmailLogsAsync()
+        public async Task<List<EmailsLogsValues>> GetEmailLogsAsync()
         {
             return await _context.ApplicationLogEmailSender.AsNoTracking().Where(a => a.EndDateTime.Date > DateTime.Today.AddDays(-20))
                 .GroupBy(a => a.EndDateTime.Date)
-                .Select(a => new EmailsLogsalues { Date = a.Key.Date, NbrEmails = a.Count(), NbrErrors = a.Sum(a => a.Error ? 1 : 0), TotalDuration = a.Sum(a => a.DurationInSeconds) })
+                .Select(a => new EmailsLogsValues { Date = a.Key.Date, NbrEmails = a.Count(), NbrErrors = a.Sum(a => a.Error ? 1 : 0), TotalDuration = a.Sum(a => a.DurationInSeconds) })
                 .ToListAsync();
         }
 
         [HttpGet("StorageInfo")]
-        public async Task<List<ApplicationLogReportResult>> GetStorageInfoAsync()
+        public async Task<List<StorageData>> GetStorageInfoAsync()
         {
-            return await _context.ApplicationLogReportResult.Where(a => a.CreatedAt > DateTime.Today.AddDays(-10) && a.IsAvailable && !a.Error).ToListAsync();
+            return await _context.ApplicationLogReportResult.Where(a => a.CreatedAt > DateTime.Today.AddDays(-10) && a.IsAvailable && !a.Error)
+                .GroupBy(a=>a.ReportName)
+                .Select(a=> new StorageData {ReportName=a.Key, FileSizeInMb=a.Sum(b=>b.FileSizeInMb) })
+                .ToListAsync();
         }
 
         [HttpGet("DbFetchMetrics")]

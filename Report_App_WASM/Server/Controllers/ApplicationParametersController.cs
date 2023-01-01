@@ -12,7 +12,7 @@ namespace Report_App_WASM.Server.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
-    public class ApplicationParametersController : ControllerBase
+    public class ApplicationParametersController : ControllerBase, IDisposable
     {
         private readonly ILogger<ApplicationParametersController> _logger;
         private readonly ApplicationDbContext _context;
@@ -24,6 +24,11 @@ namespace Report_App_WASM.Server.Controllers
             _logger = logger;
             _context = context;
             _hostingEnvironment = hostingEnvironment;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
 
         [Authorize]

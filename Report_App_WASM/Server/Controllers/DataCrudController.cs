@@ -17,7 +17,7 @@ namespace Report_App_WASM.Server.Controllers
     [ApiController]
     [Route("api/[controller]/[action]")]
 
-    public class DataCrudController : ControllerBase
+    public class DataCrudController : ControllerBase, IDisposable
     {
 
         private readonly ILogger<DataCrudController> _logger;
@@ -35,6 +35,11 @@ namespace Report_App_WASM.Server.Controllers
             _mapper = mapper;
             _roleManager = roleManager;
             _userManager = userManager;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
 
         [HttpGet]

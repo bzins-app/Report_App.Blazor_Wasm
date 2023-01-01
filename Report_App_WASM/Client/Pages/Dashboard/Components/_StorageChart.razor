@@ -6,13 +6,13 @@
 }
 else
 {
-    <ApexChart TItem="ApplicationLogReportResultDto"
+    <ApexChart TItem="StorageData"
            Title="@(Localizer.Get("Storage per report")+":"+Localizer.Get("Total size in MB"))"
            Height="@Height"
            Options="_options"
            @ref=_chart>
 
-        <ApexPointSeries TItem="ApplicationLogReportResultDto"
+        <ApexPointSeries TItem="StorageData"
                      Items="_logs"
                      Name="@Localizer.Get("Total size in MB")"
                      SeriesType="SeriesType.Treemap"
@@ -26,12 +26,12 @@ else
 @code {
     [Parameter] public string? Height { get; set; } = null;
 
-    private List<ApplicationLogReportResultDto>? _logs;
-    private ApexChartOptions<ApplicationLogReportResultDto> _options = new();
-    private ApexChart<ApplicationLogReportResultDto>? _chart;
+    private List<StorageData>? _logs;
+    private ApexChartOptions<StorageData> _options = new();
+    private ApexChart<StorageData>? _chart;
 
     protected override async Task OnInitializedAsync()
     {
-        _logs = await DataService.GetValues<ApplicationLogReportResultDto>("StorageInfo", ApiControllers.DashboardApi);
+        _logs = await DataService.GetValues<StorageData>("StorageInfo", ApiControllers.DashboardApi);
     }
 }

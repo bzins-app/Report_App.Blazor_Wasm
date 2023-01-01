@@ -11,7 +11,7 @@ namespace Report_App_WASM.Server.Controllers
     [Authorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class DepositPathController : ControllerBase
+    public class DepositPathController : ControllerBase, IDisposable
     {
         private readonly ILogger<DepositPathController> _logger;
         private readonly SftpService _sftpService;
@@ -28,6 +28,12 @@ namespace Report_App_WASM.Server.Controllers
             _fileService = fileService;
             _context = context;
         }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+
         [HttpPost]
         public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value)
         {

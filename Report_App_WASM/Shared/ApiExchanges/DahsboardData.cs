@@ -18,12 +18,18 @@
         public int NbrCriticals { get; init; }
     }
 
-    public class EmailsLogsalues
+    public class EmailsLogsValues
     {
         public DateTime Date { get; init; }
         public int NbrEmails { get; init; }
         public int NbrErrors { get; init; }
         public int TotalDuration { get; init; }
+    }
+
+    public class StorageData
+    {
+        public string? ReportName { get; init; }
+        public double FileSizeInMb { get; init; }
     }
 }
 

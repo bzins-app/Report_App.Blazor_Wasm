@@ -65,11 +65,16 @@
                                     <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
                                         <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText></MudButton>
                                 }
+                                <MudSpacer/>
+                        <MudIconButton DisableElevation Variant="Variant.Outlined"
+                                   
+                                   OnClick="@(ExtractElements)"
+                                   Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_extracting" />
                             </div>
                         </MudForm>
                     </MudPaper>
                 }
-                <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="65vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20">
+        <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="65vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
                     <HeaderContent>
                         @if (_values?.Any() == true)
                         {
@@ -114,6 +119,7 @@
     MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _errorMessage;
+    private bool _extracting;
 
     protected override async Task OnInitializedAsync()
     {
@@ -205,6 +211,19 @@
         }
         _loading = false;
         return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+    }
+
+
+    private async Task ExtractElements()
+    {
+        if (!string.IsNullOrEmpty(Item.Query))
+        {
+                    _extracting = true;
+        _cts = new CancellationTokenSource();
+        var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity,FileName=Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 100000, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+        await DataService.ExtractAdHocQuery(run, _cts.Token);
+        _extracting = false;
+        }
     }
 
     void CancelQuery()
