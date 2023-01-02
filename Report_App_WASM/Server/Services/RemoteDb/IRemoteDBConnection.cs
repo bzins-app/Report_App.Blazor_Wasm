@@ -187,7 +187,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                     script = $"SELECT table_name FROM all_tables where owner='{dbInfo.DbSchema}' order by 1"; 
                 else
                 {
-                    script = $"SELECT table_name FROM all_tables where  order by 1";
+                    script = $"SELECT table_name FROM all_tables order by 1";
                 }
             }
             else if (dbInfo.TypeDb == TypeDb.SqlServer)
