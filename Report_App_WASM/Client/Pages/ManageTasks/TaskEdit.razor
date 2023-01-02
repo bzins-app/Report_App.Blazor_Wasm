@@ -199,6 +199,10 @@
     private TypeDb _typeDbTask;
 
     private bool _changesToSave;
+    JsonSerializerOptions _jsonOpt=new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -217,7 +221,7 @@
 
         if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters != "[]")
         {
-            _param = JsonSerializer.Deserialize<TaskHeaderParameters>(Item.TaskHeaderParameters);
+            _param = JsonSerializer.Deserialize<TaskHeaderParameters>(Item.TaskHeaderParameters, _jsonOpt);
         }
 
         if (Item.FileDepositPathConfigurationId != 0)

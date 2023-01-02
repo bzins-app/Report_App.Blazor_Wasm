@@ -43,6 +43,10 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         private TaskJobParameters _jobParameters = null!;
         private TaskHeader _header = null!;
         private int _taskId;
+        JsonSerializerOptions _jsonOpt = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
         public async Task HandleTask(TaskJobParameters parameters)
         {
@@ -106,7 +110,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         ApplicationLogTask log = new() { ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now, JobDescription = detail.QueryName, Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy };
 
                         await FetchData(detail);
+                        await _context.AddAsync(log);
                         await _context.SaveChangesAsync("backgroundworker");
+                        log.TaskId = log.Id;
 
                         foreach (var value in _fetchedData)
                         {
@@ -115,7 +121,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
                         log.EndDateTime = DateTime.Now;
                         log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
-                        await _context.AddAsync(log);
+                        _context.Update(log);
                         await _context.SaveChangesAsync("backgroundworker");
                         _fetchedData.Clear();
                     }
@@ -151,7 +157,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         private async Task FetchData(TaskDetail detail)
         {
             using var remoteDb = new RemoteDbConnection(_context, _mapper);
-            var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!);
+            var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!, _jsonOpt);
             List<QueryCommandParameter>? param = new();
             if (_jobParameters.CustomQueryParameters!.Any())
             {
@@ -161,12 +167,12 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             if (_header.UseGlobalQueryParameters && _header.QueryParameters != "[]" &&
                 !string.IsNullOrEmpty(_header.QueryParameters))
             {
-                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.QueryParameters);
+                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.QueryParameters, _jsonOpt);
             }
 
             if (detail.QueryParameters != "[]" && !string.IsNullOrEmpty(detail.QueryParameters))
             {
-                var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(detail.QueryParameters);
+                var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(detail.QueryParameters, _jsonOpt);
                 foreach (var value in desParam!)
                 {
                     if (param!.All(a => a.ParameterIdentifier?.ToLower() != value.ParameterIdentifier?.ToLower()))
@@ -414,12 +420,12 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             string fExtension;
             var informationSheet = false;
             List<ExcelCreationDatatable> excelMultipleTabs = new();
-            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
+            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters, _jsonOpt);
 
             foreach (var d in _fetchedData)
             {
                 FileContentResult fileCreated;
-                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!);
+                var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!, _jsonOpt);
                 if (string.IsNullOrEmpty(detailParam?.FileName))
                 {
                     fName = $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HH_mm_ss}";
@@ -517,7 +523,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         }
         private async Task HandleTaskAlertAsync()
         {
-            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
+            var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters, _jsonOpt);
             if (_fetchedData.Any())
             {
                 var sendEmail = false;

@@ -199,6 +199,10 @@
     private AceEditorOptions? _opt;
 
     private string? _pKName;
+    JsonSerializerOptions _jsonOpt = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -207,11 +211,11 @@
         _fileType = Header?.TypeFileName;
         if (Item!.TaskDetailParameters != "[]" && !string.IsNullOrEmpty(Item.TaskDetailParameters))
         {
-            _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters)!;
+            _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters, _jsonOpt)!;
         }
         if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
         {
-            _paramHeader = JsonSerializer.Deserialize<TaskHeaderParameters>(Header.TaskHeaderParameters);
+            _paramHeader = JsonSerializer.Deserialize<TaskHeaderParameters>(Header.TaskHeaderParameters, _jsonOpt);
         }
 
         _useExcelTemplate = _paramHeader!.UseAnExcelTemplate;
