@@ -324,6 +324,7 @@ namespace Report_App_WASM.Server.Controllers
                     var e = taskEmails!.Select(a => new EmailRecipient { Email = a.Email }).ToList();
                     foreach (var value in e.Where(value => emails.All(a => a.Email != value.Email)))
                     {
+                        if(!emails.Select(a=>a.Email).Contains(value.Email))
                         emails.Add(value);
                     }
                 }
