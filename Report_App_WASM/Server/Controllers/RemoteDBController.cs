@@ -1,6 +1,8 @@
 ﻿using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.EncryptDecrypt;
@@ -22,10 +24,12 @@ namespace Report_App_WASM.Server.Controllers
     {
         private readonly IRemoteDbConnection _remoteDb;
         private readonly ILogger<RemoteDbController> _logger;
-        public RemoteDbController(IRemoteDbConnection remoteDb, ILogger<RemoteDbController> logger)
+        private readonly ApplicationDbContext _context;
+        public RemoteDbController(IRemoteDbConnection remoteDb, ILogger<RemoteDbController> logger, ApplicationDbContext context)
         {
             _remoteDb = remoteDb;
             _logger = logger;
+            _context = context;
         }
         public void Dispose()
         {
@@ -94,19 +98,35 @@ namespace Report_App_WASM.Server.Controllers
                 RemoteDbCommandParameters parameters = new RemoteDbCommandParameters
                     { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
+                var description = await _context.ActivityDbConnection
+                    .Where(a => a.Activity.ActivityId == activityId).Select(a => new {tableDesc= a.UseTablesDescriptions ,ConectId=a.Id} )
+                    .FirstOrDefaultAsync();
+
                 var tables=data.AsEnumerable()
                     .Select(r => r.Field<string>(0))
                     .ToList();
                 if (tables != null)
                 {
-                    foreach (var table in tables.Distinct())
+                    
+                    if (description.tableDesc)
                     {
-                        listTables.Values.Add(table!,"empty");
+                        var Prework =await  _context.DbTableDescriptions.Where(a=>a.ActivityDbConnection.Id== description.ConectId).Select(a => new { TableName = a.TableName, TableDescription = a.TableDescription }).Distinct().ToListAsync();
+                        listTables.Values =  (from a in tables
+                                          join b in Prework on a equals b.TableName into c
+                            from d in c.DefaultIfEmpty()
+                            select new DescriptionValues { Name = a, Description = d?.TableDescription }).Distinct().ToList();
+                        listTables.HasDescription = true;
+                    }
+                    else
+                    {
+                        foreach (var table in tables.Distinct())
+                        {
+                            listTables.Values.Add(new DescriptionValues{Name = table});
+                        }
                     }
                 }
             }
 
-            listTables.HasDescription=false;
             return listTables;
         }
 
@@ -120,20 +140,50 @@ namespace Report_App_WASM.Server.Controllers
                 RemoteDbCommandParameters parameters = new RemoteDbCommandParameters
                     { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
-                var tables = data.AsEnumerable()
+                var description = await _context.ActivityDbConnection
+                    .Where(a => a.Activity.ActivityId == activityId).Select(a => new { tableDesc = a.UseTablesDescriptions, ConectId = a.Id })
+                    .FirstOrDefaultAsync();
+
+                var cols = data.AsEnumerable()
                     .Select(r => r.Field<string>(0))
                     .ToList();
-                if (tables != null)
+                if (cols != null)
                 {
-                    foreach (var table in tables.Distinct())
+                    if (description.tableDesc)
                     {
-                        listCols.Values.Add(table!, null!);
+                        var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId&&a.ColumnName== column).Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription }).Distinct().ToListAsync();
+                        if (desc != null&& desc.Any())
+                        {
+                            listCols.HasDescription = true;
+                            foreach (var col in cols.Distinct())
+                            {
+                                listCols.Values.Add(new DescriptionValues { Name = col!, Description = desc.Where(a => a.Name == col!).Select(a => a.Desciption).First() ?? string.Empty });
+                            }
+                        }
+                        else
+                        {
+                            foreach (var col in cols.Distinct())
+                            {
+                                listCols.Values.Add(new DescriptionValues { Name = col });
+                                listCols.HasDescription = false;
+                            }
+                        }
+
                     }
+                    else
+                    {
+                        foreach (var col in cols.Distinct())
+                        {
+                            listCols.Values.Add(new DescriptionValues { Name = col });
+                        }
+                    }
+
                 }
             }
 
-            listCols.HasDescription = false;
+
             return listCols;
         }
+
     }
 }

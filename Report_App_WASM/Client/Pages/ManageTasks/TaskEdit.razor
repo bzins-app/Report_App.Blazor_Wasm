@@ -81,18 +81,21 @@
                         }
                         @if (Item.TypeFile == FileType.Excel && _param.UseAnExcelTemplate)
                         {
-                            <InputFile id="fileInput" OnChange="OnUploadTemplate" hidden accept=".xlsx" />
                             <MudTextField @bind-Value="_param.ExcelTemplatePath" Label="@Localizer.Get("Excel Template")" Required ReadOnly />
                             @if (!_loading)
                             {
                                 <MudLink Class="d-flex pa-4" Href="@("/"+_param.ExcelTemplatePath)" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
-                                <MudFab HtmlTag="label" Class="pa-4"
-                            Color="Color.Primary"
-                            Icon="@Icons.Filled.UploadFile"
-                            Label="@Localizer.Get("Select an excel template")"
-                            Size="Size.Small"
-                            Style="text-transform: none"
-                            for="fileInput" />
+                                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadTemplate" Accept=".xlsx">
+                                    <ButtonTemplate>
+                                        <MudFab HtmlTag="label" Class="pa-4"
+                                                Color="Color.Primary"
+                                                Icon="@Icons.Filled.UploadFile"
+                                                Label="@Localizer.Get("Select an excel template")"
+                                                Size="Size.Small"
+                                                Style="text-transform: none"
+                                                for="@context" />
+                                    </ButtonTemplate>
+                                </MudFileUpload>
                             }
                             @if (_loading)
                             {
@@ -199,10 +202,10 @@
     private TypeDb _typeDbTask;
 
     private bool _changesToSave;
-    JsonSerializerOptions _jsonOpt=new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    JsonSerializerOptions _jsonOpt = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -330,16 +333,13 @@
         Item.ActivityName = Item.Activity.ActivityName;
     }
 
-    private async Task OnUploadTemplate(InputFileChangeEventArgs e)
+    private async Task OnUploadTemplate(IBrowserFile file)
     {
         _loading = true;
-        foreach (var file in e.GetMultipleFiles())
+        var result = await DataService.PostFile(file);
+        if (result.Success)
         {
-            var result = await DataService.PostFile(file);
-            if (result.Success)
-            {
-                _param!.ExcelTemplatePath = result.Message;
-            }
+            _param!.ExcelTemplatePath = result.Message;
         }
         _changesToSave = true;
         _loading = false;

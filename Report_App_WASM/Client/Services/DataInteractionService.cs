@@ -150,7 +150,7 @@ namespace Report_App_WASM.Client.Services
         {
             try
             {
-                long maxFileSize = 1024 * 15;
+                long maxFileSize = 1024 *1024* 20;
                 using var content = new MultipartFormDataContent();
                 var fileContent =
                             new StreamContent(file.OpenReadStream(maxFileSize));

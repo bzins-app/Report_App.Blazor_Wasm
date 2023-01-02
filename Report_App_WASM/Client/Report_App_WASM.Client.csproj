@@ -26,4 +26,10 @@
     <ProjectReference Include="..\Shared\Report_App_WASM.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\Images\TablesDescriptionTemplate.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

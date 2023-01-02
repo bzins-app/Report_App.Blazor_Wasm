@@ -9,7 +9,7 @@
 
 
 <MudCard Elevation="6">
-        <MudCardHeader>
+    <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h6">@Localizer.Get("Application parameters")</MudText>
         </CardHeaderContent>
@@ -31,13 +31,17 @@
                     <MudImage Src="@_param.ApplicationLogo" style="max-width:150px;max-height:200px;" Alt="@_param.ApplicationName" Elevation="2" />
                 }
             </div>
-            <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png, .gif" />
-            <MudFab HtmlTag="label" Class="pa-4"
-                    Color="Color.Primary"
-                    Icon="@Icons.Filled.Image"
-                    Style="text-transform: none" Size="Size.Small"
-                    Label="@Localizer.Get("Select application Logo")"
-                    for="fileInput" />
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" Accept=".jpg, .jpeg, .png, .gif">
+                <ButtonTemplate>
+                    <MudFab HtmlTag="label" Class="pa-4"
+                            Color="Color.Primary"
+                            Icon="@Icons.Filled.Image"
+                            Label="@Localizer.Get("Select application Logo")"
+                            Size="Size.Small"
+                            Style="text-transform: none"
+                            for="@context" />
+                </ButtonTemplate>
+            </MudFileUpload>
         </MudForm>
         <div style="padding-top:15px">
             <MudTextField T="string" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="@_email"
@@ -86,7 +90,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _param = await DataService.GetUniqueValue(_param, "GetApplicationParameters",ApiControllers.ApplicationParametersApi);
+        _param = await DataService.GetUniqueValue(_param, "GetApplicationParameters", ApiControllers.ApplicationParametersApi);
         _initialAppName = _param.ApplicationName;
         _initialAppLogo = _param.ApplicationLogo;
         if (!string.IsNullOrEmpty(_param.AdminEmails))
@@ -96,16 +100,13 @@
         }
     }
 
-    private async Task UploadFiles(InputFileChangeEventArgs e)
+    private async Task UploadFiles(IBrowserFile file)
     {
-        foreach (var file in e.GetMultipleFiles())
+        var result = await DataService.PostFile(file);
+        if (result.Success)
         {
-            var result = await DataService.PostFile(file);
-            if (result.Success)
-            {
-                _param.ApplicationLogo ="/"+result.Message;
-                _success = true;
-            }
+            _param.ApplicationLogo = "/" + result.Message;
+            _success = true;
         }
     }
 
@@ -134,7 +135,7 @@
         if (!string.IsNullOrEmpty(_completeLogoPath))
         {
             _filesToDelete.Add(_completeLogoPath);
-          //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
         UriHelper.NavigateTo("/");
     }

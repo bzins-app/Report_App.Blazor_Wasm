@@ -8,7 +8,10 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
+using System.Globalization;
 using System.Text.Json;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -300,7 +303,7 @@ namespace Report_App_WASM.Server.Controllers
                 }
                 if (values.EntityValue.ActivityDbConnections != null)
                 {
-                    foreach(var connect in values.EntityValue.ActivityDbConnections)
+                    foreach (var connect in values.EntityValue.ActivityDbConnections)
                     {
                         await UpdateEntity(connect, values.UserName!);
                     }
@@ -330,7 +333,7 @@ namespace Report_App_WASM.Server.Controllers
                     var e = taskEmails!.Select(a => new EmailRecipient { Email = a.Email }).ToList();
                     foreach (var value in e.Where(value => emails.All(a => a.Email != value.Email)))
                     {
-                        if (!emails.Select(a => a.Email).Contains(value.Email))
+                        if (!emails.Select(a => a.Email.ToLower()).Contains(value.Email.ToLower()))
                             emails.Add(value);
                     }
                 }
@@ -484,6 +487,79 @@ namespace Report_App_WASM.Server.Controllers
         {
             values.EntityValue.Activity = (await _context.Activity.Where(a => a.ActivityId == values.EntityValue.IdActivity).FirstOrDefaultAsync())!;
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
+        }
+        public async Task<IActionResult> ImportTablesDescriptions(ApiCrudPayload<TablesDescriptionsImportPayload> value, CancellationToken ct)
+        {
+            try
+            {
+                if (value.EntityValue.FilePath != null)
+                {
+                    List<DbTableDescriptions> _descriptions = new List<DbTableDescriptions>();
+                    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        Delimiter = ";"
+                    };
+
+                    using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}"))
+                    using (var csv = new CsvReader(reader, config))
+                    {
+                        var records = csv.GetRecords<TableDescriptionCSV>();
+
+                        var _dbConnect = await _context.ActivityDbConnection.Where(a => a.Id == value.EntityValue.ActivityDbConnectionId).FirstOrDefaultAsync();
+                        if (await _context.DbTableDescriptions.Where(a =>
+                                a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId).AnyAsync(cancellationToken: ct))
+                        {
+                            var query = _context.DbTableDescriptions.Where(a =>
+                                a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId);
+                            _context.RemoveRange(query);
+                            await SaveDbAsync(value.UserName);
+                        }
+                        foreach (var data in records)
+                        {
+                            if (!_descriptions.Select(a => a.TableName + a.ColumnName)
+                                    .Contains(data.TableName + data.ColumnName))
+                            {
+                                _descriptions.Add(new DbTableDescriptions
+                                {
+                                    TableName = data.TableName,
+                                    ColumnName = data.ColumnName,
+                                    //ActivityDbConnection = _dbConnect,
+                                    TableDescription = data.TableDescription,
+                                    ColumnDescription = data.ColumnDescription
+                                });
+                            }
+                        }
+
+
+                          _dbConnect.DbTableDescriptions = _descriptions;
+                        _dbConnect.UseTablesDescriptions = true;
+                        //_context.Entry(_dbConnect.DbTableDescriptions).State = EntityState.Added;
+                        _context.Entry(_dbConnect).State = EntityState.Modified;
+                        await SaveDbAsync(value.UserName);
+                    }
+                    return Ok(new SubmitResult { Success = true });
+                }
+                else
+                {
+                    return Ok(new SubmitResult { Success = false, Message = "No file path" });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return Ok(new SubmitResult { Success = false, Message = e.Message });
+            }
+
+
+            return Ok();
+        }
+
+        private class TableDescriptionCSV
+        {
+            public string TableName { get; set; } = string.Empty;
+            public string TableDescription { get; set; } = string.Empty;
+            public string ColumnName { get; set; } = string.Empty;
+            public string ColumnDescription { get; set; } = string.Empty;
         }
 
         private async Task<SubmitResult> InsertEntity<T>(T EntityValue, string UserName)

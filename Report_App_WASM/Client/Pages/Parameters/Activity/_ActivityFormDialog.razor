@@ -9,10 +9,10 @@
                                } )" Class="mr-3 mb-n1" />
             @Localizer.Get(Action switch
             {
-                CrudAction.Update => "Edit",
-                CrudAction.Create => "Add",
-                _ => "Delete"
-                })
+            CrudAction.Update => "Edit",
+            CrudAction.Create => "Add",
+            _ => "Delete"
+            })
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -28,7 +28,7 @@
                     <MudSelectItem Value="@item">@item</MudSelectItem>
                 }
             </MudSelect>
-            @if (DbCon.TypeDb>0 &&Action!=CrudAction.Delete)
+            @if (DbCon.TypeDb > 0 && Action != CrudAction.Delete)
             {
                 @if (DbCon.TypeDb == TypeDb.Oracle)
                 {
@@ -85,20 +85,54 @@
                         <img src="@Item.ActivityLogo" style="max-width:150px;max-height:200px; padding:10px" alt="@Item.ActivityName" />
                     }
                 </div>
-                <InputFile id="fileInput" OnChange="OnUploadLogo" hidden accept=".jpg, .jpeg, .png, .gif" />
-                <MudFab HtmlTag="label" Class="pa-4"
-                    Color="Color.Primary"
-                    Icon="@Icons.Filled.Image"
-                    Label="@Localizer.Get("Select activity Logo")"
-                    Size="Size.Small"
-                    Style="text-transform: none"
-                    for="fileInput" />
+
+                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
+                    <ButtonTemplate>
+                        <MudFab HtmlTag="label" Class="pa-4"
+                            Color="Color.Primary"
+                            Icon="@Icons.Filled.Image"
+                            Label="@Localizer.Get("Select activity Logo")"
+                            Size="Size.Small"
+                            Style="text-transform: none"
+                            for="@context" />
+                    </ButtonTemplate>
+                </MudFileUpload>
                 <MudButton OnClick="OnRemoveLogo" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Remove logo")</MudButton>
             }
         </MudForm>
+        @if (_appConst != null && _appConst.ActivateAdHocQueriesModule && Action == CrudAction.Update)
+        {
+            @if (!_loadingDescription)
+            {
+                <MudLink Class="d-flex pa-4" Href="/images/TablesDescriptionTemplate.csv">@Localizer.Get("Download example")</MudLink>
+
+                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv" >
+                    <ButtonTemplate>
+                        <MudFab HtmlTag="label"
+                        Color="Color.Primary"
+                        Icon="@Icons.Filled.UploadFile"
+                        Label="@Localizer.Get("Select a file")"
+                        Size="Size.Small"
+                        Style="text-transform: none"
+                        for="@context" />
+                    </ButtonTemplate>
+                </MudFileUpload>
+
+            }
+            @if (_loadingDescription)
+            {
+                <MudButton Disabled="@_loadingDescription" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                    @if (_loadingDescription)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+                    }
+                </MudButton>
+            }
+        }
         @if (Action == CrudAction.Delete)
         {
-                <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
         }
     </DialogContent>
     <DialogActions>
@@ -117,7 +151,9 @@
     private ActivityDbConnectionDto DbCon { get; set; } = new();
     private string _connectionTestResult = null!;
     private List<SelectItemActivitiesInfo> _activities = new();
+    private ApplicationConstantsValues? _appConst;
     private bool _loading;
+    private bool _loadingDescription;
 
     private void Cancel()
     {
@@ -136,7 +172,7 @@
         else
         {
             await _form.Validate();
-            if (_form.IsValid && DbCon.TypeDb> 0)
+            if (_form.IsValid && DbCon.TypeDb > 0)
             {
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
@@ -152,6 +188,7 @@
         }
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _loading = false;
+        _appConst = await AppService.GetApplicationConstantsValues();
     }
 
     private async Task OnClickConnectionTest()
@@ -164,19 +201,19 @@
     private async Task ConnectionTest()
     {
         var tryConn = new ActivityDbConnectionDto
-        {
-            AdAuthentication = DbCon.AdAuthentication,
-            ConnectionLogin = DbCon.ConnectionLogin,
-            ConnectionPath = DbCon.ConnectionPath,
-            IntentReadOnly = DbCon.IntentReadOnly,
-            DbSchema = DbCon.DbSchema,
-            TypeDb = DbCon.TypeDb,
-            Port = DbCon.Port,
-            UseDbSchema = DbCon.UseDbSchema,
-            Password = DbCon.Password
-        };
-        var result = await DataService.PostValues(tryConn, "TestConnection",ApiControllers.RemoteDbApi);
-        _connectionTestResult = result.Message?? "Ok!";
+            {
+                AdAuthentication = DbCon.AdAuthentication,
+                ConnectionLogin = DbCon.ConnectionLogin,
+                ConnectionPath = DbCon.ConnectionPath,
+                IntentReadOnly = DbCon.IntentReadOnly,
+                DbSchema = DbCon.DbSchema,
+                TypeDb = DbCon.TypeDb,
+                Port = DbCon.Port,
+                UseDbSchema = DbCon.UseDbSchema,
+                Password = DbCon.Password
+            };
+        var result = await DataService.PostValues(tryConn, "TestConnection", ApiControllers.RemoteDbApi);
+        _connectionTestResult = result.Message ?? "Ok!";
     }
 
     private bool CheckActivityName()
@@ -193,22 +230,35 @@
         return true;
     }
 
-    private async Task OnUploadLogo(InputFileChangeEventArgs e)
+    private async Task OnUploadLogo(IBrowserFile file)
     {
-        foreach (var file in e.GetMultipleFiles())
+        var result = await DataService.PostFile(file);
+        if (result.Success)
         {
-            var result = await DataService.PostFile(file);
-            if(result.Success)
-            {
-                Item!.ActivityLogo = "/" + result.Message;
-            }
+            Item!.ActivityLogo = "/" + result.Message;
         }
     }
-
 
     private void OnRemoveLogo()
     {
         Item!.ActivityLogo = null;
     }
 
+    private async Task OnUploadDescriptions(IBrowserFile file)
+    {
+        _loadingDescription = true;
+        var result = await DataService.PostFile(file);
+        if (result.Success)
+        {
+            var filePath = result.Message;
+            TablesDescriptionsImportPayload payload = new TablesDescriptionsImportPayload { FilePath = filePath, ActivityDbConnectionId = DbCon.Id };
+
+            var resultCreation = await DataService.PostValues(payload, "ImportTablesDescriptions");
+            if (!resultCreation.Success)
+            {
+                _connectionTestResult = resultCreation.Message!;
+            }
+        }
+        _loadingDescription = false;
+    }
 }

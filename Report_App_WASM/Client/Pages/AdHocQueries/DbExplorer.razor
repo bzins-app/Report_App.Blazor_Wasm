@@ -39,40 +39,56 @@
                         <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
                     </MudButton>
                 }
-                    <MudGrid>
-                        <MudItem lg="7">
-                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<string, bool>(FilterFuncTables)" Height="70vh" Virtualize="true">
-                                <ToolBarContent>
-                                    <MudTextField @bind-Value="searchTables" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                                </ToolBarContent>
-                                <HeaderContent>
-                                    <MudTh></MudTh>
-                                    <MudTh>@Localizer.Get("Db tables")</MudTh>
-                                </HeaderContent>
-                                <RowTemplate>
-                                    <MudTd><MudIconButton Icon="@Icons.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context)" Title="@Localizer.Get("Display table values")" Size="Size.Small" /></MudTd>
-                                    <MudTd @ondblclick="() => GetColumnsList(context)">@context</MudTd>
-                                </RowTemplate>
-                            </MudTable>
-                        </MudItem>
-                        <MudItem lg="5">
-                        <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<string, bool>(FilterFuncCols)" Height="70vh" Virtualize="true">
-                                <ToolBarContent>
-                                    <MudTextField @bind-Value="searchCols" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                                </ToolBarContent>
-                                <HeaderContent>
-                                    <MudTh>@Localizer.Get("Columns")</MudTh>
-                                </HeaderContent>
-                                <RowTemplate>
-                                    <MudTd>@context</MudTd>
-                                </RowTemplate>
-                            </MudTable>
-                        </MudItem>
-                    </MudGrid>
+                <MudGrid>
+                    <MudItem lg="7">
+                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<DescriptionValues, bool>(FilterFuncTables)" Height="70vh" Virtualize="true" Elevation="4">
+                            <ToolBarContent>
+                                <MudTextField @bind-Value="searchTables" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                            </ToolBarContent>
+                            <HeaderContent>
+                                <MudTh></MudTh>
+                                <MudTh>@Localizer.Get("Db tables")</MudTh>
+                                @if (_hasDesc)
+                                {
+                                    <MudTh>@Localizer.Get("Description")</MudTh>
+                                }
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd><MudIconButton Icon="@Icons.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small" /></MudTd>
+                                <MudTd @ondblclick="() => GetColumnsList(context.Name)">@context.Name</MudTd>
+                                @if (_hasDesc)
+                                {
+                                    <MudTh>@context.Description</MudTh>
+                                }
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                    <MudItem lg="5">
+                        <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Filter="new Func<DescriptionValues , bool>(FilterFuncCols)" Height="70vh" Virtualize="true" Elevation="4">
+                            <ToolBarContent>
+                                <MudTextField @bind-Value="searchCols" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                            </ToolBarContent>
+                            <HeaderContent>
+                                <MudTh>@Localizer.Get("Columns")</MudTh>
+                                @if (_hasDesc)
+                                {
+                                    <MudTh>@Localizer.Get("Description")</MudTh>
+                                }
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd>@context.Name</MudTd>
+                                @if (_hasDesc)
+                                {
+                                    <MudTh>@context.Description</MudTh>
+                                }
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                </MudGrid>
             </MudItem>
-            <MudItem xs="12" md="8" >
+            <MudItem xs="12" md="8">
                 <div>
-                <MudButton Disabled="@_loadingTestQuery" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium">
+                    <MudButton Disabled="@_loadingTestQuery" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium">
                         @if (_loadingTestQuery)
                         {
                             <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
@@ -97,7 +113,7 @@
                     }
                     <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh" />
 
-                    <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+                    <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
                             @if (_values?.Any() == true)
                             {
@@ -112,7 +128,7 @@
                             {
                                 @foreach (var t in context)
                                 {
-                                    @if(t.ToString()=="{}")
+                                    @if (t.ToString() == "{}")
                                     {
                                         <MudTd></MudTd>
                                     }
@@ -137,12 +153,13 @@
     [Parameter] public string ActivityName { get; set; } = default!;
     [Parameter] public int ActivityId { get; set; }
 
-    private List<string> TableNames = new();
-    private List<string> ColNames = new();
+    private List<DescriptionValues> TableNames = new();
+    private List<DescriptionValues> ColNames = new();
     private string searchTables = "";
     private string searchCols = "";
     private bool _loading;
     private bool _loadingTestQuery;
+    private bool _hasDesc;
 
     private string QueryBuilder;
     private string QueryRun;
@@ -187,7 +204,8 @@
         _cts = new CancellationTokenSource();
         _loading = true;
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
-        TableNames = data.Values!.Select(a => a.Key).ToList();
+        TableNames = data.Values;
+        _hasDesc = data.HasDescription;
         _loading = false;
     }
 
@@ -197,22 +215,25 @@
         _cts = new CancellationTokenSource();
         _loading = true;
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&column={column}", _cts.Token);
-        ColNames = data.Values!.Select(a => a.Key).ToList();
+        ColNames = data.Values;
+        _hasDesc = data.HasDescription;
         _loading = false;
     }
 
-    private bool FilterFuncTables(string element) => FilterTables(element, searchTables);
+    private bool FilterFuncTables(DescriptionValues element) => FilterTables(element, searchTables);
 
-    private bool FilterTables(string element, string searchString)
+    private bool FilterTables(DescriptionValues element, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Name.Contains(searchString))
+            return true;
+        if (element.Description.Contains(searchString))
             return true;
         return false;
     }
 
-    private bool FilterFuncCols(string element) => FilterTables(element, searchCols);
+    private bool FilterFuncCols(DescriptionValues element) => FilterTables(element, searchCols);
 
     void CancelQuery()
     {
