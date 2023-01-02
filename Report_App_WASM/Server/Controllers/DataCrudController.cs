@@ -500,43 +500,45 @@ namespace Report_App_WASM.Server.Controllers
                         Delimiter = ";"
                     };
 
+                    var records=new List<TableDescriptionCSV>();
                     using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}"))
                     using (var csv = new CsvReader(reader, config))
                     {
-                        var records = csv.GetRecords<TableDescriptionCSV>();
+                         records = csv.GetRecords<TableDescriptionCSV>().ToList();
 
-                        var _dbConnect = await _context.ActivityDbConnection.Where(a => a.Id == value.EntityValue.ActivityDbConnectionId).FirstOrDefaultAsync();
-                        if (await _context.DbTableDescriptions.Where(a =>
-                                a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId).AnyAsync(cancellationToken: ct))
-                        {
-                            var query = _context.DbTableDescriptions.Where(a =>
-                                a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId);
-                            _context.RemoveRange(query);
-                            await SaveDbAsync(value.UserName);
-                        }
-                        foreach (var data in records)
-                        {
-                            if (!_descriptions.Select(a => a.TableName + a.ColumnName)
-                                    .Contains(data.TableName + data.ColumnName))
-                            {
-                                _descriptions.Add(new DbTableDescriptions
-                                {
-                                    TableName = data.TableName,
-                                    ColumnName = data.ColumnName,
-                                    //ActivityDbConnection = _dbConnect,
-                                    TableDescription = data.TableDescription,
-                                    ColumnDescription = data.ColumnDescription
-                                });
-                            }
-                        }
+                    }
 
-
-                          _dbConnect.DbTableDescriptions = _descriptions;
-                        _dbConnect.UseTablesDescriptions = true;
-                        //_context.Entry(_dbConnect.DbTableDescriptions).State = EntityState.Added;
-                        _context.Entry(_dbConnect).State = EntityState.Modified;
+                    var _dbConnect = await _context.ActivityDbConnection.Where(a => a.Id == value.EntityValue.ActivityDbConnectionId).FirstOrDefaultAsync(cancellationToken: ct);
+                    if (await _context.DbTableDescriptions.Where(a =>
+                            a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId).AnyAsync(cancellationToken: ct))
+                    {
+                        var query = _context.DbTableDescriptions.Where(a =>
+                            a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId);
+                        _context.RemoveRange(await query.ToListAsync(cancellationToken: ct));
                         await SaveDbAsync(value.UserName);
                     }
+                    foreach (var data in records)
+                    {
+                        if (!_descriptions.Select(a => a.TableName + a.ColumnName)
+                                .Contains(data.TableName + data.ColumnName))
+                        {
+                            _descriptions.Add(new DbTableDescriptions
+                            {
+                                TableName = data.TableName,
+                                ColumnName = data.ColumnName,
+                                //ActivityDbConnection = _dbConnect,
+                                TableDescription = data.TableDescription,
+                                ColumnDescription = data.ColumnDescription
+                            });
+                        }
+                    }
+
+
+                    _descriptions.All(c => { c.ActivityDbConnection = _dbConnect; return true; });
+                    _context.Entry(_descriptions).State = EntityState.Added;
+                    _dbConnect.UseTablesDescriptions = true;
+                    _context.Entry(_dbConnect).State = EntityState.Modified;
+                    await SaveDbAsync(value.UserName);
                     return Ok(new SubmitResult { Success = true });
                 }
                 else

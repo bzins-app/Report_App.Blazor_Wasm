@@ -99,8 +99,8 @@ namespace Report_App_WASM.Server.Controllers
                     { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).Select(a => new {tableDesc= a.UseTablesDescriptions ,ConectId=a.Id} )
-                    .FirstOrDefaultAsync();
+                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new {tableDesc= a.UseTablesDescriptions ,ConectId=a.Id} )
+                    .FirstOrDefaultAsync(cancellationToken: ct);
 
                 var tables=data.AsEnumerable()
                     .Select(r => r.Field<string>(0))
@@ -110,11 +110,11 @@ namespace Report_App_WASM.Server.Controllers
                     
                     if (description.tableDesc)
                     {
-                        var Prework =await  _context.DbTableDescriptions.Where(a=>a.ActivityDbConnection.Id== description.ConectId).Select(a => new { TableName = a.TableName, TableDescription = a.TableDescription }).Distinct().ToListAsync();
+                        var Prework =await  _context.DbTableDescriptions.Where(a=>a.ActivityDbConnection.Id== description.ConectId).AsNoTracking().Select(a => new { TableName = a.TableName, TableDescription = a.TableDescription }).Distinct().ToListAsync(cancellationToken: ct);
                         listTables.Values =  (from a in tables
                                           join b in Prework on a equals b.TableName into c
                             from d in c.DefaultIfEmpty()
-                            select new DescriptionValues { Name = a, Description = d?.TableDescription }).Distinct().ToList();
+                            select new DescriptionValues { Name = a, Description = d?.TableDescription }).ToList();
                         listTables.HasDescription = true;
                     }
                     else
@@ -141,7 +141,7 @@ namespace Report_App_WASM.Server.Controllers
                     { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).Select(a => new { tableDesc = a.UseTablesDescriptions, ConectId = a.Id })
+                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, ConectId = a.Id })
                     .FirstOrDefaultAsync();
 
                 var cols = data.AsEnumerable()
@@ -151,7 +151,7 @@ namespace Report_App_WASM.Server.Controllers
                 {
                     if (description.tableDesc)
                     {
-                        var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId&&a.ColumnName== column).Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription }).Distinct().ToListAsync();
+                        var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId&&a.ColumnName== column).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription }).Distinct().ToListAsync();
                         if (desc != null&& desc.Any())
                         {
                             listCols.HasDescription = true;
