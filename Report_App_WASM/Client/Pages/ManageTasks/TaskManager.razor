@@ -183,7 +183,7 @@
         var customFilters = $"TypeName eq '{TypeTask}'";
         if (ActivityId.HasValue)
         {
-            customFilters += $" and  IdActivity eq {ActivityId.Value})";
+            customFilters += $" and  IdActivity eq {ActivityId.Value} ";
         }
 
         url += "$count=true";
