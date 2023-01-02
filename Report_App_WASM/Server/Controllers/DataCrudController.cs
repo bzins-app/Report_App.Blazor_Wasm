@@ -341,7 +341,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> TaskHeaderInsert(ApiCrudPayload<TaskHeader> values)
         {
-            return Ok(await InsertEntity(values.EntityValue, values.UserName!));
+            var result = await InsertEntity(values.EntityValue, values.UserName!);
+            result.KeyValue = values.EntityValue.TaskHeaderId;
+            return Ok(result);
         }
 
         [HttpPost]
@@ -459,7 +461,9 @@ namespace Report_App_WASM.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> QueryStoreInsert(ApiCrudPayload<QueryStore> values)
         {
-            return Ok(await InsertEntity(values.EntityValue, values.UserName!));
+            var result = await InsertEntity(values.EntityValue, values.UserName!);
+            result.KeyValue = values.EntityValue.Id;
+            return Ok(result);
         }
 
         [HttpPost]
@@ -481,7 +485,7 @@ namespace Report_App_WASM.Server.Controllers
             {
                 _context.Entry(entity: EntityValue!).State = EntityState.Added;
                 await SaveDbAsync(UserName);
-                return new SubmitResult { Success = true };
+                return new SubmitResult { Success = true};
             }
             catch (Exception ex)
             {

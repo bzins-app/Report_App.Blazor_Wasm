@@ -72,7 +72,7 @@ namespace Report_App_WASM.Server.Controllers
                 var items = await _remoteDb.RemoteDbToDatableAsync(values!, ct);
                 var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
-                var file = CreateFile.ExcelFromDatable(fileName, new ExcelCreationDatatable(fileName,new(),items));
+                var file = CreateFile.ExcelFromDatable(fileName, new ExcelCreationDatatable(values.FileName, new(),items));
                 _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines", $" {fileName} {items.Rows.Count} lines");
                 return File(file.FileContents, contentType: file.ContentType, file.FileDownloadName);
 

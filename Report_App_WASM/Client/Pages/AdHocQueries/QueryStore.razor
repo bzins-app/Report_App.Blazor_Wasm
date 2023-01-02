@@ -244,10 +244,9 @@
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
-                if (result.Value != null)
+                if (result.KeyValue>0)
                 {
-                    var item = (QueryStoreDto)Convert.ChangeType(result.Value, typeof(QueryStoreDto));
-                    UriHelper.NavigateTo("QueryEdit/" + item.Id);
+                    UriHelper.NavigateTo("QueryEdit/" + result.KeyValue);
                 }
                 else
                     await OnRefresh();

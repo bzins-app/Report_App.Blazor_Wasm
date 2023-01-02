@@ -287,10 +287,9 @@
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
-                if (result.Value != null)
+                if (result.KeyValue > 0)
                 {
-                    var item = (TaskHeaderDto)Convert.ChangeType(result.Value, typeof(TaskHeaderDto));
-                    UriHelper.NavigateTo("TaskEdit/" + item.TaskHeaderId);
+                    UriHelper.NavigateTo("TaskEdit/" + result.KeyValue);
                 }
                 else
                     await OnRefresh();
