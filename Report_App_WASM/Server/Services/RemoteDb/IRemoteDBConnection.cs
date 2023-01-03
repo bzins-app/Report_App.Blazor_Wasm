@@ -331,6 +331,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             conValue.DbSchema = data.DbSchema;
             conValue.TypeDb = data.TypeDb;
             conValue.UseDbSchema = data.UseDbSchema;
+            conValue.IntentReadOnly = data.IntentReadOnly;
 
             conValue.ConnectionType = data.ConnectionType;
             conValue.CommandTimeOut = data.CommandTimeOut;

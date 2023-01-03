@@ -17,7 +17,7 @@
     </MudCardHeader>
     <MudCardContent>
         <MudGrid>
-            <MudItem xs="12" md="4">
+            <MudItem xs="12" md="6">
                 @if (!string.IsNullOrEmpty(_errorMessage))
                 {
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
@@ -86,7 +86,7 @@
                     </MudItem>
                 </MudGrid>
             </MudItem>
-            <MudItem xs="12" md="8">
+            <MudItem xs="12" md="6">
                 <div>
                     <MudButton Disabled="@_loadingTestQuery" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium">
                         @if (_loadingTestQuery)
@@ -227,9 +227,9 @@
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (!string.IsNullOrEmpty(element.Name) && element.Name.Contains(searchString))
+        if (!string.IsNullOrEmpty(element.Name) && element.Name.ToLower().Contains(searchString.ToLower()))
             return true;
-        if (!string.IsNullOrEmpty(element.Description)&& element.Description.Contains(searchString))
+        if (!string.IsNullOrEmpty(element.Description) && element.Description.ToLower().Contains(searchString.ToLower()))
             return true;
         return false;
     }

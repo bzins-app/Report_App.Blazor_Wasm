@@ -519,8 +519,8 @@ namespace Report_App_WASM.Server.Controllers
                     }
                     foreach (var data in records)
                     {
-                        if (!_descriptions.Select(a => a.TableName + a.ColumnName)
-                                .Contains(data.TableName + data.ColumnName))
+                        if (!_descriptions
+                                .Any(a => a.TableName == data.TableName && a.ColumnName == data.ColumnName))
                         {
                             _descriptions.Add(new DbTableDescriptions
                             {
@@ -534,8 +534,8 @@ namespace Report_App_WASM.Server.Controllers
                     }
 
 
-                    _descriptions.All(c => { c.ActivityDbConnection = _dbConnect; return true; });
-                    _context.Entry(_descriptions).State = EntityState.Added;
+                    _dbConnect.DbTableDescriptions = _descriptions;
+
                     _dbConnect.UseTablesDescriptions = true;
                     _context.Entry(_dbConnect).State = EntityState.Modified;
                     await SaveDbAsync(value.UserName);
