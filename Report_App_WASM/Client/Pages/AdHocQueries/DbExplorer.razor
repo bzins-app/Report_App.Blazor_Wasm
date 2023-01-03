@@ -162,8 +162,8 @@
     private bool _hasDesc;
     private bool _hasDescCol;
 
-    private string QueryBuilder;
-    private string QueryRun;
+    private string? QueryBuilder;
+    private string? QueryRun;
     private CancellationTokenSource? _cts;
 
     private bool _isDarkMode;
@@ -176,9 +176,16 @@
     private string? _errorMessage;
     private string? _queryTestResult { get; set; }
 
-    protected override async Task OnInitializedAsync()
+
+    protected override async Task OnParametersSetAsync()
     {
-        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
+        TableNames = new();
+        ColNames = new();
+        searchTables = "";
+        searchCols = "";
+        QueryRun = "";
+        QueryBuilder = "";
+        _table = new();        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         if (response.Any())
         {
@@ -186,37 +193,35 @@
         }
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
+        {
+            IsReadOnly = false,
+            Language = _typeDbTask switch
             {
-                IsReadOnly = false,
-                Language = _typeDbTask switch
-                {
-                    TypeDb.MySql => AceLanguage.mysql,
-                    TypeDb.MariaDb => AceLanguage.mysql,
-                    TypeDb.SqlServer => AceLanguage.sqlserver,
-                    _ => AceLanguage.sql
+                TypeDb.MySql => AceLanguage.mysql,
+                TypeDb.MariaDb => AceLanguage.mysql,
+                TypeDb.SqlServer => AceLanguage.sqlserver,
+                _ => AceLanguage.sql
                 },
-                Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
-            };
+            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
+        };
     }
 
     private async Task GetTablesList()
     {
-        DbTablesColList list = new();
         _cts = new CancellationTokenSource();
         _loading = true;
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
-        TableNames = data.Values;
+        TableNames = data!.Values;
         _hasDesc = data.HasDescription;
         _loading = false;
     }
 
     private async Task GetColumnsList(string table)
     {
-        DbTablesColList list = new();
         _cts = new CancellationTokenSource();
         _loading = true;
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={table}", _cts.Token);
-        ColNames = data.Values;
+        ColNames = data!.Values;
         _hasDescCol = data.HasDescription;
         _loading = false;
     }

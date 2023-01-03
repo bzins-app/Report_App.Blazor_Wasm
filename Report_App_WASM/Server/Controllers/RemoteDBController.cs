@@ -110,7 +110,7 @@ namespace Report_App_WASM.Server.Controllers
 
                     if (description.tableDesc)
                     {
-                        var Prework = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId).AsNoTracking().Select(a => new { TableName = a.TableName, TableDescription = a.TableDescription }).Distinct().ToListAsync(cancellationToken: ct);
+                        var Prework = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId).AsNoTracking().Select(a => new { a.TableName, a.TableDescription }).Distinct().ToListAsync(cancellationToken: ct);
                         listTables.Values = (from a in tables
                                              join b in Prework on a equals b.TableName into c
                                              from d in c.DefaultIfEmpty()
@@ -121,7 +121,7 @@ namespace Report_App_WASM.Server.Controllers
                     {
                         foreach (var table in tables.Distinct())
                         {
-                            listTables.Values.Add(new DescriptionValues { Name = table });
+                            listTables.Values.Add(new DescriptionValues { Name = table! });
                         }
                     }
                 }

@@ -35,7 +35,7 @@ namespace Report_App_WASM.Client.Services
         }
 
 
-        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi) where T : class?
+        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct =default) where T : class?
         {
             var uri = $"{controller}{controllerAction}";
 
@@ -46,18 +46,47 @@ namespace Report_App_WASM.Client.Services
                 {
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 };
-                var response = await _httpClient.PostAsJsonAsync(uri, payload, options);
-                if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync());
+                var response = await _httpClient.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
+                if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
-                    return (await response.Content.ReadFromJsonAsync<SubmitResult>())!;
+                    return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
                 }
 
                 return new SubmitResult { Success = false };
             }
             catch (Exception ex)
             {
+                return new SubmitResult { Success = false, Message = ex.Message };
+            }
+        }
+
+        public async Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
+        {
+            var uri = $"{controller}{controllerAction}";
+
+            ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
+            try
+            {
+                JsonSerializerOptions options = new()
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                };
+                _httpClient.Timeout = TimeSpan.FromMinutes(5);
+                var response = await _httpClient.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
+                if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
+                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
+                }
+                _httpClient.Timeout = TimeSpan.FromSeconds(100);
+                return new SubmitResult { Success = false };
+            }
+            catch (Exception ex)
+            {
+                _httpClient.Timeout = TimeSpan.FromSeconds(100);
                 return new SubmitResult { Success = false, Message = ex.Message };
             }
         }

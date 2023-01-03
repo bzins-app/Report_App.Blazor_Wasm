@@ -19,13 +19,16 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.QueryName" Label="@(Localizer.Get("Query Name"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
-            <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.IdActivity" AnchorOrigin="Origin.BottomCenter"
-                       Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
-                @foreach (var value in _activities)
-                {
-                    <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
-                }
-            </MudSelect>
+            @if (_activities.Any())
+            {
+                <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.IdActivity" AnchorOrigin="Origin.BottomCenter"
+                           Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
+                    @foreach (var value in _activities)
+                    {
+                        <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                    }
+                </MudSelect>
+            }
         </MudForm>
         @if (Action == CrudAction.Delete)
         {

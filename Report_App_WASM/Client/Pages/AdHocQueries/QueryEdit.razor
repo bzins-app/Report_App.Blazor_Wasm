@@ -1,5 +1,6 @@
 ﻿@page "/QueryEdit/{QueryId:int}"
 @using Blazor.AceEditorJs
+@using MudBlazor.Utilities
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @inject IDialogService DialogService
@@ -32,24 +33,26 @@
         }
         @if (Item != null)
         {
-            <MudGrid>
-                <MudItem>
-                    <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" />
-                </MudItem>
-                <MudItem>
-                    @if (_activities.Any())
-                    {
-                        <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
-                                   AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="(OnSelectedItemChangedHandler)"
-                                   Required>
-                            @foreach (var value in _activities)
-                            {
-                                <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
-                            }
-                        </MudSelect>
-                    }
-                </MudItem>
-            </MudGrid>
+            <MudForm FieldChanged="FormChanged">
+                <MudGrid>
+                    <MudItem>
+                        <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width:200px" />
+                    </MudItem>
+                    <MudItem>
+                        @if (_activities.Any())
+                        {
+                            <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
+                                       AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="(OnSelectedItemChangedHandler)" Style="min-width:200px"
+                                       Required>
+                                @foreach (var value in _activities)
+                                {
+                                    <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                                }
+                            </MudSelect>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
 
         }
         <MudGrid>
@@ -82,13 +85,15 @@
                                 <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 65vh"/>
                             </MudTabPanel>
                             <MudTabPanel Text="@Localizer.Get("Query parameters")">
-                                <_AdHocQueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery"/>
+                                <CascadingValue Value="_changesToSave">
+                                    <_AdHocQueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery" ValueChanged="ParametersChange" />
+                                </CascadingValue>
                             </MudTabPanel>
                         </MudTabs>
                     }
                     else
                     {
-                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 75vh"/>
+                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 75vh" @oninput="@ParametersChange" />
                     }
                 }
             </MudItem>
@@ -178,7 +183,7 @@
     private string? _errorMessage;
     private List<SelectItemActivitiesInfo> _activities = new();
     private List<QueryCommandParameter> param = new();
-    private MudForm? _validateParam;
+    private MudForm? _validateParam = new MudForm();
     bool _formParamValidated = true;
 
     protected override async Task OnInitializedAsync()
@@ -271,22 +276,24 @@
                     }
                 }
             }
-            _table!.CurrentPage = 0;
-            if (param!.Count > 0)
+            if (_table != null)
             {
-                await ConfirmText();
+                _table.CurrentPage = 0;
+                if (param!.Count > 0)
+                {
+                    await ConfirmText();
+                }
+                else
+                {
+                    await _table.ReloadServerData();
+                }
             }
-            else
-            {
-                await _table.ReloadServerData();
-            }
-            _changesToSave = true;
         }
     }
 
     private async Task ConfirmText()
     {
-        await _validateParam?.Validate()!;
+        await _validateParam?.Validate();
         _formParamValidated = _validateParam.IsValid;
         await _table?.ReloadServerData()!;
     }
@@ -406,6 +413,15 @@
         var _activityId = actId.FirstOrDefault();
         Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
         Item.IdActivity = Item.Activity.ActivityId;
+    }
+    private void FormChanged(FormFieldChangedEventArgs e)
+    {
+        _changesToSave = true;
+    }
+
+    private void ParametersChange()
+    {
+        _changesToSave = true;
     }
 
     public void Dispose()

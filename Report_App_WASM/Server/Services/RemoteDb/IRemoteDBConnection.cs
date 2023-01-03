@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
@@ -19,9 +16,7 @@ using Report_App_WASM.Shared.SerializedParameters;
 using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Report_App_WASM.Server.Services.RemoteDb
 {

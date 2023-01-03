@@ -783,6 +783,9 @@
   <data name="Deposit path" xml:space="preserve">
     <value>Chemin de dépose</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
   <data name="Details" xml:space="preserve">
     <value>Détails</value>
   </data>
@@ -830,6 +833,9 @@
   </data>
   <data name="Download duration" xml:space="preserve">
     <value>Durée du téléchargement</value>
+  </data>
+  <data name="Download example" xml:space="preserve">
+    <value>Télécharger l'exemple</value>
   </data>
   <data name="Download Your Data" xml:space="preserve">
     <value>Téléchargez vos données</value>
@@ -1931,6 +1937,9 @@
   </data>
   <data name="Select a date calculation" xml:space="preserve">
     <value>Sélectionnez un calcul de date</value>
+  </data>
+  <data name="Select a file" xml:space="preserve">
+    <value>Sélectionnez un fichier</value>
   </data>
   <data name="Select a log to display the message" xml:space="preserve">
     <value>Sélectionnez un log pour afficher le message</value>

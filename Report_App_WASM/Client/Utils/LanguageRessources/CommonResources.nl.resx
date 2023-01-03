@@ -789,6 +789,9 @@
   <data name="Deposit path" xml:space="preserve">
     <value>Storting pad</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beschrijving</value>
+  </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>
@@ -836,6 +839,9 @@
   </data>
   <data name="Download duration" xml:space="preserve">
     <value>Duur downloaden</value>
+  </data>
+  <data name="Download example" xml:space="preserve">
+    <value>Voorbeeld downloaden</value>
   </data>
   <data name="Download Your Data" xml:space="preserve">
     <value>Uw gegevens downloaden</value>
@@ -1940,6 +1946,9 @@
   </data>
   <data name="Select a date calculation" xml:space="preserve">
     <value>Selecteer een datumberekening</value>
+  </data>
+  <data name="Select a file" xml:space="preserve">
+    <value>Selecteer een bestand</value>
   </data>
   <data name="Select a log to display the message" xml:space="preserve">
     <value>Selecteer een log om het bericht weer te geven</value>

@@ -231,7 +231,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new QueryStoreDto();
+        var value = new QueryStoreDto { IdActivity = ActivityId };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Create", parameters);

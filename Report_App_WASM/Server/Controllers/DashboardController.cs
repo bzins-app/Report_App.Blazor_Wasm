@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
 using Report_App_WASM.Shared.Dashboard;

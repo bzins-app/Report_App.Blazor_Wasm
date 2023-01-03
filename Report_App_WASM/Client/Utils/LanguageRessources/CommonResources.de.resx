@@ -777,6 +777,9 @@
   <data name="Deposit path" xml:space="preserve">
     <value>Einzahlungspfad</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
   <data name="Details" xml:space="preserve">
     <value>Einzelheiten</value>
   </data>
@@ -824,6 +827,9 @@
   </data>
   <data name="Download duration" xml:space="preserve">
     <value>Dauer des Herunterladens</value>
+  </data>
+  <data name="Download example" xml:space="preserve">
+    <value>Beispiel herunterladen</value>
   </data>
   <data name="Download Your Data" xml:space="preserve">
     <value>Laden Sie Ihre Daten herunter</value>
@@ -1901,6 +1907,9 @@
   </data>
   <data name="Select a date calculation" xml:space="preserve">
     <value>Wählen Sie eine Datumsberechnung</value>
+  </data>
+  <data name="Select a file" xml:space="preserve">
+    <value>Wählen Sie eine Datei</value>
   </data>
   <data name="Select a log to display the message" xml:space="preserve">
     <value>Wählen Sie ein Protokoll, um die Meldung anzuzeigen</value>

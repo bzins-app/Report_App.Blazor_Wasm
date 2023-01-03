@@ -16,124 +16,126 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action==CrudAction.Delete" />
-            <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" HelperText="@Localizer.Get("Please select a Db type")" Disabled="Action==CrudAction.Delete">
-                @if (DbCon.TypeDb == 0)
-                {
-                    <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
-                }
-                @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
-                {
-                    <MudSelectItem Value="@item">@item</MudSelectItem>
-                }
-            </MudSelect>
-            @if (DbCon.TypeDb > 0 && Action != CrudAction.Delete)
-            {
-                @if (DbCon.TypeDb == TypeDb.Oracle)
-                {
-                    <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port /Instance" />
-                    <MudSwitch @bind-Checked="DbCon.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
-                    <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("DB schema")" Disabled="!DbCon.UseDbSchema" />
-                    <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" />
-                    <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" />
-                    <MudNumericField @bind-Value="DbCon.CommandFetchSize" Label="@Localizer.Get("Command fetch size")" />
-                }
-                else if (DbCon.TypeDb == TypeDb.SqlServer)
-                {
-
-                    <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
-                    <MudSwitch @bind-Checked="DbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
-                    <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!DbCon.UseDbSchema" />
-                    <MudSwitch @bind-Checked="DbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
-                    <MudSwitch @bind-Checked="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true" />
-                    <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" />
-                    <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="DbCon.AdAuthentication" />
-                }
-                else if (DbCon.TypeDb == TypeDb.Db2)
-                {
-                    <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("IP or Servername")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port" />
-                    <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" />
-                    <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" />
-                    <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" />
-                }
-                else
-                {
-                    <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("IP or Servername")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
-                    <MudNumericField @bind-Value="DbCon.Port" Label="@Localizer.Get("Connection port")" />
-                    <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" />
-                    <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" />
-                    <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" />
-                }
-                <MudNumericField @bind-Value="DbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" />
-                <MudButton Disabled="@_loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                    @if (_loading)
+        <MudStack Spacing="0" Style="overflow-y:auto;max-height:80vh">
+            <MudForm Model="@Item" @ref="@_form">
+                <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action == CrudAction.Delete" />
+                <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" HelperText="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
+                    @if (DbCon.TypeDb == 0)
                     {
-                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+                        <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
+                    }
+                    @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
+                    {
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                    }
+                </MudSelect>
+                @if (DbCon.TypeDb > 0 && Action != CrudAction.Delete)
+                {
+                    @if (DbCon.TypeDb == TypeDb.Oracle)
+                    {
+                        <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port /Instance" />
+                        <MudSwitch @bind-Checked="DbCon.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
+                        <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("DB schema")" Disabled="!DbCon.UseDbSchema" />
+                        <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" />
+                        <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" />
+                        <MudNumericField @bind-Value="DbCon.CommandFetchSize" Label="@Localizer.Get("Command fetch size")" />
+                    }
+                    else if (DbCon.TypeDb == TypeDb.SqlServer)
+                    {
+
+                        <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
+                        <MudSwitch @bind-Checked="DbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
+                        <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!DbCon.UseDbSchema" />
+                        <MudSwitch @bind-Checked="DbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
+                        <MudSwitch @bind-Checked="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true" />
+                        <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" />
+                        <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="DbCon.AdAuthentication" />
+                    }
+                    else if (DbCon.TypeDb == TypeDb.Db2)
+                    {
+                        <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("IP or Servername")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port" />
+                        <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" />
+                        <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" />
+                        <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" />
                     }
                     else
                     {
-                        <MudText>@Localizer.Get("Test Db connection")</MudText>
+                        <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("IP or Servername")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
+                        <MudNumericField @bind-Value="DbCon.Port" Label="@Localizer.Get("Connection port")" />
+                        <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" />
+                        <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" />
+                        <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" />
                     }
-                </MudButton>
-                <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
-                <div>
-                    <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
-                    @if (!string.IsNullOrEmpty(Item?.ActivityLogo))
-                    {
-                        <img src="@Item.ActivityLogo" style="max-width:150px;max-height:200px; padding:10px" alt="@Item.ActivityName" />
-                    }
-                </div>
+                    <MudNumericField @bind-Value="DbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" />
+                    <MudButton Disabled="@_loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                        @if (_loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+                        }
+                        else
+                        {
+                            <MudText>@Localizer.Get("Test Db connection")</MudText>
+                        }
+                    </MudButton>
+                    <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
+                    <div>
+                        <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
+                        @if (!string.IsNullOrEmpty(Item?.ActivityLogo))
+                        {
+                            <img src="@Item.ActivityLogo" style="max-width: 150px; max-height: 200px; padding: 10px" alt="@Item.ActivityName" />
+                        }
+                    </div>
 
-                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
-                    <ButtonTemplate>
-                        <MudFab HtmlTag="label" Class="pa-4"
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
+                        <ButtonTemplate>
+                            <MudFab HtmlTag="label" Class="pa-4"
+                                Color="Color.Primary"
+                                Icon="@Icons.Filled.Image"
+                                Label="@Localizer.Get("Select activity Logo")"
+                                Size="Size.Small"
+                                Style="text-transform: none"
+                                for="@context" />
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                    <MudButton OnClick="OnRemoveLogo" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Remove logo")</MudButton>
+                }
+            </MudForm>
+            @if (_appConst != null && _appConst.ActivateAdHocQueriesModule && Action == CrudAction.Update)
+            {
+                @if (!_loadingDescription)
+                {
+                    <MudLink Class="d-flex pa-4" Href="/images/TablesDescriptionTemplate.csv">@Localizer.Get("Download example")</MudLink>
+
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
+                        <ButtonTemplate>
+                            <MudFab HtmlTag="label"
                             Color="Color.Primary"
-                            Icon="@Icons.Filled.Image"
-                            Label="@Localizer.Get("Select activity Logo")"
+                            Icon="@Icons.Filled.UploadFile"
+                            Label="@Localizer.Get("Select a file")"
                             Size="Size.Small"
                             Style="text-transform: none"
                             for="@context" />
-                    </ButtonTemplate>
-                </MudFileUpload>
-                <MudButton OnClick="OnRemoveLogo" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Remove logo")</MudButton>
-            }
-        </MudForm>
-        @if (_appConst != null && _appConst.ActivateAdHocQueriesModule && Action == CrudAction.Update)
-        {
-            @if (!_loadingDescription)
-            {
-                <MudLink Class="d-flex pa-4" Href="/images/TablesDescriptionTemplate.csv">@Localizer.Get("Download example")</MudLink>
+                        </ButtonTemplate>
+                    </MudFileUpload>
 
-                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv" >
-                    <ButtonTemplate>
-                        <MudFab HtmlTag="label"
-                        Color="Color.Primary"
-                        Icon="@Icons.Filled.UploadFile"
-                        Label="@Localizer.Get("Select a file")"
-                        Size="Size.Small"
-                        Style="text-transform: none"
-                        for="@context" />
-                    </ButtonTemplate>
-                </MudFileUpload>
-
+                }
+                @if (_loadingDescription)
+                {
+                    <MudButton Disabled="@_loadingDescription" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                        @if (_loadingDescription)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+                        }
+                    </MudButton>
+                }
             }
-            @if (_loadingDescription)
+            @if (Action == CrudAction.Delete)
             {
-                <MudButton Disabled="@_loadingDescription" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                    @if (_loadingDescription)
-                    {
-                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                    }
-                </MudButton>
+                <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")" />
             }
-        }
-        @if (Action == CrudAction.Delete)
-        {
-            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
-        }
+        </MudStack>
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
@@ -248,12 +250,13 @@
     {
         _loadingDescription = true;
         var result = await DataService.PostFile(file);
+        CancellationTokenSource cts = new();
         if (result.Success)
         {
             var filePath = result.Message;
             TablesDescriptionsImportPayload payload = new TablesDescriptionsImportPayload { FilePath = filePath, ActivityDbConnectionId = DbCon.Id };
 
-            var resultCreation = await DataService.PostValues(payload, "ImportTablesDescriptions");
+            var resultCreation = await DataService.PostValuesLogJob(payload, "ImportTablesDescriptions", ApiControllers.CrudDataApi, cts.Token);
             if (!resultCreation.Success)
             {
                 _connectionTestResult = resultCreation.Message!;
