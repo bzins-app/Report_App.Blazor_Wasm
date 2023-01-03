@@ -70,14 +70,14 @@
                             </ToolBarContent>
                             <HeaderContent>
                                 <MudTh>@Localizer.Get("Columns")</MudTh>
-                                @if (_hasDesc)
+                                @if (_hasDescCol)
                                 {
                                     <MudTh>@Localizer.Get("Description")</MudTh>
                                 }
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd>@context.Name</MudTd>
-                                @if (_hasDesc)
+                                @if (_hasDescCol)
                                 {
                                     <MudTh>@context.Description</MudTh>
                                 }
@@ -160,6 +160,7 @@
     private bool _loading;
     private bool _loadingTestQuery;
     private bool _hasDesc;
+    private bool _hasDescCol;
 
     private string QueryBuilder;
     private string QueryRun;
@@ -209,14 +210,14 @@
         _loading = false;
     }
 
-    private async Task GetColumnsList(string column)
+    private async Task GetColumnsList(string table)
     {
         DbTablesColList list = new();
         _cts = new CancellationTokenSource();
         _loading = true;
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&column={column}", _cts.Token);
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={table}", _cts.Token);
         ColNames = data.Values;
-        _hasDesc = data.HasDescription;
+        _hasDescCol = data.HasDescription;
         _loading = false;
     }
 
@@ -226,9 +227,9 @@
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Name.Contains(searchString))
+        if (!string.IsNullOrEmpty(element.Name) && element.Name.Contains(searchString))
             return true;
-        if (element.Description.Contains(searchString))
+        if (!string.IsNullOrEmpty(element.Description)&& element.Description.Contains(searchString))
             return true;
         return false;
     }

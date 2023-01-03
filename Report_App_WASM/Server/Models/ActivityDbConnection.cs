@@ -7,10 +7,6 @@ namespace Report_App_WASM.Server.Models
 {
     public class ActivityDbConnection : BaseTraceability
     {
-        public ActivityDbConnection()
-        {
-            DbTableDescriptions = new HashSet<DbTableDescriptions>();
-        }
         public int Id { get; set; }
         [MaxLength(20)]
         public string ConnectionType { get; set; } = "SQL";

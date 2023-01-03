@@ -92,10 +92,6 @@ namespace Report_App_WASM.Shared.DTO
 
     public class ActivityDbConnectionDto : BaseTraceabilityDto, IDto
     {
-        public ActivityDbConnectionDto()
-        {
-            DbTableDescriptions = new HashSet<DbTableDescriptionsDto>();
-        }
         public int Id { get; set; }
         [MaxLength(20)]
         public string ConnectionType { get; set; } = "SQL";

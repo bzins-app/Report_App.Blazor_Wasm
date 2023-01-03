@@ -131,10 +131,10 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<DbTablesColList> GetColumnListAsync(int activityId, string column, CancellationToken ct)
+        public async Task<DbTablesColList> GetColumnListAsync(int activityId, string table, CancellationToken ct)
         {
             DbTablesColList listCols = new();
-            var script = await _remoteDb.GetTableColummnInfoScript(activityId, column);
+            var script = await _remoteDb.GetTableColumnInfoScript(activityId, table);
             if (!string.IsNullOrEmpty(script))
             {
                 RemoteDbCommandParameters parameters = new RemoteDbCommandParameters
@@ -151,7 +151,7 @@ namespace Report_App_WASM.Server.Controllers
                 {
                     if (description.tableDesc)
                     {
-                        var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId&&a.ColumnName== column).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription }).Distinct().ToListAsync();
+                        var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId&&a.TableName== table).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription }).Distinct().ToListAsync();
                         if (desc != null&& desc.Any())
                         {
                             listCols.HasDescription = true;

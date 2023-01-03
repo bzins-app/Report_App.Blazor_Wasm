@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
@@ -18,6 +19,7 @@ using Report_App_WASM.Shared.SerializedParameters;
 using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using static OfficeOpenXml.ExcelErrorValue;
 
@@ -33,7 +35,8 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         Task<MergeResult> MergeTables(string query);
         Task DeleteTable(string? tableName);
         Task<string> GetAllTablesScript(int activityId);
-        Task<string> GetTableColummnInfoScript(int activityId, string tableName);
+        Task<string> GetTableColumnInfoScript(int activityId, string tableName);
+        Task<string> GetAllTablesAndColumnsScript(int activityId);
     }
     public class RemoteDbConnection : IRemoteDbConnection, IDisposable
     {
@@ -57,7 +60,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         public async Task<bool> CkeckTableExists(string query)
         {
             var activityId = await GetDataTransferActivity();
-            var remoteConnection = GetConnectionString(activityId);
+            var remoteConnection = await GetConnectionString(activityId);
             await using SqlConnection conn = new(remoteConnection.ConnnectionString);
             await conn.OpenAsync();
             var sqlCommand = new SqlCommand(query, conn);
@@ -92,7 +95,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                 Environment.NewLine);
 
             var activityId = await GetDataTransferActivity();
-            var remoteConnection = GetConnectionString(activityId);
+            var remoteConnection = await GetConnectionString(activityId);
             await using SqlConnection conn = new(remoteConnection.ConnnectionString);
             await conn.OpenAsync();
             var sqlCommand = new SqlCommand(query.ToString(), conn);
@@ -103,7 +106,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         public async Task CreateTable(string query)
         {
             var activityId = await GetDataTransferActivity();
-            var remoteConnection = GetConnectionString(activityId);
+            var remoteConnection = await GetConnectionString(activityId);
             await using SqlConnection conn = new(remoteConnection.ConnnectionString);
             await conn.OpenAsync();
             var sqlCommand = new SqlCommand(query, conn);
@@ -114,7 +117,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         public async Task<MergeResult> MergeTables(string query)
         {
             var activityId = await GetDataTransferActivity();
-            var remoteConnection = GetConnectionString(activityId);
+            var remoteConnection = await GetConnectionString(activityId);
             SqlConnection conn = new(remoteConnection.ConnnectionString);
             await conn.OpenAsync();
 
@@ -150,7 +153,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         public async Task LoadDatatableToTable(DataTable data, string? targetTable)
         {
             var activityId = await GetDataTransferActivity();
-            var remoteConnection = GetConnectionString(activityId);
+            var remoteConnection = await GetConnectionString(activityId);
             await using SqlConnection conn = new(remoteConnection.ConnnectionString);
             await conn.OpenAsync();
             using (var bulkCopy = new SqlBulkCopy(conn))
@@ -179,12 +182,12 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         public async Task<string> GetAllTablesScript(int activityId)
         {
             string script = string.Empty;
-            var dbInfo = await _context.ActivityDbConnection.AsNoTracking().Where(a=>a.Activity.ActivityId== activityId).FirstOrDefaultAsync();
+            var dbInfo = await _context.ActivityDbConnection.AsNoTracking().Where(a => a.Activity.ActivityId == activityId).FirstOrDefaultAsync();
             if (dbInfo.TypeDb == TypeDb.Oracle)
             {
-                
+
                 if (dbInfo.UseDbSchema)
-                    script = $"SELECT table_name FROM all_tables where owner='{dbInfo.DbSchema}' order by 1"; 
+                    script = $"SELECT table_name FROM all_tables where owner='{dbInfo.DbSchema}' order by 1";
                 else
                 {
                     script = $"SELECT table_name FROM all_tables order by 1";
@@ -192,7 +195,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             }
             else if (dbInfo.TypeDb == TypeDb.SqlServer)
             {
-                if(dbInfo.UseDbSchema)
+                if (dbInfo.UseDbSchema)
                     script = $"SELECT table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1";
                 else
                 {
@@ -203,7 +206,37 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             return script;
         }
 
-        public async Task<string> GetTableColummnInfoScript(int activityId, string tableName)
+
+        public async Task<string> GetAllTablesAndColumnsScript(int activityId)
+        {
+            string script = string.Empty;
+            var dbInfo = await _context.ActivityDbConnection.AsNoTracking().Where(a => a.Activity.ActivityId == activityId).FirstOrDefaultAsync();
+            if (dbInfo.TypeDb == TypeDb.Oracle)
+            {
+
+                if (dbInfo.UseDbSchema)
+                    script = $"SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS where owner='{dbInfo.DbSchema}' order by 1,2";
+                else
+                {
+                    script = $"SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS order by 1,2";
+                }
+            }
+            else if (dbInfo.TypeDb == TypeDb.SqlServer)
+            {
+                if (dbInfo.UseDbSchema)
+                    script = $"select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
+                             $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and table.TABLE_CATALOG='{dbInfo.DbSchema}' order by 1 ,2";
+                else
+                {
+                    script = $"select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id ";
+                }
+
+            }
+
+            return script;
+        }
+
+        public async Task<string> GetTableColumnInfoScript(int activityId, string tableName)
         {
             string script = string.Empty;
             var dbInfo = await _context.ActivityDbConnection.AsNoTracking().Where(a => a.Activity.ActivityId == activityId).FirstOrDefaultAsync();
@@ -215,11 +248,11 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                 {
                     script = $"select column_name as Column_Name from ALL_TAB_COLUMNS where table_name='{tableName}'";
                 }
-                
+
             }
             else if (dbInfo.TypeDb == TypeDb.SqlServer)
             {
-                script= $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  where tab.name='{tableName}'";
+                script = $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  where tab.name='{tableName}'";
             }
 
             return script;
@@ -284,9 +317,24 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             return value;
         }
 
-        private RemoteConnectionParameter GetConnectionString(int activityId)
+
+        private async Task<RemoteConnectionParameter> GetConnectionString(int activityId)
         {
-            var conValue = _context.ActivityDbConnection.AsNoTracking().Include(a => a.Activity).Where(a => a.Activity.ActivityId == activityId).ProjectTo<ActivityDbConnectionDto>(_mapper.ConfigurationProvider).SingleOrDefault();
+            ActivityDbConnectionDto conValue = new();
+
+            var data = await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == activityId).FirstOrDefaultAsync();
+            conValue.AdAuthentication = data.AdAuthentication;
+            conValue.ConnectionLogin = data.ConnectionLogin;
+            conValue.Password = data.Password;
+            conValue.ConnectionPath = data.ConnectionPath;
+            conValue.Port = data.Port;
+            conValue.DbSchema = data.DbSchema;
+            conValue.TypeDb = data.TypeDb;
+            conValue.UseDbSchema = data.UseDbSchema;
+
+            conValue.ConnectionType = data.ConnectionType;
+            conValue.CommandTimeOut = data.CommandTimeOut;
+            conValue.CommandFetchSize = data.CommandFetchSize;
 
             conValue!.Password = EncryptDecrypt.DecryptString(conValue.Password);
 
@@ -387,7 +435,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                 try
                 {
                     attempts++;
-                    var connectionInfo = GetConnectionString(run.ActivityId);
+                    var connectionInfo = await GetConnectionString(run.ActivityId);
                     DataTable dataTable = new();
                     dataTable.RowChanged += OnInitialized;
                     var start = DateTime.Now;
