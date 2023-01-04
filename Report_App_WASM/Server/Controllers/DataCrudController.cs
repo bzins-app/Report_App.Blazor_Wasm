@@ -488,7 +488,7 @@ namespace Report_App_WASM.Server.Controllers
             values.EntityValue.Activity = (await _context.Activity.Where(a => a.ActivityId == values.EntityValue.IdActivity).FirstOrDefaultAsync())!;
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
         }
-        public async Task<IActionResult> ImportTablesDescriptions(ApiCrudPayload<TablesDescriptionsImportPayload> value, CancellationToken ct)
+        public async Task<IActionResult> ImportTablesDescriptions(ApiCrudPayload<TablesDescriptionsImportPayload> value)
         {
             try
             {
@@ -508,13 +508,13 @@ namespace Report_App_WASM.Server.Controllers
 
                     }
 
-                    var _dbConnect = await _context.ActivityDbConnection.Where(a => a.Id == value.EntityValue.ActivityDbConnectionId).FirstOrDefaultAsync(cancellationToken: ct);
+                    var _dbConnect = await _context.ActivityDbConnection.Where(a => a.Id == value.EntityValue.ActivityDbConnectionId).FirstOrDefaultAsync();
                     if (await _context.DbTableDescriptions.Where(a =>
-                            a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId).AnyAsync(cancellationToken: ct))
+                            a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId).AnyAsync())
                     {
                         var query = _context.DbTableDescriptions.Where(a =>
                             a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId);
-                        _context.RemoveRange(await query.ToListAsync(cancellationToken: ct));
+                        _context.RemoveRange(await query.ToListAsync());
                         await SaveDbAsync(value.UserName);
                     }
                     foreach (var data in records)
