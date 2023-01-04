@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Text.Json;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Report_App_WASM.Shared.Extensions;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -539,6 +540,8 @@ namespace Report_App_WASM.Server.Controllers
                     _dbConnect.UseTablesDescriptions = true;
                     _context.Entry(_dbConnect).State = EntityState.Modified;
                     await SaveDbAsync(value.UserName);
+                    records.Clear();
+                    _descriptions.Clear();
                     return Ok(new SubmitResult { Success = true });
                 }
                 else
