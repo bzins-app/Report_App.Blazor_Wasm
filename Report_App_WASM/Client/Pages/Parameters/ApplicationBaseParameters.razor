@@ -35,7 +35,7 @@
                 <ButtonTemplate>
                     <MudFab HtmlTag="label" Class="pa-4"
                             Color="Color.Primary"
-                            Icon="@Icons.Filled.Image"
+                            Icon="@Icons.Material.Filled.Image"
                             Label="@Localizer.Get("Select application Logo")"
                             Size="Size.Small"
                             Style="text-transform: none"
@@ -201,7 +201,7 @@
 
         var dialog = await DialogService.ShowAsync<_TextEditor>(Localizer.Get("Edit error email template"), parameters, maxWidth);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             _param.ErrorEMailMessage = result.Data.ToString();
         }

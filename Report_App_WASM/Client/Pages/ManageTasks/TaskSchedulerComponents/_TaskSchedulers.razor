@@ -22,8 +22,8 @@
                 <SimpleGrid Items="@_elements.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.CronValue)" Title="@Localizer.Get("Cron expression")" Sortable="true" />
@@ -85,7 +85,7 @@
         var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             if (_crons != null)
             {
@@ -127,7 +127,7 @@
         var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _crons?.Add(new CronParameters { CronValue = feedback.Data.ToString() });
             ChangePending = true;

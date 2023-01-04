@@ -5,7 +5,7 @@ namespace Report_App_WASM.Server.Controllers
 {
     [ApiExplorerSettings(IgnoreApi = true)]
     [Route("[controller]/[action]")]
-    public class CultureController : Controller, IDisposable
+    public class CultureController : Controller
     {
 
         [HttpPost]
@@ -20,10 +20,6 @@ namespace Report_App_WASM.Server.Controllers
             }
 
             return LocalRedirect(redirectUri);
-        }
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
         }
     }
 }

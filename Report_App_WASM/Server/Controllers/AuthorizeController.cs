@@ -63,7 +63,6 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 var rememberMe = true;
-#if Windows
                 using var context = new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
                 var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);
                 var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);
@@ -101,9 +100,6 @@ namespace Report_App_WASM.Server.Controllers
                 {
                     return BadRequest(string.Join(',', errors));
                 }
-#else  
-                return BadRequest();
-#endif
             }
             catch (Exception ex)
             {

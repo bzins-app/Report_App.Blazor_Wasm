@@ -36,8 +36,8 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.UserName)" Title="@Localizer.Get("Name")" Sortable="true" />
@@ -117,7 +117,7 @@
         var dialog = await DialogService.ShowAsync<_UserDialogForm>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
             var valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };
@@ -143,7 +143,7 @@
         var dialog = await DialogService.ShowAsync<_UserDialogForm>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
             var valueUser = new UserPayload {UserMail=value.Email, Password=value.PasswordHash, UserName=value.UserName };

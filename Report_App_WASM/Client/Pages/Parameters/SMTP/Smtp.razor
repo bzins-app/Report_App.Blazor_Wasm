@@ -36,8 +36,8 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
@@ -151,7 +151,7 @@
         var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
@@ -184,7 +184,7 @@
         var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "SmtpDelete");
@@ -209,7 +209,7 @@
         var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "SmtpInsert");

@@ -37,13 +37,13 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <TemplateColumn Title="@Localizer.Get("Run query")">
-                        <MudIconButton Icon="@Icons.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
+                        <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
 
@@ -194,7 +194,7 @@
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
             // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
@@ -237,7 +237,7 @@
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "QueryStoreInsert");

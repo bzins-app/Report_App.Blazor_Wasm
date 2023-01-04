@@ -81,7 +81,7 @@
         var dialog = await DialogService.ShowAsync<_QueryParametersFormDialog>("Create");
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             _parameters?.Add((QueryCommandParameter)feedback.Data);
             UpdateParameters();

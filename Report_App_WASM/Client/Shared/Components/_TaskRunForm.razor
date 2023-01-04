@@ -2,7 +2,7 @@
 @inject IDialogService DialogService
 @inject IdentityAuthenticationStateProvider IdentityProvider
 
-<MudIconButton Icon="@Icons.Outlined.Sync" OnClick="(OpenRunConfirmationComponent)"><MudText>@Localizer.Get("Run")</MudText></MudIconButton>
+<MudIconButton Icon="@Icons.Material.Outlined.Sync" OnClick="(OpenRunConfirmationComponent)"><MudText>@Localizer.Get("Run")</MudText></MudIconButton>
 
 @code {
     [Parameter]
@@ -39,7 +39,7 @@
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
         var dialog = await DialogService.ShowAsync<_ManualRun>(Localizer.Get("Confirm manual job"), parameters, dialogOptions);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             List<EmailRecipient> emails = new();
             var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data;

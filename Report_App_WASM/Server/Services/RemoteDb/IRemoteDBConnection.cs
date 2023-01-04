@@ -554,14 +554,12 @@ namespace Report_App_WASM.Server.Services.RemoteDb
 
                         dbConnector.DbCommand = cmd;
                     }
-#if Windows
                     else if (connectionInfo.TypeDb == TypeDb.Db2)
                     {
                         dbConnector.DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);
                         dbConnector.DbDataAdapter = new OleDbDataAdapter();
                         dbConnector.DbCommand = new OleDbCommand { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
                     }
-#endif
                     else
                     {
                         dbConnector.DbConnection = new MySqlConnection(connectionInfo.ConnnectionString);

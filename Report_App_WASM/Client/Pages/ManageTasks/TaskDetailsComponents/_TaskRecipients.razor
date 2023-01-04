@@ -121,7 +121,7 @@
 
         var dialog = await DialogService.ShowAsync<_TextEditor>(Localizer.Get("Edit email message"), parameters, maxWidth);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             _recipients.Message = result.Data.ToString();
             ChangePending = true;
