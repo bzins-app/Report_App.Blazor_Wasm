@@ -48,9 +48,9 @@ namespace Report_App_WASM.Shared.Extensions
             return sb.ToString();
         }
 
-        public static string RemoveDiacritics(this String s)
+        public static string RemoveDiacritics(this string s)
         {
-            String normalizedString = s.Normalize(NormalizationForm.FormD);
+            string normalizedString = s.Normalize(NormalizationForm.FormD);
             StringBuilder stringBuilder = new StringBuilder();
 
             for (int i = 0; i < normalizedString.Length; i++)
