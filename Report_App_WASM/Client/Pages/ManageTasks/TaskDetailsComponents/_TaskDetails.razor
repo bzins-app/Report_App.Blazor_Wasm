@@ -21,8 +21,8 @@
                 <SimpleGrid Items="@_elements!.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
@@ -78,7 +78,7 @@
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Edit", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             var result = (TaskDetailDto)feedback.Data;
             var toUpdate = Item.TaskDetails.Where(a => a.TaskDetailId == value.TaskDetailId).First();
@@ -119,7 +119,7 @@
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
-        if (!feedback.Cancelled)
+        if (!feedback.Canceled)
         {
             Item.TaskDetails.Add((TaskDetailDto)feedback.Data);
             ChangePending = true;

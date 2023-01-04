@@ -142,7 +142,7 @@ namespace Report_App_WASM.Server.Controllers
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
                     .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, ConectId = a.Id })
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(cancellationToken: ct);
 
                 if (data.Rows.Count > 0)
                 {
@@ -151,7 +151,7 @@ namespace Report_App_WASM.Server.Controllers
                     .ToList();
                     if (cols != null)
                     {
-                        if (description.tableDesc&& await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId && a.TableName == table).AnyAsync())
+                        if (description.tableDesc&& await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId && a.TableName == table).AnyAsync(cancellationToken: ct))
                         {
                             var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId && a.TableName == table).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty }).ToListAsync();
                             if (desc != null)

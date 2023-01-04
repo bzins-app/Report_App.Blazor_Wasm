@@ -54,7 +54,7 @@
                                 }
                             </HeaderContent>
                             <RowTemplate>
-                                <MudTd><MudIconButton Icon="@Icons.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small" /></MudTd>
+                                <MudTd><MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small" /></MudTd>
                                 <MudTd @ondblclick="() => GetColumnsList(context.Name)">@context.Name</MudTd>
                                 @if (_hasDesc)
                                 {

@@ -30,7 +30,7 @@
             <div style="overflow:auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn >
-                        <MudIconButton Style="padding:0px!important" Icon="@Icons.Outlined.Article" OnClick="()=>OpenDetails(context.TaskId)" Title="@Localizer.Get("Display details")" />
+                        <MudIconButton Style="padding:0px!important" Icon="@Icons.Material.Outlined.Article" OnClick="()=>OpenDetails(context.TaskId)" Title="@Localizer.Get("Display details")" />
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true" />
                     <PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true" />
