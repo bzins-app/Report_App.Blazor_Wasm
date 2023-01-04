@@ -28,7 +28,7 @@ builder.Services.AddMudServices();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Utils/LanguageRessources");
 builder.Services.AddSingleton<CommonLocalizationService>();
 builder.Services.AddBlazorDownloadFile();
-
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
 var host = builder.Build();
 
