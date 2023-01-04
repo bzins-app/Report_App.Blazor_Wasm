@@ -256,7 +256,7 @@
             var filePath = result.Message;
             TablesDescriptionsImportPayload payload = new TablesDescriptionsImportPayload { FilePath = filePath, ActivityDbConnectionId = DbCon.Id };
 
-            var resultCreation = await DataService.PostValuesLogJob(payload, "ImportTablesDescriptions", ApiControllers.CrudDataApi, cts.Token);
+            var resultCreation = await DataService.PostValues(payload, "ImportTablesDescriptions", ApiControllers.CrudDataApi, cts.Token);
             if (!resultCreation.Success)
             {
                 _connectionTestResult = resultCreation.Message!;
