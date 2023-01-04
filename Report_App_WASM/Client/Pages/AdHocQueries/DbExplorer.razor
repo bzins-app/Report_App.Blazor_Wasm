@@ -1,6 +1,7 @@
 ﻿@page "/DbExplorer/{ActivityId:int}/{ActivityName}"
 @inject HttpClient Http
 @using Blazor.AceEditorJs
+@using Report_App_WASM.Shared.Extensions;
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
 @attribute [Authorize]
@@ -232,9 +233,9 @@
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (!string.IsNullOrEmpty(element.Name) && element.Name.ToLower().Contains(searchString.ToLower(), StringComparison.InvariantCultureIgnoreCase))
+        if (!string.IsNullOrEmpty(element.Name) && element.Name.ToLower().RemoveDiacritics().Contains(searchString.ToLower().RemoveDiacritics(), StringComparison.InvariantCultureIgnoreCase))
             return true;
-        if (!string.IsNullOrEmpty(element.Description) && element.Description.ToLower().Contains(searchString.ToLower(), StringComparison.InvariantCultureIgnoreCase))
+        if (!string.IsNullOrEmpty(element.Description) && element.Description.ToLower().RemoveDiacritics().Contains(searchString.ToLower().RemoveDiacritics(), StringComparison.InvariantCultureIgnoreCase))
             return true;
         return false;
     }
