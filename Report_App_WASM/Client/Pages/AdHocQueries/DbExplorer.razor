@@ -232,9 +232,9 @@
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (!string.IsNullOrEmpty(element.Name) && element.Name.ToLower().Contains(searchString.ToLower()))
+        if (!string.IsNullOrEmpty(element.Name) && element.Name.ToLower().Contains(searchString.ToLower(), StringComparison.InvariantCultureIgnoreCase))
             return true;
-        if (!string.IsNullOrEmpty(element.Description) && element.Description.ToLower().Contains(searchString.ToLower()))
+        if (!string.IsNullOrEmpty(element.Description) && element.Description.ToLower().Contains(searchString.ToLower(), StringComparison.InvariantCultureIgnoreCase))
             return true;
         return false;
     }
