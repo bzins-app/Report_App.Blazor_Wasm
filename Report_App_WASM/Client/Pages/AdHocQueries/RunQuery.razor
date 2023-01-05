@@ -80,7 +80,7 @@
         </MudPaper>
         @if (!_pivotTable)
         {
-            <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="65vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+            <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="57vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
                 <HeaderContent>
                     @if (_values?.Any() == true)
                     {
@@ -113,7 +113,7 @@
         }
         else
         {
-            <PivotTable Value="_values" />
+            <PivotTable Value="_values" Style="max-width:100%;max-height:75vh;overflow:auto"/>
         }
 
     </MudCardContent>
@@ -282,7 +282,7 @@
                 {
                     _cts = new CancellationTokenSource();
 
-                    var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 1000, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                    var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 10000, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                     var remoteDataPayload = new RemoteDataPayload { Values = run };
                     var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                     var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
