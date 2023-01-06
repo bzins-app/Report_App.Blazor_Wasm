@@ -9,6 +9,7 @@ using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
+using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.SerializedParameters;
 using System.Net.Mail;
 using System.Text.Json;
@@ -70,7 +71,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             var services = await _context.ServicesStatus.Select(a => new { a.AlertService, a.ReportService, a.DataTransferService }).FirstOrDefaultAsync();
             var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == taskHeaderId).Select(a => new { a.TaskName, a.Type, a.Activity.ActivityName, a.CronParameters }).FirstOrDefaultAsync();
-            var jobName = taskHeader!.Type + ":" + taskHeader.ActivityName + ":" + taskHeader.TaskName + " Id:" + taskHeaderId;
+            var jobName = taskHeader!.Type + ":" + taskHeader.ActivityName.RemoveSpecialCharacters() + ":" + taskHeader.TaskName.RemoveSpecialCharacters().Take(10) + " Id:" + taskHeaderId;
             if (activate)
             {
                 var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };

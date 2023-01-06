@@ -124,27 +124,6 @@ builder.Services.AddHangfireServer(options =>
 });
 builder.Services.AddDirectoryBrowser();
 
-
-//enable response compresssion 
-//builder.Services.AddResponseCompression(options =>
-//{
-//    options.Providers.Add<BrotliCompressionProvider>();
-//    options.Providers.Add<GzipCompressionProvider>();
-//    options.MimeTypes =
-//        ResponseCompressionDefaults.MimeTypes.Concat(
-//            new[] { "image/svg+xml" });
-//});
-
-//builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
-//{
-//    options.Level = CompressionLevel.Fastest;
-//});
-
-//builder.Services.Configure<GzipCompressionProviderOptions>(options =>
-//{
-//    options.Level = CompressionLevel.Fastest;
-//});
-
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new MappingProfile());
@@ -219,13 +198,15 @@ app.UseAuthorization();
 
 app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 {
-    Authorization = new[] { new HangfireAuthorizationFilter() }
+    Authorization = new[] { new HangfireAuthorizationFilter() },
+    IgnoreAntiforgeryToken = true
 });
 
 app.UseHangfireDashboard("/HangfireRead", new DashboardOptions
 {
     IsReadOnlyFunc = _ => true,
-    Authorization = new[] { new HangfireAuthorizationFilterRead() }
+    Authorization = new[] { new HangfireAuthorizationFilterRead() },
+    IgnoreAntiforgeryToken = true
 });
 
 app.UseSwagger();
