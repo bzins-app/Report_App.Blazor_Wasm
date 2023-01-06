@@ -358,6 +358,24 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> TaskActivate(ApiCrudPayload<TaskActivatePayload> values)
+        {
+            var Entity = await _context.TaskHeader.Where(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId).FirstOrDefaultAsync();
+            Entity.IsActivated = values.EntityValue.Activate;
+            var result = await UpdateEntity(Entity, values.UserName!);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TaskSendByEmail(ApiCrudPayload<TaskActivatePayload> values)
+        {
+            var Entity = await _context.TaskHeader.Where(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId).FirstOrDefaultAsync();
+            Entity.SendByEmail = values.EntityValue.Activate;
+            var result = await UpdateEntity(Entity, values.UserName!);
+            return Ok(result);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> TaskHeaderDelete(ApiCrudPayload<TaskHeader> values)
         {
             return Ok(await DeleteEntity(values.EntityValue, values.UserName!));

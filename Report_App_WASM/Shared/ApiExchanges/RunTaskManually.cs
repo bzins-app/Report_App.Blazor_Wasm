@@ -9,4 +9,10 @@ namespace Report_App_WASM.Shared.ApiExchanges
         public List<QueryCommandParameter>? CustomQueryParameters { get; init; }
         public bool GenerateFiles { get; init; } = false;
     }
+
+    public class TaskActivatePayload
+    {
+        public bool Activate { get; init; }
+        public int TaskHeaderId { get; init; }
+    }
 }
