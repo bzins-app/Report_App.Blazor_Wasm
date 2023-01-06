@@ -1,11 +1,11 @@
 ﻿@inject ISnackbar Snackbar
 @inject HttpClient Http
 
-<MudSwitch Checked="@Item!.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+<MudSwitch Checked="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
 
 @code {
     [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    public TaskHeaderDto Item { get; set; }
 
     private async Task ChangeStatusAsync(bool value)
     {
@@ -22,7 +22,7 @@
                 return;
             }
         }
-        await DataService.PostValues(Item, "TaskHeaderUpdate");
+        await DataService.PostValues(new TaskActivatePayload { Activate = Item.IsActivated, TaskHeaderId = Item.TaskHeaderId }, "TaskSendByEmail");
 
         Snackbar.Add(Item.SendByEmail ? Item.TaskName + " " + Localizer.Get("send by email") + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("send by email") + " " + Localizer.Get("disabled"), Item.SendByEmail ? Severity.Success : Severity.Normal);
     }
