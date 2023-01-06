@@ -78,9 +78,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("CheckTaskHeaderEmail")]
         public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
         {
-
-            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() == "[]" || !await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
-
+            return await _context.TaskEmailRecipient.Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId).Select(a => a.Email).FirstOrDefaultAsync() != "[]" || await _context.TaskEmailRecipient.Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
         }
 
 
