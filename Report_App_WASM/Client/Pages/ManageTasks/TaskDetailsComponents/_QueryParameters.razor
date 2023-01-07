@@ -103,6 +103,7 @@
 
     public void UpdateParameters()
     {
+        _parameters?.ForEach(a => a.ParameterIdentifier = a.ParameterIdentifier.RemoveSpecialCharacters());
         Item!.QueryParameters = JsonSerializer.Serialize(_parameters);
     }
 }

@@ -8,6 +8,7 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@_param" @ref="@_form">
+            <MudTextField @bind-Value="_param.DisplayName" Label="@Localizer.Get("Display name")" Variant="Variant.Text" Required></MudTextField>
             <MudTextField @bind-Value="_param.ParameterIdentifier" Label="@Localizer.Get("Parameter identifier")" Variant="Variant.Text" Required></MudTextField>
             <MudSelect @bind-Value="_param.ValueType" Label="@Localizer.Get("Select a data type")" Required>
                 @foreach (QueryCommandParameterValueType item in Enum.GetValues(typeof(QueryCommandParameterValueType)))
@@ -25,7 +26,7 @@
                 </MudSelect>
                 <MudField Label="@Localizer.Get("Calculated date")">@(_param.ValueType == QueryCommandParameterValueType.Date ? _param.DateOption.GetCalculateDateTime().Date.ToString("d") : _param.DateOption.GetCalculateDateTime())</MudField>
             }
-            <MudSwitch @bind-Checked="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" />
+            <MudSwitch @bind-Checked="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
         </MudForm>
     </DialogContent>
     <DialogActions>

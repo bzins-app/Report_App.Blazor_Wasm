@@ -7,21 +7,24 @@
     </MudCardContent>
     <MudCardContent>
         <MudGrid Spacing="1">
-            @foreach (var element in _parameters)
+            @foreach (var element in _parameters.OrderBy(a => a.DisplaySequence))
             {
                 <MudItem xs="6" md="3" xl="2">
-                    <MudCard Elevation="4" Style="height:290px">
+                    <MudCard Elevation="4" Style="height:425px">
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.h6">@element.ParameterIdentifier</MudText>
-                            </CardHeaderContent>
-                            <CardHeaderActions>
-                                <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Default" OnClick="() => Delete(element)" />
-                            </CardHeaderActions>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudField Label="@Localizer.Get("Data type")"> @Localizer.Get(element.ValueType.ToString())</MudField>
-                            @if (element.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
+                                <MudText Typo="Typo.h6">@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Default" OnClick="() => Delete(element)" />
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudTextField @bind-value="@element.DisplayName" TextChanged="UpdateParameters" Text="@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)" T="string" Label="@Localizer.Get("Display name")" />
+                                <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@(element.DisplaySequence)" @onclick="UpdateParameters" />
+                                <MudTextField @bind-value="@element.ParameterIdentifier" TextChanged="UpdateParameters" Text="@element.ParameterIdentifier" T="string" Label="@Localizer.Get("Parameter identifier")" />
+                                <MudField Label="@Localizer.Get("Data type")" Disabled="true"> @Localizer.Get(element.ValueType.ToString())</MudField>
+                                @if (element.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
                             {
                                 <MudSelect @bind-Value="element.DateOption" Label="@Localizer.Get("Select a date calculation")" @bind-Value:after="UpdateParameters">
                                     @foreach (CalulatedDateOption item in Enum.GetValues(typeof(CalulatedDateOption)))
@@ -32,7 +35,7 @@
                                 @if (element.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                 {
                                     var valueDateTime = (element.DateOption == CalulatedDateOption.Now ? DateTime.Now : Item.LastRunDateTime ?? DateTime.Now);
-                                    <MudField Label="@Localizer.Get("Calculated date")">@(element.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date : valueDateTime)</MudField>
+                                    <MudField Label="@Localizer.Get("Calculated date")">@(element.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date.ToString("d") : valueDateTime)</MudField>
                                 }
                                 else
                                 {
@@ -47,7 +50,14 @@
                             {
                                 <MudNumericField Label="@Localizer.Get("Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value" />
                             }
-                            <MudSwitch @bind-Checked="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters" />
+                            <MudGrid>
+                                <MudItem>
+                                    <MudSwitch @bind-Checked="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters" />
+                                </MudItem>
+                                <MudItem>
+                                    <MudSwitch @bind-Checked="element.HideParameter" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" @onclick="UpdateParameters" />
+                                </MudItem>
+                            </MudGrid>
                         </MudCardContent>
                     </MudCard>
                 </MudItem>
@@ -98,6 +108,8 @@
 
     private async Task UpdateParameters()
     {
+        await Task.Delay(60);//Ensure binding is done prior to serialize
+        _parameters?.ForEach(a => a.ParameterIdentifier = a.ParameterIdentifier.RemoveSpecialCharacters());
         Item!.QueryParameters = JsonSerializer.Serialize(_parameters);
         ChangePending = true;
         await ChangePendingChanged.InvokeAsync(ChangePending);

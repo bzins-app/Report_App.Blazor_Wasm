@@ -29,28 +29,28 @@
                     }
                 </MudCardContent>
             </MudCard>
-            @if (QueryParameters!.Any())
+            @if (QueryParameters.Any(a => !a.HideParameter))
             {
                 <MudCard>
                     <MudCardContent>
                         <MudText Typo="Typo.body2">@Localizer.Get("Query parameters")</MudText>
-                        @foreach (var t in QueryParameters!)
+                        @foreach (var t in QueryParameters.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
                         {
                             @if (t.ValueType == QueryCommandParameterValueType.Date)
                             {
-                                <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.DateTime)
                             {
-                                <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.Number)
                             {
-                                <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required"  Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.String)
                             {
-                                <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@t.ParameterIdentifier" />
+                                <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" />
                             }
                         }
                     </MudCardContent>
@@ -72,15 +72,16 @@
     private MudForm _form = default!;
     [Parameter]
     public List<string>? UserEmail { get; set; }
+
     [Parameter]
-    public List<QueryCommandParameter>? QueryParameters { get; set; }
+    public List<QueryCommandParameter> QueryParameters { get; set; } = new();
     [Parameter]
     public List<string>? RecipientsEmails { get; set; }
 
 
     protected override void OnInitialized()
     {
-        foreach (var t in QueryParameters!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
+        foreach (var t in QueryParameters.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
         {
             if (t.ValueType == QueryCommandParameterValueType.Date)
             {

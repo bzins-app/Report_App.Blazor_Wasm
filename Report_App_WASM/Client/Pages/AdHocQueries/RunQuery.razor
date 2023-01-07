@@ -26,24 +26,24 @@
             {
             <MudForm @ref="_validateParam">
                 <MudGrid>
-                    @foreach (var t in param!)
+                    @foreach (var t in param!.Where(a=>!a.HideParameter).OrderBy(a=>a.DisplaySequence))
                     {
                         <MudItem>
                             @if (t.ValueType == QueryCommandParameterValueType.Date)
                             {
-                                <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@t.ParameterIdentifier" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)"  Variant="Variant.Outlined" Margin="Margin.Dense"/>
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.DateTime)
                             {
-                                <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@t.ParameterIdentifier" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.Number)
                             {
-                                <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@t.ParameterIdentifier" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                             }
                             @if (t.ValueType == QueryCommandParameterValueType.String)
                             {
-                                <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@t.ParameterIdentifier" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                             }
                         </MudItem>
                     }
@@ -195,16 +195,18 @@
                     if (result!.Success)
                     {
                         _values = result.Value;
+                        _errorMessage = string.Empty;
                     }
                     else
                     {
                         _values = new List<Dictionary<string, object>>();
+                        _errorMessage = result.Message;
                     }
                 }
                 else
                 {
                     _values = new List<Dictionary<string, object>>();
-                    response.Content.ToString();
+                    _errorMessage=response.Content.ToString();
                 }
             }
             catch (Exception ex)
