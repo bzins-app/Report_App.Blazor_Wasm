@@ -813,6 +813,12 @@
   <data name="Display details" xml:space="preserve">
     <value>Details weergeven</value>
   </data>
+  <data name="Display name" xml:space="preserve">
+    <value>Naam weergeven</value>
+  </data>
+  <data name="Display sequence" xml:space="preserve">
+    <value>Toon volgorde</value>
+  </data>
   <data name="Display table values" xml:space="preserve">
     <value>Tabel waarden weergeven</value>
   </data>
@@ -1202,6 +1208,9 @@
   </data>
   <data name="Help step by step" xml:space="preserve">
     <value>Help stap voor stap</value>
+  </data>
+  <data name="Hide parameter" xml:space="preserve">
+    <value>Verberg parameter</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
