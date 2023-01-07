@@ -139,10 +139,7 @@
 
     private void SetItemCronValues()
     {
-        if (_crons!.Any())
-        {
-            Item!.CronParameters = JsonSerializer.Serialize(_crons);
-        }
+        Item!.CronParameters = JsonSerializer.Serialize(_crons);
     }
 
     private void OnRefresh()

@@ -807,6 +807,12 @@
   <data name="Display details" xml:space="preserve">
     <value>Afficher les détails</value>
   </data>
+  <data name="Display name" xml:space="preserve">
+    <value>Afficher le nom</value>
+  </data>
+  <data name="Display sequence" xml:space="preserve">
+    <value>Afficher la séquence</value>
+  </data>
   <data name="Display table values" xml:space="preserve">
     <value>Afficher les valeurs de la table</value>
   </data>
@@ -1196,6 +1202,9 @@
   </data>
   <data name="Help step by step" xml:space="preserve">
     <value>Aide pas à pas</value>
+  </data>
+  <data name="Hide parameter" xml:space="preserve">
+    <value>Masquer le paramètre</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Accueil</value>
