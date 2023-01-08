@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -57,8 +58,30 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 var data = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
-                var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
-                return Ok(result);
+                if(values.PivotTable)
+                {
+                    int maxValue = 500000;
+                    var nbrRows = data.Rows.Count;
+                    var nbrCols = data.Columns.Count;
+                    if(nbrRows* nbrCols<= maxValue)
+                    {
+                        var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
+                        return Ok(result);
+                    }
+                    else
+                    {
+                       var filteredData= data.AsEnumerable().Take(maxValue / nbrCols).CopyToDataTable();
+                        data.Clear();
+                        var result = new SubmitResultRemoteData { Success = true, Value = filteredData.ToDictionnary() };
+                        return Ok(result);
+                    }
+                }
+                else
+                {
+                    var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
+                    return Ok(result);
+                }
+
             }
             catch (Exception e)
             {
