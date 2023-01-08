@@ -272,7 +272,7 @@
             _errorMessage = result.Message;
         }
     }
- 
+
     private async Task LoadPivotConfig(string config)
     {
         await _pvt.LoadConfig(config);
@@ -420,6 +420,11 @@
                     if (result!.Success)
                     {
                         _values = result.Value;
+                        StateHasChanged();
+                        if (_pvt != null)
+                        {
+                            await _pvt.ReloadPivotTable();
+                        }
                     }
                     else
                     {
