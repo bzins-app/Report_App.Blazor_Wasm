@@ -86,6 +86,7 @@ namespace Report_App_WASM.Shared.DTO
         public int IdActivity { get; set; }
         public string? QueryName { get; set; }
         public string? Query { get; set; }
+        public string Parameters { get; set; } = "[]";
         public string QueryParameters { get; set; } = "[]";
         public virtual ActivityDto? Activity { get; set; }
     }
@@ -113,6 +114,8 @@ namespace Report_App_WASM.Shared.DTO
         public int CommandFetchSize { get; set; } = 131072;
         public string DbConnectionParameters { get; set; } = "[]";
         public bool UseTablesDescriptions { get; set; } = false;
+        public bool UseDescriptionsFromAnotherActivity { get; set; } = false;
+        public int IdDescriptions { get; set; }
         public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
         public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
         public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
@@ -127,6 +130,7 @@ namespace Report_App_WASM.Shared.DTO
         public string? TableDescription { get; set; }
         public string? ColumnName { get; set; }
         public string? ColumnDescription { get; set; }
+        public bool IsSnippet { get; set; }
         public virtual ActivityDbConnectionDto? ActivityDbConnection { get; set; }
     }
 
@@ -214,6 +218,18 @@ namespace Report_App_WASM.Shared.DTO
         public string? Email { get; set; }
         public string? Message { get; set; }
         public virtual TaskHeaderDto? TaskHeader { get; set; }
+    }
+
+    public class UserSavedConfigurationDto : BaseTraceabilityDto, IDto
+    {
+        public int Id { get; set; }
+        public string? UserId { get; set; }
+        public string? SaveName { get; set; }
+        public string? Parameters { get; set; }
+        public TypeConfiguration TypeConfiguration { get; set; }
+        public int IdIntConfiguration { get; set; }
+        public string? IdStringConfiguration { get; set; }
+        public string? SavedValues { get; set; }
     }
 
     public sealed class TaskHeaderDto : BaseTraceabilityDto, IDto

@@ -583,6 +583,7 @@ namespace Report_App_WASM.Server.Controllers
             public string TableDescription { get; set; } = string.Empty;
             public string ColumnName { get; set; } = string.Empty;
             public string ColumnDescription { get; set; } = string.Empty;
+            public bool IsSnippet { get; set; }
         }
 
         private async Task<SubmitResult> InsertEntity<T>(T EntityValue, string UserName)
