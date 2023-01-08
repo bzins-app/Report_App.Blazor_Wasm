@@ -1,0 +1,40 @@
+﻿
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+            @Localizer.Get("Add")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm  @ref="@_form">
+            <MudTextField @bind-Value="ConfigurationName" Label="@(Localizer.Get("Configuration name"))" Required RequiredError="@Localizer.Get("Required")" />
+        </MudForm>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Validate">@Localizer.Get("Validate")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    private MudForm _form = default!;
+    private string ConfigurationName = string.Empty;
+
+    private void Cancel()
+    {
+        MudDialog?.Cancel();
+    }
+
+    private async Task Validate()
+    {
+        await _form.Validate();
+            if (_form.IsValid )
+            {
+            MudDialog?.Close(DialogResult.Ok(ConfigurationName));
+            }
+        }
+    }
+}
