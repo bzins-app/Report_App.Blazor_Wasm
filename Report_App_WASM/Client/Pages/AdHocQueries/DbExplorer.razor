@@ -1,10 +1,11 @@
 ﻿@page "/DbExplorer/{ActivityId:int}/{ActivityName}"
 @inject HttpClient Http
 @using Blazor.AceEditorJs
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Report_App_WASM.Shared.Extensions;
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@Localizer.Get("DB explorer")</PageTitle>
 
@@ -180,6 +181,11 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        var user = await AuthenticationStateProvider.GetUserInfo();
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        {
+            NavigationManager.NavigateTo("/403");
+        }
         TableNames = new();
         ColNames = new();
         QueryRun = "";

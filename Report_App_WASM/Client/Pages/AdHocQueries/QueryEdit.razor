@@ -1,4 +1,5 @@
 ﻿@page "/QueryEdit/{QueryId:int}"
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Blazor.AceEditorJs
 @using MudBlazor.Utilities
 @using Report_App_WASM.Shared.Extensions
@@ -8,7 +9,7 @@
 @inject NavigationManager UriHelper
 @inject HttpClient Http
 @implements IDisposable
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@Localizer.Get("Query editor")</PageTitle>
 
@@ -131,7 +132,7 @@
                         </MudForm>
                     </MudPaper>
                 }
-                <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="65vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Striped="true" Height="65vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                     <HeaderContent>
                         @if (_values?.Any() == true)
                         {
@@ -293,8 +294,11 @@
 
     private async Task ConfirmText()
     {
-        await _validateParam?.Validate();
-        _formParamValidated = _validateParam.IsValid;
+        if (_validateParam != null)
+        {
+            await _validateParam.Validate();
+            _formParamValidated = _validateParam.IsValid;
+        }
         await _table?.ReloadServerData()!;
     }
 

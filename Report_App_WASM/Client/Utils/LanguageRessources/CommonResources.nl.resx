@@ -270,6 +270,9 @@
   <data name="Allready have an account?" xml:space="preserve">
     <value>Heeft u al een account?</value>
   </data>
+  <data name="Already uploaded?" xml:space="preserve">
+    <value>Al geupload?</value>
+  </data>
   <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
     <value>Een activiteit is in principe een verbinding met een specifieke database server en schema. Je kunt er een depotpad, een naam en een logo aan koppelen. Wanneer je een activiteit aanmaakt, wordt op de achtergrond een rol met dezelfde naam aangemaakt.</value>
   </data>
@@ -849,6 +852,9 @@
   <data name="Download example" xml:space="preserve">
     <value>Voorbeeld downloaden</value>
   </data>
+  <data name="Download template" xml:space="preserve">
+    <value>Sjabloon downloaden</value>
+  </data>
   <data name="Download Your Data" xml:space="preserve">
     <value>Uw gegevens downloaden</value>
   </data>
@@ -1100,6 +1106,9 @@
   </data>
   <data name="FileServer size" xml:space="preserve">
     <value>BestandsServer grootte</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filters</value>
   </data>
   <data name="Firstname.Lastname" xml:space="preserve">
     <value>Voornaam.Achternaam</value>
@@ -1439,6 +1448,9 @@
   </data>
   <data name="Mar" xml:space="preserve">
     <value>Mar</value>
+  </data>
+  <data name="Max of rows fetched" xml:space="preserve">
+    <value>Maximum aantal opgehaalde rijen</value>
   </data>
   <data name="May" xml:space="preserve">
     <value>Mei</value>
@@ -1917,6 +1929,9 @@
   <data name="Run reports manually" xml:space="preserve">
     <value>Rapporten handmatig uitvoeren</value>
   </data>
+  <data name="Run the query" xml:space="preserve">
+    <value>Voer de query uit</value>
+  </data>
   <data name="Saturday" xml:space="preserve">
     <value>Zaterdag</value>
   </data>
@@ -2138,6 +2153,9 @@
   </data>
   <data name="Target table name" xml:space="preserve">
     <value>Naam doeltabel</value>
+  </data>
+  <data name="Task scheduler" xml:space="preserve">
+    <value>Taakplanner</value>
   </data>
   <data name="Tasks in error" xml:space="preserve">
     <value>Taken in fout</value>
@@ -2441,6 +2459,9 @@
   </data>
   <data name="Yesterday" xml:space="preserve">
     <value>Gisteren</value>
+  </data>
+  <data name="You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering" xml:space="preserve">
+    <value>U kunt de tabellen en kolombeschrijvingen toevoegen door een bestand te uploaden. U kunt het onderstaande sjabloon gebruiken en vervolgens uploaden. Probeer UTF8 codering te gebruiken voor een betere weergave.</value>
   </data>
   <data name="You can create, edit and delete reports." xml:space="preserve">
     <value>U kunt rapporten aanmaken, bewerken en verwijderen.</value>
