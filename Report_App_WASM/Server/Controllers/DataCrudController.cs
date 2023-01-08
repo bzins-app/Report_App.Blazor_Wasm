@@ -13,6 +13,7 @@ using System.Text.Json;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Report_App_WASM.Shared.Extensions;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -499,6 +500,52 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<IActionResult> QueryStoreDelete(ApiCrudPayload<QueryStore> values)
         {
             return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserConfigurationSave(ApiCrudPayload<UserConfigurationSave> item)
+        {
+            var user = await _userManager.FindByNameAsync(item.UserName!);
+            if (user != null)
+            {
+                UserSavedConfiguration config = new UserSavedConfiguration {SaveName = item.EntityValue.SaveName, IdIntConfiguration = item.EntityValue.IdIntConfiguration, TypeConfiguration = item.EntityValue.TypeConfiguration, SavedValues = item.EntityValue.SavedValues, UserId = user.Id.ToString()};
+                return Ok(await InsertEntity(config, item.UserName!));
+            }
+
+            return Ok(new SubmitResult{Success = false,Message = "User not found"});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserConfigurationDelete(ApiCrudPayload<UserConfigurationDelete> item)
+        {
+            var user = await _userManager.FindByNameAsync(item.UserName!);
+            if (user != null)
+            {
+                var config = await _context.UserSavedConfiguration.Where(a => a.Id == item.EntityValue.Id&&a.UserId==user.Id.ToString())
+                    .FirstOrDefaultAsync();
+                if (config != null)
+                {
+                    return Ok(await DeleteEntity(config, item.UserName!));
+                }
+                return Ok(new SubmitResult { Success = true, Message = "Configuration not found" });
+            }
+
+            return Ok(new SubmitResult { Success = false, Message = "User not found" });
+        }
+
+        [HttpGet]
+        public async Task<List<UserConfigurations>> UserConfigurationGet(int IdIntConfiguration, string UserName)
+        {
+            var user = await _userManager.FindByNameAsync(UserName);
+
+            if (user != null)
+            {
+                return  await _context.UserSavedConfiguration
+                    .Where(a => a.IdIntConfiguration == IdIntConfiguration && a.UserId == user.Id.ToString())
+                    .Select(a => new UserConfigurations {SaveName = a.SaveName, Id = a.Id, IdIntConfiguration = a.IdIntConfiguration, TypeConfiguration = a.TypeConfiguration, SavedValues = a.SavedValues, Parameters = a.Parameters, IdStringConfiguration = a.IdStringConfiguration}).ToListAsync();
+            }
+
+            return new List<UserConfigurations>();
         }
 
         [HttpPost]

@@ -69,7 +69,7 @@ namespace Report_App_WASM.Client.Services
             return await _httpClient.GetFromJsonAsync<Tuple<string, string>>(uri);
         }
 
-        private async Task<string?> GetUserIdAsync()
+        private async Task<string?> GetUserNameAsync()
         {
             return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
