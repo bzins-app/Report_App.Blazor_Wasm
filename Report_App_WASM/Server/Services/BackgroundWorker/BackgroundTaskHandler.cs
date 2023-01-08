@@ -141,7 +141,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             }
             catch (Exception ex)
             {
-                logTask.Result = new string(ex.Message.Take(2000).ToArray());
+                logTask.Result = new string(ex.Message.Take(449).ToArray());
                 logTask.Error = true;
                 logTask.EndDateTime = DateTime.Now;
                 logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
