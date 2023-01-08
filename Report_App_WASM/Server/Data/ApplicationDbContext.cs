@@ -33,6 +33,7 @@ namespace Report_App_WASM.Server.Data
         public virtual DbSet<SftpConfiguration> SftpConfiguration { get; set; } = null!;
         public virtual DbSet<QueryStore> QueryStore { get; set; } = null!;
         public virtual DbSet<DbTableDescriptions> DbTableDescriptions { get; set; } = null!;
+        public virtual DbSet<UserSavedConfiguration> UserSavedConfiguration { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,6 +79,7 @@ namespace Report_App_WASM.Server.Data
             modelBuilder.Entity<QueryStore>().HasIndex(b => new { b.QueryName });
             modelBuilder.Entity<ApplicationLogTaskDetails>().HasIndex(b => new { b.TaskId, b.Id });
             modelBuilder.Entity<DbTableDescriptions>().HasIndex(b => new { b.TableName, b.ColumnName });
+            modelBuilder.Entity<UserSavedConfiguration>().HasIndex(b => new { b.UserId, b.TypeConfiguration,b.IdIntConfiguration });
         }
     }
 }

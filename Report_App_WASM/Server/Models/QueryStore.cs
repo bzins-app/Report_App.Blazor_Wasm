@@ -8,6 +8,7 @@ namespace Report_App_WASM.Server.Models
         public int IdActivity { get; set; }
         public string? QueryName { get; set; }
         public string? Query { get; set; }
+        public string Parameters { get; set; } = "[]";
         public string QueryParameters { get; set; } = "[]";
         public virtual Activity? Activity { get; set; }
     }

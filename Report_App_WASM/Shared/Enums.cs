@@ -65,4 +65,10 @@ namespace Report_App_WASM.Shared
         Update,
         Delete
     }
+
+    public enum TypeConfiguration
+    {
+        Grid=1,
+        PitvotReport = 2
+    }
 }

@@ -9,6 +9,7 @@ namespace Report_App_WASM.Server.Models
         public string? TableDescription { get; set; }
         public string? ColumnName { get; set; }
         public string? ColumnDescription { get; set; }
+        public bool IsSnippet { get; set; }
         public virtual ActivityDbConnection? ActivityDbConnection { get; set; }
     }
 }
