@@ -547,7 +547,8 @@ namespace Report_App_WASM.Server.Controllers
                                 ColumnName = data.ColumnName,
                                 //ActivityDbConnection = _dbConnect,
                                 TableDescription = data.TableDescription,
-                                ColumnDescription = data.ColumnDescription
+                                ColumnDescription = data.ColumnDescription,
+                                IsSnippet = data.IsSnippet
                             });
                         }
                     }
