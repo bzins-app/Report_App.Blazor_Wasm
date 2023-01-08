@@ -19,17 +19,17 @@
                         <hr style="margin-bottom:15px" />
                         <h5>@Localizer.Get("You have access to the activity"): @t.ActivityName</h5>
                         <p>@Localizer.Get("You can download the reports already created and consult the plan of the next report executions.")</p>
-                        <div class="row">
-                            <div class="col">
+                        <MudGrid>
+                            <MudItem sm="6" md="3">
                                 <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId"><span class="pcoded-micon"><i class="fa fa-arrow-right"></i></span><span class="pcoded-mtext"> @Localizer.Get("Retrieve reports")</span></a>
-                            </div>
+                            </MudItem>
                             @if (context.User.IsInRole("Supervisor"))
                             {
-                                <div class="col">
+                                <MudItem sm="6" md="3">
                                     <a class="nav-link" href="TasksPerActivity/Report/@t.ActivityId/@t.ActivityName"><span class="pcoded-micon"><i class="fa fa-arrow-right"></i></span><span class="pcoded-mtext"> @Localizer.Get("Manage reports")</span></a>
-                                </div>
+                                </MudItem>
                             }
-                        </div>
+                        </MudGrid>
                     </div>
                 </AuthorizeView>
             }
