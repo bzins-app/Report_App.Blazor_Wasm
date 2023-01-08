@@ -7,7 +7,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm  @ref="@_form">
+        <MudForm @ref="@_form">
             <MudTextField @bind-Value="ConfigurationName" Label="@(Localizer.Get("Configuration name"))" Required RequiredError="@Localizer.Get("Required")" />
         </MudForm>
 
@@ -31,10 +31,9 @@
     private async Task Validate()
     {
         await _form.Validate();
-            if (_form.IsValid )
-            {
+        if (_form.IsValid)
+        {
             MudDialog?.Close(DialogResult.Ok(ConfigurationName));
-            }
         }
     }
 }
