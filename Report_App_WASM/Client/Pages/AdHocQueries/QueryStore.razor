@@ -1,5 +1,6 @@
 ﻿@page "/QueryStore/{ActivityId:int}/{ActivityName}"
 @inject NavigationManager UriHelper
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -35,12 +36,15 @@
         <MudCardContent>
             <div style="overflow:auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
-                    <TemplateColumn>
-                        <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
-                        </MudStack>
-                    </TemplateColumn>
+                    @if (_UserIsSupervisor)
+                    {
+                        <TemplateColumn>
+                            <MudStack Row=true>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
+                            </MudStack>
+                        </TemplateColumn>
+                    }
                     <PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <TemplateColumn Title="@Localizer.Get("Run query")">
                         <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
@@ -75,15 +79,21 @@
     private string? _pageTitle;
     private bool _rendering;
     bool _empty;
+    bool _UserIsSupervisor;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         _pageTitle = Localizer.Get("Queries store");
         if (!string.IsNullOrEmpty(ActivityName))
         {
             _pageTitle += ": " + ActivityName;
         }
-
+        var user = await AuthenticationStateProvider.GetUserInfo();
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        {
+            NavigationManager.NavigateTo("/403");
+        }
+        _UserIsSupervisor = user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty)
         {
@@ -214,7 +224,7 @@
 
     private void RunQuery(QueryStoreDto value)
     {
-        UriHelper.NavigateTo("RunQuery/" + value.Id);
+        UriHelper.NavigateTo($"RunQuery/{value.Id}/{ActivityId}/{ActivityName}");
     }
 
     private void EditItem(QueryStoreDto value)

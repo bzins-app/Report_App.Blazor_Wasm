@@ -65,6 +65,9 @@ namespace Report_App_WASM.Client.Services
         public async Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
         {
             var uri = $"{controller}{controllerAction}";
+            using HttpClient _httpClientLong = new HttpClient();
+            _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+            _httpClientLong.BaseAddress = _httpClient.BaseAddress;
 
             ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
             try
@@ -73,20 +76,17 @@ namespace Report_App_WASM.Client.Services
                 {
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 };
-                _httpClient.Timeout = TimeSpan.FromMinutes(5);
-                var response = await _httpClient.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
+                var response = await _httpClientLong.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
                 if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
                 }
-                _httpClient.Timeout = TimeSpan.FromSeconds(100);
                 return new SubmitResult { Success = false };
             }
             catch (Exception ex)
             {
-                _httpClient.Timeout = TimeSpan.FromSeconds(100);
                 return new SubmitResult { Success = false, Message = ex.Message };
             }
         }
@@ -96,7 +96,10 @@ namespace Report_App_WASM.Client.Services
             try
             {
                 var url = "odata/ExtractLogs";
-                var response = await _httpClient.PostAsJsonAsync(url, values);
+                using HttpClient _httpClientLong = new HttpClient();
+                _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+                _httpClientLong.BaseAddress = _httpClient.BaseAddress;
+                var response = await _httpClientLong.PostAsJsonAsync(url, values);
                 if (response.IsSuccessStatusCode)
                 {
                     var downloadresult = await _blazorDownloadFileService.DownloadFile(values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
@@ -119,7 +122,10 @@ namespace Report_App_WASM.Client.Services
             try
             {                
                 var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
-                var response = await _httpClient.PostAsJsonAsync(url, values);
+                using HttpClient _httpClientLong = new HttpClient();
+                _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+                _httpClientLong.BaseAddress = _httpClient.BaseAddress;
+                var response = await _httpClientLong.PostAsJsonAsync(url, values);
                 if (response.IsSuccessStatusCode)
                 {
                     var downloadresult = await _blazorDownloadFileService.DownloadFile(values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");

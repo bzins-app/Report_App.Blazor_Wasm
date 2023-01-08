@@ -71,7 +71,7 @@
     SimpleGrid<ActivityDto> _grid = default!;
     private string? _errorMessage;
     private bool _rendering;
-
+    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
 
     protected override void OnInitialized()
     {
@@ -143,7 +143,7 @@
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Edit", parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
         if (!feedback.Canceled)
@@ -173,7 +173,7 @@
         value.ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Delete", parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
         if (!feedback.Canceled)
@@ -199,7 +199,7 @@
         var value = new ActivityDto { ActivityDbConnections = new List<ActivityDbConnectionDto> { new() }, ActivityType = ActivityType.SourceDb };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Create", parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
         if (!feedback.Canceled)

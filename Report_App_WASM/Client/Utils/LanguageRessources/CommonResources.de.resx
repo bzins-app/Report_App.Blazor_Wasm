@@ -267,6 +267,9 @@
   <data name="Allready have an account?" xml:space="preserve">
     <value>Haben Sie bereits ein Konto?</value>
   </data>
+  <data name="Already uploaded?" xml:space="preserve">
+    <value>Bereits hochgeladen?</value>
+  </data>
   <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
     <value>Eine Aktivität ist im Grunde eine Verbindung zu einem bestimmten Datenbankserver und -schema. Sie können ihr einen Ablagepfad, einen Namen und ein Logo zuordnen. Wenn Sie eine Aktivität erstellen, wird im Hintergrund eine Rolle mit demselben Namen angelegt.</value>
   </data>
@@ -837,6 +840,9 @@
   <data name="Download example" xml:space="preserve">
     <value>Beispiel herunterladen</value>
   </data>
+  <data name="Download template" xml:space="preserve">
+    <value>Vorlage herunterladen</value>
+  </data>
   <data name="Download Your Data" xml:space="preserve">
     <value>Laden Sie Ihre Daten herunter</value>
   </data>
@@ -1079,6 +1085,9 @@
   </data>
   <data name="FileServer size" xml:space="preserve">
     <value>FileServer-Größe</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filter</value>
   </data>
   <data name="Firstname.Lastname" xml:space="preserve">
     <value>Vorname.Nachname</value>
@@ -1406,6 +1415,9 @@
   </data>
   <data name="Mar" xml:space="preserve">
     <value>Mar</value>
+  </data>
+  <data name="Max of rows fetched" xml:space="preserve">
+    <value>Max. Anzahl der abgerufenen Zeilen</value>
   </data>
   <data name="May" xml:space="preserve">
     <value>Mai</value>
@@ -1878,6 +1890,9 @@
   <data name="Run reports manually" xml:space="preserve">
     <value>Berichte manuell ausführen</value>
   </data>
+  <data name="Run the query" xml:space="preserve">
+    <value>Die Abfrage ausführen</value>
+  </data>
   <data name="Saturday" xml:space="preserve">
     <value>Samstag</value>
   </data>
@@ -2093,6 +2108,9 @@
   </data>
   <data name="Target table name" xml:space="preserve">
     <value>Name der Zieltabelle</value>
+  </data>
+  <data name="Task scheduler" xml:space="preserve">
+    <value>Aufgaben-Scheduler</value>
   </data>
   <data name="Tasks in error" xml:space="preserve">
     <value>Fehlerhafte Aufgaben</value>
@@ -2390,6 +2408,9 @@
   </data>
   <data name="Yesterday" xml:space="preserve">
     <value>Gestern</value>
+  </data>
+  <data name="You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering" xml:space="preserve">
+    <value>Sie können die Tabellen und Spaltenbeschreibungen hinzufügen, indem Sie eine Datei hochladen. Sie können die untenstehende Vorlage verwenden und diese hochladen. Bitte versuchen Sie, die UTF8-Kodierung zu verwenden, um eine bessere Darstellung zu erreichen.</value>
   </data>
   <data name="You can create, edit and delete reports." xml:space="preserve">
     <value>Sie können Berichte erstellen, bearbeiten und löschen.</value>
