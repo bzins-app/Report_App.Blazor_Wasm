@@ -1,6 +1,7 @@
 ﻿@page "/RunQuery/{QueryId:int}/{ActivityId:int}/{ActivityName}"
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Blazor.PivotTable
 @implements IDisposable
 @inject NavigationManager UriHelper
@@ -76,19 +77,27 @@
                         </MudButton>
                     }
                 </div>
-
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
-                               OnClick="@(ExtractElements)"
-                               Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                
+                <div>
+                    <MudGrid>
+                        <MudItem>
+                            <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
+                                <MudSelectItem Value="@("Grid")"/>
+                                <MudSelectItem Value="@("pivot")"/>
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem>
+                            <MudIconButton DisableElevation Variant="Variant.Outlined"
+                                           OnClick="@(ExtractElements)"
+                                           Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                        </MudItem>
+                    </MudGrid>
+                </div>
             </div>
-            <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" ValueChanged="(string Value)=>OnchangeReportType(Value)" Style="max-width: 200px">
-                <MudSelectItem Value="@("Grid")" />
-                <MudSelectItem Value="@("pivot")" />
-            </MudSelect>
         </MudPaper>
         @if (!_pivotTable)
         {
-            <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="57vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+            <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="57vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
                 <HeaderContent>
                     @if (_values?.Any() == true)
                     {
@@ -315,10 +324,13 @@
                 {
                     _cts = new CancellationTokenSource();
 
+                    using HttpClient _httpClientLong = new HttpClient();
+                    _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+                    _httpClientLong.BaseAddress = Http.BaseAddress;
                     var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 10000, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                     var remoteDataPayload = new RemoteDataPayload { Values = run };
                     var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
-                    var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
+                    var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                     if (response.IsSuccessStatusCode)
                     {
                         var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
