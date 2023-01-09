@@ -1368,6 +1368,9 @@
   <data name="List of recipient" xml:space="preserve">
     <value>Lijst van ontvanger</value>
   </data>
+  <data name="Load" xml:space="preserve">
+    <value>Laden</value>
+  </data>
   <data name="Loading time" xml:space="preserve">
     <value>Laad tijd</value>
   </data>
@@ -1935,6 +1938,9 @@
   <data name="Saturday" xml:space="preserve">
     <value>Zaterdag</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Opslaan</value>
+  </data>
   <data name="Save changes" xml:space="preserve">
     <value>Wijzigingen opslaan</value>
   </data>
@@ -2381,6 +2387,9 @@
   </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Het standaard depotpad van de activiteit gebruiken?</value>
+  </data>
+  <data name="Use the same tables descriptions than" xml:space="preserve">
+    <value>Gebruik dezelfde tabelbeschrijvingen dan</value>
   </data>
   <data name="Use Windows authentication?" xml:space="preserve">
     <value>Windows-verificatie gebruiken?</value>

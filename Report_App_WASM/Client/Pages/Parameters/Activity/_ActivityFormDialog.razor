@@ -205,6 +205,21 @@
                         }
                     </MudButton>
                 }
+                    <MudSwitch @bind-Checked="DbCon.UseDescriptionsFromAnotherActivity" Label="@(Localizer.Get("Use the same tables descriptions than")+":")" Color="Color.Primary" />
+               @if (_activities.Any())
+               {
+                   <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherActivity" >
+                            @if (DbCon.IdDescriptions == 0)
+                       {
+                                <MudSelectItem Value="DbCon.IdDescriptions">@Localizer.Get("Activity name")</MudSelectItem>
+                       }
+                            @foreach (var item in _activities.Where(a=>a.ActivityName!=Item.ActivityName))
+                       {
+                           <MudSelectItem Value="@item.DbConnectionId">@item.ActivityName</MudSelectItem>
+                       }
+                   </MudSelect>
+               }
+
                 </MudPaper>
             }
             @if (Action == CrudAction.Delete)

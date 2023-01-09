@@ -35,7 +35,7 @@ namespace Report_App_WASM.Server.Controllers
         [HttpGet("ActivitiesInfo")]
         public async Task<IEnumerable<SelectItemActivitiesInfo>> GetActivitiesInfo()
         {
-            return await _context.Activity.AsNoTracking().Select(a => new SelectItemActivitiesInfo { ActivityId = a.ActivityId, ActivityName = a.ActivityName, HasALogo = !string.IsNullOrEmpty(a.ActivityLogo), IsVisible = a.Display, LogoPath = a.ActivityLogo, IsActivated = a.IsActivated }).ToArrayAsync();
+            return await _context.Activity.AsNoTracking().Select(a => new SelectItemActivitiesInfo { ActivityId = a.ActivityId, ActivityName = a.ActivityName, HasALogo = !string.IsNullOrEmpty(a.ActivityLogo), IsVisible = a.Display, LogoPath = a.ActivityLogo, IsActivated = a.IsActivated, DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id}).ToArrayAsync();
         }
 
         [Authorize]
