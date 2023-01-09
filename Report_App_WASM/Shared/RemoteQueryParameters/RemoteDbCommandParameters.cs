@@ -6,7 +6,7 @@ namespace Report_App_WASM.Shared.RemoteQueryParameters
     {
         public int ActivityId { get; init; }
         public string? FileName { get; set; }
-        public string? QueryToRun { get; init; }
+        public string? QueryToRun { get; set; }
         public List<QueryCommandParameter>? QueryCommandParameters { get; init; } = new();
         public string? QueryInfo { get; init; }
         public bool FillDatatableSchema { get; set; } = false;
