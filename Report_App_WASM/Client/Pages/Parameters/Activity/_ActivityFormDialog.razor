@@ -19,7 +19,7 @@
         <MudStack Spacing="1" Style="overflow-y:auto;overflow-x: hidden;max-height:80vh; width:100%">
             <MudForm Model="@Item" @ref="@_form">
                 <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action == CrudAction.Delete" />
-                <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" HelperText="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
+                <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
                     @if (DbCon.TypeDb == 0)
                     {
                         <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
