@@ -446,7 +446,8 @@
                         StateHasChanged();
                         if (_pvt != null)
                         {
-                            await _pvt.ReloadPivotTable();
+                            var config= await _pvt.GetConfig();
+                            await _pvt.LoadConfig(config);
                         }
                     }
                     else
