@@ -78,7 +78,15 @@
                                 }
                             </HeaderContent>
                             <RowTemplate>
-                                <MudTd>@context.Name</MudTd>
+                                @if (context.IsSnippet)
+                                {
+                                    <MudTd Style="Color:crimson">@context.Name</MudTd>
+                                }
+                                else
+                                {
+                                    <MudTd>@context.Name</MudTd>
+                                }
+                                
                                 @if (_hasDescCol)
                                 {
                                     <MudTh>@context.Description</MudTh>

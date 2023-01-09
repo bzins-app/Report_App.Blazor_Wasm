@@ -811,10 +811,10 @@
     <value>Afficher les détails</value>
   </data>
   <data name="Display name" xml:space="preserve">
-    <value>Afficher le nom</value>
+    <value>Nom du filtre</value>
   </data>
   <data name="Display sequence" xml:space="preserve">
-    <value>Afficher la séquence</value>
+    <value>Séquence d'affichage</value>
   </data>
   <data name="Display table values" xml:space="preserve">
     <value>Afficher les valeurs de la table</value>
@@ -1362,6 +1362,9 @@
   <data name="List of recipient" xml:space="preserve">
     <value>Liste des destinataires</value>
   </data>
+  <data name="Load" xml:space="preserve">
+    <value>Charger</value>
+  </data>
   <data name="Loading time" xml:space="preserve">
     <value>Heure de chargement</value>
   </data>
@@ -1610,9 +1613,6 @@
   </data>
   <data name="of" xml:space="preserve">
     <value>sur</value>
-  </data>
-  <data name="of1" xml:space="preserve">
-    <value>de</value>
   </data>
   <data name="Off" xml:space="preserve">
     <value>Eteint</value>
@@ -1926,6 +1926,9 @@
   <data name="Saturday" xml:space="preserve">
     <value>Samedi</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Sauvegarder</value>
+  </data>
   <data name="Save changes" xml:space="preserve">
     <value>Sauvegarder</value>
   </data>
@@ -2146,7 +2149,7 @@
     <value>Nom de la table cible</value>
   </data>
   <data name="Task scheduler" xml:space="preserve">
-    <value>Planificateur de tâches</value>
+    <value>Tâches planifiées</value>
   </data>
   <data name="Tasks in error" xml:space="preserve">
     <value>Tâches en erreur</value>
@@ -2372,6 +2375,9 @@
   </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Utiliser le chemin de dépose de l'activité ?</value>
+  </data>
+  <data name="Use the same tables descriptions than" xml:space="preserve">
+    <value>Utiliser les mêmes descriptions de tables que</value>
   </data>
   <data name="Use Windows authentication?" xml:space="preserve">
     <value>Utiliser l'authentification Windows?</value>

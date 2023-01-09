@@ -1335,6 +1335,9 @@
   <data name="List of recipient" xml:space="preserve">
     <value>Liste der Empfänger</value>
   </data>
+  <data name="Load" xml:space="preserve">
+    <value>Laden</value>
+  </data>
   <data name="Loading time" xml:space="preserve">
     <value>Ladezeit</value>
   </data>
@@ -1896,6 +1899,9 @@
   <data name="Saturday" xml:space="preserve">
     <value>Samstag</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
   <data name="Save changes" xml:space="preserve">
     <value>Änderungen speichern</value>
   </data>
@@ -2333,6 +2339,9 @@
   </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Den Standard-Einzahlungspfad der Aktivität verwenden?</value>
+  </data>
+  <data name="Use the same tables descriptions than" xml:space="preserve">
+    <value>Verwenden die gleichen Tabellenbeschreibungen wie</value>
   </data>
   <data name="User actions logs" xml:space="preserve">
     <value>Protokolle der Benutzeraktionen</value>
