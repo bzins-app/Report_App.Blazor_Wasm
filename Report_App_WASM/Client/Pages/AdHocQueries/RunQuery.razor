@@ -82,7 +82,10 @@
                                Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_extracting"/>
             </div>
         </MudPaper>
-        
+        @if (_extracting)
+        {
+            <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
+        }
         <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="59vh" Striped="true" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
             <HeaderContent>
                 @if (_values?.Any() == true)
