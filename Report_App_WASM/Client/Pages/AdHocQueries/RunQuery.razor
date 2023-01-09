@@ -305,6 +305,8 @@
         _loading = true;
         var currentPage = state.Page;
         var pageSize = state.PageSize;
+        bool getTotalElements = true;
+        int totalElements = 0;
         if (Item == null)
         {
             _values = new List<Dictionary<string, object>>();
@@ -328,7 +330,7 @@
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
                 var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-                var remoteDataPayload = new RemoteDataPayload { Values = run };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, CalculateTotalElements = getTotalElements };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
@@ -338,26 +340,30 @@
                     {
                         _values = result.Value;
                         _errorMessage = string.Empty;
+                        totalElements = result.TotalElements;
                     }
                     else
                     {
+                        getTotalElements = false;
                         _values = new List<Dictionary<string, object>>();
                         _errorMessage = result.Message;
                     }
                 }
                 else
                 {
+                    getTotalElements = false;
                     _values = new List<Dictionary<string, object>>();
                     _errorMessage=response.Content.ToString();
                 }
             }
             catch (Exception ex)
             {
+                getTotalElements = false;
                 _values = new List<Dictionary<string, object>>();
             }
         }
         _loading = false;
-        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = getTotalElements?totalElements: _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 
 
