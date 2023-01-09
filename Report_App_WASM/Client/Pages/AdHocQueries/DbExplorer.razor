@@ -71,7 +71,7 @@
                                 <MudTextField T="string" ValueChanged="@(s=>OnSearchCols(s))" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                             </ToolBarContent>
                             <HeaderContent>
-                                <MudTh>@Localizer.Get("Columns")</MudTh>
+                                <MudTh>@Localizer.Get("Columns"): @_SelectedTable</MudTh>
                                 @if (_hasDescCol)
                                 {
                                     <MudTh>@Localizer.Get("Description")</MudTh>
@@ -185,6 +185,7 @@
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _errorMessage;
     private string? _queryTestResult { get; set; }
+    private string _SelectedTable;
 
 
     protected override async Task OnParametersSetAsync()
@@ -234,6 +235,7 @@
     {
         _cts = new CancellationTokenSource();
         _loading = true;
+        _SelectedTable = table;
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={table}", _cts.Token);
         ColNames = data!.Values;
         ColNamesStored = data!.Values;
