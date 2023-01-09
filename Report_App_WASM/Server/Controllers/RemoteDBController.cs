@@ -66,9 +66,10 @@ namespace Report_App_WASM.Server.Controllers
                     values.Values.QueryToRun = originalQuery;
                     if (dataTotal != null)
                     {
-                        total = dataTotal.AsEnumerable()
-                        .Select(r => r.Field<int>(0))
+                        var totalstring = dataTotal.AsEnumerable()
+                        .Select(r => r.Field<string>(0))
                         .FirstOrDefault();
+                        total= int.Parse(totalstring);
                     }
 
                 }
