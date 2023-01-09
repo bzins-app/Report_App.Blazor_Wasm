@@ -168,7 +168,7 @@ namespace Report_App_WASM.Server.Controllers
                                              join b in Prework on a equals b.TableName into c
                                              from d in c.DefaultIfEmpty()
                                              select new DescriptionValues { Name = a, Description = d?.TableDescription }).ToList();
-                        listTables.HasDescription = true;
+                        listTables.HasDescription = Prework.Any();
                     }
                     else
                     {
