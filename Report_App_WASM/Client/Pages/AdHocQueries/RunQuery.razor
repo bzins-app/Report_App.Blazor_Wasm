@@ -191,6 +191,8 @@
     PivotTable<Dictionary<string, object>>? _pvt;
     List<UserConfigurations> _userConfigs = new();
     string _userName = string.Empty;
+    private bool _hasTotal;
+    private int _total = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -284,6 +286,7 @@
 
     private async Task ConfirmText()
     {
+        _hasTotal = false;
         if (param.Count > 0)
         {
             await _validateParam?.Validate()!;
@@ -305,8 +308,13 @@
         _loading = true;
         var currentPage = state.Page;
         var pageSize = state.PageSize;
-        bool getTotalElements = true;
-        int totalElements = 0;
+        bool getTotalElements = false;
+        if (!_hasTotal)
+        {
+             getTotalElements = true;
+            _total = 0;
+        }
+
         if (Item == null)
         {
             _values = new List<Dictionary<string, object>>();
@@ -340,30 +348,31 @@
                     {
                         _values = result.Value;
                         _errorMessage = string.Empty;
-                        totalElements = result.TotalElements;
+                        _hasTotal = true;
+                        _total = result.TotalElements;
                     }
                     else
                     {
-                        getTotalElements = false;
+                        _hasTotal = false;
                         _values = new List<Dictionary<string, object>>();
                         _errorMessage = result.Message;
                     }
                 }
                 else
                 {
-                    getTotalElements = false;
+                    _hasTotal = false;
                     _values = new List<Dictionary<string, object>>();
                     _errorMessage=response.Content.ToString();
                 }
             }
             catch (Exception ex)
             {
-                getTotalElements = false;
+                _hasTotal = false;
                 _values = new List<Dictionary<string, object>>();
             }
         }
         _loading = false;
-        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = getTotalElements?totalElements: _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _hasTotal ? _total : _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 
 
