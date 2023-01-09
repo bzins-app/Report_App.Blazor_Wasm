@@ -56,8 +56,24 @@ namespace Report_App_WASM.Server.Controllers
         {
             try
             {
+                int total = 0;
+                if (values.CalculateTotalElements)
+                {
+                    var originalQuery = values.Values.QueryToRun;
+                    var query = await GetQueryTotal(values.Values.ActivityId, values.Values.QueryToRun);
+                    values.Values.QueryToRun = query;
+                    var dataTotal = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
+                    values.Values.QueryToRun = originalQuery;
+                    if (dataTotal != null)
+                    {
+                        total = dataTotal.AsEnumerable()
+                        .Select(r => r.Field<int>(0))
+                        .FirstOrDefault();
+                    }
+
+                }
                 var data = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
-                var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
+                var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary(), TotalElements= total };
                 return Ok(result);
             }
             catch (Exception e)
@@ -65,6 +81,22 @@ namespace Report_App_WASM.Server.Controllers
                 var result = new SubmitResultRemoteData { Success = false, Message = e.Message, Value = new() };
                 return Ok(result);
             }
+        }
+
+        private async Task<TypeDb> GetDbType(int activityId)
+        {
+            return await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == activityId).Select(a => a.TypeDb).FirstOrDefaultAsync();
+        }
+
+        private async Task<string> GetQueryTotal(int activityId, string query)
+        {
+            var _typeDb = await GetDbType(activityId);
+
+            if (_typeDb == TypeDb.SqlServer && query.ToLower().RemoveSpecialCharacters().Contains("orderby"))
+            {
+                query += " OFFSET 0 Rows";
+            }
+            return $"select  count(*) from ( {query} ) a";
         }
 
         [HttpPost]
@@ -151,7 +183,7 @@ namespace Report_App_WASM.Server.Controllers
                     .ToList();
                     if (cols != null)
                     {
-                        if (description.tableDesc&& await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId && a.TableName == table).AnyAsync(cancellationToken: ct))
+                        if (description.tableDesc && await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId && a.TableName == table).AnyAsync(cancellationToken: ct))
                         {
                             var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConectId && a.TableName == table).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty }).ToListAsync();
                             if (desc != null)
