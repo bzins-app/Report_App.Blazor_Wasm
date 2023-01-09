@@ -123,6 +123,10 @@
                 </div>
             </div>
         </MudPaper>
+        @if (_extracting)
+        {
+            <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
+        }
         @if (!_pivotTable)
         {
             <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="57vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
