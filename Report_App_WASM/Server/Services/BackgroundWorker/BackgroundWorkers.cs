@@ -145,7 +145,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
-                            var jobName = a.Type + ":" + a.ActivityName + ":" + a.TaskName + " Id:" + a.TaskHeaderId;
+                            var jobName = a.Type + ":" + a.ActivityName.RemoveSpecialCharacters().Take(20) + ":" + a.TaskName.RemoveSpecialCharacters().Take(10) + " Id:" + a.TaskHeaderId;
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
