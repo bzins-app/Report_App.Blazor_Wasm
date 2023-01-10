@@ -71,7 +71,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             var services = await _context.ServicesStatus.Select(a => new { a.AlertService, a.ReportService, a.DataTransferService }).FirstOrDefaultAsync();
             var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == taskHeaderId).Select(a => new { a.TaskName, a.Type, a.Activity.ActivityName, a.CronParameters }).FirstOrDefaultAsync();
-            var jobName = taskHeader!.Type + ":" + taskHeader.ActivityName.RemoveSpecialCharacters() + ":" + taskHeader.TaskName.RemoveSpecialCharacters().Take(10) + " Id:" + taskHeaderId;
+            var jobName = taskHeader!.Type + ":" + taskHeader.ActivityName.RemoveSpecialCharacters().Take(20) + ":" + taskHeader.TaskName.RemoveSpecialCharacters().Take(10) + " Id:" + taskHeaderId;
             if (activate)
             {
                 var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
