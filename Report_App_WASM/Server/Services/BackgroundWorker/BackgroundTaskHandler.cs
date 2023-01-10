@@ -428,11 +428,11 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!, _jsonOpt);
                 if (string.IsNullOrEmpty(detailParam?.FileName))
                 {
-                    fName = $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HH_mm_ss}";
+                    fName = $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
                 }
                 else
                 {
-                    fName = $"{detailParam.FileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HH_mm_ss}";
+                    fName = $"{detailParam.FileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
                 }
 
                 if (_header.TypeFile == FileType.Excel)
@@ -498,7 +498,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             }
             if (excelMultipleTabs.Any())
             {
-                fName = string.IsNullOrEmpty(headerParam?.ExcelFileName) ? $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}" : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
+                fName = string.IsNullOrEmpty(headerParam?.ExcelFileName) ? $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}" : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
 
                 FileContentResult fileCreated;
                 if (!headerParam!.UseAnExcelTemplate)
@@ -568,7 +568,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                                 ExcelCreationDatatable dataExcel = new() { TabName = a.TaskHeader?.TaskName, Data = table.Value };
                                 var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader?.TaskName, dataExcel);
                                 var fName =
-                                    $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx"}";
+                                    $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
                                 listAttach.Add(new Attachment(new MemoryStream(fileResult.FileContents), fName, fileResult.ContentType));
                             }
                         }
