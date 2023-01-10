@@ -319,6 +319,7 @@
         {
             return false;
         }
+        Item?.ActivityName=Item?.ActivityName.Trim();
         if (_activities.Any(a => a.ActivityName?.ToLower() == Item.ActivityName.ToLower()))
         {
             Localizer.Get("Another activity with the same name already exists");
