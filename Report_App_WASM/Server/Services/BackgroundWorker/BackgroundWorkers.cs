@@ -70,8 +70,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         private async Task HandleTasksJobs(int taskHeaderId, bool activate)
         {
             var services = await _context.ServicesStatus.Select(a => new { a.AlertService, a.ReportService, a.DataTransferService }).FirstOrDefaultAsync();
-            var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == taskHeaderId).Select(a => new { a.TaskName, a.Type, a.Activity.ActivityName, a.CronParameters }).FirstOrDefaultAsync();
-            var jobName = taskHeader!.Type + ":" + taskHeader.ActivityName.RemoveSpecialCharacters().Take(20) + ":" + taskHeader.TaskName.RemoveSpecialCharacters().Take(10) + " Id:" + taskHeaderId;
+            var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution().Where(a => a.TaskHeaderId == taskHeaderId).Select(a => new { a.TaskName, a.Type, a.TypeName, a.Activity.ActivityName, a.CronParameters }).FirstOrDefaultAsync();
+            var jobName = taskHeader!.TypeName + " Id:" + taskHeaderId;
             if (activate)
             {
                 var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
@@ -145,7 +145,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
-                            var jobName = a.Type + ":" + a.ActivityName.RemoveSpecialCharacters().Take(20) + ":" + a.TaskName.RemoveSpecialCharacters().Take(10) + " Id:" + a.TaskHeaderId;
+                            var jobName = a.TypeName+ " Id:" + a.TaskHeaderId;
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
