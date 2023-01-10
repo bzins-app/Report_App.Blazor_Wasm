@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OData.ModelBuilder;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
@@ -74,21 +75,20 @@ namespace Report_App_WASM.Server.Controllers
                 var data = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
                 if (values.PivotTable)
                 {
-                    int maxValue = 500000;
-                    var nbrRows = data.Rows.Count;
-                    var nbrCols = data.Columns.Count;
-                    if (nbrRows * nbrCols <= maxValue)
+                    var selectColumns = data.Columns.Cast<DataColumn>().Take(10);
+                    int nbrCols = data.Columns.Count;
+
+                    if(nbrCols>10)
                     {
-                        var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
-                        return Ok(result);
+                     
+                        for(int x=10;x< nbrCols; x++ )
+                        {
+                            if( data.Columns.Count > 10)
+                            data.Columns.RemoveAt(10);
+                        }
                     }
-                    else
-                    {
-                        var filteredData = data.AsEnumerable().Take(maxValue / nbrCols).CopyToDataTable();
-                        data.Clear();
-                        var result = new SubmitResultRemoteData { Success = true, Value = filteredData.ToDictionnary() };
-                        return Ok(result);
-                    }
+                    var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
+                    return Ok(result);
                 }
                 else
                 {
@@ -152,7 +152,7 @@ namespace Report_App_WASM.Server.Controllers
                 { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, UseDescriptionsFromAnotherActivity=a.UseDescriptionsFromAnotherActivity, ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id })
+                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, UseDescriptionsFromAnotherActivity = a.UseDescriptionsFromAnotherActivity, ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id })
                     .FirstOrDefaultAsync(cancellationToken: ct);
 
                 var tables = data.AsEnumerable()
@@ -161,7 +161,7 @@ namespace Report_App_WASM.Server.Controllers
                 if (tables != null)
                 {
 
-                    if (description.tableDesc|| description.UseDescriptionsFromAnotherActivity)
+                    if (description.tableDesc || description.UseDescriptionsFromAnotherActivity)
                     {
                         var Prework = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId).AsNoTracking().Select(a => new { a.TableName, a.TableDescription }).Distinct().ToListAsync(cancellationToken: ct);
                         listTables.Values = (from a in tables
@@ -194,7 +194,7 @@ namespace Report_App_WASM.Server.Controllers
                 { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, UseDescriptionsFromAnotherActivity = a.UseDescriptionsFromAnotherActivity, ConnectId =a.UseDescriptionsFromAnotherActivity?a.IdDescriptions: a.Id })
+                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, UseDescriptionsFromAnotherActivity = a.UseDescriptionsFromAnotherActivity, ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id })
                     .FirstOrDefaultAsync(cancellationToken: ct);
 
                 if (data.Rows.Count > 0)
@@ -204,16 +204,16 @@ namespace Report_App_WASM.Server.Controllers
                     .ToList();
                     if (cols != null)
                     {
-                        if ( (description.tableDesc || description.UseDescriptionsFromAnotherActivity) && await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table).AnyAsync(cancellationToken: ct))
+                        if ((description.tableDesc || description.UseDescriptionsFromAnotherActivity) && await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table).AnyAsync(cancellationToken: ct))
                         {
-                            var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty, IsSnippet=a.IsSnippet }).ToListAsync();
+                            var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty, IsSnippet = a.IsSnippet }).ToListAsync();
                             if (desc != null)
                             {
-                                listCols.Values.AddRange(desc.Where(a=>a.IsSnippet).Select(a=>new DescriptionValues { Name=a.Name, Description = a.Desciption, IsSnippet = true}).ToList());
+                                listCols.Values.AddRange(desc.Where(a => a.IsSnippet).Select(a => new DescriptionValues { Name = a.Name, Description = a.Desciption, IsSnippet = true }).ToList());
                                 listCols.HasDescription = true;
                                 foreach (var col in cols.Distinct())
                                 {
-                                    listCols.Values.Add(new DescriptionValues { Name = col!, Description = desc.Where(a => a.Name == col!&&!a.IsSnippet).Select(a => a.Desciption).FirstOrDefault() ?? string.Empty });
+                                    listCols.Values.Add(new DescriptionValues { Name = col!, Description = desc.Where(a => a.Name == col! && !a.IsSnippet).Select(a => a.Desciption).FirstOrDefault() ?? string.Empty });
                                 }
                             }
                             else
