@@ -93,7 +93,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
-        _UserIsSupervisor = user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
+        _UserIsSupervisor = user!.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty)
         {

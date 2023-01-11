@@ -18,7 +18,7 @@ namespace Report_App_WASM.Server.Controllers
     [Authorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class UserManagerController : ControllerBase,IDisposable
+    public class UserManagerController : ControllerBase, IDisposable
     {
         private readonly ILogger<UserManagerController> _logger;
         private readonly ApplicationDbContext _context;

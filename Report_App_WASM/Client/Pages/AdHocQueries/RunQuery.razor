@@ -1,4 +1,5 @@
 ﻿@page "/RunQuery/{QueryId:int}/{ActivityId:int}/{ActivityName}"
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
@@ -192,7 +193,7 @@
     List<UserConfigurations> _userConfigs = new();
     string _userName = string.Empty;
     private bool _hasTotal;
-    private int _total = 0;
+    private int _total;
 
     protected override async Task OnInitializedAsync()
     {
@@ -376,7 +377,7 @@
             }
         }
         _loading = false;
-        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _hasTotal ? _total : _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _hasTotal ? _total : _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 
 
@@ -397,7 +398,7 @@
         _cts?.Cancel();
     }
 
-    private async Task Back()
+    private void Back()
     {
         var uri = $"/QueryStore/{Item!.IdActivity}/{Item.Activity!.ActivityName}";
         UriHelper.NavigateTo(uri);

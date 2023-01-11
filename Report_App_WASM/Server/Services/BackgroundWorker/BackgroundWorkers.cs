@@ -9,7 +9,6 @@ using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.SerializedParameters;
 using System.Net.Mail;
 using System.Text.Json;
@@ -145,7 +144,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     await _context.TaskHeader.Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
                         a =>
                         {
-                            var jobName = a.TypeName+ " Id:" + a.TaskHeaderId;
+                            var jobName = a.TypeName + " Id:" + a.TaskHeaderId;
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
@@ -191,9 +190,12 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             {
                 var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-                using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper, _hostingEnvironment);
-                await handler.HandleTask(parameters);
-                handler.Dispose();
+                if (db != null)
+                {
+                    using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper, _hostingEnvironment);
+                    await handler.HandleTask(parameters);
+                    handler.Dispose();
+                }
             }
 
             ReleaseMemory();

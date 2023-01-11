@@ -1,9 +1,9 @@
 ﻿@page "/DbExplorer/{ActivityId:int}/{ActivityName}"
 @inject HttpClient Http
-@using Blazor.AceEditorJs
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
-@using Report_App_WASM.Shared.Extensions;
+@using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
+@using Blazor.AceEditorJs
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -20,9 +20,9 @@
     <MudCardContent>
         <MudGrid>
             <MudItem xs="12" md="6">
-                @if (!string.IsNullOrEmpty(_errorMessage))
+                @if (!string.IsNullOrEmpty(_queryTestResult))
                 {
-                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
                 }
                 <MudButton Disabled="@_loading" OnClick="GetTablesList" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
                     @if (_loading)
@@ -183,9 +183,8 @@
     MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     private List<Dictionary<string, object>>? _values = new();
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
-    private string? _errorMessage;
     private string? _queryTestResult { get; set; }
-    private string _SelectedTable;
+    private string _SelectedTable = string.Empty;
 
 
     protected override async Task OnParametersSetAsync()
@@ -226,7 +225,7 @@
         _loading = true;
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
         TableNames = data!.Values;
-        TableNamesStored = data!.Values;
+        TableNamesStored = data.Values;
         _hasDesc = data.HasDescription;
         _loading = false;
     }
@@ -238,7 +237,7 @@
         _SelectedTable = table;
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={table}", _cts.Token);
         ColNames = data!.Values;
-        ColNamesStored = data!.Values;
+        ColNamesStored = data.Values;
         _hasDescCol = data.HasDescription;
         _loading = false;
     }
@@ -344,6 +343,6 @@
                 _queryTestResult = ex.Message;
             }
         }
-        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 }

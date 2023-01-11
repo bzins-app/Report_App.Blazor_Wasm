@@ -13,6 +13,7 @@ using Report_App_WASM.Shared.ApiExchanges;
 using Report_App_WASM.Shared.DTO;
 using Report_App_WASM.Shared.Extensions;
 using Report_App_WASM.Shared.RemoteQueryParameters;
+using System.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -62,8 +63,12 @@ namespace Report_App_WASM.Server.Controllers
                 if (values.CalculateTotalElements)
                 {
                     var originalQuery = values.Values.QueryToRun;
-                    var query = await GetQueryTotal(values.Values.ActivityId, values.Values.QueryToRun);
-                    values.Values.QueryToRun = query;
+                    if (values.Values.QueryToRun != null)
+                    {
+                        var query = await GetQueryTotal(values.Values.ActivityId, values.Values.QueryToRun);
+                        values.Values.QueryToRun = query;
+                    }
+
                     var dataTotal = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
                     values.Values.QueryToRun = originalQuery;
                     if (dataTotal != null)
@@ -126,7 +131,7 @@ namespace Report_App_WASM.Server.Controllers
             try
             {
                 _logger.LogInformation("Grid extraction: Start " + values.FileName, values.FileName);
-                var items = await _remoteDb.RemoteDbToDatableAsync(values!, ct);
+                var items = await _remoteDb.RemoteDbToDatableAsync(values, ct);
                 var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
                 var file = CreateFile.ExcelFromDatable(fileName, new ExcelCreationDatatable(values.FileName, new(), items));
@@ -152,7 +157,7 @@ namespace Report_App_WASM.Server.Controllers
                 { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, UseDescriptionsFromAnotherActivity = a.UseDescriptionsFromAnotherActivity, ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id })
+                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, a.UseDescriptionsFromAnotherActivity, ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id })
                     .FirstOrDefaultAsync(cancellationToken: ct);
 
                 var tables = data.AsEnumerable()
@@ -194,7 +199,7 @@ namespace Report_App_WASM.Server.Controllers
                 { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, UseDescriptionsFromAnotherActivity = a.UseDescriptionsFromAnotherActivity, ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id })
+                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new { tableDesc = a.UseTablesDescriptions, a.UseDescriptionsFromAnotherActivity, ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id })
                     .FirstOrDefaultAsync(cancellationToken: ct);
 
                 if (data.Rows.Count > 0)
@@ -206,10 +211,10 @@ namespace Report_App_WASM.Server.Controllers
                     {
                         if ((description.tableDesc || description.UseDescriptionsFromAnotherActivity) && await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table).AnyAsync(cancellationToken: ct))
                         {
-                            var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty, IsSnippet = a.IsSnippet }).ToListAsync();
+                            var desc = await _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table).AsNoTracking().Select(a => new { Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty, a.IsSnippet }).ToListAsync();
                             if (desc != null)
                             {
-                                listCols.Values.AddRange(desc.Where(a => a.IsSnippet).Select(a => new DescriptionValues { Name = a.Name, Description = a.Desciption, IsSnippet = true }).ToList());
+                                listCols.Values.AddRange(desc.Where(a => a.IsSnippet).Select(a => new DescriptionValues { Name = a.Name!, Description = a.Desciption, IsSnippet = true }).ToList());
                                 listCols.HasDescription = true;
                                 foreach (var col in cols.Distinct())
                                 {
@@ -220,7 +225,7 @@ namespace Report_App_WASM.Server.Controllers
                             {
                                 foreach (var col in cols.Distinct())
                                 {
-                                    listCols.Values.Add(new DescriptionValues { Name = col });
+                                    if (col != null) listCols.Values.Add(new DescriptionValues { Name = col });
                                     listCols.HasDescription = false;
                                 }
                             }
@@ -230,7 +235,7 @@ namespace Report_App_WASM.Server.Controllers
                         {
                             foreach (var col in cols.Distinct())
                             {
-                                listCols.Values.Add(new DescriptionValues { Name = col });
+                                if (col != null) listCols.Values.Add(new DescriptionValues { Name = col });
                             }
                         }
 
