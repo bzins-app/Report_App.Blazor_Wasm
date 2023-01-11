@@ -3,7 +3,7 @@
     public class QueryCommandParameter
     {
         public string DisplayName { get; set; } = string.Empty;
-        public int DisplaySequence{ get; set; } = 99;
+        public int DisplaySequence { get; set; } = 99;
         public string ParameterIdentifier { get; set; } = string.Empty;
         public QueryCommandParameterValueType ValueType { get; set; }
         public CalulatedDateOption DateOption { get; set; }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +12,6 @@ using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
 using System.Globalization;
 using System.Text.Json;
-using CsvHelper;
-using CsvHelper.Configuration;
-using Report_App_WASM.Shared.Extensions;
-using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Report_App_WASM.Server.Controllers
 {
@@ -508,11 +506,11 @@ namespace Report_App_WASM.Server.Controllers
             var user = await _userManager.FindByNameAsync(item.UserName!);
             if (user != null)
             {
-                UserSavedConfiguration config = new UserSavedConfiguration {SaveName = item.EntityValue.SaveName, IdIntConfiguration = item.EntityValue.IdIntConfiguration, TypeConfiguration = item.EntityValue.TypeConfiguration, SavedValues = item.EntityValue.SavedValues, UserId = user.Id.ToString()};
+                UserSavedConfiguration config = new UserSavedConfiguration { SaveName = item.EntityValue.SaveName, IdIntConfiguration = item.EntityValue.IdIntConfiguration, TypeConfiguration = item.EntityValue.TypeConfiguration, SavedValues = item.EntityValue.SavedValues, UserId = user.Id.ToString() };
                 return Ok(await InsertEntity(config, item.UserName!));
             }
 
-            return Ok(new SubmitResult{Success = false,Message = "User not found"});
+            return Ok(new SubmitResult { Success = false, Message = "User not found" });
         }
 
         [HttpPost]
@@ -521,7 +519,7 @@ namespace Report_App_WASM.Server.Controllers
             var user = await _userManager.FindByNameAsync(item.UserName!);
             if (user != null)
             {
-                var config = await _context.UserSavedConfiguration.Where(a => a.Id == item.EntityValue.Id&&a.UserId==user.Id.ToString())
+                var config = await _context.UserSavedConfiguration.Where(a => a.Id == item.EntityValue.Id && a.UserId == user.Id.ToString())
                     .FirstOrDefaultAsync();
                 if (config != null)
                 {
@@ -540,9 +538,9 @@ namespace Report_App_WASM.Server.Controllers
 
             if (user != null)
             {
-                return  await _context.UserSavedConfiguration
+                return await _context.UserSavedConfiguration
                     .Where(a => a.IdIntConfiguration == IdIntConfiguration && a.UserId == user.Id.ToString())
-                    .Select(a => new UserConfigurations {SaveName = a.SaveName, Id = a.Id, IdIntConfiguration = a.IdIntConfiguration, TypeConfiguration = a.TypeConfiguration, SavedValues = a.SavedValues, Parameters = a.Parameters, IdStringConfiguration = a.IdStringConfiguration}).ToListAsync();
+                    .Select(a => new UserConfigurations { SaveName = a.SaveName, Id = a.Id, IdIntConfiguration = a.IdIntConfiguration, TypeConfiguration = a.TypeConfiguration, SavedValues = a.SavedValues, Parameters = a.Parameters, IdStringConfiguration = a.IdStringConfiguration }).ToListAsync();
             }
 
             return new List<UserConfigurations>();
@@ -566,11 +564,11 @@ namespace Report_App_WASM.Server.Controllers
                         Delimiter = ";"
                     };
 
-                    var records=new List<TableDescriptionCSV>();
+                    var records = new List<TableDescriptionCSV>();
                     using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}"))
                     using (var csv = new CsvReader(reader, config))
                     {
-                         records = csv.GetRecords<TableDescriptionCSV>().ToList();
+                        records = csv.GetRecords<TableDescriptionCSV>().ToList();
 
                     }
 
@@ -610,19 +608,14 @@ namespace Report_App_WASM.Server.Controllers
                     _descriptions.Clear();
                     return Ok(new SubmitResult { Success = true });
                 }
-                else
-                {
-                    return Ok(new SubmitResult { Success = false, Message = "No file path" });
-                }
+
+                return Ok(new SubmitResult { Success = false, Message = "No file path" });
 
             }
             catch (Exception e)
             {
                 return Ok(new SubmitResult { Success = false, Message = e.Message });
             }
-
-
-            return Ok();
         }
 
         private class TableDescriptionCSV

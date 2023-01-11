@@ -185,7 +185,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                     script = $"SELECT table_name FROM all_tables where owner='{dbInfo.DbSchema}' order by 1";
                 else
                 {
-                    script = $"SELECT table_name FROM all_tables order by 1";
+                    script = "SELECT table_name FROM all_tables order by 1";
                 }
             }
             else if (dbInfo.TypeDb == TypeDb.SqlServer)
@@ -194,7 +194,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                     script = $"SELECT table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1";
                 else
                 {
-                    script = $"SELECT table_name FROM information_schema.tables order by 1";
+                    script = "SELECT table_name FROM information_schema.tables order by 1";
                 }
             }
 
@@ -213,17 +213,17 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                     script = $"SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS where owner='{dbInfo.DbSchema}' order by 1,2";
                 else
                 {
-                    script = $"SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS order by 1,2";
+                    script = "SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS order by 1,2";
                 }
             }
             else if (dbInfo.TypeDb == TypeDb.SqlServer)
             {
                 if (dbInfo.UseDbSchema)
-                    script = $"select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
+                    script = "select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
                              $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and table.TABLE_CATALOG='{dbInfo.DbSchema}' order by 1 ,2";
                 else
                 {
-                    script = $"select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id ";
+                    script = "select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id ";
                 }
 
             }
@@ -332,7 +332,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             conValue.CommandTimeOut = data.CommandTimeOut;
             conValue.CommandFetchSize = data.CommandFetchSize;
 
-            conValue!.Password = EncryptDecrypt.DecryptString(conValue.Password);
+            conValue.Password = EncryptDecrypt.DecryptString(conValue.Password);
 
             return CreateConnectionString(conValue);
         }

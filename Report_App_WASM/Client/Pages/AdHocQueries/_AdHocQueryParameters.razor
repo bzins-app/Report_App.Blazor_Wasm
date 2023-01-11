@@ -107,7 +107,10 @@
     public async Task UpdateParameters()
     {
         await Task.Delay(60);//Ensure binding is done prior to serialize
-        _parameters?.ForEach(a => a.ParameterIdentifier = a.ParameterIdentifier.RemoveSpecialCharacters());
+        _parameters?.ForEach(a =>
+        {
+            if (a != null) a.ParameterIdentifier = a.ParameterIdentifier.RemoveSpecialCharacters();
+        });
         Item!.QueryParameters = JsonSerializer.Serialize(_parameters);
         await ValueChanged.InvokeAsync(true);
     }

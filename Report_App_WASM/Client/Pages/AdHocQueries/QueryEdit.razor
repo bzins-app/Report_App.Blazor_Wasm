@@ -1,13 +1,13 @@
 ﻿@page "/QueryEdit/{QueryId:int}"
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
-@using Blazor.AceEditorJs
-@using MudBlazor.Utilities
-@using Report_App_WASM.Shared.Extensions
-@using Report_App_WASM.Shared.RemoteQueryParameters
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
 @inject HttpClient Http
+@using Report_App_WASM.Shared.Extensions
+@using Report_App_WASM.Shared.RemoteQueryParameters
+@using Blazor.AceEditorJs
+@using MudBlazor.Utilities
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -358,7 +358,7 @@
             }
         }
         _loading = false;
-        return new TableData<Dictionary<string, object>.ValueCollection>() { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 
     void CancelQuery()

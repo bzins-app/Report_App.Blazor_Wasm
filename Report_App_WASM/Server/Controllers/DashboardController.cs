@@ -86,8 +86,8 @@ namespace Report_App_WASM.Server.Controllers
         public async Task<List<StorageData>> GetStorageInfoAsync()
         {
             return await _context.ApplicationLogReportResult.Where(a => a.CreatedAt > DateTime.Today.AddDays(-10) && a.IsAvailable && !a.Error)
-                .GroupBy(a=>a.ReportName)
-                .Select(a=> new StorageData {ReportName=a.Key, FileSizeInMb=a.Sum(b=>b.FileSizeInMb) })
+                .GroupBy(a => a.ReportName)
+                .Select(a => new StorageData { ReportName = a.Key, FileSizeInMb = a.Sum(b => b.FileSizeInMb) })
                 .ToListAsync();
         }
 
