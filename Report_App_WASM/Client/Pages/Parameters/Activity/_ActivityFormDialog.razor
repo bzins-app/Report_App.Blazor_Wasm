@@ -217,7 +217,7 @@
                        {
                                 <MudSelectItem Value="DbCon.IdDescriptions">@Localizer.Get("Activity name")</MudSelectItem>
                        }
-                            @foreach (var item in _activities.Where(a=>a.ActivityName!=Item.ActivityName))
+                            @foreach (var item in _activities.Where(a=>Item != null && a.ActivityName!=Item.ActivityName))
                        {
                            <MudSelectItem Value="@item.DbConnectionId">@item.ActivityName</MudSelectItem>
                        }

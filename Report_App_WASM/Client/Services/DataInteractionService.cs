@@ -35,7 +35,7 @@ namespace Report_App_WASM.Client.Services
         }
 
 
-        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct =default) where T : class?
+        public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
         {
             var uri = $"{controller}{controllerAction}";
 
@@ -120,7 +120,7 @@ namespace Report_App_WASM.Client.Services
         public async Task ExtractAdHocQuery(RemoteDbCommandParameters values, CancellationToken ct)
         {
             try
-            {                
+            {
                 var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
                 using HttpClient _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
@@ -185,7 +185,7 @@ namespace Report_App_WASM.Client.Services
         {
             try
             {
-                long maxFileSize = 1024 *1024* 20;
+                long maxFileSize = 1024 * 1024 * 20;
                 using var content = new MultipartFormDataContent();
                 var fileContent =
                             new StreamContent(file.OpenReadStream(maxFileSize));

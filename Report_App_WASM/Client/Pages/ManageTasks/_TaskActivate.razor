@@ -5,11 +5,11 @@
 
 @code {
     [Parameter]
-    public TaskHeaderDto Item { get; set; }
+    public TaskHeaderDto Item { get; set; } = new();
 
     private async Task ChangeStatusAsync(bool value)
     {
-        Item!.IsActivated = value;
+        Item.IsActivated = value;
 
         if (Item.IsActivated)
         {

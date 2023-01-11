@@ -12,6 +12,6 @@ namespace Report_App_WASM.Server.Models
         public TypeConfiguration TypeConfiguration { get; set; }
         public int IdIntConfiguration { get; set; }
         public string? IdStringConfiguration { get; set; }
-        public string? SavedValues { get; set;}
+        public string? SavedValues { get; set; }
     }
 }
