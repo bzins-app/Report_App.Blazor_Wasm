@@ -48,10 +48,17 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteDataTransferTable(string? dataTransferTargetTableName)
+        public async Task<IActionResult> DeleteDataTransferTable([FromBody]string dataTransferTargetTableName)
         {
-            await _remoteDb.DeleteTable(dataTransferTargetTableName);
-            return Ok();
+            try
+            {
+                await _remoteDb.DeleteTable(dataTransferTargetTableName);
+                return Ok(new SubmitResult {Success=true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new SubmitResult { Success = false, Message=ex.Message });
+            }
         }
 
         [HttpPost]
