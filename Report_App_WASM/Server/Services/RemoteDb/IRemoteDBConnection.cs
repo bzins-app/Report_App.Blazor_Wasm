@@ -28,7 +28,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
         Task CreateTable(string query);
         Task LoadDatatableToTable(DataTable data, string? targetTable);
         Task<MergeResult> MergeTables(string query);
-        Task DeleteTable(string? tableName);
+        Task DeleteTable(string tableName);
         Task<string> GetAllTablesScript(int activityId);
         Task<string> GetTableColumnInfoScript(int activityId, string tableName);
         Task<string> GetAllTablesAndColumnsScript(int activityId);
@@ -80,13 +80,15 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             return false;
         }
 
-        public async Task DeleteTable(string? tableName)
+        public async Task DeleteTable(string tableName)
         {
+            if(string.IsNullOrEmpty(tableName))
+                throw new ArgumentNullException(nameof(tableName));
             StringBuilder query = new();
             query.Append(
-                 "IF OBJECT_ID (N'" + tableName + "', N'U') IS NOT NULL " +
+                 $"IF OBJECT_ID (N'{tableName}', N'U') IS NOT NULL " +
                 Environment.NewLine +
-                "DROP TABLE " + tableName + ";" + Environment.NewLine +
+                $"DROP TABLE {tableName} ;" + Environment.NewLine +
                 Environment.NewLine);
 
             var activityId = await GetDataTransferActivity();

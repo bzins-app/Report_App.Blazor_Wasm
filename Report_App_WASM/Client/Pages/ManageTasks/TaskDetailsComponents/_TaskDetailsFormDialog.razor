@@ -192,9 +192,9 @@
     private string _queryTestResult = null!;
     private bool _testResult;
     private CancellationTokenSource? _cts;
-/*
+    /*
     private List<string>? _encodingType;
-*/
+    */
     private bool _isDarkMode;
     private AceEditorOptions? _opt;
 
@@ -312,7 +312,7 @@
                 _data = new List<Dictionary<string, object>>();
                 _testResult = false;
             }
-            
+
         }
         catch (Exception ex)
         {
@@ -364,7 +364,15 @@
         if (result != null)
         {
             var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";
-            await Http.PostAsJsonAsync(uri, _param?.DataTransferTargetTableName);
+            var confirm=await Http.PostAsJsonAsync<string>(uri, _param.DataTransferTargetTableName!);
+            if(confirm.IsSuccessStatusCode)
+            {
+                var feedback =await confirm.Content.ReadFromJsonAsync<SubmitResult>();
+                if(!feedback.Success)
+                {
+                    _queryTestResult = feedback.Message!;
+                }
+            }
         }
     }
 
