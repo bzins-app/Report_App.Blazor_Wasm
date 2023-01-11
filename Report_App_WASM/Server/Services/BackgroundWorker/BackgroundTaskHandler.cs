@@ -81,7 +81,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     {
                         _emails = _jobParameters.CustomEmails;
                     }
-                    foreach (var detail in _header.TaskDetails)
+                    foreach (var detail in _header.TaskDetails.OrderBy(a=>a.DetailSequence))
                     {
                         await FetchData(detail);
                         await _context.SaveChangesAsync("backgroundworker");
@@ -105,7 +105,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 }
                 else
                 {
-                    foreach (var detail in _header.TaskDetails)
+                    foreach (var detail in _header.TaskDetails.OrderBy(a=>a.DetailSequence))
                     {
                         ApplicationLogTask log = new() { ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now, JobDescription = detail.QueryName, Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy };
 
