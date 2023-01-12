@@ -28,16 +28,18 @@ namespace Report_App_WASM.Server.Controllers
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public DataCrudController(ILogger<DataCrudController> logger,
             ApplicationDbContext context, IMapper mapper,
-             RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager)
+             RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _logger = logger;
             _context = context;
             _mapper = mapper;
             _roleManager = roleManager;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public void Dispose()
@@ -244,7 +246,7 @@ namespace Report_App_WASM.Server.Controllers
                         if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
                         {
                             await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
-                            // await _SignIn.RefreshSignInAsync(user);
+                             await _signInManager.RefreshSignInAsync(user);
                         }
                     }
                 }
