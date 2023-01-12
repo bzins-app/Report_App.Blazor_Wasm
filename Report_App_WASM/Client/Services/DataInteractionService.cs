@@ -34,13 +34,15 @@ namespace Report_App_WASM.Client.Services
             return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        public event Action<bool>? NotifyNotConnected;
+        public event Action<bool> NotifyNotConnected;
         private bool _alreadyNotified;
 
 
-        private void SendNotification()
+        private async Task SendNotification()
         {
-            NotifyNotConnected?.Invoke(true);
+            Console.WriteLine("notified");
+            NotifyNotConnected.Invoke(true);
+            await Task.CompletedTask;
         }
 
         public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
@@ -56,13 +58,13 @@ namespace Report_App_WASM.Client.Services
                 };
                 var response = await _httpClient.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
                 if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
-                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
                     if (!_alreadyNotified)
                     {
                         _alreadyNotified = true;
-                        SendNotification();
+                        await  SendNotification();
                     }
                 }
                 response.EnsureSuccessStatusCode();
@@ -102,7 +104,7 @@ namespace Report_App_WASM.Client.Services
                     if (!_alreadyNotified)
                     {
                         _alreadyNotified = true;
-                        SendNotification();
+                        await SendNotification();
                     }
                 }
                 response.EnsureSuccessStatusCode();
@@ -128,13 +130,13 @@ namespace Report_App_WASM.Client.Services
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = _httpClient.BaseAddress;
                 var response = await _httpClientLong.PostAsJsonAsync(url, values);
-                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
                     if (!_alreadyNotified)
                     {
                         _alreadyNotified = true;
-                        SendNotification();
+                        await SendNotification();
                     }
                 }
                 if (response.IsSuccessStatusCode)
@@ -164,13 +166,13 @@ namespace Report_App_WASM.Client.Services
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = _httpClient.BaseAddress;
                 var response = await _httpClientLong.PostAsJsonAsync(url, values);
-                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
                     if (!_alreadyNotified)
                     {
                         _alreadyNotified = true;
-                        SendNotification();
+                        await SendNotification();
                     }
                 }
                 if (response.IsSuccessStatusCode)
