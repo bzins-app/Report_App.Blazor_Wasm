@@ -95,7 +95,7 @@
             </MudItem>
             <MudItem xs="12" md="6">
                 <div>
-                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
+                    <MudLoadingButton @bind-Loading="_loadingTestQuery" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
                         <LoadingContent>
                             @Localizer.Get("Processing")
                         </LoadingContent>
