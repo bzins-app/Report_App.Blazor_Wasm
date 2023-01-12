@@ -34,7 +34,7 @@ namespace Report_App_WASM.Client.Services
             return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        public event Action<bool> NotifyNotConnected;
+        public event Action<bool>? NotifyNotConnected;
         private bool _alreadyNotified;
 
 
@@ -193,7 +193,7 @@ namespace Report_App_WASM.Client.Services
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<List<T>>();
+                    return (await response.Content.ReadFromJsonAsync<List<T>>())!;
                 }
 
                 return new List<T>();
@@ -215,9 +215,9 @@ namespace Report_App_WASM.Client.Services
                 {
                     await SendNotification();
                 }
-                if (response != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<T>();
+                    return (await response.Content.ReadFromJsonAsync<T>())!;
                 }
 
                 return value;
