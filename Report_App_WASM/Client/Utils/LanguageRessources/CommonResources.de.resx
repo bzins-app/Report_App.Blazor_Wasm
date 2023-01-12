@@ -1308,7 +1308,16 @@
   <data name="Language" xml:space="preserve">
     <value>Sprache</value>
   </data>
+  <data name="Last day of the month" xml:space="preserve">
+    <value>Letzter Tag des Monats</value>
+  </data>
+  <data name="Last working day of the month" xml:space="preserve">
+    <value>Letzter Arbeitstag des Monats</value>
+  </data>
   <data name="LastOpeningDay" xml:space="preserve">
+    <value>Letzter Öffnungstag</value>
+  </data>
+  <data name="LastOpeningDay1" xml:space="preserve">
     <value>Letzter Öffnungstag</value>
   </data>
   <data name="LastRun" xml:space="preserve">

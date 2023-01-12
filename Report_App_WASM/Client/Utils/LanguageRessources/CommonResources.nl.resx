@@ -1341,7 +1341,16 @@
   <data name="Language" xml:space="preserve">
     <value>Taal</value>
   </data>
+  <data name="Last day of the month" xml:space="preserve">
+    <value>Laatste dag van de maand</value>
+  </data>
+  <data name="Last working day of the month" xml:space="preserve">
+    <value>laatste werkdag van de maand</value>
+  </data>
   <data name="LastOpeningDay" xml:space="preserve">
+    <value>Laatste openingsdag</value>
+  </data>
+  <data name="LastOpeningDay1" xml:space="preserve">
     <value>Laatste openingsdag</value>
   </data>
   <data name="LastRun" xml:space="preserve">
