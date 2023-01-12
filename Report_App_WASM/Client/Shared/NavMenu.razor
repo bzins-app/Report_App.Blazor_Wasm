@@ -31,7 +31,7 @@
                         }
                         @if (context.User.IsInRole("Supervisor"))
                         {
-                            <MudNavLink Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}") Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Manage reports")</MudNavLink>
+                            <MudNavLink Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage reports")</MudNavLink>
                         }
                         <MudNavLink Href="@("RetrieveReports/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve reports")</MudNavLink>
                     </MudNavGroup>
@@ -46,8 +46,8 @@
             {
                 <AuthorizeView Roles=@(t.ActivityName)>
                     <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">
-                        <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}") Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("Queries store")</MudNavLink>
-                        <MudNavLink Href=@($"DbExplorer/{t.ActivityId}/{t.ActivityName}") Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">@Localizer.Get("DB explorer")</MudNavLink>
+                        <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
+                        <MudNavLink Href=@($"DbExplorer/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
                     </MudNavGroup>
                 </AuthorizeView>
             }
