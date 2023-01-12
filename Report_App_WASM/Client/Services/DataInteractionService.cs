@@ -96,7 +96,7 @@ namespace Report_App_WASM.Client.Services
                 };
                 var response = await _httpClientLong.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
                 if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
-                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
                     if (!_alreadyNotified)
