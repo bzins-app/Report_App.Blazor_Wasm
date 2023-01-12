@@ -23,8 +23,8 @@
         </CardHeaderContent>
         <CardHeaderActions>
             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" OnClick="Back">@Localizer.Get("Back")</MudButton>
-            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Warning" OnClick="UpdateValues" Disabled="!_changesToSave">@Localizer.Get("Restore")</MudButton>
-            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveChangeAsync" Disabled="!_changesToSave">@Localizer.Get("Save changes")</MudButton>
+            @*<MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Warning" OnClick="UpdateValues" Disabled="!_changesToSave">@Localizer.Get("Restore")</MudButton>*@
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveChangeAsync" >@Localizer.Get("Save changes")</MudButton>
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
@@ -91,7 +91,7 @@
                     }
                     else
                     {
-                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 75vh" @oninput="@ParametersChange" />
+                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 75vh" />
                     }
                 }
             </MudItem>
@@ -246,6 +246,7 @@
 
     private async Task RunSql()
     {
+        
         if (string.IsNullOrEmpty(Item?.Query))
         {
             _queryTestResult = "query is not set";
@@ -424,6 +425,7 @@
     {
         _changesToSave = true;
     }
+
 
     public void Dispose()
     {

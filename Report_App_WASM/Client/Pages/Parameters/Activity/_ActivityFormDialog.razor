@@ -179,12 +179,12 @@
                                 <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
                                     <ButtonTemplate>
                                         <MudFab HtmlTag="label"
-                                        Color="Color.Primary"
-                                        Icon="@Icons.Material.Filled.UploadFile"
-                                        Label="@Localizer.Get("Select a file")"
-                                        Size="Size.Small"
-                                        Style="text-transform: none"
-                                        for="@context" />
+                                                Color="Color.Primary"
+                                                Icon="@Icons.Material.Filled.UploadFile"
+                                                Label="@Localizer.Get("Select a file")"
+                                                Size="Size.Small"
+                                                Style="text-transform: none"
+                                                for="@context" />
                                     </ButtonTemplate>
                                 </MudFileUpload>
                             </MudItem>
@@ -204,21 +204,26 @@
 
                         }
                     </MudGrid>
-                    <MudSwitch @bind-Checked="DbCon.UseDescriptionsFromAnotherActivity" Label="@(Localizer.Get("Use the same tables descriptions than")+":")" Color="Color.Primary" />
-                    @if (_activities.Any())
-                    {
-                        <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherActivity">
-                            @if (DbCon.IdDescriptions == 0)
+                    <MudGrid>
+                        <MudItem md="6">
+                            <MudSwitch @bind-Checked="DbCon.UseDescriptionsFromAnotherActivity" Label="@(Localizer.Get("Use the same tables descriptions than")+":")" Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem md="6">
+                            @if (_activities.Any())
                             {
-                                <MudSelectItem Value="DbCon.IdDescriptions">@Localizer.Get("Activity name")</MudSelectItem>
+                                <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherActivity">
+                                    @if (DbCon.IdDescriptions == 0)
+                                    {
+                                        <MudSelectItem Value="DbCon.IdDescriptions">@Localizer.Get("Activity name")</MudSelectItem>
+                                    }
+                                    @foreach (var item in _activities.Where(a => Item != null && a.ActivityName != Item.ActivityName))
+                                    {
+                                        <MudSelectItem Value="@item.DbConnectionId">@item.ActivityName</MudSelectItem>
+                                    }
+                                </MudSelect>
                             }
-                            @foreach (var item in _activities.Where(a => Item != null && a.ActivityName != Item.ActivityName))
-                            {
-                                <MudSelectItem Value="@item.DbConnectionId">@item.ActivityName</MudSelectItem>
-                            }
-                        </MudSelect>
-                    }
-
+                        </MudItem>
+                    </MudGrid>
                 </MudPaper>
             }
             @if (Action == CrudAction.Delete)
