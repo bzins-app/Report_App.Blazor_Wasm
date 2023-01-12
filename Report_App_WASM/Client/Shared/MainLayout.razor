@@ -82,6 +82,7 @@
     private void ChangeConnectionStatus(bool value)
     {
         _notConnnectedStatus = value;
+        StateHasChanged();
     }
 
     public void Dispose()
