@@ -120,6 +120,9 @@
   <data name="A report is a process that creates a file based on one or several queries against the database settings configured at the activity level. A report must be scheduled. The file format can be choosen and if need the a deposit path can be defined. A report can be also sent by email." xml:space="preserve">
     <value>Een rapport is een proces dat een bestand aanmaakt op basis van een of meer query's tegen de database-instellingen die op het activiteitenniveau zijn geconfigureerd. Een rapport moet worden ingepland. Het bestandsformaat kan worden gekozen en indien nodig kan een depotpad worden gedefinieerd. Een rapport kan ook per e-mail worden verzonden.</value>
   </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Accepteer</value>
+  </data>
   <data name="Acces failed count" xml:space="preserve">
     <value>Aantal mislukte toegangen</value>
   </data>
@@ -1292,6 +1295,9 @@
   </data>
   <data name="Is visible?" xml:space="preserve">
     <value>Is zichtbaar?</value>
+  </data>
+  <data name="It looks like you are offline or need to log back in" xml:space="preserve">
+    <value>Het lijkt erop dat u offline bent of opnieuw moet inloggen</value>
   </data>
   <data name="items" xml:space="preserve">
     <value>items</value>

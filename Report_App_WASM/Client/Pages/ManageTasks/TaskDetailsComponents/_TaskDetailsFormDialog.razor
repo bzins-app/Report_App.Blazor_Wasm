@@ -27,17 +27,14 @@
                 <MudItem sm="12" md="4" lg="2" Style="padding-right: 10px">
                     <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required />
                     <MudNumericField @bind-Value="Item.DetailSequence" Label="@Localizer.Get("Query sequence")" />
-                    <MudButton Disabled="@_loading" OnClick="OpenTestQuery" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                        @if (_loading)
-                        {
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                            <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                        }
-                        else
-                        {
-                            <MudText>@Localizer.Get("Test query")</MudText>
-                        }
-                    </MudButton>
+                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OpenTestQuery" Variant="Variant.Filled" Color="Color.Primary">
+                        <LoadingContent>
+                            @Localizer.Get("Processing")
+                        </LoadingContent>
+                        <ChildContent>
+                            @Localizer.Get("Test query")
+                        </ChildContent>
+                    </MudLoadingButton>
                     @if (_loading)
                     {
                         <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelTest">@Localizer.Get("Cancel")</MudButton>
@@ -364,11 +361,11 @@
         if (result != null)
         {
             var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";
-            var confirm=await Http.PostAsJsonAsync<string>(uri, _param.DataTransferTargetTableName!);
+            var confirm=await Http.PostAsJsonAsync(uri, _param.DataTransferTargetTableName!);
             if(confirm.IsSuccessStatusCode)
             {
                 var feedback =await confirm.Content.ReadFromJsonAsync<SubmitResult>();
-                if(!feedback.Success)
+                if(feedback != null && !feedback.Success)
                 {
                     _queryTestResult = feedback.Message!;
                 }

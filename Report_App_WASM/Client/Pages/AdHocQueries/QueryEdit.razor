@@ -58,17 +58,14 @@
         }
         <MudGrid>
             <MudItem sm="12" md="6">
-                <MudButton Disabled="@_loading" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium">
-                    @if (_loading)
-                    {
-                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                    }
-                    else
-                    {
-                        <MudText>@Localizer.Get("Test query")</MudText>
-                    }
-                </MudButton>
+                <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
+                    <LoadingContent>
+                        @Localizer.Get("Processing")
+                    </LoadingContent>
+                    <ChildContent>
+                        @Localizer.Get("Test query")
+                    </ChildContent>
+                </MudLoadingButton>
                 @if (_loading)
                 {
                     <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">

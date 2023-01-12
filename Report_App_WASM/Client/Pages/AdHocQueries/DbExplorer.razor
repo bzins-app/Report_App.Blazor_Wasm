@@ -24,17 +24,14 @@
                 {
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
                 }
-                <MudButton Disabled="@_loading" OnClick="GetTablesList" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                    @if (_loading)
-                    {
-                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                    }
-                    else
-                    {
-                        <MudText>@Localizer.Get("Get tables list")</MudText>
-                    }
-                </MudButton>
+                <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="GetTablesList" Variant="Variant.Filled" Color="Color.Primary">
+                    <LoadingContent>
+                        @Localizer.Get("Processing")
+                    </LoadingContent>
+                    <ChildContent>
+                        @Localizer.Get("Get tables list")
+                    </ChildContent>
+                </MudLoadingButton>
                 @if (_loading)
                 {
                     <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
@@ -68,7 +65,7 @@
                     <MudItem lg="5">
                         <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
                             <ToolBarContent>
-                                <MudTextField T="string" ValueChanged="@(s=>OnSearchCols(s))" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                                <MudTextField T="string" ValueChanged="@(OnSearchCols)" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                             </ToolBarContent>
                             <HeaderContent>
                                 <MudTh>@Localizer.Get("Columns"): @_SelectedTable</MudTh>
@@ -98,17 +95,14 @@
             </MudItem>
             <MudItem xs="12" md="6">
                 <div>
-                    <MudButton Disabled="@_loadingTestQuery" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium">
-                        @if (_loadingTestQuery)
-                        {
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                            <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                        }
-                        else
-                        {
-                            <MudText>@Localizer.Get("Test query")</MudText>
-                        }
-                    </MudButton>
+                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
+                        <LoadingContent>
+                            @Localizer.Get("Processing")
+                        </LoadingContent>
+                        <ChildContent>
+                            @Localizer.Get("Test query")
+                        </ChildContent>
+                    </MudLoadingButton>
                     @if (_loadingTestQuery)
                     {
                         <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
