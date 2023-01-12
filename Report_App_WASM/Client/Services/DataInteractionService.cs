@@ -40,8 +40,11 @@ namespace Report_App_WASM.Client.Services
 
         private async Task SendNotification()
         {
-            Console.WriteLine("notified");
-            NotifyNotConnected.Invoke(true);
+            if (!_alreadyNotified)
+            {
+                _alreadyNotified = true;
+                NotifyNotConnected.Invoke(true);
+            }
             await Task.CompletedTask;
         }
 
@@ -58,14 +61,10 @@ namespace Report_App_WASM.Client.Services
                 };
                 var response = await _httpClient.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
                 if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
-                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable||
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
-                    if (!_alreadyNotified)
-                    {
-                        _alreadyNotified = true;
-                        await  SendNotification();
-                    }
+                    await SendNotification();
                 }
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
@@ -98,14 +97,10 @@ namespace Report_App_WASM.Client.Services
                 };
                 var response = await _httpClientLong.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
                 if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
-                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable||
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
-                    if (!_alreadyNotified)
-                    {
-                        _alreadyNotified = true;
-                        await SendNotification();
-                    }
+                    await SendNotification();
                 }
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
@@ -133,11 +128,7 @@ namespace Report_App_WASM.Client.Services
                 if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
-                    if (!_alreadyNotified)
-                    {
-                        _alreadyNotified = true;
-                        await SendNotification();
-                    }
+                    await SendNotification();
                 }
                 if (response.IsSuccessStatusCode)
                 {
@@ -169,11 +160,7 @@ namespace Report_App_WASM.Client.Services
                 if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                     response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
-                    if (!_alreadyNotified)
-                    {
-                        _alreadyNotified = true;
-                        await SendNotification();
-                    }
+                    await SendNotification();
                 }
                 if (response.IsSuccessStatusCode)
                 {
@@ -198,10 +185,15 @@ namespace Report_App_WASM.Client.Services
             var uri = $"{controller}{controllerAction}";
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<T>>(uri);
-                if (response != null)
+                var response = await _httpClient.GetAsync(uri);
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
+                    response.StatusCode == HttpStatusCode.RequestTimeout)
                 {
-                    return response;
+                    await SendNotification();
+                }
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<List<T>>();
                 }
 
                 return new List<T>();
@@ -217,10 +209,15 @@ namespace Report_App_WASM.Client.Services
             var uri = $"{controller}{controllerAction}";
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<T>(uri);
+                var response = await _httpClient.GetAsync(uri);
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.ServiceUnavailable ||
+                    response.StatusCode == HttpStatusCode.RequestTimeout)
+                {
+                    await SendNotification();
+                }
                 if (response != null)
                 {
-                    return response;
+                    return await response.Content.ReadFromJsonAsync<T>();
                 }
 
                 return value;
