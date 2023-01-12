@@ -26,10 +26,11 @@ namespace Report_App_WASM.Server.Controllers
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IBackgroundWorkers _backgroundWorker;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public UserManagerController(ILogger<UserManagerController> logger,
             ApplicationDbContext context, IMapper mapper,
-             RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager, IBackgroundWorkers backgroundWorker)
+             RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager, IBackgroundWorkers backgroundWorker, SignInManager<ApplicationUser> signInManager)
         {
             _logger = logger;
             _context = context;
@@ -37,6 +38,7 @@ namespace Report_App_WASM.Server.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
             _backgroundWorker = backgroundWorker;
+            _signInManager = signInManager;
         }
 
         public void Dispose()
@@ -116,7 +118,7 @@ namespace Report_App_WASM.Server.Controllers
         {
             var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
             var result = await _userManager.AddToRolesAsync(user!, item.EntityValue?.Roles!);
-            // await _SignIn.RefreshSignInAsync(user);
+             await _signInManager.RefreshSignInAsync(user);
             _logger.Log(LogLevel.Warning, $"User {item.EntityValue!.UserName} get new roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles!));
             return Ok(new SubmitResult { Success = result.Succeeded });
         }
@@ -125,7 +127,7 @@ namespace Report_App_WASM.Server.Controllers
         {
             var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
             var result = await _userManager.RemoveFromRolesAsync(user!, item.EntityValue?.Roles!);
-            // await _SignIn.RefreshSignInAsync(user);
+             await _signInManager.RefreshSignInAsync(user);
             _logger.Log(LogLevel.Warning, $"User {item.EntityValue?.UserName} has been removed from roles by {item.UserName} " + string.Join(",", item.EntityValue.Roles!));
             return Ok(new SubmitResult { Success = result.Succeeded });
         }
