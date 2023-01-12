@@ -34,6 +34,14 @@ namespace Report_App_WASM.Client.Services
             return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;// FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
+        public event Action<bool>? NotifyNotConnected;
+        private bool _alreadyNotified;
+
+
+        private void SendNotification()
+        {
+            NotifyNotConnected?.Invoke(true);
+        }
 
         public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
         {
@@ -48,9 +56,19 @@ namespace Report_App_WASM.Client.Services
                 };
                 var response = await _httpClient.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
                 if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
+                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                    response.StatusCode == HttpStatusCode.RequestTimeout)
+                {
+                    if (!_alreadyNotified)
+                    {
+                        _alreadyNotified = true;
+                        SendNotification();
+                    }
+                }
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
+                    _alreadyNotified = false;
                     return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
                 }
 
@@ -78,9 +96,19 @@ namespace Report_App_WASM.Client.Services
                 };
                 var response = await _httpClientLong.PostAsJsonAsync(uri, payload, options, cancellationToken: ct);
                 if (response.StatusCode == HttpStatusCode.BadRequest) throw new Exception(await response.Content.ReadAsStringAsync(ct));
+                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                    response.StatusCode == HttpStatusCode.RequestTimeout)
+                {
+                    if (!_alreadyNotified)
+                    {
+                        _alreadyNotified = true;
+                        SendNotification();
+                    }
+                }
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
+                    _alreadyNotified = false;
                     return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
                 }
                 return new SubmitResult { Success = false };
@@ -100,8 +128,18 @@ namespace Report_App_WASM.Client.Services
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = _httpClient.BaseAddress;
                 var response = await _httpClientLong.PostAsJsonAsync(url, values);
+                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                    response.StatusCode == HttpStatusCode.RequestTimeout)
+                {
+                    if (!_alreadyNotified)
+                    {
+                        _alreadyNotified = true;
+                        SendNotification();
+                    }
+                }
                 if (response.IsSuccessStatusCode)
                 {
+                    _alreadyNotified = false;
                     var downloadresult = await _blazorDownloadFileService.DownloadFile(values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
                     if (downloadresult.Succeeded)
                     {
@@ -126,8 +164,18 @@ namespace Report_App_WASM.Client.Services
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = _httpClient.BaseAddress;
                 var response = await _httpClientLong.PostAsJsonAsync(url, values);
+                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                    response.StatusCode == HttpStatusCode.RequestTimeout)
+                {
+                    if (!_alreadyNotified)
+                    {
+                        _alreadyNotified = true;
+                        SendNotification();
+                    }
+                }
                 if (response.IsSuccessStatusCode)
                 {
+                    _alreadyNotified = false;
                     var downloadresult = await _blazorDownloadFileService.DownloadFile(values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
                     if (downloadresult.Succeeded)
                     {

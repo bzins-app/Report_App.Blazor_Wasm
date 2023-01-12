@@ -45,7 +45,7 @@
                                 <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Margin="Margin.Dense" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense" />
                             </MudItem>
                         </MudGrid>
                         <MudNumericField @bind-Value="DbCon.CommandFetchSize" Label="@Localizer.Get("Command fetch size")" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
@@ -68,7 +68,7 @@
                                 <MudSwitch @bind-Checked="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense" />
                             </MudItem>
                             <MudItem md="6">
                                 <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense" />
@@ -99,10 +99,10 @@
                                 <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense" />
                             </MudItem>
                         </MudGrid>
                     }
@@ -126,18 +126,14 @@
                             <MudNumericField @bind-Value="DbCon.DataTransferMaxNbrofRowsFetched" Label="@(Localizer.Get("DataTransfer")+": "+ Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
                         </MudItem>
                     </MudGrid>
-
-                    <MudButton Disabled="@_loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                        @if (_loading)
-                        {
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                            <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                        }
-                        else
-                        {
-                            <MudText>@Localizer.Get("Test Db connection")</MudText>
-                        }
-                    </MudButton>
+                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
+                        <LoadingContent>
+                            @Localizer.Get("Processing")
+                        </LoadingContent>
+                        <ChildContent>
+                            @Localizer.Get("Test Db connection")
+                        </ChildContent>
+                    </MudLoadingButton>
                     <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
                     <MudPaper Class="pa-2" Outlined="true">
                         <div>
@@ -152,12 +148,12 @@
                                 <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
                                     <ButtonTemplate>
                                         <MudFab HtmlTag="label" Class="pa-4"
-                                                Color="Color.Primary"
-                                                Icon="@Icons.Material.Filled.Image"
-                                                Label="@Localizer.Get("Select activity Logo")"
-                                                Size="Size.Small"
-                                                Style="text-transform: none"
-                                                for="@context" />
+                                            Color="Color.Primary"
+                                            Icon="@Icons.Material.Filled.Image"
+                                            Label="@Localizer.Get("Select activity Logo")"
+                                            Size="Size.Small"
+                                            Style="text-transform: none"
+                                            for="@context" />
                                     </ButtonTemplate>
                                 </MudFileUpload>
                             </MudItem>
@@ -168,36 +164,35 @@
                     </MudPaper>
                 }
             </MudForm>
-            @if (_appConst is {ActivateAdHocQueriesModule: true } && Action == CrudAction.Update)
+            @if (_appConst is { ActivateAdHocQueriesModule: true } && Action == CrudAction.Update)
             {
                 <MudPaper Class="pa-2" Outlined="true">
-                <MudText Class="pa-4">@Localizer.Get("You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering")</MudText>
+                    <MudText Class="pa-4">@Localizer.Get("You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering")</MudText>
                     <MudSwitch @bind-Checked="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
                     <MudGrid>
-                    @if (!_loadingDescription)
-                {
-                    
-                        <MudItem>
-                            <MudLink Class="d-flex pa-4" Href="/images/TablesDescriptionTemplate.csv">@Localizer.Get("Download template")</MudLink>
-                        </MudItem>
-                        <MudItem>
-                            <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
-                                <ButtonTemplate>
-                                    <MudFab HtmlTag="label"
-                                            Color="Color.Primary"
-                                            Icon="@Icons.Material.Filled.UploadFile"
-                                            Label="@Localizer.Get("Select a file")"
-                                            Size="Size.Small"
-                                            Style="text-transform: none"
-                                            for="@context" />
-                                </ButtonTemplate>
-                            </MudFileUpload>
-                        </MudItem>
-                   
-                }
-                @if (_loadingDescription)
-                {
-                    <MudItem>
+                        @if (!_loadingDescription)
+                        {
+                            <MudItem>
+                                <MudLink Class="d-flex pa-4" Href="/images/TablesDescriptionTemplate.csv">@Localizer.Get("Download template")</MudLink>
+                            </MudItem>
+                            <MudItem>
+                                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
+                                    <ButtonTemplate>
+                                        <MudFab HtmlTag="label"
+                                        Color="Color.Primary"
+                                        Icon="@Icons.Material.Filled.UploadFile"
+                                        Label="@Localizer.Get("Select a file")"
+                                        Size="Size.Small"
+                                        Style="text-transform: none"
+                                        for="@context" />
+                                    </ButtonTemplate>
+                                </MudFileUpload>
+                            </MudItem>
+
+                        }
+                        @if (_loadingDescription)
+                        {
+                            <MudItem>
                                 <MudButton Disabled="@_loadingDescription" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
                                     @if (_loadingDescription)
                                     {
@@ -205,24 +200,24 @@
                                         <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
                                     }
                                 </MudButton>
-                    </MudItem>
+                            </MudItem>
 
-                }
-                 </MudGrid>
+                        }
+                    </MudGrid>
                     <MudSwitch @bind-Checked="DbCon.UseDescriptionsFromAnotherActivity" Label="@(Localizer.Get("Use the same tables descriptions than")+":")" Color="Color.Primary" />
-               @if (_activities.Any())
-               {
-                   <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherActivity" >
+                    @if (_activities.Any())
+                    {
+                        <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherActivity">
                             @if (DbCon.IdDescriptions == 0)
-                       {
+                            {
                                 <MudSelectItem Value="DbCon.IdDescriptions">@Localizer.Get("Activity name")</MudSelectItem>
-                       }
-                            @foreach (var item in _activities.Where(a=>Item != null && a.ActivityName!=Item.ActivityName))
-                       {
-                           <MudSelectItem Value="@item.DbConnectionId">@item.ActivityName</MudSelectItem>
-                       }
-                   </MudSelect>
-               }
+                            }
+                            @foreach (var item in _activities.Where(a => Item != null && a.ActivityName != Item.ActivityName))
+                            {
+                                <MudSelectItem Value="@item.DbConnectionId">@item.ActivityName</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
 
                 </MudPaper>
             }
@@ -319,7 +314,7 @@
         {
             return false;
         }
-        Item.ActivityName=Item.ActivityName.Trim();
+        Item.ActivityName = Item.ActivityName.Trim();
         if (_activities.Any(a => a.ActivityName?.ToLower() == Item.ActivityName.ToLower()))
         {
             Localizer.Get("Another activity with the same name already exists");

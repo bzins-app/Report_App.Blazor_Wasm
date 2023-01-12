@@ -120,6 +120,9 @@
   <data name="A report is a process that creates a file based on one or several queries against the database settings configured at the activity level. A report must be scheduled. The file format can be choosen and if need the a deposit path can be defined. A report can be also sent by email." xml:space="preserve">
     <value>Un rapport est un processus qui crée un fichier basé sur une ou plusieurs requêtes par rapport aux paramètres de la base de données configurés au niveau de l'activité. Un rapport doit être planifié. Le format du fichier peut être choisi et, si nécessaire, un chemin de dépôt peut être défini. Un rapport peut également être envoyé par email.</value>
   </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Accepter</value>
+  </data>
   <data name="Acces failed count" xml:space="preserve">
     <value>Nombre d'échecs d'accès</value>
   </data>
@@ -1286,6 +1289,9 @@
   </data>
   <data name="Is visible?" xml:space="preserve">
     <value>Est visible?</value>
+  </data>
+  <data name="It looks like you are offline or need to log back in" xml:space="preserve">
+    <value>Il semble que vous soyez hors ligne ou que vous deviez vous reconnecter.</value>
   </data>
   <data name="items" xml:space="preserve">
     <value>éléments</value>

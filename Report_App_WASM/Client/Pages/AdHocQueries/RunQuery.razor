@@ -57,18 +57,15 @@
                 </MudForm>
             }
             <div class="d-flex align-center justify-space-between">
-                <div>
-                    <MudButton Disabled="@_loading" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                        @if (_loading)
-                        {
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
-                            <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                        }
-                        else
-                        {
-                            <MudText>@Localizer.Get("Run the query")</MudText>
-                        }
-                    </MudButton>
+                <div>        
+                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary">
+                        <LoadingContent>
+                            @Localizer.Get("Processing")
+                        </LoadingContent>
+                        <ChildContent>
+                            @Localizer.Get("Run the query")
+                        </ChildContent>
+                    </MudLoadingButton>
                     @if (_loading)
                     {
                         <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">

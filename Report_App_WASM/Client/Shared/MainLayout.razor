@@ -1,6 +1,7 @@
 ﻿@using Report_App_WASM.Client.Shared.Theme
 @inherits LayoutComponentBase
 @inject IJSRuntime JsInterop
+@implements IDisposable
 @attribute [Authorize]
 
 <MudThemeProvider IsDarkMode="_isDarkMode" Theme="_appTheme" />
@@ -35,6 +36,13 @@
             @Body
         </MudContainer>
     </MudMainContent>
+    <MudPopup Open="_notConnnectedStatus" Color="Color.Secondary" Text="@Localizer.Get("It looks like you are offline or need to log back in")" Icon="@Icons.Material.Filled.Info" PopupPosition="PopupPosition.Bottom" Padding="0" EnableAnimation="true">
+        <ActionContent>
+                <div>
+                <MudButton Variant="Variant.Filled" OnClick="@(() => _notConnnectedStatus = false)">@Localizer.Get("Accept")</MudButton>
+                </div>
+            </ActionContent>
+        </MudPopup>
 </MudLayout>
 @code{
     readonly MudTheme _appTheme = ApplicationTheme.ApplicationMudTheme();
@@ -42,11 +50,13 @@
     private bool _isDarkMode;
     public bool DrawerOpen = true;
     private ApplicationConstantsValues? _appConst;
+    private bool _notConnnectedStatus;
 
     protected override async Task OnInitializedAsync()
     {
         _appConst = await AppService.GetApplicationConstantsValues();
         _isDarkMode=UserAppTheme.DarkTheme;
+        DataService.NotifyNotConnected += ChangeConnectionStatus;
     }
 
     void DrawerToggle()
@@ -66,5 +76,16 @@
         {
             await JsInterop.InvokeVoidAsync("AppTheme.set", "Dark");
         }
+    }
+
+
+    private void ChangeConnectionStatus(bool value)
+    {
+        _notConnnectedStatus = value;
+    }
+
+    public void Dispose()
+    {
+        DataService.NotifyNotConnected -= ChangeConnectionStatus;
     }
 }
