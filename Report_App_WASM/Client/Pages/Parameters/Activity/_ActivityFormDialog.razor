@@ -1,4 +1,8 @@
-﻿<MudDialog>
+﻿@using BlazorDownloadFile
+@inject IBlazorDownloadFileService _blazorDownloadFileService
+@inject HttpClient Http
+
+<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@(Action switch
@@ -173,10 +177,20 @@
                             <MudSwitch @bind-Checked="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
                         </MudItem>
                         <MudItem>
-
+                            @if (DbCon.UseTablesDescriptions)
+                            {
+                                <MudLoadingButton @bind-Loading="_extractDescriptions" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
+                                    <LoadingContent>
+                                        @Localizer.Get("Processing")
+                                    </LoadingContent>
+                                    <ChildContent>
+                                        @Localizer.Get("ExtractValues")
+                                    </ChildContent>
+                                </MudLoadingButton>
+                            }
                         </MudItem>
                     </MudGrid>
-                    
+
                     <MudGrid>
                         @if (!_loadingDescription)
                         {
@@ -187,12 +201,12 @@
                                 <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
                                     <ButtonTemplate>
                                         <MudFab HtmlTag="label"
-                                                Color="Color.Primary"
-                                                Icon="@Icons.Material.Filled.UploadFile"
-                                                Label="@Localizer.Get("Select a file")"
-                                                Size="Size.Small"
-                                                Style="text-transform: none"
-                                                for="@context" />
+                                        Color="Color.Primary"
+                                        Icon="@Icons.Material.Filled.UploadFile"
+                                        Label="@Localizer.Get("Select a file")"
+                                        Size="Size.Small"
+                                        Style="text-transform: none"
+                                        for="@context" />
                                     </ButtonTemplate>
                                 </MudFileUpload>
                             </MudItem>
@@ -259,6 +273,7 @@
     private ApplicationConstantsValues? _appConst;
     private bool _loading;
     private bool _loadingDescription;
+    private bool _extractDescriptions;
 
     private void Cancel()
     {
@@ -368,4 +383,22 @@
         }
         _loadingDescription = false;
     }
+
+    private async Task ExtractDescriptionsAsync()
+    {
+        _extractDescriptions = true;
+        var uri = $"{ApiControllers.RemoteDbApi}ExtractDbDescriptions";
+        int DbconectId = DbCon.UseDescriptionsFromAnotherActivity ? DbCon.IdDescriptions : DbCon.Id;
+        var response = await Http.PostAsJsonAsync(uri, DbconectId);
+        if (response.IsSuccessStatusCode)
+        {
+            var downloadresult = await _blazorDownloadFileService.DownloadFile("Db descriptions " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx", await response.Content.ReadAsByteArrayAsync(), contentType: "application/octet-stream");
+            if (downloadresult.Succeeded)
+            {
+                response.Dispose();
+            }
+        }
+        _extractDescriptions = false;
+    }
+
 }
