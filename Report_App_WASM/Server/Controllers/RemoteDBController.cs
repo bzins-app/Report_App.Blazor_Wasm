@@ -130,7 +130,7 @@ namespace Report_App_WASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<FileResult?> ExtractDbDscriptionsAsync([FromBody] int DbconnectionID, CancellationToken ct)
+        public async Task<FileResult?> ExtractDbDescriptionsAsync([FromBody] int DbconnectionID, CancellationToken ct)
         {
             try
             {
