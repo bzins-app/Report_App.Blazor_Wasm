@@ -82,7 +82,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
 
         public async Task DeleteTable(string tableName)
         {
-            if(string.IsNullOrEmpty(tableName))
+            if (string.IsNullOrEmpty(tableName))
                 throw new ArgumentNullException(nameof(tableName));
             StringBuilder query = new();
             query.Append(
@@ -199,6 +199,15 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                     script = "SELECT table_name FROM information_schema.tables order by 1";
                 }
             }
+            else if (dbInfo.TypeDb == TypeDb.MySql || dbInfo.TypeDb == TypeDb.MariaDb)
+            {
+                script = @$"SELECT  
+                       TABLE_NAME
+                    FROM 
+                        information_schema.TABLES 
+                    WHERE 
+                        TABLE_SCHEMA='{dbInfo.DbSchema}'  AND  TABLE_TYPE ='BASE TABLE';";
+            }
 
             return script;
         }
@@ -228,6 +237,18 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                     script = "select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id ";
                 }
 
+            }
+            else if (dbInfo.TypeDb == TypeDb.MySql || dbInfo.TypeDb == TypeDb.MariaDb)
+            {
+                script = @$"select 
+                            tab.table_name as table_name,
+                            col.column_name as column_name
+                        from information_schema.tables as tab
+                            inner join information_schema.columns as col
+                                on col.table_schema = tab.table_schema
+                                and col.table_name = tab.table_name
+                        where tab.table_type = 'BASE TABLE'
+                            and tab.table_schema ='{dbInfo.DbSchema}'";
             }
 
             return script;

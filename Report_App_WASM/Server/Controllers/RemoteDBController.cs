@@ -139,10 +139,32 @@ namespace Report_App_WASM.Server.Controllers
             {
                 _logger.LogInformation("Grid extraction: Start " + values.FileName, values.FileName);
                 var items = await _remoteDb.RemoteDbToDatableAsync(values, ct);
-                var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
+                var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
 
                 var file = CreateFile.ExcelFromDatable(fileName, new ExcelCreationDatatable(values.FileName, new(), items));
                 _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines", $" {fileName} {items.Rows.Count} lines");
+                return File(file.FileContents, contentType: file.ContentType, file.FileDownloadName);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return null!;
+            }
+        }
+
+        [HttpPost]
+        public async Task<FileResult?> ExtractDbDscriptionsAsync([FromBody] int DbconnectionID, CancellationToken ct)
+        {
+            try
+            {
+                string fileDesc= "Db Description";
+                _logger.LogInformation("Db Description extraction: Start ", fileDesc);
+                var values = _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == DbconnectionID);                
+                var fileName = fileDesc + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+
+                var file = CreateFile.ExcelFromCollection(fileName, fileDesc, await values.ToListAsync(ct));
+                _logger.LogInformation($"Grid extraction: End {fileName}", $" {fileName}");
                 return File(file.FileContents, contentType: file.ContentType, file.FileDownloadName);
 
             }

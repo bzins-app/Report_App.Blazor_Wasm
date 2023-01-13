@@ -168,7 +168,15 @@
             {
                 <MudPaper Class="pa-2" Outlined="true">
                     <MudText Class="pa-4">@Localizer.Get("You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering")</MudText>
-                    <MudSwitch @bind-Checked="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
+                    <MudGrid>
+                        <MudItem>
+                            <MudSwitch @bind-Checked="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
+                        </MudItem>
+                        <MudItem>
+
+                        </MudItem>
+                    </MudGrid>
+                    
                     <MudGrid>
                         @if (!_loadingDescription)
                         {

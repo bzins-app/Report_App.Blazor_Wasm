@@ -588,7 +588,7 @@ namespace Report_App_WASM.Server.Controllers
                     };
 
                     var records = new List<TableDescriptionCSV>();
-                    using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}"))
+                    using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}",true))
                     using (var csv = new CsvReader(reader, config))
                     {
                         records = csv.GetRecords<TableDescriptionCSV>().ToList();
