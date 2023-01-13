@@ -206,7 +206,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                     FROM 
                         information_schema.TABLES 
                     WHERE 
-                        TABLE_SCHEMA='{dbInfo.DbSchema}'  AND  TABLE_TYPE ='BASE TABLE';";
+                        TABLE_SCHEMA='{dbInfo.DbSchema}'  AND  TABLE_TYPE ='BASE TABLE' order by 1;";
             }
 
             return script;
@@ -248,7 +248,7 @@ namespace Report_App_WASM.Server.Services.RemoteDb
                                 on col.table_schema = tab.table_schema
                                 and col.table_name = tab.table_name
                         where tab.table_type = 'BASE TABLE'
-                            and tab.table_schema ='{dbInfo.DbSchema}'";
+                            and tab.table_schema ='{dbInfo.DbSchema}' order by 1";
             }
 
             return script;
@@ -272,6 +272,18 @@ namespace Report_App_WASM.Server.Services.RemoteDb
             {
                 script = $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  where tab.name='{tableName}'";
             }
+            else if (dbInfo.TypeDb == TypeDb.MySql || dbInfo.TypeDb == TypeDb.MariaDb)
+            {
+                script = @$"select 
+                            col.column_name as column_name
+                        from information_schema.tables as tab
+                            inner join information_schema.columns as col
+                                on col.table_schema = tab.table_schema
+                                and col.table_name = tab.table_name
+                        where tab.table_type = 'BASE TABLE' and tab.table_name='{tableName}'
+                            and tab.table_schema ='{dbInfo.DbSchema}'";
+            }
+
 
             return script;
         }
