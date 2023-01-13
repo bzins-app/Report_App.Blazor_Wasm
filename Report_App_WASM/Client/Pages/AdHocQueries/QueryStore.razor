@@ -50,12 +50,14 @@
                         <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
                     </TemplateColumn>
                     <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-
-                    @*                    <TemplateColumn Title="@Localizer.Get("Duplicate")">
-                        <CascadingValue Value="@_grid">
-                            <_TaskDuplicateForm Item="context" />
-                        </CascadingValue>
-                    </TemplateColumn>*@
+                    @if (_UserIsSupervisor)
+                    {
+                        <TemplateColumn Title="@Localizer.Get("Duplicate")">
+                            <CascadingValue Value="@_grid">
+                                <_QueryStoreDuplicateForm Item="context" />
+                            </CascadingValue>
+                        </TemplateColumn>
+                    }
                     <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>

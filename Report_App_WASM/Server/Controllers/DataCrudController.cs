@@ -77,6 +77,27 @@ namespace Report_App_WASM.Server.Controllers
             return await _context.QueryStore.Include(a => a.Activity).Where(a => a.Id == queryId).FirstOrDefaultAsync();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DuplicateQueryStore(ApiCrudPayload<DuplicateQueryStore> values)
+        {
+            QueryStore _newQuery = new QueryStore { QueryName=values.EntityValue.Name};
+            var queryToDuplicate = await _context.QueryStore.Include(a=>a.Activity).FirstAsync(a => a.Id == values.EntityValue.QueryId);
+            if(queryToDuplicate != null)
+            {
+                _newQuery.Query = queryToDuplicate.Query;
+                _newQuery.QueryParameters = queryToDuplicate.QueryParameters;
+                _newQuery.Parameters = queryToDuplicate.Parameters;
+                _newQuery.IdActivity = queryToDuplicate.Id;
+                _newQuery.Activity = queryToDuplicate.Activity;
+
+                return Ok(await InsertEntity(_newQuery, values.UserName!));
+            }
+            else
+            {
+                return Ok(new SubmitResult { Success = false, Message = "Object not found" });
+            }
+        }
+
         [HttpGet]
         public async Task<Activity> GetDataTransferInfoAsync()
         {
