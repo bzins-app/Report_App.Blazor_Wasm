@@ -41,19 +41,19 @@
                             <MudItem>
                                 @if (t.ValueType == QueryCommandParameterValueType.Date)
                                 {
-                                    <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                                 }
                                 @if (t.ValueType == QueryCommandParameterValueType.DateTime)
                                 {
-                                    <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                                 }
                                 @if (t.ValueType == QueryCommandParameterValueType.Number)
                                 {
-                                    <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                                 }
                                 @if (t.ValueType == QueryCommandParameterValueType.String)
                                 {
-                                    <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                                 }
                             </MudItem>
                         }
@@ -61,13 +61,13 @@
                 </MudForm>
             }
             <div class="d-flex align-center justify-space-between">
-                <div>        
+                <div>
                     <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary">
                         <LoadingContent>
                             <MudText>@Localizer.Get("Processing")</MudText>
                         </LoadingContent>
                         <ChildContent>
-                            <MudText>@Localizer.Get("Run the query")</MudText>                           
+                            <MudText>@Localizer.Get("Run the query")</MudText>
                         </ChildContent>
                     </MudLoadingButton>
                     @if (_loading)
@@ -77,19 +77,19 @@
                         </MudButton>
                     }
                 </div>
-                
+
                 <div>
                     <MudGrid>
                         <MudItem>
                             <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
-                                <MudSelectItem Value="@("Grid")"/>
-                                <MudSelectItem Value="@("pivot")"/>
+                                <MudSelectItem Value="@("Grid")" />
+                                <MudSelectItem Value="@("pivot")" />
                             </MudSelect>
                         </MudItem>
                         <MudItem>
                             <MudIconButton DisableElevation Variant="Variant.Outlined"
                                            OnClick="@(SaveConfiguration)"
-                                           Icon="@Icons.Material.Filled.Save" Title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                                           Icon="@Icons.Material.Filled.Save" Title="@Localizer.Get("Save")" Disabled="!_pivotTable" />
                         </MudItem>
                         <MudItem>
                             <MudMenu DisableElevation Variant="Variant.Outlined"
@@ -98,9 +98,9 @@
                                 <MudList Dense="true" Style="width:160px;padding-bottom: unset!important;padding-top: unset!important">
                                     @foreach (var config in _userConfigs)
                                     {
-                                        <MudListItem Text="@config.SaveName" Dense="true" >
+                                        <MudListItem Text="@config.SaveName" Dense="true">
                                             <NestedList>
-                                                <MudListItem  OnClick="(() => LoadPivotConfig(config.SavedValues))">
+                                                <MudListItem OnClick="(() => LoadPivotConfig(config.SavedValues))">
                                                     @Localizer.Get("Load")
                                                 </MudListItem>
                                                 <MudListItem OnClick="(() => DeleteConfig(config.Id))">
@@ -160,10 +160,7 @@
         }
         else
         {
-            @if (_values.Any())
-            {
-                <PivotTable @ref="_pvt" Value="_values" Style="width:100%;height:65vh;" Culture="@CultureInfo.CurrentCulture.Name" />
-            }
+            <PivotTable @ref="_pvt" Value="_values" Style="width:100%;height:65vh;" Culture="@CultureInfo.CurrentCulture.Name" />
         }
 
     </MudCardContent>
@@ -364,7 +361,7 @@
                 {
                     _hasTotal = false;
                     _values = new List<Dictionary<string, object>>();
-                    _errorMessage=response.Content.ToString();
+                    _errorMessage = response.Content.ToString();
                 }
             }
             catch (Exception ex)
@@ -432,7 +429,7 @@
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
                 var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 30000, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-                var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable=true };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
@@ -444,7 +441,7 @@
                         StateHasChanged();
                         if (_pvt != null)
                         {
-                            var config= await _pvt.GetConfig();
+                            var config = await _pvt.GetConfig();
                             await _pvt.LoadConfig(config);
                         }
                     }
