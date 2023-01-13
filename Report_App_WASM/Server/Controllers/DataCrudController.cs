@@ -87,7 +87,7 @@ namespace Report_App_WASM.Server.Controllers
                 _newQuery.Query = queryToDuplicate.Query;
                 _newQuery.QueryParameters = queryToDuplicate.QueryParameters;
                 _newQuery.Parameters = queryToDuplicate.Parameters;
-                _newQuery.IdActivity = queryToDuplicate.Id;
+                _newQuery.IdActivity = queryToDuplicate.IdActivity;
                 _newQuery.Activity = queryToDuplicate.Activity;
 
                 return Ok(await InsertEntity(_newQuery, values.UserName!));
