@@ -26,10 +26,10 @@
                 }
                 <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="GetTablesList" Variant="Variant.Filled" Color="Color.Primary">
                     <LoadingContent>
-                        @Localizer.Get("Processing")
+                        <MudText>@Localizer.Get("Processing")</MudText>
                     </LoadingContent>
                     <ChildContent>
-                        @Localizer.Get("Get tables list")
+                        <MudText>@Localizer.Get("Get tables list")</MudText>
                     </ChildContent>
                 </MudLoadingButton>
                 @if (_loading)
@@ -97,10 +97,10 @@
                 <div>
                     <MudLoadingButton @bind-Loading="_loadingTestQuery" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
                         <LoadingContent>
-                            @Localizer.Get("Processing")
+                            <MudText>@Localizer.Get("Processing")</MudText>
                         </LoadingContent>
                         <ChildContent>
-                            @Localizer.Get("Test query")
+                            <MudText>@Localizer.Get("Test query")</MudText>
                         </ChildContent>
                     </MudLoadingButton>
                     @if (_loadingTestQuery)

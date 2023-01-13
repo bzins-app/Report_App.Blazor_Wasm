@@ -60,10 +60,10 @@
             <MudItem sm="12" md="6">
                 <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
                     <LoadingContent>
-                        @Localizer.Get("Processing")
+                        <MudText>@Localizer.Get("Processing")</MudText>
                     </LoadingContent>
                     <ChildContent>
-                        @Localizer.Get("Test query")
+                        <MudText>@Localizer.Get("Test query")</MudText>
                     </ChildContent>
                 </MudLoadingButton>
                 @if (_loading)

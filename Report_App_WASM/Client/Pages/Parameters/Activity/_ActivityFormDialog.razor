@@ -132,10 +132,10 @@
                     </MudGrid>
                     <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
                         <LoadingContent>
-                            @Localizer.Get("Processing")
+                            <MudText>@Localizer.Get("Processing")</MudText>
                         </LoadingContent>
                         <ChildContent>
-                            @Localizer.Get("Test Db connection")
+                            <MudText>@Localizer.Get("Test Db connection")</MudText>
                         </ChildContent>
                     </MudLoadingButton>
                     <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
@@ -179,12 +179,12 @@
                         <MudItem>
                             @if (DbCon.UseTablesDescriptions)
                             {
-                                <MudLoadingButton @bind-Loading="_extractDescriptions" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
+                                <MudLoadingButton @bind-Loading="_extractDescriptions" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ExtractDescriptions" Variant="Variant.Filled" Color="Color.Primary">
                                     <LoadingContent>
-                                        @Localizer.Get("Processing")
+                                        <MudText>@Localizer.Get("Processing")</MudText>
                                     </LoadingContent>
                                     <ChildContent>
-                                        @Localizer.Get("ExtractValues")
+                                        <MudText>@Localizer.Get("Extract Values")</MudText>                                     
                                     </ChildContent>
                                 </MudLoadingButton>
                             }
@@ -384,7 +384,7 @@
         _loadingDescription = false;
     }
 
-    private async Task ExtractDescriptionsAsync()
+    private async Task ExtractDescriptions()
     {
         _extractDescriptions = true;
         var uri = $"{ApiControllers.RemoteDbApi}ExtractDbDescriptions";
