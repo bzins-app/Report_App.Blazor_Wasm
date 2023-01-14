@@ -15,11 +15,11 @@
             </div>
         </a>
     </MudText>
-    <MudDivider/>
+    <MudDivider />
     <MudNavLink Href="Home" Style="padding-top: 15px" Icon="@Icons.Material.Outlined.Home">@Localizer.Get("Home")</MudNavLink>
-    <MudNavLink Href="DashboardApp" Icon="@Icons.Material.Outlined.AreaChart">@Localizer.Get("Dashboard")</MudNavLink>
-    @if (_appConst != null && _appConst.ActivateTaskSchedulerModule)
+    @if (_appConst.ActivateTaskSchedulerModule)
     {
+        <MudNavLink Href="DashboardApp" Icon="@Icons.Material.Outlined.AreaChart">@Localizer.Get("Dashboard")</MudNavLink>
         <MudNavGroup Title="@Localizer.Get("Reports")" Icon="@Icons.Material.Outlined.ManageSearch">
             @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
             {
@@ -39,7 +39,7 @@
             }
         </MudNavGroup>
     }
-    @if (_appConst != null && _appConst.ActivateAdHocQueriesModule)
+    @if (_appConst.ActivateAdHocQueriesModule)
     {
         <MudNavGroup Title="@Localizer.Get("Ad hoc queries")" Icon="@Icons.Material.Outlined.Analytics">
             @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
@@ -56,34 +56,41 @@
     <MudNavLink Href="Services" Icon="@Icons.Material.Outlined.DesignServices">@Localizer.Get("Services status")</MudNavLink>
     <AuthorizeView Roles="Admin, Supervisor">
         <Authorized>
-            @if (_appConst != null && _appConst.ActivateTaskSchedulerModule)
+            @if (_appConst.ActivateTaskSchedulerModule)
             {
-                <MudNavGroup Title="@Localizer.Get("Modify tasks")" Icon="@Icons.Material.Outlined.AddTask">
+                <MudNavGroup Title="@Localizer.Get("Tasks overview")" Icon="@Icons.Material.Outlined.AddTask">
                     <MudNavLink Href="TaskManager/Report" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Reports")</MudNavLink>
                     <MudNavLink Href="TaskManager/Alert" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Alerts")</MudNavLink>
                     <MudNavLink Href="TaskManager/DataTransfer" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Data transfer")</MudNavLink>
                 </MudNavGroup>
             }
+            @if (_appConst.ActivateAdHocQueriesModule)
+            {
+                <MudNavLink Href="QueryStoreGlobal" Icon="@Icons.Material.Outlined.AddChart">@Localizer.Get("Adhoc queries overview")</MudNavLink>
+            }
             <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
                 <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
-                <MudNavLink Href="BackgroundTasksLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Background Tasks")</MudNavLink>
-                <MudNavLink Href="QueryExecutionLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Query execution logs")</MudNavLink>
-                <MudNavLink Href="ReportsResultLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Reports Result")</MudNavLink>
+                @if (_appConst.ActivateTaskSchedulerModule)
+                {
+                    <MudNavLink Href="BackgroundTasksLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Background Tasks")</MudNavLink>
+                    <MudNavLink Href="QueryExecutionLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Query execution logs")</MudNavLink>
+                    <MudNavLink Href="ReportsResultLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Reports Result")</MudNavLink>
+                }
                 <MudNavLink Href="EmailSenderLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Email Sender")</MudNavLink>
                 <MudNavLink Href="SystemLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("System")</MudNavLink>
             </MudNavGroup>
             <MudNavGroup Title="@Localizer.Get("Base parameters")" Icon="@Icons.Material.Outlined.SettingsApplications">
                 <MudNavLink Href="ApplicationParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
                 <MudNavLink Href="Activities" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Activities manager")</MudNavLink>
-                <MudNavLink Href="DataTransferParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Data transfer parameters")</MudNavLink>
                 <MudNavLink Href="Smtp" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Smtp configuration")</MudNavLink>
-                @if (_appConst != null && _appConst.WindowsEnv)
+                @if (_appConst.WindowsEnv)
                 {
                     <MudNavLink Href="Ldap" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Ldap configuration")</MudNavLink>
                 }
-                <MudNavLink Href="DepositPath" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Deposit path")</MudNavLink>
-                @if (_appConst != null && _appConst.ActivateTaskSchedulerModule)
+                @if (_appConst.ActivateTaskSchedulerModule)
                 {
+                    <MudNavLink Href="DataTransferParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Data transfer parameters")</MudNavLink>
+                    <MudNavLink Href="DepositPath" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Deposit path")</MudNavLink>
                     <MudNavLink Href="/swagger" Target="_blank" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Swagger")</MudNavLink>
                 }
             </MudNavGroup>
@@ -91,18 +98,21 @@
         </Authorized>
     </AuthorizeView>
     <MudNavLink Href="help" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>
-    <AuthorizeView>
-        <Authorized>
-            @if (context.User.IsInRole("Admin"))
-            {
-                <MudNavLink Href="/Hangfire" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
-            }
-            else
-            {
-                <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
-            }
-        </Authorized>
-    </AuthorizeView>
+    @if (_appConst.ActivateTaskSchedulerModule)
+    {
+        <AuthorizeView>
+            <Authorized>
+                @if (context.User.IsInRole("Admin"))
+                {
+                    <MudNavLink Href="/Hangfire" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
+                }
+                else
+                {
+                    <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
+                }
+            </Authorized>
+        </AuthorizeView>
+    }
 </MudNavMenu>
 <MudDivider Class="mt-auto"></MudDivider>
 <MudNavMenu Class="d-flex justify-space-between pa-4">
@@ -116,11 +126,11 @@
     public bool IsDarkMode { get; set; }
 
     private List<SelectItemActivitiesInfo> _activities = new();
-    private ApplicationConstantsValues? _appConst;
+    private ApplicationConstantsValues _appConst = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _appConst = await AppService.GetApplicationConstantsValues();
+        _appConst = (await AppService.GetApplicationConstantsValues())!;
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 

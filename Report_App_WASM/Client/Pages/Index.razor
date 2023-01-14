@@ -6,7 +6,6 @@
 
 <div class="text-center">
     <h1 class="display-4">@Localizer.Get("Welcome")</h1>
-    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
 </div>
 <MudCard>
     <MudCardContent>
@@ -16,26 +15,52 @@
             {
                 <AuthorizeView Roles=@t.ActivityName>
                     <div>
-                        <hr style="margin-bottom: 15px"/>
+                        <hr style="margin-bottom: 15px" />
                         <h5>@Localizer.Get("You have access to the activity"): @t.ActivityName</h5>
-                        <p>@Localizer.Get("You can download the reports already created and consult the plan of the next report executions.")</p>
+                        @if (_appConst.ActivateTaskSchedulerModule)
+                        {
+                            <p>@Localizer.Get("You can download the reports already created and consult the plan of the next report executions.")</p>
+                        }
                         <MudGrid>
-                            <MudItem sm="6" md="3">
-                                <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId">
-                                    <span class="pcoded-micon">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </span><span class="pcoded-mtext"> @Localizer.Get("Retrieve reports")</span>
-                                </a>
-                            </MudItem>
-                            @if (context.User.IsInRole("Supervisor"))
+                            @if (_appConst.ActivateTaskSchedulerModule)
                             {
-                                <MudItem sm="6" md="3">
-                                    <a class="nav-link" href="TasksPerActivity/Report/@t.ActivityId/@t.ActivityName">
+                                <MudItem sm="3" md="3">
+                                    <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId">
                                         <span class="pcoded-micon">
                                             <i class="fa fa-arrow-right"></i>
-                                        </span><span class="pcoded-mtext"> @Localizer.Get("Manage reports")</span>
+                                        </span><span class="pcoded-mtext">@Localizer.Get("Retrieve reports")</span>
                                     </a>
                                 </MudItem>
+                                @if (context.User.IsInRole("Supervisor"))
+                                {
+                                    <MudItem sm="3" md="3">
+                                        <a class="nav-link" href="TasksPerActivity/Report/@t.ActivityId/@t.ActivityName">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </span><span class="pcoded-mtext">@Localizer.Get("Manage reports")</span>
+                                        </a>
+                                    </MudItem>
+                                }
+                            }
+                            @if (_appConst.ActivateAdHocQueriesModule)
+                            {
+                                <MudItem sm="3" md="3">
+                                    <a class="nav-link" href="/QueryStore/@t.ActivityId/@t.ActivityName">
+                                        <span class="pcoded-micon">
+                                            <i class="fa fa-arrow-right"></i>
+                                        </span><span class="pcoded-mtext">@Localizer.Get("Queries store")</span>
+                                    </a>
+                                </MudItem>
+                                @if (context.User.IsInRole("Supervisor"))
+                                {
+                                    <MudItem sm="3" md="3">
+                                        <a class="nav-link" href="/DbExplorer/@t.ActivityId/@t.ActivityName">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </span><span class="pcoded-mtext">@Localizer.Get("DB explorer")</span>
+                                        </a>
+                                    </MudItem>
+                                }
                             }
                         </MudGrid>
                     </div>
@@ -43,17 +68,9 @@
             }
         }
 
-        @*        <AuthorizeView Roles="toDefine">
-            <div>
-                <hr style="margin-bottom:15px" />
-                <p>@Localizer.Get("Unfortunately, you do not yet have any access")</p>
-                <p>@Localizer.Get("Ask an administrator to grant you rights")</p>
-            </div>
-        </AuthorizeView>*@
-
         <AuthorizeView Roles="Supervisor">
             <div>
-                <hr style="margin-bottom: 15px"/>
+                <hr style="margin-bottom: 15px" />
                 <h5>@Localizer.Get("You have the role"): Supervisor</h5>
                 <p>@Localizer.Get("You can create, edit and delete reports.")</p>
             </div>
@@ -61,7 +78,7 @@
 
         <AuthorizeView Roles="Admin">
             <div>
-                <hr style="margin-bottom: 15px"/>
+                <hr style="margin-bottom: 15px" />
                 <h5>@Localizer.Get("You have the role"): Administrator</h5>
                 <p>@Localizer.Get("You have full access to the general settings.")</p>
             </div>
@@ -72,9 +89,11 @@
 @code {
 
     private List<SelectItemActivitiesInfo> _activities = new();
+    private ApplicationConstantsValues _appConst = new();
 
     protected override async Task OnInitializedAsync()
     {
+        _appConst = (await AppService.GetApplicationConstantsValues())!;
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 

@@ -12,21 +12,24 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudSwitch Checked="@_status.ReportService" Color="Color.Primary"
-                   Label="@Localizer.Get("Report service")"
-                   ThumbIcon="@(_status.ReportService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
-                   ThumbIconColor="@(_status.ReportService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateReportService(value)"/>
-        <MudSwitch Checked="@_status.AlertService" Color="Color.Primary"
-                   Label="@Localizer.Get("Alert service")"
-                   ThumbIcon="@(_status.AlertService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
-                   ThumbIconColor="@(_status.AlertService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateAlertService(value)"/>
-        <MudSwitch Checked="@_status.DataTransferService" Color="Color.Primary"
-                   Label="@Localizer.Get("Data transfer service")"
-                   ThumbIcon="@(_status.DataTransferService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
-                   ThumbIconColor="@(_status.DataTransferService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateDataTransferService(value)"/>
+        @if (_appConst.ActivateTaskSchedulerModule)
+        {
+            <MudSwitch Checked="@_status.ReportService" Color="Color.Primary"
+                       Label="@Localizer.Get("Report service")"
+                       ThumbIcon="@(_status.ReportService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                       ThumbIconColor="@(_status.ReportService ? Color.Success : Color.Error)"
+                       Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateReportService(value)"/>
+            <MudSwitch Checked="@_status.AlertService" Color="Color.Primary"
+                       Label="@Localizer.Get("Alert service")"
+                       ThumbIcon="@(_status.AlertService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                       ThumbIconColor="@(_status.AlertService ? Color.Success : Color.Error)"
+                       Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateAlertService(value)"/>
+            <MudSwitch Checked="@_status.DataTransferService" Color="Color.Primary"
+                       Label="@Localizer.Get("Data transfer service")"
+                       ThumbIcon="@(_status.DataTransferService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                       ThumbIconColor="@(_status.DataTransferService ? Color.Success : Color.Error)"
+                       Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateDataTransferService(value)"/>
+        }
         <MudSwitch Checked="@_status.EmailService"
                    Label="@Localizer.Get("Email service")" Color="Color.Primary"
                    ThumbIcon="@(_status.EmailService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
@@ -44,6 +47,7 @@
 
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+    private ApplicationConstantsValues _appConst = new();
 
     private ServicesStatusDto _status = new();
     private bool _switchDisabled = true;
@@ -56,6 +60,7 @@
             _switchDisabled = false;
         }
         _status = await DataService.GetUniqueValue(_status, "GetServiceStatus");
+        _appConst = (await AppService.GetApplicationConstantsValues())!;
     }
 
     private async Task ActivateReportService(bool value)
