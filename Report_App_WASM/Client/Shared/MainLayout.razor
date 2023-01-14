@@ -1,49 +1,50 @@
-﻿@using Report_App_WASM.Client.Shared.Theme
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @inject IJSRuntime JsInterop
+@using Report_App_WASM.Client.Shared.Theme
 @implements IDisposable
 @attribute [Authorize]
 
-<MudThemeProvider IsDarkMode="_isDarkMode" Theme="_appTheme" />
+<MudThemeProvider IsDarkMode="_isDarkMode" Theme="_appTheme"/>
 <MudDialogProvider FullWidth="true"
                    MaxWidth="MaxWidth.Small"
                    CloseButton="true"
                    DisableBackdropClick="true"
                    Position="DialogPosition.Center"
-                   CloseOnEscapeKey="false" />
-<MudSnackbarProvider />
+                   CloseOnEscapeKey="false"/>
+<MudSnackbarProvider/>
 
 <MudLayout>
     <MudAppBar Color="Color.Surface">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
-        <img src="@_appConst?.ApplicationLogo" alt="@_appConst?.ApplicationName" style="padding-left:10px;max-width: 95%;max-height: 55px;" />
-        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle"/>
+        <img src="@_appConst?.ApplicationLogo" alt="@_appConst?.ApplicationName" style="max-height: 55px; max-width: 95%; padding-left: 10px;"/>
+        <MudSpacer/>
         <MudTooltip Duration="1000" Text="@(_isDarkMode ? Localizer.Get("Switch to Light Theme") : Localizer.Get("Switch to Dark Theme"))">
-            <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Rounded.LightMode : Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(()=>DarkModeChange(!UserAppTheme.DarkTheme))" />
+            <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Rounded.LightMode : Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(() => DarkModeChange(!UserAppTheme.DarkTheme))"/>
         </MudTooltip>
-        <LanguageSwitch />
-        <LoginDisplay />
+        <LanguageSwitch/>
+        <LoginDisplay/>
     </MudAppBar>
     <AuthorizeView>
         <Authorized>
             <MudDrawer @bind-Open="DrawerOpen" Elevation="25" ClipMode="DrawerClipMode.Never">
-                <NavMenu  IsDarkMode="_isDarkMode" />
+                <NavMenu IsDarkMode="_isDarkMode"/>
             </MudDrawer>
         </Authorized>
     </AuthorizeView>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4" Style="padding-bottom:10px">
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4" Style="padding-bottom: 10px">
             @Body
         </MudContainer>
     </MudMainContent>
     <MudPopup Open="_notConnnectedStatus" Color="Color.Secondary" Text="@Localizer.Get("It looks like you are offline or need to log back in")" Icon="@Icons.Material.Filled.Info" PopupPosition="PopupPosition.Bottom" Padding="0" EnableAnimation="true">
         <ActionContent>
-                <div>
+            <div>
                 <MudButton Variant="Variant.Filled" OnClick="@(() => _notConnnectedStatus = false)">@Localizer.Get("Accept")</MudButton>
-                </div>
-            </ActionContent>
-        </MudPopup>
+            </div>
+        </ActionContent>
+    </MudPopup>
 </MudLayout>
+
 @code{
     readonly MudTheme _appTheme = ApplicationTheme.ApplicationMudTheme();
 
@@ -55,7 +56,7 @@
     protected override async Task OnInitializedAsync()
     {
         _appConst = await AppService.GetApplicationConstantsValues();
-        _isDarkMode=UserAppTheme.DarkTheme;
+        _isDarkMode = UserAppTheme.DarkTheme;
         DataService.NotifyNotConnected += ChangeConnectionStatus;
     }
 
@@ -89,4 +90,5 @@
     {
         DataService.NotifyNotConnected -= ChangeConnectionStatus;
     }
+
 }

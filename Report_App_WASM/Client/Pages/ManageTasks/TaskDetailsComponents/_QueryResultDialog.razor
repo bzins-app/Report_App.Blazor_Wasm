@@ -1,12 +1,11 @@
-﻿
-<MudDialog>
+﻿<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             @Localizer.Get("Query Result: max 20 rows")
         </MudText>
     </TitleContent>
     <DialogContent>
-        <_QueryResult Data="@Data" QueryTestResult="@QueryTestResult" TestResult="@TestResult" />
+        <_QueryResult Data="@Data" QueryTestResult="@QueryTestResult" TestResult="@TestResult"/>
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" OnClick="Cancel" Class="px-10">@Localizer.Get("OK")</MudButton>
@@ -14,13 +13,22 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
-    [Parameter] public List<Dictionary<string, object>>? Data { get; set; }
-    [Parameter] public string? QueryTestResult { get; set; }
-    [Parameter] public bool TestResult { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public List<Dictionary<string, object>>? Data { get; set; }
+
+    [Parameter]
+    public string? QueryTestResult { get; set; }
+
+    [Parameter]
+    public bool TestResult { get; set; }
 
     private void Cancel()
     {
         MudDialog?.Cancel();
     }
+
 }

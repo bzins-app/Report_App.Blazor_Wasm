@@ -12,37 +12,39 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudSwitch Checked="@_status.ReportService" Color="Color.Primary" 
+        <MudSwitch Checked="@_status.ReportService" Color="Color.Primary"
                    Label="@Localizer.Get("Report service")"
                    ThumbIcon="@(_status.ReportService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                    ThumbIconColor="@(_status.ReportService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="((bool value)=>ActivateReportService(value))" />
-        <MudSwitch Checked="@_status.AlertService" Color="Color.Primary" 
+                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateReportService(value)"/>
+        <MudSwitch Checked="@_status.AlertService" Color="Color.Primary"
                    Label="@Localizer.Get("Alert service")"
                    ThumbIcon="@(_status.AlertService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                    ThumbIconColor="@(_status.AlertService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="((bool value)=>ActivateAlertService(value))" />
-        <MudSwitch Checked="@_status.DataTransferService" Color="Color.Primary" 
+                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateAlertService(value)"/>
+        <MudSwitch Checked="@_status.DataTransferService" Color="Color.Primary"
                    Label="@Localizer.Get("Data transfer service")"
                    ThumbIcon="@(_status.DataTransferService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                    ThumbIconColor="@(_status.DataTransferService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="((bool value)=>ActivateDataTransferService(value))" />
+                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateDataTransferService(value)"/>
         <MudSwitch Checked="@_status.EmailService"
-                   Label="@Localizer.Get("Email service")" Color="Color.Primary" 
+                   Label="@Localizer.Get("Email service")" Color="Color.Primary"
                    ThumbIcon="@(_status.EmailService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                    ThumbIconColor="@(_status.EmailService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="((bool value)=>ActivateEmailService(value))" />
+                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateEmailService(value)"/>
         <MudSwitch Checked="@_status.CleanerService"
-                   Label="@Localizer.Get("Cleaner service")" Color="Color.Primary" 
+                   Label="@Localizer.Get("Cleaner service")" Color="Color.Primary"
                    ThumbIcon="@(_status.CleanerService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                    ThumbIconColor="@(_status.CleanerService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" CheckedChanged="((bool value)=>ActivateCleanerService(value))" />
+                   Disabled="_switchDisabled" CheckedChanged="(bool value) => ActivateCleanerService(value)"/>
     </MudCardContent>
 </MudCard>
 
 @code {
+
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
     private ServicesStatusDto _status = new();
     private bool _switchDisabled = true;
 
@@ -105,4 +107,5 @@
 
         Snackbar.Add(value ? Localizer.Get("Email service") + " " + Localizer.Get("Service up") : Localizer.Get("Email service") + " " + Localizer.Get("Service down"), value ? Severity.Success : Severity.Warning);
     }
+
 }

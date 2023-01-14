@@ -4,15 +4,17 @@
 <MudCard>
     <MudCardContent>
         <div class="d-flex justify-space-between flex-grow-1 gap-4">
-            <div style="width:300px">
+            <div style="width: 300px">
                 <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none;" Size="Size.Small">@Localizer.Get("Edit email message")</MudButton>
             </div>
-            <MudForm Model="@_email" @ref="_form" Style="width:500px">
+            <MudForm Model="@_email" @ref="_form" Style="width: 500px">
                 <MudAutocomplete T="string" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email"
                                  Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" CoerceText="true" CoerceValue="true" SearchFunc="@SearchEmail"/>
                 <div class="d-flex align-center justify-space-between">
                     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
-                               OnClick="Add">@Localizer.Get("Add recipient")</MudButton>
+                               OnClick="Add">
+                        @Localizer.Get("Add recipient")
+                    </MudButton>
                 </div>
             </MudForm>
         </div>
@@ -24,8 +26,12 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
-                <MudTd DataLabel="@Localizer.Get("Blind copy")"><MudSwitch Checked="@context.Bcc" CheckedChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/></MudTd>
-                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton></MudTd>
+                <MudTd DataLabel="@Localizer.Get("Blind copy")">
+                    <MudSwitch Checked="@context.Bcc" CheckedChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>
+                </MudTd>
             </RowTemplate>
         </MudTable>
     </MudCardContent>
@@ -33,9 +39,15 @@
 
 @code {
 
-    [Parameter] public TaskHeaderDto? Item { get; set; }
-    [Parameter] public bool ChangePending { get; set; }
-    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
+    [Parameter]
+    public TaskHeaderDto? Item { get; set; }
+
+    [Parameter]
+    public bool ChangePending { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ChangePendingChanged { get; set; }
+
     private List<EmailRecipient>? _emails = new();
     List<EmailRecipient> _emailItems = new();
     private TaskEmailRecipientDto _recipients = new();
@@ -108,6 +120,7 @@
 
     private string? _htmlText;
     private bool _displayTagMessage = false;
+
     private async Task OpenTextEditorComponent()
     {
         var typeReport = Item!.Type;
@@ -137,4 +150,5 @@
             return Array.Empty<string>();
         return _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
+
 }

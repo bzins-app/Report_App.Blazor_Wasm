@@ -10,17 +10,19 @@
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
     {
-            <MudText Typo="Typo.subtitle1" Color="Color.Error"><b>@Localizer.Get("An error has occurred"): @_errorMessage</b></MudText>
+        <MudText Typo="Typo.subtitle1" Color="Color.Error">
+            <b>@Localizer.Get("An error has occurred"): @_errorMessage</b>
+        </MudText>
     }
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@Localizer.Get("Users management")</MudText>
-            <MudSpacer />
+            <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
@@ -28,36 +30,36 @@
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow:auto">
+            <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
-                        <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                        <MudStack Row="true">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" Title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.UserName)" Title="@Localizer.Get("Name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Email)" Title="@Localizer.Get("Email")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.EmailConfirmed)" Title="@Localizer.Get("Email confirmed?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.AccessFailedCount)" Title="@Localizer.Get("Acces failed count")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.UserName)" Title="@Localizer.Get("Name")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.Email)" Title="@Localizer.Get("Email")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.EmailConfirmed)" Title="@Localizer.Get("Email confirmed?")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.AccessFailedCount)" Title="@Localizer.Get("Acces failed count")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
                 </SimpleGrid>
             </div>
-            <Paginator Value="@_pagination" FieldsContent="@_translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
 
 
 @code {
-    #nullable enable
+#nullable enable
     GridItemsProvider<ApplicationUserDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
@@ -81,8 +83,8 @@
 
     private async Task<ApiResponse<ApplicationUserDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationUserDto> req)
     {
-        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/Users?";
         if (string.IsNullOrEmpty(odataQuery))
@@ -99,11 +101,13 @@
         }
         catch
         {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
+
     readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Large, FullWidth = true };
+
     private void OpenEditDialog(ApplicationUserDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Update };
@@ -146,11 +150,11 @@
         if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
-            var valueUser = new UserPayload {UserMail=value.Email, Password=value.PasswordHash, UserName=value.UserName };
+            var valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };
             var result = await DataService.PostValues(valueUser, "UserInsert", ApiControllers.UserManagerApi);
             if (result.Success)
             {
-                Snackbar.Add(Localizer.Get("Object added" ), Severity.Success );
+                Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
                 await OnRefresh();
             }
             else
@@ -181,4 +185,5 @@
         await _grid.DisposeAsync();
         GC.SuppressFinalize(this);
     }
+
 }

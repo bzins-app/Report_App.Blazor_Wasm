@@ -1,8 +1,7 @@
-﻿namespace Report_App_WASM.Shared.Dashboard
+﻿namespace Report_App_WASM.Shared.Dashboard;
+
+public class DbLinesQuery
 {
-    public class DbLinesQuery
-    {
-        public DateTime Date { get; init; }
-        public int NbrOfRows { get; init; }
-    }
+    public DateTime Date { get; init; }
+    public int NbrOfRows { get; init; }
 }

@@ -10,7 +10,7 @@
     <MudGrid Spacing="2">
         <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
             <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+                <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of tasks")</MudText>
                     <MudText Typo="Typo.h5">@_metrics.NbrOfTasksExcecutedToday</MudText>
@@ -20,7 +20,7 @@
         </MudItem>
         <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
             <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.Wysiwyg" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+                <MudIcon Icon="@Icons.Material.Filled.Wysiwyg" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Reports")</MudText>
                     <MudText Typo="Typo.h5">@_metrics.NbrOfActiveReports</MudText>
@@ -30,7 +30,7 @@
         </MudItem>
         <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
             <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.Report" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+                <MudIcon Icon="@Icons.Material.Filled.Report" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Alerts")</MudText>
                     <MudText Typo="Typo.h5">@_metrics.NbrOfActiveAlerts</MudText>
@@ -40,7 +40,7 @@
         </MudItem>
         <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
             <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.Inbox" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+                <MudIcon Icon="@Icons.Material.Filled.Inbox" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data transfer")</MudText>
                     <MudText Typo="Typo.h5">@_metrics.NbrOfActiveDataTransfer</MudText>
@@ -50,7 +50,7 @@
         </MudItem>
         <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
             <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.QueryStats" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+                <MudIcon Icon="@Icons.Material.Filled.QueryStats" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of queries")</MudText>
                     <MudText Typo="Typo.h5">@_metrics.NbrOfActiveQueries</MudText>
@@ -60,7 +60,7 @@
         </MudItem>
         <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
             <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+                <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Tasks in error")</MudText>
                     <MudText Typo="Typo.h5" Color="Color.Error">@_metrics.NbrTasksInError</MudText>
@@ -74,11 +74,11 @@
                     <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
                         @if (_taskLogs == null)
                         {
-                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                         }
                         else
                         {
-                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" />
+                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs"/>
                         }
                     </MudPaper>
                 </MudItem>
@@ -86,36 +86,36 @@
                     <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
                         @if (_taskLogs == null)
                         {
-                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                         }
                         else
                         {
-                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" />
+                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs"/>
                         }
                     </MudPaper>
                 </MudItem>
                 <MudItem xs="12" sm="12" md="12" lg="12">
                     <MudPaper Elevation="2" Class="pa-2" Style="height: 220px;">
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" />
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%"/>
                     </MudPaper>
                 </MudItem>
             </MudGrid>
         </MudItem>
         <MudItem xs="12" sm="12" md="12" lg="6">
-            <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; min-height: 200px; max-height: 484px">
+            <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 484px; min-height: 200px;">
                 @if (_taskLogs == null)
                 {
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                 }
                 else
                 {
-                    <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs" />
+                    <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs"/>
                 }
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6" md="6" xl="4">
             <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" />
+                <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%"/>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6" md="4" xl="2">
@@ -130,12 +130,12 @@
         </MudItem>
         <MudItem xs="12" sm="12" md="6" xl="3">
             <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" />
+                <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%"/>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="12" md="6" xl="3">
             <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" />
+                <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%"/>
             </MudPaper>
         </MudItem>
     </MudGrid>
@@ -155,4 +155,5 @@
     {
         GC.SuppressFinalize(this);
     }
+
 }

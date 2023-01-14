@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.DirectoryServices.AccountManagement;
+using System.Globalization;
+using System.Text;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -8,261 +12,261 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
-using System.DirectoryServices.AccountManagement;
-using System.Globalization;
-using System.Text;
-using System.Text.Encodings.Web;
 
-namespace Report_App_WASM.Server.Controllers
+namespace Report_App_WASM.Server.Controllers;
+
+[ApiExplorerSettings(IgnoreApi = true)]
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class AuthorizeController : ControllerBase
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class AuthorizeController : ControllerBase
+    private readonly ApplicationDbContext _context;
+    private readonly IBackgroundWorkers _emailSender;
+    private readonly ILogger<AuthorizeController> _logger;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public AuthorizeController(UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager, ApplicationDbContext context,
+        ILogger<AuthorizeController> logger, IBackgroundWorkers emailSender)
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<AuthorizeController> _logger;
-        private readonly IBackgroundWorkers _emailSender;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _context = context;
+        _logger = logger;
+        _emailSender = emailSender;
+    }
 
-        public AuthorizeController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, ApplicationDbContext context,
-            ILogger<AuthorizeController> logger, IBackgroundWorkers emailSender)
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginParameters parameters)
+    {
+        var user = await _userManager.FindByNameAsync(parameters.UserName!);
+        if (user == null)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _context = context;
-            _logger = logger;
-            _emailSender = emailSender;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginParameters parameters)
-        {
-            var user = await _userManager.FindByNameAsync(parameters.UserName!);
+            user = await _userManager.FindByEmailAsync(parameters.UserName!);
             if (user == null)
-            {
-                user = await _userManager.FindByEmailAsync(parameters.UserName!);
-                if (user == null)
-                    return BadRequest("User does not exist");
-            }
-            var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password!, false);
-            if (!singInResult.Succeeded) return BadRequest("Invalid password");
-
-            await _signInManager.SignInAsync(user, parameters.RememberMe);
-            _logger.LogInformation("User logged in:" + parameters.UserName);
-            return Ok();
+                return BadRequest("User does not exist");
         }
 
+        var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password!, false);
+        if (!singInResult.Succeeded) return BadRequest("Invalid password");
 
-        [HttpPost]
-        public async Task<IActionResult> LdapLogin(LoginParameters parameters)
+        await _signInManager.SignInAsync(user, parameters.RememberMe);
+        _logger.LogInformation("User logged in:" + parameters.UserName);
+        return Ok();
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> LdapLogin(LoginParameters parameters)
+    {
+        var domain = await _context.LdapConfiguration.Where(a => a.IsActivated).Select(a => a.Domain)
+            .FirstOrDefaultAsync();
+        try
         {
-            var domain = await _context.LdapConfiguration.Where(a => a.IsActivated).Select(a => a.Domain).FirstOrDefaultAsync();
-            try
+            var rememberMe = true;
+            using var context =
+                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
+            var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);
+            var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);
+            if (userMail != null)
             {
-                var rememberMe = true;
-                using var context = new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
-                var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);
-                var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);
-                if (userMail != null)
-                {
-                    await _signInManager.SignInAsync(userMail, rememberMe);
-                    _logger.LogInformation("User logged in:" + parameters.UserName);
-                    return Ok();
-
-                }
-
-
-                var user = await _userManager.FindByNameAsync(parameters.UserName!);
-                if (user != null)
-                {
-                    await _signInManager.SignInAsync(user, rememberMe);
-                    _logger.LogInformation("User logged in:" + parameters.UserName);
-                    return Ok();
-                }
-
-                List<string> errors = new();
-                var userNew = new ApplicationUser { UserName = parameters.UserName, Email = userAd.EmailAddress, CreateUser = "AD screen", ModDateTime = DateTime.Now, ModificationUser = "Register screen", Culture = CultureInfo.CurrentCulture.Name, EmailConfirmed = true };
-                var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(userNew, rememberMe);
-                    _logger.LogInformation("User logged in:" + parameters.UserName);
-                    return Ok();
-                }
-                foreach (var error in result.Errors)
-                {
-                    errors.Add(error.Description);
-                }
-                if (!result.Succeeded)
-                {
-                    return BadRequest(string.Join(',', errors));
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInformation("Invalid login attempt during AD auth " + parameters.UserName + " Error:" + ex.Message);
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return BadRequest(ex.Message);
+                await _signInManager.SignInAsync(userMail, rememberMe);
+                _logger.LogInformation("User logged in:" + parameters.UserName);
+                return Ok();
             }
 
-            return Ok();
-        }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterParameters parameters)
-        {
-            var user = new ApplicationUser
+            var user = await _userManager.FindByNameAsync(parameters.UserName!);
+            if (user != null)
             {
-                UserName = parameters.UserName
+                await _signInManager.SignInAsync(user, rememberMe);
+                _logger.LogInformation("User logged in:" + parameters.UserName);
+                return Ok();
+            }
+
+            List<string> errors = new();
+            var userNew = new ApplicationUser
+            {
+                UserName = parameters.UserName, Email = userAd.EmailAddress, CreateUser = "AD screen",
+                ModDateTime = DateTime.Now, ModificationUser = "Register screen",
+                Culture = CultureInfo.CurrentCulture.Name, EmailConfirmed = true
             };
-            if (parameters.Password != null)
+            var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
+            if (result.Succeeded)
             {
-                var result = await _userManager.CreateAsync(user, parameters.Password);
-                if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                await _signInManager.SignInAsync(userNew, rememberMe);
+                _logger.LogInformation("User logged in:" + parameters.UserName);
+                return Ok();
             }
 
-            return await Login(new LoginParameters
-            {
-                UserName = parameters.UserName,
-                Password = parameters.Password
-            });
+            foreach (var error in result.Errors) errors.Add(error.Description);
+            if (!result.Succeeded) return BadRequest(string.Join(',', errors));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("Invalid login attempt during AD auth " + parameters.UserName + " Error:" +
+                                   ex.Message);
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return BadRequest(ex.Message);
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Logout()
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterParameters parameters)
+    {
+        var user = new ApplicationUser
         {
-            await _signInManager.SignOutAsync();
-            return Ok();
+            UserName = parameters.UserName
+        };
+        if (parameters.Password != null)
+        {
+            var result = await _userManager.CreateAsync(user, parameters.Password);
+            if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword(ApiCrudPayload<UserPayload> item)
+        return await Login(new LoginParameters
         {
-            try
+            UserName = parameters.UserName,
+            Password = parameters.Password
+        });
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(ApiCrudPayload<UserPayload> item)
+    {
+        try
+        {
+            if (item != null)
             {
-                if (item != null)
-                {
-                    var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!);
-                    await _userManager.ResetPasswordAsync(user!, item.EntityValue.UserName!, item.EntityValue.Password!);
-                }
-                return Ok(new SubmitResult { Success = true, Message = "Ok" });
+                var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!);
+                await _userManager.ResetPasswordAsync(user!, item.EntityValue.UserName!, item.EntityValue.Password!);
             }
-            catch (Exception e)
-            {
-                return Ok(new SubmitResult { Success = false, Message = e.Message });
-            }
+
+            return Ok(new SubmitResult { Success = true, Message = "Ok" });
         }
-
-
-        [HttpPost]
-        public async Task<IActionResult> SendResetPasswordEmail(ApiCrudPayload<UserPayload> item)
+        catch (Exception e)
         {
-            try
+            return Ok(new SubmitResult { Success = false, Message = e.Message });
+        }
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> SendResetPasswordEmail(ApiCrudPayload<UserPayload> item)
+    {
+        try
+        {
+            if (item != null)
             {
-                if (item != null)
-                {
-                    var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!).ConfigureAwait(true);
-                    if (user == null || !(await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(true)))
-                    {
-                        // Don't reveal that the user does not exist or is not confirmed
-                        return RedirectToPage("./ForgotPasswordConfirmation");
-                    }
+                var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!).ConfigureAwait(true);
+                if (user == null || !await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(true))
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return RedirectToPage("./ForgotPasswordConfirmation");
 
-                    // For more information on how to enable account confirmation and password reset please 
-                    // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                    var code = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(true);
-                    var callbackUrl = Url.Page(
-                        "/ResetPassword",
-                        pageHandler: null,
-                        values: new { code },
-                        protocol: Request.Scheme);
+                // For more information on how to enable account confirmation and password reset please 
+                // visit https://go.microsoft.com/fwlink/?LinkID=532713
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(true);
+                var callbackUrl = Url.Page(
+                    "/ResetPassword",
+                    null,
+                    new { code },
+                    Request.Scheme);
 
-                    List<EmailRecipient> ListEmail = new()
+                List<EmailRecipient> ListEmail = new()
                 {
                     new EmailRecipient { Email = item.EntityValue.UserMail }
                 };
-                    var Title = "Reset Password";
-                    var Body = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
+                var Title = "Reset Password";
+                var Body =
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
 
-                    _emailSender.SendEmail(ListEmail, Title, Body);
-                }
-                return Ok(new SubmitResult { Success = true, Message = "Ok" });
-            }
-            catch (Exception e)
-            {
-                return Ok(new SubmitResult { Success = false, Message = e.Message });
-            }
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> ConfirmEmail(ApiCrudPayload<ConfirmEmailValues> value)
-        {
-            var user = await _userManager.FindByIdAsync(value.EntityValue.UserId!).ConfigureAwait(true);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{value.EntityValue.UserId!}'.");
+                _emailSender.SendEmail(ListEmail, Title, Body);
             }
 
-            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(value.EntityValue.Code!));
-            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(true);
-            return Ok(new SubmitResult { Success = result.Succeeded, Message = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email." });
+            return Ok(new SubmitResult { Success = true, Message = "Ok" });
         }
-
-        [HttpGet]
-        public async Task<UserInfo> UserInfoAsync()
+        catch (Exception e)
         {
-            //var user = await _userManager.GetUserAsync(HttpContext.User);
-            return await BuildUserInfoAsync();
+            return Ok(new SubmitResult { Success = false, Message = e.Message });
         }
+    }
 
-        [HttpGet]
-        public IdentityDefaultOptions GetIdentityOptionsAsync()
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> ConfirmEmail(ApiCrudPayload<ConfirmEmailValues> value)
+    {
+        var user = await _userManager.FindByIdAsync(value.EntityValue.UserId!).ConfigureAwait(true);
+        if (user == null) return NotFound($"Unable to load user with ID '{value.EntityValue.UserId!}'.");
+
+        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(value.EntityValue.Code!));
+        var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(true);
+        return Ok(new SubmitResult
         {
-            //var user = await _userManager.GetUserAsync(HttpContext.User);
-            var identityDefaultOptions = new IdentityDefaultOptions();
-            var options = _userManager.Options;
+            Success = result.Succeeded,
+            Message = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email."
+        });
+    }
 
-            identityDefaultOptions.PasswordRequireDigit = options.Password.RequireDigit;
-            identityDefaultOptions.PasswordRequiredLength = options.Password.RequiredLength;
-            identityDefaultOptions.PasswordRequireNonAlphanumeric = options.Password.RequireNonAlphanumeric;
-            identityDefaultOptions.PasswordRequireUppercase = options.Password.RequireUppercase;
-            identityDefaultOptions.PasswordRequireLowercase = options.Password.RequireLowercase;
-            identityDefaultOptions.PasswordRequiredUniqueChars = options.Password.RequiredUniqueChars;
+    [HttpGet]
+    public async Task<UserInfo> UserInfoAsync()
+    {
+        //var user = await _userManager.GetUserAsync(HttpContext.User);
+        return await BuildUserInfoAsync();
+    }
 
-            // Lockout settings
-            identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes = options.Lockout.DefaultLockoutTimeSpan.Minutes;
-            identityDefaultOptions.LockoutMaxFailedAccessAttempts = options.Lockout.MaxFailedAccessAttempts;
-            identityDefaultOptions.LockoutAllowedForNewUsers = options.Lockout.AllowedForNewUsers;
+    [HttpGet]
+    public IdentityDefaultOptions GetIdentityOptionsAsync()
+    {
+        //var user = await _userManager.GetUserAsync(HttpContext.User);
+        var identityDefaultOptions = new IdentityDefaultOptions();
+        var options = _userManager.Options;
 
-            // User settings
-            identityDefaultOptions.UserRequireUniqueEmail = options.User.RequireUniqueEmail;
+        identityDefaultOptions.PasswordRequireDigit = options.Password.RequireDigit;
+        identityDefaultOptions.PasswordRequiredLength = options.Password.RequiredLength;
+        identityDefaultOptions.PasswordRequireNonAlphanumeric = options.Password.RequireNonAlphanumeric;
+        identityDefaultOptions.PasswordRequireUppercase = options.Password.RequireUppercase;
+        identityDefaultOptions.PasswordRequireLowercase = options.Password.RequireLowercase;
+        identityDefaultOptions.PasswordRequiredUniqueChars = options.Password.RequiredUniqueChars;
 
-            // email confirmation require
-            identityDefaultOptions.SignInRequireConfirmedEmail = options.SignIn.RequireConfirmedEmail;
-            return identityDefaultOptions;
-        }
+        // Lockout settings
+        identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes = options.Lockout.DefaultLockoutTimeSpan.Minutes;
+        identityDefaultOptions.LockoutMaxFailedAccessAttempts = options.Lockout.MaxFailedAccessAttempts;
+        identityDefaultOptions.LockoutAllowedForNewUsers = options.Lockout.AllowedForNewUsers;
 
-        private async Task<UserInfo> BuildUserInfoAsync()
+        // User settings
+        identityDefaultOptions.UserRequireUniqueEmail = options.User.RequireUniqueEmail;
+
+        // email confirmation require
+        identityDefaultOptions.SignInRequireConfirmedEmail = options.SignIn.RequireConfirmedEmail;
+        return identityDefaultOptions;
+    }
+
+    private async Task<UserInfo> BuildUserInfoAsync()
+    {
+        var userData = await _userManager.GetUserAsync(User);
+        return new UserInfo
         {
-            var userData = await _userManager.GetUserAsync(User);
-            return new UserInfo
-            {
-                IsAuthenticated = User.Identity!.IsAuthenticated,
-                UserName = User.Identity.Name,
-                UserMail = userData?.Email,
-                AppTheme = userData?.ApplicationTheme ?? "Light",
-                Culture = userData?.Culture ?? "en",
-                ExposedClaims = User.Claims
-                    //Optionally: filter the claims you want to expose to the client
-                    //.Where(c => c.Type == "role")
-                    .Select(c => new ClaimsValue { Type = c.Type, Value = c.Value }).ToList()
-            };
-        }
+            IsAuthenticated = User.Identity!.IsAuthenticated,
+            UserName = User.Identity.Name,
+            UserMail = userData?.Email,
+            AppTheme = userData?.ApplicationTheme ?? "Light",
+            Culture = userData?.Culture ?? "en",
+            ExposedClaims = User.Claims
+                //Optionally: filter the claims you want to expose to the client
+                //.Where(c => c.Type == "role")
+                .Select(c => new ClaimsValue { Type = c.Type, Value = c.Value }).ToList()
+        };
     }
 }

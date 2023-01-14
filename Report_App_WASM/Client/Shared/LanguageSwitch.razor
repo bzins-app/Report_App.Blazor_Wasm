@@ -11,11 +11,11 @@
         {
             if (culture.Name == _language)
             {
-                <MudMenuItem style="background:var(--mud-palette-primary); color:white">@culture.DisplayName</MudMenuItem>
+                <MudMenuItem style="background: var(--mud-palette-primary); color: white">@culture.DisplayName</MudMenuItem>
             }
             else
             {
-                <MudMenuItem OnClick="(()=>SetLanguage(culture))">@culture.DisplayName</MudMenuItem>
+                <MudMenuItem OnClick="() => SetLanguage(culture)">@culture.DisplayName</MudMenuItem>
             }
         }
     </MudMenu>
@@ -23,11 +23,13 @@
 
 @code {
     private string? _language;
-    private CultureInfo[] _supportedCultures = {
-                    new("fr"),
-                    new("en"),
-                    new("de"),
-                    new("nl"),
+
+    private CultureInfo[] _supportedCultures =
+    {
+        new("fr"),
+        new("en"),
+        new("de"),
+        new("nl")
     };
 
     protected override void OnInitialized()
@@ -50,8 +52,9 @@
                 var js = (IJSInProcessRuntime)JsRuntime;
                 js.InvokeVoid("cultureInfo.set", value.Name);
 
-                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                NavigationManager.NavigateTo(NavigationManager.Uri, true);
             }
         }
     }
+
 }

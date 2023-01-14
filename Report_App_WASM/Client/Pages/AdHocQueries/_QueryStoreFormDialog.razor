@@ -1,5 +1,4 @@
-﻿
-<MudDialog>
+﻿<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@(Action switch
@@ -7,22 +6,22 @@
                                CrudAction.Update => Icons.Material.Filled.Edit,
                                CrudAction.Create => Icons.Material.Filled.Create,
                                _ => Icons.Material.Filled.DeleteForever
-                               } )" Class="mr-3 mb-n1" />
+                               })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
-            CrudAction.Update => "Edit",
-            CrudAction.Create => "Add",
-            _ => "Delete"
-            })
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+                })
         </MudText>
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item!.QueryName" Label="@(Localizer.Get("Query Name"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
+            <MudTextField @bind-Value="Item!.QueryName" Label="@(Localizer.Get("Query Name"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             @if (_activities.Any())
             {
                 <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.IdActivity" AnchorOrigin="Origin.BottomCenter"
-                           Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete">
+                           Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
                     @foreach (var value in _activities)
                     {
                         <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
@@ -32,20 +31,26 @@
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")"/>
         }
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@Localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+        <MudButton Color="Action == CrudAction.Delete ? Color.Error : Color.Primary" OnClick="Validate">@Localizer.Get(Action == CrudAction.Delete ? "Delete" : "Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public QueryStoreDto? Item { get; set; }
-    [Parameter] public CrudAction Action { get; set; }
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public QueryStoreDto? Item { get; set; }
+
+    [Parameter]
+    public CrudAction Action { get; set; }
+
     private MudForm _form = default!;
     private string? _deletionValidation;
     private List<SelectItemActivitiesInfo> _activities = new();
@@ -81,4 +86,5 @@
             }
         }
     }
+
 }

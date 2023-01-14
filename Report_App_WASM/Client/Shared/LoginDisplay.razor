@@ -7,7 +7,7 @@
                  TransformOrigin="Origin.TopRight">
             <ChildContent>
                 <div class="pb-4"
-                     style="min-width: 260px;margin-bottom:0px!important">
+                     style="margin-bottom: 0px !important; min-width: 260px;">
                     <MudCard Elevation="0" Square="true" Class="ma-0">
                         <MudCardHeader>
                             <CardHeaderAvatar>
@@ -20,11 +20,11 @@
                             </CardHeaderContent>
                         </MudCardHeader>
                     </MudCard>
-                    <MudDivider />
+                    <MudDivider/>
                     <MudMenuItem Link="/Profile">
                         <div class="d-flex">
                             <MudIcon Class="mx-2"
-                                     Icon="@Icons.Material.Filled.Person" />
+                                     Icon="@Icons.Material.Filled.Person"/>
                             <MudText>@Localizer.Get("Profile")</MudText>
                         </div>
                     </MudMenuItem>
@@ -46,9 +46,11 @@
 </AuthorizeView>
 
 @code{
+
     private async Task BeginLogOut()
     {
         await AuthStateProvider.Logout();
         NavigationManager.NavigateTo("/login");
     }
+
 }

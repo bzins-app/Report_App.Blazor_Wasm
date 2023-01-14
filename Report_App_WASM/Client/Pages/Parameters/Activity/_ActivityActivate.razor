@@ -1,9 +1,10 @@
 ﻿@inject ISnackbar Snackbar
 
 
-<MudSwitch Checked="@Item!.IsActivated" Color="Color.Primary"  ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+<MudSwitch Checked="@Item!.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)"/>
 
- @code {
+@code {
+
     [Parameter]
     public ActivityDto? Item { get; set; }
 
@@ -15,4 +16,5 @@
 
         Snackbar.Add(Item.IsActivated ? Item.ActivityName + " " + Localizer.Get("enabled") : Item.ActivityName + " " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
     }
+
 }

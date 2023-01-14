@@ -2,9 +2,12 @@
 @inject IDialogService DialogService
 @inject IdentityAuthenticationStateProvider IdentityProvider
 
-<MudIconButton Icon="@Icons.Material.Outlined.Sync" OnClick="(OpenRunConfirmationComponent)"><MudText>@Localizer.Get("Run")</MudText></MudIconButton>
+<MudIconButton Icon="@Icons.Material.Outlined.Sync" OnClick="OpenRunConfirmationComponent">
+    <MudText>@Localizer.Get("Run")</MudText>
+</MudIconButton>
 
 @code {
+
     [Parameter]
     public TaskHeaderDto? Item { get; set; }
 
@@ -20,7 +23,7 @@
         _email = currentUserEmail;
 
         var recipients = (await DataService.GetValues<TaskEmailRecipientDto>($"GetTaskEmailRecipient?taskHeaderId={Item!.TaskHeaderId}")).FirstOrDefault();
-        if (Item != null&&recipients!=null)
+        if (Item != null && recipients != null)
         {
             if (!string.IsNullOrEmpty(recipients.Email))
             {
@@ -47,7 +50,7 @@
             queryParameters = feedback.Item2;
             if (resultValidation)
             {
-                 var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Email!);
+                var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Email!);
                 var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emailsRecipients, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
@@ -60,4 +63,5 @@
             Snackbar.Add(Localizer.Get("Alert") + " " + Localizer.Get("Job on going"), Severity.Success);
         }
     }
+
 }

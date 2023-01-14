@@ -9,7 +9,7 @@
                                CrudAction.Update => Icons.Material.Filled.Edit,
                                CrudAction.Create => Icons.Material.Filled.Create,
                                _ => Icons.Material.Filled.DeleteForever
-                               } )" Class="mr-3 mb-n1" />
+                               })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
                 CrudAction.Update => "Edit",
@@ -19,14 +19,14 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("Name")" Disabled />
-        <MudTextField @bind-Value="Item!.Email" Label="@Localizer.Get("Email")" Disabled />
-        <MudCard Elevation=0>
+        <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("Name")" Disabled/>
+        <MudTextField @bind-Value="Item!.Email" Label="@Localizer.Get("Email")" Disabled/>
+        <MudCard Elevation="0">
             <MudCardContent>
-                <MudGrid Style="min-height:300px">
-                    <MudItem xs=5 sm=5 md=5>
+                <MudGrid Style="min-height: 300px">
+                    <MudItem xs="5" sm="5" md="5">
                         <MudText Typo="Typo.h5">@Localizer.Get("Roles available")</MudText>
-                        <MudTable Items="@_rolesAvailable" Dense="true" MultiSelection="true" @bind-SelectedItems="_rolesToAssign" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
+                        <MudTable Items="@_rolesAvailable" Dense="true" MultiSelection="true" @bind-SelectedItems="_rolesToAssign" Hover="true" Style="height: 400px" Height="400px" Outlined="true" Elevation="0">
                             <HeaderContent>
                                 <MudTh>@Localizer.Get("Name")</MudTh>
                             </HeaderContent>
@@ -35,8 +35,8 @@
                             </RowTemplate>
                         </MudTable>
                     </MudItem>
-                    <MudItem xs=2 sm=2 md=1>
-                        <MudContainer Style="height:100%">
+                    <MudItem xs="2" sm="2" md="1">
+                        <MudContainer Style="height: 100%">
                             <MudButtonGroup Variant="Variant.Outlined" VerticalAlign="true" Class="d-flex flex-column align-center justify-center mud-width-full py-8">
                                 <AuthorizeView Roles="Admin">
                                     <Authorized>
@@ -51,9 +51,9 @@
                             </MudButtonGroup>
                         </MudContainer>
                     </MudItem>
-                    <MudItem xs=5 sm=5 md=5>
+                    <MudItem xs="5" sm="5" md="5">
                         <MudText Typo="Typo.h5">@Localizer.Get("Roles assigned")</MudText>
-                        <MudTable Items="@_rolesAssigned" Dense="true" MultiSelection="true" @bind-SelectedItems="_rolesToRemove" Hover="true" Style="height:400px" Height="400px" Outlined="true" Elevation="0">
+                        <MudTable Items="@_rolesAssigned" Dense="true" MultiSelection="true" @bind-SelectedItems="_rolesToRemove" Hover="true" Style="height: 400px" Height="400px" Outlined="true" Elevation="0">
                             <HeaderContent>
                                 <MudTh>@Localizer.Get("Name")</MudTh>
                             </HeaderContent>
@@ -70,11 +70,18 @@
         <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Back")</MudButton>
     </DialogActions>
 </MudDialog>
-@code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public ApplicationUserDto? Item { get; set; }
-    [Parameter] public CrudAction Action { get; set; }
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public ApplicationUserDto? Item { get; set; }
+
+    [Parameter]
+    public CrudAction Action { get; set; }
+
     private MudForm _form = default!;
     private HashSet<string> _rolesToAssign = new();
     private readonly List<string> _rolesAvailable = new();
@@ -151,4 +158,5 @@
             StateHasChanged();
         }
     }
+
 }

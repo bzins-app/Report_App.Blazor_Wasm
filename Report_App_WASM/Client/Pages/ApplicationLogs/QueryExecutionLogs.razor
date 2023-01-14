@@ -9,12 +9,12 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@Localizer.Get("Query execution logs")</MudText>
-            <MudSpacer />
+            <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
@@ -22,34 +22,34 @@
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(ExtractElements)"
-                               Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow:auto">
+            <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogQueryExecutionDto">
-                    <PropertyColumn Property="@(p => p!.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.SqlExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.DownloadDuration)" Title="@Localizer.Get("Download duration")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.TypeDb)" Title="@Localizer.Get("Type of Database")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.Database)" Title="@Localizer.Get("Database name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p!.CommandTimeOut)" Title="@Localizer.Get("Command timeout")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p!.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.SqlExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.DownloadDuration)" Title="@Localizer.Get("Download duration")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.TypeDb)" Title="@Localizer.Get("Type of Database")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.Database)" Title="@Localizer.Get("Database name")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p!.CommandTimeOut)" Title="@Localizer.Get("Command timeout")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)
             {
-                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering" />
+                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering"/>
             }
-            <Paginator Value="@_pagination" FieldsContent="@_translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
         </MudCardContent>
         <MudCard Elevation="6">
             <MudCardContent>
-                <div style="overflow:auto">
+                <div style="overflow: auto">
                     <h4>
                         @Localizer.Get("Query")
                     </h4>
@@ -61,15 +61,13 @@
                     }
                     else
                     {
-                        <MudTextField ReadOnly="true" T="string" Text="@_queryValue" Lines="10" />
+                        <MudTextField ReadOnly="true" T="string" Text="@_queryValue" Lines="10"/>
                     }
                 </div>
             </MudCardContent>
         </MudCard>
     </MudCard>
 </ErrorBoundary>
-
-
 
 
 @code
@@ -97,8 +95,8 @@
 
     private async Task<ApiResponse<ApplicationLogQueryExecutionDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogQueryExecutionDto> req)
     {
-        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/QueryExecutionLogs?";
         if (string.IsNullOrEmpty(odataQuery))
@@ -115,7 +113,7 @@
         }
         catch
         {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -134,6 +132,7 @@
         await DataService.ExtractGridLogs(values);
         _rendering = false;
     }
+
     private async Task RemoveFilters()
     {
         _rendering = true;

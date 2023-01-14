@@ -8,12 +8,12 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@Localizer.Get("Email sender logs")</MudText>
-            <MudSpacer />
+            <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
@@ -21,36 +21,34 @@
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(ExtractElements)"
-                               Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow:auto">
+            <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
-                    <PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.EmailTitle)" Title="@Localizer.Get("Email title")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.RecipientList)" Title="@Localizer.Get("List of recipient")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.EmailTitle)" Title="@Localizer.Get("Email title")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.RecipientList)" Title="@Localizer.Get("List of recipient")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)
             {
-                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering" />
+                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering"/>
             }
-            <Paginator Value="@_pagination" FieldsContent="@_translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
 
 
-
-
 @code
 {
-    #nullable enable
+#nullable enable
     GridItemsProvider<ApplicationLogEmailSenderDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = new();
@@ -74,8 +72,8 @@
 
     private async Task<ApiResponse<ApplicationLogEmailSenderDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogEmailSenderDto> req)
     {
-        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/EmailLogs?";
         if (string.IsNullOrEmpty(odataQuery))
@@ -92,7 +90,7 @@
         }
         catch
         {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -111,6 +109,7 @@
         await DataService.ExtractGridLogs(values);
         _rendering = false;
     }
+
     private async Task RemoveFilters()
     {
         _rendering = true;

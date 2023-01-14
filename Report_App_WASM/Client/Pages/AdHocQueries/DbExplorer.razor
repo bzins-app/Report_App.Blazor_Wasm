@@ -40,9 +40,9 @@
                 }
                 <MudGrid>
                     <MudItem lg="7">
-                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true"  Height="70vh" Virtualize="true" Elevation="4">
+                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
                             <ToolBarContent>
-                                <MudTextField Placeholder="Search" T="string" ValueChanged="@(s=>OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                                <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                             </ToolBarContent>
                             <HeaderContent>
                                 <MudTh></MudTh>
@@ -53,7 +53,9 @@
                                 }
                             </HeaderContent>
                             <RowTemplate>
-                                <MudTd><MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small" /></MudTd>
+                                <MudTd>
+                                    <MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small"/>
+                                </MudTd>
                                 <MudTd @ondblclick="() => GetColumnsList(context.Name)">@context.Name</MudTd>
                                 @if (_hasDesc)
                                 {
@@ -77,13 +79,13 @@
                             <RowTemplate>
                                 @if (context.IsSnippet)
                                 {
-                                    <MudTd Style="Color:crimson">@context.Name</MudTd>
+                                    <MudTd Style="Color: crimson">@context.Name</MudTd>
                                 }
                                 else
                                 {
                                     <MudTd>@context.Name</MudTd>
                                 }
-                                
+
                                 @if (_hasDescCol)
                                 {
                                     <MudTh>@context.Description</MudTh>
@@ -115,7 +117,7 @@
                             <p style="color: red">@_queryTestResult</p>
                         </div>
                     }
-                    <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh" />
+                    <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh"/>
 
                     <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
@@ -144,7 +146,7 @@
                             }
                         </RowTemplate>
                         <PagerContent>
-                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}","{","}",Localizer.Get("of") )" />
+                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
                         </PagerContent>
                     </MudTable>
                 </div>
@@ -154,8 +156,12 @@
 </MudCard>
 
 @code {
-    [Parameter] public string ActivityName { get; set; } = default!;
-    [Parameter] public int ActivityId { get; set; }
+
+    [Parameter]
+    public string ActivityName { get; set; } = default!;
+
+    [Parameter]
+    public int ActivityId { get; set; }
 
     private List<DescriptionValues> TableNames = new();
     private List<DescriptionValues> TableNamesStored = new();
@@ -188,11 +194,12 @@
         {
             NavigationManager.NavigateTo("/403");
         }
-        TableNames = new();
-        ColNames = new();
+        TableNames = new List<DescriptionValues>();
+        ColNames = new List<DescriptionValues>();
         QueryRun = "";
         QueryBuilder = "";
-        _table = new();        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
+        _table = new MudTable<Dictionary<string, object>.ValueCollection>();
+        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         if (response.Any())
         {
@@ -270,7 +277,7 @@
     private async Task DisplayTableValues(string tableName)
     {
         _loading = true;
-        string query = $"select  * from {tableName}";
+        var query = $"select  * from {tableName}";
         QueryRun = query;
         _table!.CurrentPage = 0;
         await _table.ReloadServerData();
@@ -307,7 +314,7 @@
             {
                 _cts = new CancellationTokenSource();
 
-                var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = QueryRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = new() };
+                var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = QueryRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = new List<QueryCommandParameter>() };
                 var remoteDataPayload = new RemoteDataPayload { Values = run };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -339,4 +346,5 @@
         }
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
+
 }

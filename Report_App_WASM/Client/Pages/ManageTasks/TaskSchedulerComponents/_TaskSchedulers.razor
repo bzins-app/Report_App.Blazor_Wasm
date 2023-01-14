@@ -5,40 +5,47 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@Localizer.Get("Crons")</MudText>
-            <MudSpacer />
+            <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow:auto">
+            <div style="overflow: auto">
                 <SimpleGrid Items="@_elements.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
-                        <MudStack Row=true>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="()=>OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="()=>OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                        <MudStack Row="true">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" Title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.CronValue)" Title="@Localizer.Get("Cron expression")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CronDescription)" Title="@Localizer.Get("Cron description")"  Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CronValue)" Title="@Localizer.Get("Cron expression")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.CronDescription)" Title="@Localizer.Get("Cron description")" Sortable="true"/>
                 </SimpleGrid>
             </div>
-            <Paginator Value="@_pagination" FieldsContent="@_translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
 
 @code {
-    [Parameter] public TaskHeaderDto? Item { get; set; }
-    [Parameter] public bool ChangePending { get; set; }
-    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
+
+    [Parameter]
+    public TaskHeaderDto? Item { get; set; }
+
+    [Parameter]
+    public bool ChangePending { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ChangePendingChanged { get; set; }
+
     private List<CronParameters>? _crons = new();
     SimpleGrid<CronEditView>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
@@ -104,12 +111,12 @@
     {
         _disable = true;
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
         {
             var toRemove = _crons!.FirstOrDefault(a => a.CronValue == value.CronValue);
-             _crons?.Remove(toRemove!);
+            _crons?.Remove(toRemove!);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
@@ -152,4 +159,5 @@
         _grid?.RefreshDataAsync();
         UpdateElements();
     }
+
 }

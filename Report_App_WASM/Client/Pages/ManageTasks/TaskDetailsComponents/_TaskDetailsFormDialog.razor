@@ -12,7 +12,7 @@
                                CrudAction.Update => Icons.Material.Filled.Edit,
                                CrudAction.Create => Icons.Material.Filled.Create,
                                _ => Icons.Material.Filled.DeleteForever
-                               } )" Class="mr-3 mb-n1" />
+                               })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
                 CrudAction.Update => "Edit",
@@ -25,8 +25,8 @@
         <MudForm Model="@Item" @ref="@_form">
             <MudGrid>
                 <MudItem sm="12" md="4" lg="2" Style="padding-right: 10px">
-                    <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required />
-                    <MudNumericField @bind-Value="Item.DetailSequence" Label="@Localizer.Get("Query sequence")" />
+                    <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required/>
+                    <MudNumericField @bind-Value="Item.DetailSequence" Label="@Localizer.Get("Query sequence")"/>
                     <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OpenTestQuery" Variant="Variant.Filled" Color="Color.Primary">
                         <LoadingContent>
                             @Localizer.Get("Processing")
@@ -41,73 +41,75 @@
                     }
                     @if (_taskType == TaskType.Report.ToString())
                     {
-                        <br />
-                        <MudSwitch @bind-Checked="_param.GenerateIfEmpty" Label="@Localizer.Get("Generate if empty?")" Color="Color.Primary" />
+                        <br/>
+                        <MudSwitch @bind-Checked="_param.GenerateIfEmpty" Label="@Localizer.Get("Generate if empty?")" Color="Color.Primary"/>
                         if (_fileType == FileType.Excel.ToString())
                         {
-                            <MudSwitch @bind-Checked="_param.SeparateExcelFile" Label="@Localizer.Get("Separated excel file?")" Color="Color.Primary" />
+                            <MudSwitch @bind-Checked="_param.SeparateExcelFile" Label="@Localizer.Get("Separated excel file?")" Color="Color.Primary"/>
                             @if (_useSpecificFileNaming)
                             {
-                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")" />
-                                <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")" />
+                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")"/>
+                                <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")"/>
                                 <p>* @Localizer.Get("Only when query is generated in separated file")</p>
                             }
                             if (_useExcelTemplate && !_param.SeparateExcelFile)
                             {
-                                <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTabName" Label="@Localizer.Get("Template tab name to use")" Required />
-                                <MudSwitch @bind-Checked="_param.ExcelTemplate.UseAnExcelDataTable" Label="@Localizer.Get("Use an excel data table?")" Color="Color.Primary" />
+                                <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTabName" Label="@Localizer.Get("Template tab name to use")" Required/>
+                                <MudSwitch @bind-Checked="_param.ExcelTemplate.UseAnExcelDataTable" Label="@Localizer.Get("Use an excel data table?")" Color="Color.Primary"/>
                                 @if (_param.ExcelTemplate.UseAnExcelDataTable)
                                 {
-                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelDataTableName" Label="@Localizer.Get("Excel data table name")" Required />
+                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelDataTableName" Label="@Localizer.Get("Excel data table name")" Required/>
                                 }
                                 else
                                 {
-                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTemplateCellReference" Label="@Localizer.Get("Cell reference")" Required />
+                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTemplateCellReference" Label="@Localizer.Get("Cell reference")" Required/>
                                 }
                             }
                             else
                             {
-                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")" />
-                                <MudSwitch @bind-Checked="_param.AddValidationSheet" Label="@Localizer.Get("Add validation sheet?")" Color="Color.Primary" />
+                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")"/>
+                                <MudSwitch @bind-Checked="_param.AddValidationSheet" Label="@Localizer.Get("Add validation sheet?")" Color="Color.Primary"/>
                             }
                         }
                         else
                         {
-                            <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")" />
+                            <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")"/>
                             <MudSelect T="string" Label="@Localizer.Get("Encoding type")" @bind-Value="@_param.EncodingType"
-                               AnchorOrigin="Origin.BottomCenter"
-                               Required>
+                                       AnchorOrigin="Origin.BottomCenter"
+                                       Required>
                                 @foreach (EncodingType item in Enum.GetValues(typeof(EncodingType)))
                                 {
                                     <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
                                 }
-  
+
                             </MudSelect>
                         }
                         @if (_fileType == FileType.Csv.ToString())
                         {
-                            <MudSwitch @bind-Checked="_param.RemoveHeader" Label="@Localizer.Get("Remove Header")" Color="Color.Primary" />
+                            <MudSwitch @bind-Checked="_param.RemoveHeader" Label="@Localizer.Get("Remove Header")" Color="Color.Primary"/>
                         }
                     }
                     @if (_taskType == TaskType.DataTransfer.ToString())
                     {
-                        <MudTextField @bind-Value="_param.DataTransferTargetTableName" Label="@Localizer.Get("Target table name")" Required />
-                        <MudSwitch @bind-Checked="_param.DataTransferCreateTable" Label="@Localizer.Get("Create target table?")" Color="Color.Primary" />
-                        <MudSwitch @bind-Checked="_param.DataTransferUsePk" Label="@Localizer.Get("Use primary keys?")" Color="Color.Primary" @onclick="ResetCommandBehaviour" />
+                        <MudTextField @bind-Value="_param.DataTransferTargetTableName" Label="@Localizer.Get("Target table name")" Required/>
+                        <MudSwitch @bind-Checked="_param.DataTransferCreateTable" Label="@Localizer.Get("Create target table?")" Color="Color.Primary"/>
+                        <MudSwitch @bind-Checked="_param.DataTransferUsePk" Label="@Localizer.Get("Use primary keys?")" Color="Color.Primary" @onclick="ResetCommandBehaviour"/>
 
                         @if (_param.DataTransferUsePk)
                         {
                             <MudSelect T="string" Label="@Localizer.Get("Command behaviour")"
-                               AnchorOrigin="Origin.BottomCenter" @bind-Value="_param.DataTransferCommandBehaviour"
-                               Required>
+                                       AnchorOrigin="Origin.BottomCenter" @bind-Value="_param.DataTransferCommandBehaviour"
+                                       Required>
                                 @foreach (DataTransferAdvancedBehaviour item in Enum.GetValues(typeof(DataTransferAdvancedBehaviour)))
                                 {
                                     <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
                                 }
                             </MudSelect>
-                            <MudTextField T="string" Label="@Localizer.Get("Enter the primary key column")" @bind-Value="@_pKName" />
+                            <MudTextField T="string" Label="@Localizer.Get("Enter the primary key column")" @bind-Value="@_pKName"/>
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
-                               Class="ml-auto mt-3 mb-3" OnClick="@(Add)">@Localizer.Get("Add the primary key")</MudButton>
+                                       Class="ml-auto mt-3 mb-3" OnClick="@(Add)">
+                                @Localizer.Get("Add the primary key")
+                            </MudButton>
                             <MudTable Items="@_param.DataTransferPk" Hover="true" Dense="true">
                                 <HeaderContent>
                                     <MudTh>@Localizer.Get("Column name")</MudTh>
@@ -115,24 +117,27 @@
                                 </HeaderContent>
                                 <RowTemplate>
                                     <MudTd DataLabel="@Localizer.Get("Primary key")">@context</MudTd>
-                                    <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="()=>Delete(context)"></MudIconButton></MudTd>
+                                    <MudTd>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>
+                                    </MudTd>
                                 </RowTemplate>
                             </MudTable>
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
-                               Class="ml-auto mt-3 mb-3" OnClick="@(DeleteTableConfirmation)">@Localizer.Get("Delete the target table")</MudButton>
+                                       Class="ml-auto mt-3 mb-3" OnClick="@(DeleteTableConfirmation)">
+                                @Localizer.Get("Delete the target table")
+                            </MudButton>
                         }
                         else
                         {
                             <MudSelect T="string" Label="@Localizer.Get("Command behaviour")"
-                               AnchorOrigin="Origin.BottomCenter" @bind-Value="_param.DataTransferCommandBehaviour"
-                               Required>
+                                       AnchorOrigin="Origin.BottomCenter" @bind-Value="_param.DataTransferCommandBehaviour"
+                                       Required>
                                 @foreach (DataTransferBasicBehaviour item in Enum.GetValues(typeof(DataTransferBasicBehaviour)))
                                 {
                                     <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
                                 }
                             </MudSelect>
                         }
-
                     }
                 </MudItem>
                 <MudItem sm="12" md="8" lg="10">
@@ -149,7 +154,7 @@
                     }
                     else
                     {
-                        <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt" />
+                        <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt"/>
                     }
                 </MudItem>
             </MudGrid>
@@ -157,22 +162,32 @@
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")"/>
         }
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@Localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+        <MudButton Color="Action == CrudAction.Delete ? Color.Error : Color.Primary" OnClick="Validate">@Localizer.Get(Action == CrudAction.Delete ? "Delete" : "Validate")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public TaskDetailDto? Item { get; set; }
-    [Parameter] public TaskHeaderDto? Header { get; set; }
-    [Parameter] public int ActivityId { get; set; }
-    [Parameter] public CrudAction Action { get; set; }
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public TaskDetailDto? Item { get; set; }
+
+    [Parameter]
+    public TaskHeaderDto? Header { get; set; }
+
+    [Parameter]
+    public int ActivityId { get; set; }
+
+    [Parameter]
+    public CrudAction Action { get; set; }
+
     private MudForm _form = default!;
     private string? _deletionValidation;
     private _QueryParameters? _refQuery;
@@ -196,10 +211,11 @@
     private AceEditorOptions? _opt;
 
     private string? _pKName;
-    JsonSerializerOptions _jsonOpt = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
+
+    JsonSerializerOptions _jsonOpt = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -219,19 +235,22 @@
         _useSpecificFileNaming = _paramHeader.UseASpecificFileNaming;
         var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
-        if(response.Any())
+        if (response.Any())
         {
             _typeDbActivity = response.Select(a => a.TypeDb).First();
         }
         _loading = false;
         _opt = new AceEditorOptions
-        { IsReadOnly = false, Language = _typeDbActivity switch
         {
-            TypeDb.MySql => AceLanguage.mysql,
-            TypeDb.MariaDb => AceLanguage.mysql,
-            TypeDb.SqlServer => AceLanguage.sqlserver,
-            _ => AceLanguage.sql
-            }, Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver };
+            IsReadOnly = false, Language = _typeDbActivity switch
+            {
+                TypeDb.MySql => AceLanguage.mysql,
+                TypeDb.MariaDb => AceLanguage.mysql,
+                TypeDb.SqlServer => AceLanguage.sqlserver,
+                _ => AceLanguage.sql
+                },
+            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
+        };
     }
 
     private void Cancel()
@@ -267,7 +286,7 @@
             _cts = new CancellationTokenSource();
             List<QueryCommandParameter>? param = new();
             _refQuery?.UpdateParameters();
-            if (Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]" ||
+            if ((Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]") ||
                 !string.IsNullOrEmpty(Header.QueryParameters))
             {
                 param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.QueryParameters);
@@ -278,17 +297,17 @@
                 var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
                 foreach (var value in desParam!)
                 {
-                    if(param!.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
+                    if (param!.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
                     {
                         param?.Add(value);
                     }
                 }
             }
-            var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20 , LastRunDateTime = Item.LastRunDateTime?? DateTime.Now, QueryCommandParameters = param};
-            var remoteDataPayload = new RemoteDataPayload {Values=run};
+            var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };
+            var remoteDataPayload = new RemoteDataPayload { Values = run };
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
             var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
                 if (result!.Success)
@@ -309,7 +328,6 @@
                 _data = new List<Dictionary<string, object>>();
                 _testResult = false;
             }
-
         }
         catch (Exception ex)
         {
@@ -320,6 +338,7 @@
     }
 
     private readonly DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true };
+
     private async Task OpenTestQuery()
     {
         _loading = true;
@@ -356,16 +375,16 @@
     private async Task DeleteTableConfirmation()
     {
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
-        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Deleting can not be undone!"), Localizer.Get("Confirm"), null, cancelText: Localizer.Get("Cancel"), dialogOptions);
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Deleting can not be undone!"), Localizer.Get("Confirm"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
         {
             var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";
-            var confirm=await Http.PostAsJsonAsync(uri, _param.DataTransferTargetTableName!);
-            if(confirm.IsSuccessStatusCode)
+            var confirm = await Http.PostAsJsonAsync(uri, _param.DataTransferTargetTableName!);
+            if (confirm.IsSuccessStatusCode)
             {
-                var feedback =await confirm.Content.ReadFromJsonAsync<SubmitResult>();
-                if(feedback != null && !feedback.Success)
+                var feedback = await confirm.Content.ReadFromJsonAsync<SubmitResult>();
+                if (feedback != null && !feedback.Success)
                 {
                     _queryTestResult = feedback.Message!;
                 }
@@ -377,4 +396,5 @@
     {
         _param.DataTransferCommandBehaviour = null;
     }
+
 }

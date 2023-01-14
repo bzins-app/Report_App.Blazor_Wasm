@@ -16,17 +16,25 @@
             {
                 <AuthorizeView Roles=@t.ActivityName>
                     <div>
-                        <hr style="margin-bottom:15px" />
+                        <hr style="margin-bottom: 15px"/>
                         <h5>@Localizer.Get("You have access to the activity"): @t.ActivityName</h5>
                         <p>@Localizer.Get("You can download the reports already created and consult the plan of the next report executions.")</p>
                         <MudGrid>
                             <MudItem sm="6" md="3">
-                                <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId"><span class="pcoded-micon"><i class="fa fa-arrow-right"></i></span><span class="pcoded-mtext"> @Localizer.Get("Retrieve reports")</span></a>
+                                <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId">
+                                    <span class="pcoded-micon">
+                                        <i class="fa fa-arrow-right"></i>
+                                    </span><span class="pcoded-mtext"> @Localizer.Get("Retrieve reports")</span>
+                                </a>
                             </MudItem>
                             @if (context.User.IsInRole("Supervisor"))
                             {
                                 <MudItem sm="6" md="3">
-                                    <a class="nav-link" href="TasksPerActivity/Report/@t.ActivityId/@t.ActivityName"><span class="pcoded-micon"><i class="fa fa-arrow-right"></i></span><span class="pcoded-mtext"> @Localizer.Get("Manage reports")</span></a>
+                                    <a class="nav-link" href="TasksPerActivity/Report/@t.ActivityId/@t.ActivityName">
+                                        <span class="pcoded-micon">
+                                            <i class="fa fa-arrow-right"></i>
+                                        </span><span class="pcoded-mtext"> @Localizer.Get("Manage reports")</span>
+                                    </a>
                                 </MudItem>
                             }
                         </MudGrid>
@@ -35,7 +43,7 @@
             }
         }
 
-@*        <AuthorizeView Roles="toDefine">
+        @*        <AuthorizeView Roles="toDefine">
             <div>
                 <hr style="margin-bottom:15px" />
                 <p>@Localizer.Get("Unfortunately, you do not yet have any access")</p>
@@ -45,7 +53,7 @@
 
         <AuthorizeView Roles="Supervisor">
             <div>
-                <hr style="margin-bottom:15px" />
+                <hr style="margin-bottom: 15px"/>
                 <h5>@Localizer.Get("You have the role"): Supervisor</h5>
                 <p>@Localizer.Get("You can create, edit and delete reports.")</p>
             </div>
@@ -53,7 +61,7 @@
 
         <AuthorizeView Roles="Admin">
             <div>
-                <hr style="margin-bottom:15px" />
+                <hr style="margin-bottom: 15px"/>
                 <h5>@Localizer.Get("You have the role"): Administrator</h5>
                 <p>@Localizer.Get("You have full access to the general settings.")</p>
             </div>
@@ -69,4 +77,5 @@
     {
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
+
 }

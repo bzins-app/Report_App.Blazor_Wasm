@@ -1,9 +1,10 @@
 ﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
 
-<MudSwitch Checked="@Item.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="((bool value)=>ChangeStatusAsync(value))" />
+<MudSwitch Checked="@Item.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)"/>
 
 @code {
+
     [Parameter]
     public TaskHeaderDto Item { get; set; } = new();
 
@@ -13,7 +14,7 @@
 
         if (Item.IsActivated)
         {
-            var activityActivated = (await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a=>a.ActivityId==Item.IdActivity).Select(a=> new { a.IsActivated, a.ActivityName }).FirstOrDefault();
+            var activityActivated = (await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a => a.ActivityId == Item.IdActivity).Select(a => new { a.IsActivated, a.ActivityName }).FirstOrDefault();
             if (!activityActivated!.IsActivated)
             {
                 Item.IsActivated = false;
@@ -29,7 +30,7 @@
 
                 return;
             }
-            if (string.IsNullOrEmpty(Item.CronParameters) && Item.CronParameters!="[]")
+            if (string.IsNullOrEmpty(Item.CronParameters) && Item.CronParameters != "[]")
             {
                 Item.IsActivated = false;
                 Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because the scheduler value is not defined"), Severity.Error);
@@ -52,4 +53,5 @@
 
         Snackbar.Add(Item.IsActivated ? Item.TaskName + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
     }
-    }
+
+}

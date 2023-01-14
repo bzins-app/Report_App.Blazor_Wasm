@@ -11,23 +11,22 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudTextField @bind-Value="_targetInfo.ActivityName" Label="@Localizer.Get("Activity name")" ReadOnly />
-        @if (_dbCon.TypeDb>0)
+        <MudTextField @bind-Value="_targetInfo.ActivityName" Label="@Localizer.Get("Activity name")" ReadOnly/>
+        @if (_dbCon.TypeDb > 0)
         {
+            <MudTextField @bind-Value="_dbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required Placeholder="IP or Hostname"/>
+            <MudSwitch @bind-Checked="_dbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary"/>
+            <MudTextField @bind-Value="_dbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!_dbCon.UseDbSchema"/>
+            <MudSwitch @bind-Checked="_dbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary"/>
+            <MudSwitch @bind-Checked="_dbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary"/>
+            <MudTextField @bind-Value="_dbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="_dbCon.AdAuthentication"/>
+            <MudTextField @bind-Value="_dbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="_dbCon.AdAuthentication"/>
 
-            <MudTextField @bind-Value="_dbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required Placeholder="IP or Hostname" />
-            <MudSwitch @bind-Checked="_dbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
-            <MudTextField @bind-Value="_dbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!_dbCon.UseDbSchema" />
-            <MudSwitch @bind-Checked="_dbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
-            <MudSwitch @bind-Checked="_dbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" />
-            <MudTextField @bind-Value="_dbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="_dbCon.AdAuthentication" />
-            <MudTextField @bind-Value="_dbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="_dbCon.AdAuthentication" />
-
-            <MudNumericField @bind-Value="_dbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" />
+            <MudNumericField @bind-Value="_dbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")"/>
             <MudButton Disabled="@_loading" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
                 @if (_loading)
                 {
-                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
                     <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
                 }
                 else
@@ -64,7 +63,6 @@
 
     private async Task ValidateActivity()
     {
-
         var result = await DataService.PostValues(_targetInfo, "ActivityUpdate");
         if (result.Success)
         {

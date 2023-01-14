@@ -1,14 +1,13 @@
-﻿
-<MudDialog>
+﻿<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1"/>
             @Localizer.Get("Add")
         </MudText>
     </TitleContent>
     <DialogContent>
         <MudForm @ref="@_form">
-            <MudTextField @bind-Value="ConfigurationName" Label="@(Localizer.Get("Configuration name"))" Required RequiredError="@Localizer.Get("Required")" />
+            <MudTextField @bind-Value="ConfigurationName" Label="@(Localizer.Get("Configuration name"))" Required RequiredError="@Localizer.Get("Required")"/>
         </MudForm>
 
     </DialogContent>
@@ -19,7 +18,10 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
     private MudForm _form = default!;
     private string ConfigurationName = string.Empty;
 
@@ -36,4 +38,5 @@
             MudDialog?.Close(DialogResult.Ok(ConfigurationName));
         }
     }
+
 }
