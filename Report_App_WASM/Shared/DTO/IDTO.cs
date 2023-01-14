@@ -1,6 +1,5 @@
-﻿namespace Report_App_WASM.Shared.DTO
+﻿namespace Report_App_WASM.Shared.DTO;
+
+public interface IDto
 {
-    public interface IDto
-    {
-    }
 }

@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Hangfire;
 using Hangfire.SqlServer;
@@ -15,8 +17,6 @@ using Report_App_WASM.Server.Services.RemoteDb;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
 using Report_App_WASM.Shared;
-using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,16 +25,17 @@ builder.Host.ConfigureLogging((hostingContext, logging) =>
     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
 
     logging.AddEntityFramework<ApplicationDbContext, ApplicationLogSystem>();
-
 });
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole<Guid>>()
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole<Guid>>()
     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 //builder.Services.AddIdentityServer()
@@ -65,7 +66,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = identityDefaultOptions.PasswordRequiredUniqueChars;
 
     // Lockout settings
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);
+    options.Lockout.DefaultLockoutTimeSpan =
+        TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);
     options.Lockout.MaxFailedAccessAttempts = identityDefaultOptions.LockoutMaxFailedAccessAttempts;
     options.Lockout.AllowedForNewUsers = identityDefaultOptions.LockoutAllowedForNewUsers;
 
@@ -87,9 +89,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddOData(
-options => options.AddRouteComponents(
-"odata", OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddOData(
+    options => options.AddRouteComponents(
+        "odata", OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 
 builder.Services.AddRazorPages();
 
@@ -98,7 +100,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Reporting tool", Version = "v1" });
     c.DocumentFilter<SwaggerFilters>();
-
 });
 
 
@@ -124,10 +125,7 @@ builder.Services.AddHangfireServer(options =>
 });
 builder.Services.AddDirectoryBrowser();
 
-var mapperConfig = new MapperConfiguration(mc =>
-{
-    mc.AddProfile(new MappingProfile());
-});
+var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
 
 var mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
@@ -137,7 +135,6 @@ var env = builder.Environment;
 
 using (var scope = app.Services.CreateScope())
 {
-
     var services = scope.ServiceProvider;
     try
     {
@@ -147,7 +144,8 @@ using (var scope = app.Services.CreateScope())
         var dbInit = services.GetRequiredService<InitializeDatabase>();
 
         dbInit.InitializeAsync().Wait();
-        HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", "")).FirstOrDefault();
+        HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
+            .FirstOrDefault();
         var parameters = context.ApplicationParameters.FirstOrDefault();
         ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
         ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
@@ -178,13 +176,9 @@ else
 }
 
 if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/docsstorage")))
-{
     Directory.CreateDirectory(Path.Combine(env.ContentRootPath, "wwwroot/docsstorage"));
-}
 if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/upload")))
-{
     Directory.CreateDirectory(Path.Combine(env.ContentRootPath, "wwwroot/upload"));
-}
 
 //app.UseResponseCompression();
 app.UseHttpsRedirection();
@@ -210,10 +204,7 @@ app.UseHangfireDashboard("/HangfireRead", new DashboardOptions
 });
 
 app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-});
+app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
 
 app.MapRazorPages();
 app.MapControllers();

@@ -7,7 +7,7 @@
                                CrudAction.Update => Icons.Material.Filled.Edit,
                                CrudAction.Create => Icons.Material.Filled.Create,
                                _ => Icons.Material.Filled.DeleteForever
-                               } )" Class="mr-3 mb-n1" />
+                               })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
                 CrudAction.Update => "Edit",
@@ -17,31 +17,38 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm Model="@Model" @ref="@_form" Validation="@(_userValidator?.ValidateValue)" >
-            <MudTextField @bind-Value="Model.UserName" Label="@Localizer.Get("Name")" For="@(()=>Model.UserName)" Disabled="Action != CrudAction.Create" />
-            <MudTextField @bind-Value="Model.Email" Label="@Localizer.Get("Email")" For="@(()=>Model.Email)" InputType="InputType.Email" Disabled="Action != CrudAction.Create" />
-            <MudTextField @bind-Value="Model.Password" Label="@Localizer.Get("Password")" For="@(()=>Model.Password)" InputType="InputType.Password" Disabled="Action != CrudAction.Create" />
-            <MudTextField @bind-Value="Model.ConfirmPassword" Label="@Localizer.Get("Confirm Password")" For="@(()=>Model.ConfirmPassword)" InputType="InputType.Password" Disabled="Action != CrudAction.Create" />
+        <MudForm Model="@Model" @ref="@_form" Validation="@(_userValidator?.ValidateValue)">
+            <MudTextField @bind-Value="Model.UserName" Label="@Localizer.Get("Name")" For="@(() => Model.UserName)" Disabled="Action != CrudAction.Create"/>
+            <MudTextField @bind-Value="Model.Email" Label="@Localizer.Get("Email")" For="@(() => Model.Email)" InputType="InputType.Email" Disabled="Action != CrudAction.Create"/>
+            <MudTextField @bind-Value="Model.Password" Label="@Localizer.Get("Password")" For="@(() => Model.Password)" InputType="InputType.Password" Disabled="Action != CrudAction.Create"/>
+            <MudTextField @bind-Value="Model.ConfirmPassword" Label="@Localizer.Get("Confirm Password")" For="@(() => Model.ConfirmPassword)" InputType="InputType.Password" Disabled="Action != CrudAction.Create"/>
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-                <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")"/>
         }
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@Localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+        <MudButton Color="Action == CrudAction.Delete ? Color.Error : Color.Primary" OnClick="Validate">@Localizer.Get(Action == CrudAction.Delete ? "Delete" : "Validate")</MudButton>
     </DialogActions>
 </MudDialog>
-@code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public ApplicationUserDto Item { get; set; } = null!;
-    [Parameter] public CrudAction Action { get; set; }
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public ApplicationUserDto Item { get; set; } = null!;
+
+    [Parameter]
+    public CrudAction Action { get; set; }
+
     private MudForm? _form;
-    private UserFormModel Model { get; set; } = new();
+    private UserFormModel Model { get; } = new();
     private string? _deletionValidation;
-    private UserFormModelValidator? _userValidator ;
+    private UserFormModelValidator? _userValidator;
 
     protected override void OnParametersSet()
     {
@@ -93,4 +100,5 @@
             MudDialog?.Close(DialogResult.Ok(Item));
         }
     }
+
 }

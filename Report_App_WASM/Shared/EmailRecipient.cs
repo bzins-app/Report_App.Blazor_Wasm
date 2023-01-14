@@ -1,8 +1,7 @@
-﻿namespace Report_App_WASM.Shared
+﻿namespace Report_App_WASM.Shared;
+
+public class EmailRecipient
 {
-    public class EmailRecipient
-    {
-        public string? Email { get; init; }
-        public bool Bcc { get; set; } = false;
-    }
+    public string? Email { get; init; }
+    public bool Bcc { get; set; } = false;
 }

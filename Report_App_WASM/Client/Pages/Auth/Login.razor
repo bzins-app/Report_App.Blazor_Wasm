@@ -9,10 +9,10 @@
 @if (_ldap)
 {
     <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="LoginParameters">
-        <DataAnnotationsValidator />
-        <div class="row" style="padding-left:1rem">
+        <DataAnnotationsValidator/>
+        <div class="row" style="padding-left: 1rem">
             <div class="mb-4 col-2">
-                <img src="/images/windows-Logo.png" alt="" style="max-width: 95%; max-height: 40px;" />
+                <img src="/images/windows-Logo.png" alt="" style="max-height: 40px; max-width: 95%;"/>
             </div>
             <div class="col-10">
                 <h3 class="mb-4">@Localizer.Get("Windows authentication")</h3>
@@ -20,22 +20,24 @@
         </div>
 
         <div class="input-group mb-3">
-            <InputText id="inputUsername" class="form-control" @bind-Value="LoginParameters.UserName" autofocus placeholder="@Localizer.Get("Firstname.Lastname")" />
+            <InputText id="inputUsername" class="form-control" @bind-Value="LoginParameters.UserName" autofocus placeholder="@Localizer.Get("Firstname.Lastname")"/>
         </div>
-        <ValidationMessage For="@(() => LoginParameters.UserName)" />
+        <ValidationMessage For="@(() => LoginParameters.UserName)"/>
         <div class="input-group mb-4">
-            <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password" />
+            <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password"/>
         </div>
-        <ValidationMessage For="@(() => LoginParameters.Password)" />
-        <div class="form-group text-left" style="padding-bottom:10px">
+        <ValidationMessage For="@(() => LoginParameters.Password)"/>
+        <div class="form-group text-left" style="padding-bottom: 10px">
             <div class="checkbox checkbox-fill d-inline">
-                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe" />
+                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe"/>
                 <label for="checkbox-fill-a1" class="cr">@Localizer.Get("Save credentials")</label>
             </div>
         </div>
         <div>
             <button type="submit" class="btn btn-primary shadow-2 mb-4">@Localizer.Get("Login")</button>
-            <p class="mb-2 text-muted">@Localizer.Get("Need to connect locally?") <MudLink id="local-login" OnClick="ChangeTypeLogin">@Localizer.Get("Local login")</MudLink></p>
+            <p class="mb-2 text-muted">
+                @Localizer.Get("Need to connect locally?") <MudLink id="local-login" OnClick="ChangeTypeLogin">@Localizer.Get("Local login")</MudLink>
+            </p>
         </div>
 
         <label class="text-danger">@Error</label>
@@ -44,27 +46,29 @@
 else
 {
     <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="LoginParameters">
-        <DataAnnotationsValidator />
+        <DataAnnotationsValidator/>
         <h3 class="mb-4">@Localizer.Get("Login")</h3>
 
         <div class="input-group mb-3">
-            <InputText id="inputUsername" class="form-control" @bind-Value="LoginParameters.UserName" autofocus placeholder="@Localizer.Get("Email")" />
+            <InputText id="inputUsername" class="form-control" @bind-Value="LoginParameters.UserName" autofocus placeholder="@Localizer.Get("Email")"/>
         </div>
-        <ValidationMessage For="@(() => LoginParameters.UserName)" />
+        <ValidationMessage For="@(() => LoginParameters.UserName)"/>
         <div class="input-group mb-4">
-            <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password" />
+            <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password"/>
         </div>
-        <ValidationMessage For="@(() => LoginParameters.Password)" />
-        <div class="form-group text-left" style="padding-bottom:10px">
+        <ValidationMessage For="@(() => LoginParameters.Password)"/>
+        <div class="form-group text-left" style="padding-bottom: 10px">
             <div class="checkbox checkbox-fill d-inline">
-                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe" />
+                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe"/>
                 <label for="checkbox-fill-a1" class="cr">@Localizer.Get("Save credentials")</label>
             </div>
         </div>
         <div>
             <button type="submit" class="btn btn-primary shadow-2 mb-4">@Localizer.Get("Login")</button>
         </div>
-        <p class="mb-2 text-muted">@Localizer.Get("Forgot password?") <MudLink OnClick="RedirectForgotPassword" id="forgot-password">@Localizer.Get("Reset")</MudLink></p>
+        <p class="mb-2 text-muted">
+            @Localizer.Get("Forgot password?") <MudLink OnClick="RedirectForgotPassword" id="forgot-password">@Localizer.Get("Reset")</MudLink>
+        </p>
 
         <label class="text-danger">@Error</label>
 
@@ -73,7 +77,7 @@ else
 
 
 @code {
-    LoginParameters LoginParameters { get; set; } = new();
+    LoginParameters LoginParameters { get; } = new();
     string? Error { get; set; }
     bool _ldap;
 
@@ -114,4 +118,5 @@ else
     {
         NavigationManager.NavigateTo("/ForgotPassword");
     }
+
 }

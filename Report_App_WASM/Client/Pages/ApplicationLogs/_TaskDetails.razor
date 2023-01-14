@@ -1,5 +1,4 @@
-﻿
-<MudCard Style="overflow-y:auto;max-height:70vh">
+﻿<MudCard Style="max-height: 70vh; overflow-y: auto;">
     <MudCardContent>
         <MudTimeline TimelinePosition="TimelinePosition.Start">
             @foreach (var d in _details.OrderByDescending(a => a.TimeStamp))
@@ -51,7 +50,10 @@
 
 
 @code {
-    [Parameter] public int TaskId { get; set; }
+
+    [Parameter]
+    public int TaskId { get; set; }
+
     private List<ApplicationLogTaskDetailsDto> _details = new();
 
     protected override async Task OnInitializedAsync()
@@ -59,4 +61,5 @@
         var uri = $"GetLogTaskDetails?LogTaskHeaderId={TaskId}";
         _details = await DataService.GetValues<ApplicationLogTaskDetailsDto>(uri);
     }
+
 }

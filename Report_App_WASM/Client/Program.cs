@@ -1,3 +1,4 @@
+using System.Globalization;
 using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -9,7 +10,6 @@ using Report_App_WASM.Client.Services;
 using Report_App_WASM.Client.Services.Contracts;
 using Report_App_WASM.Client.Services.Implementations;
 using Report_App_WASM.Client.Utils;
-using System.Globalization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -18,7 +18,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<IdentityAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
+builder.Services.AddScoped<AuthenticationStateProvider>(
+    s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
 builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<DataInteractionService>();
@@ -46,17 +47,14 @@ else
     culture = new CultureInfo(browserLanguage[..2]);
     await jsInterop.InvokeVoidAsync("cultureInfo.set", browserLanguage[..2]);
 }
+
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
 var resultTheme = await jsInterop.InvokeAsync<string>("AppTheme.get");
 if (resultTheme != null)
-{
     UserAppTheme.DarkTheme = resultTheme == "Dark";
-}
 else
-{
     await jsInterop.InvokeVoidAsync("AppTheme.set", "Light");
-}
 
 
 await builder.Build().RunAsync();

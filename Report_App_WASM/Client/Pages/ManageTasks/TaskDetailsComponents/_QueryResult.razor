@@ -1,6 +1,5 @@
-﻿
-<div class="form-group">
-    <p style="color:red">@QueryTestResult</p>
+﻿<div class="form-group">
+    <p style="color: red">@QueryTestResult</p>
 </div>
 @if (TestResult)
 {
@@ -31,17 +30,23 @@
             }
         </RowTemplate>
         <PagerContent>
-            <MudTablePager RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}","{","}",Localizer.Get("of") )" />
+            <MudTablePager RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
         </PagerContent>
     </MudTable>
 }
-<hr />
+<hr/>
 
 @code {
 
-    [Parameter] public List<Dictionary<string, object>>? Data { get; set; }
-    [Parameter] public string? QueryTestResult { get; set; }
-    [Parameter] public bool TestResult { get; set; }
+    [Parameter]
+    public List<Dictionary<string, object>>? Data { get; set; }
+
+    [Parameter]
+    public string? QueryTestResult { get; set; }
+
+    [Parameter]
+    public bool TestResult { get; set; }
+
     private List<Dictionary<string, object>>? _values = new();
 
 
@@ -52,4 +57,5 @@
             _values = Data;
         }
     }
+
 }

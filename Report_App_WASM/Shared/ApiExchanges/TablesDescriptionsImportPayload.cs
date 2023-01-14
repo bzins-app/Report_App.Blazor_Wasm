@@ -1,8 +1,7 @@
-﻿namespace Report_App_WASM.Shared.ApiExchanges
+﻿namespace Report_App_WASM.Shared.ApiExchanges;
+
+public class TablesDescriptionsImportPayload
 {
-    public class TablesDescriptionsImportPayload
-    {
-        public int ActivityDbConnectionId { get; set; }
-        public string? FilePath { get; set; }
-    }
+    public int ActivityDbConnectionId { get; set; }
+    public string? FilePath { get; set; }
 }

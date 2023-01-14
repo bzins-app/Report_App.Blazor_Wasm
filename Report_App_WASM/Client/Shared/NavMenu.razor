@@ -5,18 +5,18 @@
 <MudNavMenu Color="Color.Info" Bordered="true" Margin="Margin.Normal">
     <MudText Typo="Typo.h6" Class="px-4">
         <a href="/">
-            <div style="height:64px;  display: flex; justify-content: center; align-items: center; font-size:17px">
+            <div style="align-items: center; display: flex; font-size: 17px; height: 64px; justify-content: center;">
                 <span class="logo-sm">
-                    <img src="images/AppLogo.png" style="-webkit-filter:invert(100%)" alt="" height="30">
+                    <img src="images/AppLogo.png" style="-webkit-filter: invert(100%)" alt="" height="30">
                 </span>
                 <span class="logo-lg" style="flex: none;">
-                    <span style="color:white; padding-left:5px">@_appConst?.ApplicationName</span>
+                    <span style="color: white; padding-left: 5px">@_appConst?.ApplicationName</span>
                 </span>
             </div>
         </a>
     </MudText>
-    <MudDivider />
-    <MudNavLink Href="Home" Style="padding-top:15px" Icon="@Icons.Material.Outlined.Home">@Localizer.Get("Home")</MudNavLink>
+    <MudDivider/>
+    <MudNavLink Href="Home" Style="padding-top: 15px" Icon="@Icons.Material.Outlined.Home">@Localizer.Get("Home")</MudNavLink>
     <MudNavLink Href="DashboardApp" Icon="@Icons.Material.Outlined.AreaChart">@Localizer.Get("Dashboard")</MudNavLink>
     @if (_appConst != null && _appConst.ActivateTaskSchedulerModule)
     {
@@ -24,7 +24,7 @@
             @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
             {
                 <AuthorizeView Roles=@(t.ActivityName)>
-                    <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">
+                    <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
                         @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
                             <MudNavLink Href="@("ReportsPerActivity/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Run reports manually")</MudNavLink>
@@ -39,13 +39,13 @@
             }
         </MudNavGroup>
     }
-    @if (_appConst != null&& _appConst.ActivateAdHocQueriesModule)
+    @if (_appConst != null && _appConst.ActivateAdHocQueriesModule)
     {
         <MudNavGroup Title="@Localizer.Get("Ad hoc queries")" Icon="@Icons.Material.Outlined.Analytics">
             @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
             {
                 <AuthorizeView Roles=@(t.ActivityName)>
-                    <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode?"background:#0e1824cc;":"background:#000c17;")">
+                    <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
                         <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
                         <MudNavLink Href=@($"DbExplorer/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
                     </MudNavGroup>
@@ -106,13 +106,15 @@
 </MudNavMenu>
 <MudDivider Class="mt-auto"></MudDivider>
 <MudNavMenu Class="d-flex justify-space-between pa-4">
-    <MudLink Href="#" Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">@@2022</MudLink>
-    <MudText Class="" Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">version 0.9.6</MudText>
+    <MudLink Href="#" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">@@2022</MudLink>
+    <MudText Class="" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">version 0.9.6</MudText>
 </MudNavMenu>
 
 @code {
 
-    [Parameter] public bool IsDarkMode { get; set; }
+    [Parameter]
+    public bool IsDarkMode { get; set; }
+
     private List<SelectItemActivitiesInfo> _activities = new();
     private ApplicationConstantsValues? _appConst;
 

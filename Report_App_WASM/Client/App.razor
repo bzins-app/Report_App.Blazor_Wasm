@@ -5,20 +5,20 @@
                 <NotAuthorized>
                     @if (context.User.Identity?.IsAuthenticated == true)
                     {
-                        <_403 />
+                        <_403/>
                     }
                     else
                     {
-                        <RedirectToLogin />
+                        <RedirectToLogin/>
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
         </Found>
         <NotFound>
             <PageTitle>@Localizer.Get("Not found")</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <_404 />
+                <_404/>
             </LayoutView>
         </NotFound>
     </Router>

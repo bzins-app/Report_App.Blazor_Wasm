@@ -5,7 +5,9 @@
     <DialogContent >
         @if (DisplayTagMessage)
         {
-            <p><b> @Localizer.Get("Warning: keep the {0} tag inner the message to see the values ​​of the variable") </b></p>
+            <p>
+                <b> @Localizer.Get("Warning: keep the {0} tag inner the message to see the values ​​of the variable") </b>
+            </p>
         }
         <textarea id="@_id"
           value="@HtmlText"></textarea>
@@ -17,11 +19,16 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
     [Parameter]
     public string? HtmlText { get; set; }
+
     [Parameter]
     public bool DisplayTagMessage { get; set; }
+
     private DotNetObjectReference<_TextEditor>? _objRef;
     string? _id;
 
@@ -58,4 +65,5 @@
     {
         MudDialog?.Close(DialogResult.Ok(HtmlText));
     }
+
 }

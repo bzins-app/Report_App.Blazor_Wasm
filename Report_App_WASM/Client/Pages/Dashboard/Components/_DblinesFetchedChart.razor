@@ -3,29 +3,31 @@
 @using Color = MudBlazor.Color
 @if (_logs == null)
 {
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
 }
 else
 {
     <ApexChart TItem="DbLinesQuery"
-           Title="@Localizer.Get("Nbr of rows fetched from databases")"
-           Height="@Height"
-           XAxisType="XAxisType.Datetime" Options="_options"
-           @ref=_chart>
+               Title="@Localizer.Get("Nbr of rows fetched from databases")"
+               Height="@Height"
+               XAxisType="XAxisType.Datetime" Options="_options"
+               @ref=_chart>
 
         <ApexPointSeries TItem="DbLinesQuery"
-                     Items="_logs.OrderBy(a=>a.Date)"
-                     Name="@Localizer.Get("Nbr of rows")"
-                     SeriesType="SeriesType.Line"
-                     XValue="@(e => e.Date.ToLocalTime())"
-                     YAggregate="@(e => e.Sum(a=>a.NbrOfRows))"
-                     Stroke="@(new SeriesStroke { Width = 2, Color="#1F15E5"})" />
+                         Items="_logs.OrderBy(a => a.Date)"
+                         Name="@Localizer.Get("Nbr of rows")"
+                         SeriesType="SeriesType.Line"
+                         XValue="@(e => e.Date.ToLocalTime())"
+                         YAggregate="@(e => e.Sum(a => a.NbrOfRows))"
+                         Stroke="@(new SeriesStroke { Width = 2, Color = "#1F15E5" })"/>
     </ApexChart>
 }
 
 
 @code {
-    [Parameter] public string? Height { get; set; } = null;
+
+    [Parameter]
+    public string? Height { get; set; } = null;
 
     private List<DbLinesQuery>? _logs;
     private ApexChartOptions<DbLinesQuery> _options = new();
@@ -36,4 +38,5 @@ else
         _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", ApiControllers.DashboardApi);
         _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
     }
+
 }

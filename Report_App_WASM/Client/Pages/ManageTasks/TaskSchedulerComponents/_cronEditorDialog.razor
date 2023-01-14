@@ -1,7 +1,7 @@
 ﻿<MudDialog >
     <DialogContent>
-        <MudStack Spacing="0" Style="overflow-y:auto;max-height:80vh">
-        <_CronEditor @bind-Value="Value"/>
+        <MudStack Spacing="0" Style="max-height: 80vh; overflow-y: auto;">
+            <_CronEditor @bind-Value="Value"/>
         </MudStack>
     </DialogContent>
     <DialogActions>
@@ -9,9 +9,14 @@
         <MudButton Color="Color.Primary" OnClick="Validate">@Localizer.Get("Validate")</MudButton>
     </DialogActions>
 </MudDialog>
+
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
-    [Parameter] public string? Value { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public string? Value { get; set; }
 
     private void Cancel()
     {
@@ -22,4 +27,5 @@
     {
         MudDialog?.Close(DialogResult.Ok(Value));
     }
+
 }

@@ -6,7 +6,7 @@
                                CrudAction.Update => Icons.Material.Filled.Edit,
                                CrudAction.Create => Icons.Material.Filled.Create,
                                _ => Icons.Material.Filled.DeleteForever
-                               } )" Class="mr-3 mb-n1" />
+                               })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
                 CrudAction.Update => "Edit",
@@ -17,31 +17,38 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
-            <MudSwitch @bind-Checked="Item!.UseFtpProtocol" Label="@Localizer.Get("FTP?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete" />
-            <MudTextField @bind-Value="Item!.Host" Label="@Localizer.Get("Host")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
+            <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
+            <MudSwitch @bind-Checked="Item!.UseFtpProtocol" Label="@Localizer.Get("FTP?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item!.Host" Label="@Localizer.Get("Host")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             @if (Item != null && !Item.UseFtpProtocol)
             {
-                <MudNumericField @bind-Value="Item.Port" Label="@Localizer.Get("Sftp port")" Disabled="Action==CrudAction.Delete" />
+                <MudNumericField @bind-Value="Item.Port" Label="@Localizer.Get("Sftp port")" Disabled="Action == CrudAction.Delete"/>
             }
-            <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("User name")" Disabled="Action==CrudAction.Delete" />
-            <MudTextField @bind-Value="Item!.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="Action==CrudAction.Delete" />
+            <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("User name")" Disabled="Action == CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item!.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="Action == CrudAction.Delete"/>
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")"/>
         }
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@Localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+        <MudButton Color="Action == CrudAction.Delete ? Color.Error : Color.Primary" OnClick="Validate">@Localizer.Get(Action == CrudAction.Delete ? "Delete" : "Validate")</MudButton>
     </DialogActions>
 </MudDialog>
-@code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public SftpConfigurationDto? Item { get; set; }
-    [Parameter] public CrudAction Action { get; set; }
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public SftpConfigurationDto? Item { get; set; }
+
+    [Parameter]
+    public CrudAction Action { get; set; }
+
     private MudForm _form = default!;
     private string? _deletionValidation;
 
@@ -68,4 +75,5 @@
             }
         }
     }
+
 }

@@ -6,7 +6,7 @@
                                CrudAction.Update => Icons.Material.Filled.Edit,
                                CrudAction.Create => Icons.Material.Filled.Create,
                                _ => Icons.Material.Filled.DeleteForever
-                               } )" Class="mr-3 mb-n1" />
+                               })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
                 CrudAction.Update => "Edit",
@@ -17,22 +17,22 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
-            <MudTextField @bind-Value="Item!.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action==CrudAction.Delete" />
-            <MudSwitch @bind-Checked="Item!.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete" />
-            <MudSwitch @bind-Checked="Item!.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action==CrudAction.Delete" />
+            <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item!.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
+            <MudSwitch @bind-Checked="Item!.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
+            <MudSwitch @bind-Checked="Item!.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
             <MudSelect T="int" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="_sftpConfigurationId"
                        AnchorOrigin="Origin.BottomCenter" Disabled="!Item!.UseSftpProtocol"
                        Required>
                 @foreach (var value in _listConfigs)
                 {
-                    <MudSelectItem Value="@value.Id" >@value.Name</MudSelectItem>
+                    <MudSelectItem Value="@value.Id">@value.Name</MudSelectItem>
                 }
             </MudSelect>
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering")+": Validate")" Required RequiredError="@Localizer.Get("Required")" />
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")"/>
         }
         else
         {
@@ -42,14 +42,21 @@
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action==CrudAction.Delete?Color.Error:Color.Primary" OnClick="Validate">@Localizer.Get(Action==CrudAction.Delete?"Delete":"Validate")</MudButton>
+        <MudButton Color="Action == CrudAction.Delete ? Color.Error : Color.Primary" OnClick="Validate">@Localizer.Get(Action == CrudAction.Delete ? "Delete" : "Validate")</MudButton>
     </DialogActions>
 </MudDialog>
-@code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public FileDepositPathConfigurationDto? Item { get; set; }
-    [Parameter] public CrudAction Action { get; set; }
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public FileDepositPathConfigurationDto? Item { get; set; }
+
+    [Parameter]
+    public CrudAction Action { get; set; }
+
     private List<SelectItem> _listConfigs = new();
     private MudForm _form = default!;
     private string _deletionValidation = null!;
@@ -67,11 +74,11 @@
         var controllerActionListConfigs = "SftpInfo";
         _listConfigs = await DataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
         Item!.SftpConfiguration = new SftpConfigurationDto();
-        if (Action != CrudAction.Create && Item.FileDepositPathConfigurationId>0)
+        if (Action != CrudAction.Create && Item.FileDepositPathConfigurationId > 0)
         {
             var contollerSftpConfig = $"GetSTFPConfiguration?SftpConfigurationId={Item.FileDepositPathConfigurationId}";
             SftpConfigurationDto config = new();
-            config= await DataService.GetUniqueValue(config, contollerSftpConfig);
+            config = await DataService.GetUniqueValue(config, contollerSftpConfig);
             if (config != null)
             {
                 Item.SftpConfiguration = config;
@@ -85,7 +92,7 @@
     {
         if (Action == CrudAction.Delete)
         {
-            if (_deletionValidation=="Validate")
+            if (_deletionValidation == "Validate")
             {
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
@@ -95,7 +102,7 @@
             await _form.Validate();
             if (_form.IsValid)
             {
-                if (_sftpConfigurationId != null || _sftpConfigurationId>0)
+                if (_sftpConfigurationId != null || _sftpConfigurationId > 0)
                 {
                     var contollerSftpConfig = $"GetSTFPConfiguration?SftpConfigurationId={_sftpConfigurationId}";
                     SftpConfigurationDto config = new();
@@ -111,7 +118,7 @@
     {
         var payload = new DepositPathTest { UseSftpProtocol = Item!.UseSftpProtocol, SftpConfigurationId = _sftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
         var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi);
-        if(result.Success)
+        if (result.Success)
         {
             _directoryTestResult = "OK!";
         }
@@ -120,4 +127,5 @@
             _directoryTestResult = result.Message;
         }
     }
+
 }

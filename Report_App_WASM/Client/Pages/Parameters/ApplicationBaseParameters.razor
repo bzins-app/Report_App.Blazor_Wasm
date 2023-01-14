@@ -16,19 +16,19 @@
     </MudCardHeader>
     <MudCardContent>
         <MudForm Model="@_param" @ref="_form" @bind-IsValid="@_success">
-            <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required />
-            <MudSwitch @bind-Checked="_param!.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary" />
-            <MudSwitch @bind-Checked="_param!.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary" />
-            <MudNumericField @bind-Value="_param.LogsRetentionInDays" Label="@Localizer.Get("Logs: Archiving duration")" />
-            <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required />
-            <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required />
-            <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required />
+            <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required/>
+            <MudSwitch @bind-Checked="_param!.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary"/>
+            <MudSwitch @bind-Checked="_param!.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary"/>
+            <MudNumericField @bind-Value="_param.LogsRetentionInDays" Label="@Localizer.Get("Logs: Archiving duration")"/>
+            <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required/>
+            <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required/>
+            <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required/>
             <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Edit error email")</MudButton>
             <MudText Typo="Typo.h6" Class="pa-4">@Localizer.Get("Logo")</MudText>
-            <div style="padding-bottom:5px">
+            <div style="padding-bottom: 5px">
                 @if (!string.IsNullOrEmpty(_param.ApplicationLogo))
                 {
-                    <MudImage Src="@_param.ApplicationLogo" style="max-width:150px;max-height:200px;" Alt="@_param.ApplicationName" Elevation="2" />
+                    <MudImage Src="@_param.ApplicationLogo" style="max-height: 200px; max-width: 150px;" Alt="@_param.ApplicationName" Elevation="2"/>
                 }
             </div>
             <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" Accept=".jpg, .jpeg, .png, .gif">
@@ -39,15 +39,17 @@
                             Label="@Localizer.Get("Select application Logo")"
                             Size="Size.Small"
                             Style="text-transform: none"
-                            for="@context" />
+                            for="@context"/>
                 </ButtonTemplate>
             </MudFileUpload>
         </MudForm>
-        <div style="padding-top:15px">
+        <div style="padding-top: 15px">
             <MudTextField T="string" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="@_email"
-                          Validation="@CheckMail()" />
+                          Validation="@CheckMail()"/>
             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small"
-                       Class="ml-auto mt-3 mb-3" OnClick="@(()=>Add())">@Localizer.Get("Add recipient")</MudButton>
+                       Class="ml-auto mt-3 mb-3" OnClick="@(() => Add())">
+                @Localizer.Get("Add recipient")
+            </MudButton>
             <MudTable Items="@_emailItems" Hover="true" Dense="true">
                 <HeaderContent>
                     <MudTh>@Localizer.Get("Email")</MudTh>
@@ -56,8 +58,12 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
-                    <MudTd DataLabel="@Localizer.Get("Blind copy")"><MudSwitch Checked="@context.Bcc" CheckedChanged="(bool value)=>ChangeBccValue(context, value)" Color="Color.Primary" /></MudTd>
-                    <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="()=>Delete(context)"></MudIconButton></MudTd>
+                    <MudTd DataLabel="@Localizer.Get("Blind copy")">
+                        <MudSwitch Checked="@context.Bcc" CheckedChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
+                    </MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>
+                    </MudTd>
                 </RowTemplate>
             </MudTable>
         </div>
@@ -115,13 +121,13 @@
     {
         if (_filesToDelete.Any())
         {
-            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+    //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
         await DataService.PostValues(_param, "ApplicationParametersUpdate");
         StateHasChanged();
         if (_initialAppLogo != _param.ApplicationLogo || _initialAppName != _param.ApplicationLogo)
         {
-            UriHelper.NavigateTo("/", forceLoad: true);
+            UriHelper.NavigateTo("/", true);
         }
         else
         {
@@ -135,7 +141,7 @@
         if (!string.IsNullOrEmpty(_completeLogoPath))
         {
             _filesToDelete.Add(_completeLogoPath);
-            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+    //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
         UriHelper.NavigateTo("/");
     }
@@ -180,8 +186,8 @@
         if (!string.IsNullOrEmpty(_email))
         {
             _emailNotValidated = !Regex.IsMatch(_email,
-            @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-            RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
         }
         else
         {
@@ -206,5 +212,5 @@
             _param.ErrorEMailMessage = result.Data.ToString();
         }
     }
-}
 
+}

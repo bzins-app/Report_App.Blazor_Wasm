@@ -1,6 +1,5 @@
-﻿namespace Report_App_WASM.Client.Utils.LanguageRessources
+﻿namespace Report_App_WASM.Client.Utils.LanguageRessources;
+
+public class CommonResources
 {
-    public class CommonResources
-    {
-    }
 }

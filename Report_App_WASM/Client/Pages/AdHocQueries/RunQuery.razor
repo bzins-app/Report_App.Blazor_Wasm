@@ -57,13 +57,13 @@
                 </MudForm>
             }
             <div class="d-flex align-center justify-space-between">
-                <div>        
+                <div>
                     <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary">
                         <LoadingContent>
                             <MudText>@Localizer.Get("Processing")</MudText>
                         </LoadingContent>
                         <ChildContent>
-                            <MudText>@Localizer.Get("Run the query")</MudText>                           
+                            <MudText>@Localizer.Get("Run the query")</MudText>
                         </ChildContent>
                     </MudLoadingButton>
                     @if (_loading)
@@ -81,7 +81,7 @@
         </MudPaper>
         @if (_extracting)
         {
-            <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
+            <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
         }
         <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="59vh" Striped="true" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
             <HeaderContent>
@@ -110,16 +110,23 @@
                 }
             </RowTemplate>
             <PagerContent>
-                <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}","{","}",Localizer.Get("of") )" />
+                <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
             </PagerContent>
         </MudTable>
     </MudCardContent>
 </MudCard>
 
 @code {
-    [Parameter] public int QueryId { get; set; }
-    [Parameter] public string ActivityName { get; set; } = default!;
-    [Parameter] public int ActivityId { get; set; }
+
+    [Parameter]
+    public int QueryId { get; set; }
+
+    [Parameter]
+    public string ActivityName { get; set; } = default!;
+
+    [Parameter]
+    public int ActivityId { get; set; }
+
     private QueryStoreDto? Item;
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam;
@@ -185,7 +192,7 @@
         _loading = true;
         var currentPage = state.Page;
         var pageSize = state.PageSize;
-        bool getTotalElements = false;
+        var getTotalElements = false;
         if (!_hasTotal)
         {
             getTotalElements = true;
@@ -196,8 +203,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else
-        if (string.IsNullOrEmpty(Item.Query))
+        else if (string.IsNullOrEmpty(Item.Query))
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -211,7 +217,7 @@
             {
                 _cts = new CancellationTokenSource();
 
-                using HttpClient _httpClientLong = new HttpClient();
+                using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
                 var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
@@ -230,7 +236,6 @@
                             _total = result.TotalElements;
                             _hasTotal = true;
                         }
-
                     }
                     else
                     {
@@ -243,7 +248,7 @@
                 {
                     _hasTotal = false;
                     _values = new List<Dictionary<string, object>>();
-                    _errorMessage=response.Content.ToString();
+                    _errorMessage = response.Content.ToString();
                 }
             }
             catch (Exception ex)
@@ -284,4 +289,5 @@
     {
         GC.SuppressFinalize(this);
     }
+
 }

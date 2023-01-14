@@ -1,10 +1,9 @@
-﻿namespace Report_App_WASM.Server.Models.AuditModels
+﻿namespace Report_App_WASM.Server.Models.AuditModels;
+
+public enum AuditType
 {
-    public enum AuditType
-    {
-        None = 0,
-        Create = 1,
-        Update = 2,
-        Delete = 3
-    }
+    None = 0,
+    Create = 1,
+    Update = 2,
+    Delete = 3
 }
