@@ -238,7 +238,7 @@
     <value>Ajout d'une feuille de validation ?</value>
   </data>
   <data name="Adhoc queries overview" xml:space="preserve">
-    <value>Übersicht über Adhoc-Abfragen</value>
+    <value>Aperçu des requêtes adhoc</value>
   </data>
   <data name="Administrator email for error notifications" xml:space="preserve">
     <value>Emails pour les notifications d'erreur</value>
@@ -260,12 +260,6 @@
   </data>
   <data name="Alert title" xml:space="preserve">
     <value>Titre de l'alerte</value>
-  </data>
-  <data name="Alert title1" xml:space="preserve">
-    <value>Titre de l'alerte</value>
-  </data>
-  <data name="Alert1" xml:space="preserve">
-    <value>Alerte</value>
   </data>
   <data name="Alerts" xml:space="preserve">
     <value>Alertes</value>
@@ -439,7 +433,7 @@
     <value>Mise en cache activée?</value>
   </data>
   <data name="Calculate the total nbr of results?" xml:space="preserve">
-    <value>Die Gesamtzahl der Ergebnisse berechnen?</value>
+    <value>Calculer le nombre total de lignes ?</value>
   </data>
   <data name="Calculated date" xml:space="preserve">
     <value>Date calculée</value>
@@ -1078,7 +1072,7 @@
     <value>Requêtes SQL externes</value>
   </data>
   <data name="Extract descriptions" xml:space="preserve">
-    <value>Auszug Beschreibungen</value>
+    <value>Description des extraits</value>
   </data>
   <data name="Feb" xml:space="preserve">
     <value>Fév</value>
@@ -2182,7 +2176,7 @@
     <value>Gestionnaire de tâches</value>
   </data>
   <data name="Tasks overview" xml:space="preserve">
-    <value>Übersicht der Aufgaben</value>
+    <value>Aperçu des tâches</value>
   </data>
   <data name="Tasks per day" xml:space="preserve">
     <value>Tâches par jour</value>
@@ -2431,7 +2425,7 @@
     <value>Gestion des utilisateurs</value>
   </data>
   <data name="Users per role" xml:space="preserve">
-    <value>Benutzer pro Rolle</value>
+    <value>Utilisateurs par rôle</value>
   </data>
   <data name="Validate" xml:space="preserve">
     <value>Valider</value>
