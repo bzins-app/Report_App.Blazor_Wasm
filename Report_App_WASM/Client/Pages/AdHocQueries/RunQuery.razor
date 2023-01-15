@@ -140,6 +140,7 @@
     private bool _extracting;
     private bool _hasTotal;
     private int _total;
+    AdHocQueriesParameters parameters = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -173,6 +174,10 @@
                 }
             }
         }
+        if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
+        {
+            parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
+        }
     }
 
     private async Task ConfirmText()
@@ -193,7 +198,7 @@
         var currentPage = state.Page;
         var pageSize = state.PageSize;
         var getTotalElements = false;
-        if (!_hasTotal)
+        if (!_hasTotal&&parameters.CalculateTotalItems)
         {
             getTotalElements = true;
             _total = 0;
@@ -231,7 +236,7 @@
                     {
                         _values = result.Value;
                         _errorMessage = string.Empty;
-                        if (!_hasTotal)
+                        if (!_hasTotal && parameters.CalculateTotalItems)
                         {
                             _total = result.TotalElements;
                             _hasTotal = true;
