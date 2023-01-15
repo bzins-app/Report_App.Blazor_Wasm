@@ -63,6 +63,8 @@ public class BackgroundTaskHandler : IDisposable
         _header = (await _context.TaskHeader.Where(a => a.TaskHeaderId == parameters.TaskHeaderId)
             .Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients)
             .FirstOrDefaultAsync())!;
+        var _activityConnect = (await _context.ActivityDbConnection
+            .Where(a => a.Activity.ActivityId == _header.IdActivity).FirstOrDefaultAsync());
         ApplicationLogTask logTask = new()
         {
             ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now,
@@ -97,7 +99,7 @@ public class BackgroundTaskHandler : IDisposable
                 if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
                 foreach (var detail in _header.TaskDetails.OrderBy(a => a.DetailSequence))
                 {
-                    await FetchData(detail);
+                    await FetchData(detail, _activityConnect.TaskSchedulerMaxNbrofRowsFetched);
                     await _context.SaveChangesAsync("backgroundworker");
                 }
 
@@ -127,7 +129,7 @@ public class BackgroundTaskHandler : IDisposable
                         Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy
                     };
 
-                    await FetchData(detail);
+                    await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     log.TaskId = log.Id;
@@ -172,7 +174,7 @@ public class BackgroundTaskHandler : IDisposable
     }
 
 
-    private async Task FetchData(TaskDetail detail)
+    private async Task FetchData(TaskDetail detail, int maxRows=100000)
     {
         using var remoteDb = new RemoteDbConnection(_context, _mapper);
         var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!, _jsonOpt);
@@ -196,7 +198,7 @@ public class BackgroundTaskHandler : IDisposable
             {
                 ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName,
                 PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now,
-                QueryCommandParameters = param
+                QueryCommandParameters = param, MaxSize = maxRows
             }, _jobParameters.Cts, _taskId);
         await _context.AddAsync(new ApplicationLogTaskDetails
         {
@@ -676,17 +678,10 @@ public class BackgroundTaskHandler : IDisposable
             listAttach.AddRange(_fileResults.Select(a =>
                 new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
 
-            //to remove dirty code
-
-            if (_header.TaskName.StartsWith("#")) subject = _header.TaskName;
-
-            //
             var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
             if (listAttach.Any())
             {
-#pragma warning disable CS8604 // Possible null reference argument for parameter 'message' in 'Task<SubmitResult> IEmailSender.SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)'.
                 var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
-#pragma warning restore CS8604 // Possible null reference argument for parameter 'message' in 'Task<SubmitResult> IEmailSender.SendEmailAsync(List<EmailRecipient>? email, string? subject, string message, List<Attachment> attachment = null)'.
                 if (result.Success)
                     await _context.AddAsync(new ApplicationLogTaskDetails
                         { TaskId = _taskId, Step = "Email sent", Info = subject });

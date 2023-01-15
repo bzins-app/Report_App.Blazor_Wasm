@@ -237,6 +237,9 @@
   <data name="Add validation sheet?" xml:space="preserve">
     <value>Validatieblad toevoegen?</value>
   </data>
+  <data name="Adhoc queries overview" xml:space="preserve">
+    <value>Overzicht adhoc-query's</value>
+  </data>
   <data name="Administrator email for error notifications" xml:space="preserve">
     <value>Beheerder e-mail voor foutmeldingen</value>
   </data>
@@ -434,6 +437,9 @@
   </data>
   <data name="Cache Is Activated?" xml:space="preserve">
     <value>Cache is geactiveerd?</value>
+  </data>
+  <data name="Calculate the total nbr of results?" xml:space="preserve">
+    <value>Totaal aantal resultaten berekenen?</value>
   </data>
   <data name="Calculated date" xml:space="preserve">
     <value>Berekende datum</value>
@@ -1076,6 +1082,9 @@
   </data>
   <data name="External queries" xml:space="preserve">
     <value>Externe query's</value>
+  </data>
+  <data name="Extract descriptions" xml:space="preserve">
+    <value>Extract beschrijvingen</value>
   </data>
   <data name="Feb" xml:space="preserve">
     <value>Feb</value>
@@ -2184,6 +2193,9 @@
   <data name="Tasks manager" xml:space="preserve">
     <value>Taken manager</value>
   </data>
+  <data name="Tasks overview" xml:space="preserve">
+    <value>Overzicht van taken</value>
+  </data>
   <data name="Tasks per day" xml:space="preserve">
     <value>Taken per dag</value>
   </data>
@@ -2429,6 +2441,9 @@
   </data>
   <data name="Users management" xml:space="preserve">
     <value>Gebruikers beheer</value>
+  </data>
+  <data name="Users per role" xml:space="preserve">
+    <value>Gebruikers per rol</value>
   </data>
   <data name="Validate" xml:space="preserve">
     <value>Valideren</value>

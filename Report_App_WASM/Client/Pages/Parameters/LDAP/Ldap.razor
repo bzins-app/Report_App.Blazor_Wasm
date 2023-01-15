@@ -76,7 +76,9 @@
     {
         _itemsProvider = async req =>
         {
+            _rendering = true;
             var response = await GetRemoteData(req);
+            _rendering = false;
             if (response is null)
             {
                 return GridItemsProviderResult.From(Array.Empty<LdapConfigurationDto>(), 0);
@@ -102,7 +104,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<LdapConfigurationDto>>(url, req.CancellationToken);
+            return await DataService.GetODataValues<LdapConfigurationDto>(url, req.CancellationToken);
         }
         catch
         {

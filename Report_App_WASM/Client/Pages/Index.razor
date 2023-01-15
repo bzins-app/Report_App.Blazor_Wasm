@@ -15,7 +15,7 @@
             {
                 <AuthorizeView Roles=@t.ActivityName>
                     <div>
-                        <hr style="margin-bottom: 15px" />
+                        <hr style="margin-bottom: 15px"/>
                         <h5>@Localizer.Get("You have access to the activity"): @t.ActivityName</h5>
                         @if (_appConst.ActivateTaskSchedulerModule)
                         {
@@ -70,7 +70,7 @@
 
         <AuthorizeView Roles="Supervisor">
             <div>
-                <hr style="margin-bottom: 15px" />
+                <hr style="margin-bottom: 15px"/>
                 <h5>@Localizer.Get("You have the role"): Supervisor</h5>
                 <p>@Localizer.Get("You can create, edit and delete reports.")</p>
             </div>
@@ -78,7 +78,7 @@
 
         <AuthorizeView Roles="Admin">
             <div>
-                <hr style="margin-bottom: 15px" />
+                <hr style="margin-bottom: 15px"/>
                 <h5>@Localizer.Get("You have the role"): Administrator</h5>
                 <p>@Localizer.Get("You have full access to the general settings.")</p>
             </div>

@@ -86,6 +86,19 @@ public class DataGridController : ODataController, IDisposable
         }
     }
 
+    [EnableQuery(EnsureStableOrdering = false)]
+    [HttpGet("odata/UsersRole")]
+    public IQueryable<UsersPerRole> GetUserPerRole()
+    {
+        var baseUserId = _context.Users.Where(b => b.IsBaseUser).Select(a => a.Id).FirstOrDefault();
+        return _context.UserRoles.Where(a => a.UserId != baseUserId).Select(a => new UsersPerRole
+        {
+            RoleName = _context.Roles.Where(b => b.Id == a.RoleId).Select(a => a.Name).FirstOrDefault(),
+            UserName = _context.Users.Where(b => b.Id == a.UserId && !b.IsBaseUser).Select(a => a.UserName)
+                .FirstOrDefault()
+        }).OrderBy(a => a.RoleName).AsQueryable();
+    }
+
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/EmailLogs")]

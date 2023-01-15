@@ -1,6 +1,7 @@
 ﻿using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Utils;
@@ -26,6 +27,7 @@ public static class OdataModels
         builder.EntitySet<TaskHeader>("TaskHeader");
         builder.EntitySet<ApplicationUserDto>("Users");
         builder.EntitySet<QueryStore>("Queries");
+        builder.EntitySet<UsersPerRole>("UsersRole");
 
         builder.Action("ExtractLogs");
         return builder.GetEdmModel();

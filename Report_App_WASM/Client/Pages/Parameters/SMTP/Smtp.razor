@@ -80,7 +80,9 @@
     {
         _itemsProvider = async req =>
         {
+            _rendering = true;
             var response = await GetRemoteData(req);
+            _rendering = false;
             if (response is null)
             {
                 return GridItemsProviderResult.From(Array.Empty<SmtpConfigurationDto>(), 0);
@@ -106,7 +108,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<SmtpConfigurationDto>>(url, req.CancellationToken);
+            return await DataService.GetODataValues<SmtpConfigurationDto>(url, req.CancellationToken);
         }
         catch
         {

@@ -1,11 +1,9 @@
-﻿@page "/UsersManagement"
-@implements IAsyncDisposable
+﻿@implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@Localizer.Get("Users management")</PageTitle>
 
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
@@ -71,7 +69,9 @@
     {
         _itemsProvider = async req =>
         {
+            _rendering = true;
             var response = await GetRemoteData(req);
+            _rendering = false;
             if (response is null)
             {
                 return GridItemsProviderResult.From(Array.Empty<ApplicationUserDto>(), 0);
@@ -97,7 +97,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<ApplicationUserDto>>(url, req.CancellationToken);
+            return await DataService.GetODataValues<ApplicationUserDto>(url, req.CancellationToken);
         }
         catch
         {
