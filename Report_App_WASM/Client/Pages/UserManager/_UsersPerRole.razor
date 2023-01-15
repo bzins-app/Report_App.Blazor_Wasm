@@ -1,0 +1,134 @@
+﻿@implements IAsyncDisposable
+@inject HttpClient Http
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+
+<ErrorBoundary>
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <MudText Typo="Typo.subtitle1" Color="Color.Error">
+            <b>@Localizer.Get("An error has occurred"): @_errorMessage</b>
+        </MudText>
+    }
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@Localizer.Get("Users per role")</MudText>
+            <MudSpacer/>
+            <MudStack Row="true">
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
+                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow: auto">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" TGridItem="UsersPerRole">
+                    <PropertyColumn Property="@(p => p.RoleName)" Title="@Localizer.Get("Role name")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.UserName)" Title="@Localizer.Get("User name")" Sortable="true"/>
+                    <TemplateColumn>
+                        <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
+                    </TemplateColumn>
+                </SimpleGrid>
+            </div>
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
+        </MudCardContent>
+    </MudCard>
+</ErrorBoundary>
+
+
+@code {
+#nullable enable
+    GridItemsProvider<UsersPerRole>? _itemsProvider;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations;
+    SimpleGrid<UsersPerRole> _grid = default!;
+    private string? _errorMessage;
+    private bool _rendering;
+
+    protected override void OnInitialized()
+    {
+        _itemsProvider = async req =>
+        {
+            _rendering = true;
+            var response = await GetRemoteData(req);
+            _rendering = false;
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<UsersPerRole>(), 0);
+            }
+            return GridItemsProviderResult.From(response.Value!, response.Count);
+        };
+        _translations = AppService.GetGridTranslations();
+    }
+
+    private async Task<ApiResponse<UsersPerRole>?> GetRemoteData(GridItemsProviderRequest<UsersPerRole> req)
+    {
+    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var odataQuery = _grid?.GetODataQuery();
+        var url = "odata/UsersRole?";
+        if (string.IsNullOrEmpty(odataQuery))
+        {
+            url += "$count=true&$top=10";
+        }
+        else
+        {
+            url += odataQuery;
+        }
+        try
+        {
+            return await DataService.GetODataValues<UsersPerRole>(url, req.CancellationToken);
+        }
+        catch
+        {
+    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
+    }
+
+
+    private async Task OpenDeleteDialog(UsersPerRole value)
+    {
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
+
+        if (result != null)
+        {
+            var values = new ChangeRolePayload { UserName = value.UserName, Roles = new List<string> { value.RoleName! } };
+            var respoonse = await DataService.PostValues(values, "RemoveRoles", ApiControllers.UserManagerApi);
+            if (respoonse.Success)
+            {
+                Snackbar.Add(Localizer.Get("Roles :") + value.RoleName + " " + Localizer.Get("Role removed"), Severity.Info);
+                await OnRefresh();
+            }
+        }
+    }
+
+    private async Task OnRefresh()
+    {
+        _rendering = true;
+        await _grid.RefreshDataAsync();
+        _rendering = false;
+    }
+
+    private async Task RemoveFilters()
+    {
+        _rendering = true;
+        await _grid.RemoveFilters();
+        _rendering = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _grid.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
+
+}

@@ -52,6 +52,9 @@
                             </MudSelect>
                         }
                     </MudItem>
+                    <MudItem>
+                        <MudSwitch @bind-Checked="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
+                    </MudItem>
                 </MudGrid>
             </MudForm>
         }
@@ -186,6 +189,7 @@
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam = new();
     bool _formParamValidated = true;
+    AdHocQueriesParameters parameters = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -244,6 +248,10 @@
                     t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
                 }
             }
+        }
+        if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
+        {
+            parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
     }
 
@@ -389,7 +397,7 @@
         try
         {
             _errorMessage = "";
-
+            Item.Parameters = JsonSerializer.Serialize(parameters);
             var result = await DataService.PostValues(Item, "QueryStoreUpdate");
             if (result.Success)
             {

@@ -140,7 +140,9 @@
         {
             _itemsProvider = async req =>
             {
+                _rendering = true;
                 var response = await GetRemoteData(req);
+                _rendering = false;
                 if (response is null)
                 {
                     _empty = true;
@@ -158,7 +160,9 @@
     {
         _itemsProvider = async req =>
         {
+            _rendering = true;
             var response = await GetRemoteData(req);
+            _rendering = false;
             if (response is null)
             {
                 _empty = true;
@@ -213,7 +217,7 @@
 
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<TaskHeaderDto>>(url, req.CancellationToken);
+            return await DataService.GetODataValues<TaskHeaderDto>(url, req.CancellationToken);
         }
         catch
         {

@@ -245,4 +245,15 @@ public class DataInteractionService
             return new SubmitResult { Success = false, Message = ex.Message };
         }
     }
+
+    public async Task<ApiResponse<T>> GetODataValues<T>(string uri, CancellationToken ct) where T : class
+    {
+        var response = await _httpClient.GetAsync(uri, ct);
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable
+            or HttpStatusCode.RequestTimeout)
+            await SendNotification();
+        if (response.IsSuccessStatusCode)
+            return (await response.Content.ReadFromJsonAsync<ApiResponse<T>>(cancellationToken: ct))!;
+        return null!;
+    }
 }

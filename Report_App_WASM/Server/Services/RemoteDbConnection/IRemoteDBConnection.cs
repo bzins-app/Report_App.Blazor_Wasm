@@ -127,7 +127,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         do
         {
             var activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId)
-                .Select(a => a.ActivityName).FirstOrDefaultAsync(cancellationToken: cts);
+                .Select(a => a.ActivityName).FirstOrDefaultAsync(cts);
             var _dbInfo = await GetDbInfo(run.ActivityId);
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
             var logTask = new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };

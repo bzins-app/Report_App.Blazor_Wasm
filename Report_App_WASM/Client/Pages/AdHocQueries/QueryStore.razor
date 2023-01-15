@@ -109,7 +109,9 @@
         {
             _itemsProvider = async req =>
             {
+                _rendering = true;
                 var response = await GetRemoteData(req);
+                _rendering = false;
                 if (response is null)
                 {
                     _empty = true;
@@ -180,7 +182,6 @@
             {
                 url += "&" + odataFilters;
             }
-           
         }
         else if (ActivityId.HasValue)
         {
@@ -189,7 +190,7 @@
 
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<QueryStoreDto>>(url, req.CancellationToken);
+            return await DataService.GetODataValues<QueryStoreDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -262,7 +263,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new QueryStoreDto { };
+        var value = new QueryStoreDto();
         if (ActivityId.HasValue)
         {
             value.IdActivity = ActivityId.Value;

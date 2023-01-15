@@ -1,0 +1,19 @@
+﻿@page "/UsersManagement"
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<PageTitle>@Localizer.Get("Users management")</PageTitle>
+
+
+<ErrorBoundary>
+    <ChildContent>
+        <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
+                 ApplyEffectsToContainer="true" Class="mt-8">
+            <MudTabPanel Text="@Localizer.Get("Users")">
+                <_Users/>
+            </MudTabPanel>
+            <MudTabPanel Text="@Localizer.Get("Users per role")">
+                <_UsersPerRole/>
+            </MudTabPanel>
+        </MudTabs>
+    </ChildContent>
+</ErrorBoundary>

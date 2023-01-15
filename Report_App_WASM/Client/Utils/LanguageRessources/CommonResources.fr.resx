@@ -237,6 +237,9 @@
   <data name="Add validation sheet?" xml:space="preserve">
     <value>Ajout d'une feuille de validation ?</value>
   </data>
+  <data name="Adhoc queries overview" xml:space="preserve">
+    <value>Übersicht über Adhoc-Abfragen</value>
+  </data>
   <data name="Administrator email for error notifications" xml:space="preserve">
     <value>Emails pour les notifications d'erreur</value>
   </data>
@@ -434,6 +437,9 @@
   </data>
   <data name="Cache Is Activated?" xml:space="preserve">
     <value>Mise en cache activée?</value>
+  </data>
+  <data name="Calculate the total nbr of results?" xml:space="preserve">
+    <value>Die Gesamtzahl der Ergebnisse berechnen?</value>
   </data>
   <data name="Calculated date" xml:space="preserve">
     <value>Date calculée</value>
@@ -1070,6 +1076,9 @@
   </data>
   <data name="External queries" xml:space="preserve">
     <value>Requêtes SQL externes</value>
+  </data>
+  <data name="Extract descriptions" xml:space="preserve">
+    <value>Auszug Beschreibungen</value>
   </data>
   <data name="Feb" xml:space="preserve">
     <value>Fév</value>
@@ -2172,6 +2181,9 @@
   <data name="Tasks manager" xml:space="preserve">
     <value>Gestionnaire de tâches</value>
   </data>
+  <data name="Tasks overview" xml:space="preserve">
+    <value>Übersicht der Aufgaben</value>
+  </data>
   <data name="Tasks per day" xml:space="preserve">
     <value>Tâches par jour</value>
   </data>
@@ -2417,6 +2429,9 @@
   </data>
   <data name="Users management" xml:space="preserve">
     <value>Gestion des utilisateurs</value>
+  </data>
+  <data name="Users per role" xml:space="preserve">
+    <value>Benutzer pro Rolle</value>
   </data>
   <data name="Validate" xml:space="preserve">
     <value>Valider</value>

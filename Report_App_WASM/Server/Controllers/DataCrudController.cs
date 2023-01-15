@@ -22,7 +22,6 @@ namespace Report_App_WASM.Server.Controllers;
 public class DataCrudController : ControllerBase, IDisposable
 {
     private readonly ApplicationDbContext _context;
-
     private readonly ILogger<DataCrudController> _logger;
     private readonly IMapper _mapper;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;

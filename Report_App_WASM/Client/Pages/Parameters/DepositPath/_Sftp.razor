@@ -69,7 +69,9 @@
     {
         _itemsProvider = async req =>
         {
+            _rendering = true;
             var response = await GetRemoteData(req);
+            _rendering = false;
             if (response is null)
             {
                 return GridItemsProviderResult.From(Array.Empty<SftpConfigurationDto>(), 0);
@@ -95,7 +97,7 @@
         }
         try
         {
-            return await Http.GetFromJsonAsync<ApiResponse<SftpConfigurationDto>>(url, req.CancellationToken);
+            return await DataService.GetODataValues<SftpConfigurationDto>(url, req.CancellationToken);
         }
         catch
         {
