@@ -132,6 +132,10 @@ public class RemoteDbController : ControllerBase, IDisposable
         try
         {
             _logger.LogInformation("Grid extraction: Start " + values.FileName, values.FileName);
+            var queriesMaxSizeExtract = await _context.ActivityDbConnection
+                .Where(a => a.Activity.ActivityId == values.ActivityId).Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
+                .FirstOrDefaultAsync(cancellationToken: ct);
+            values.MaxSize = queriesMaxSizeExtract;
             var items = await _remoteDb.RemoteDbToDatableAsync(values, ct);
             var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
 
