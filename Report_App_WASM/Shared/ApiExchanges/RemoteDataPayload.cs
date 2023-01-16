@@ -6,5 +6,8 @@ public class RemoteDataPayload
 {
     public RemoteDbCommandParameters? Values { get; init; }
     public bool CalculateTotalElements { get; set; }
+    public int QueryId { get; init; }
+    public string? ActivityName { get; init; }
     public bool PivotTable { get; init; }
+    public int PivotTableNbrColumns { get; init; }
 }

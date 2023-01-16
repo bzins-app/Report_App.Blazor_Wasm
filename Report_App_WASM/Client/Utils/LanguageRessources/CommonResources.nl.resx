@@ -1701,6 +1701,12 @@
   <data name="Phone number" xml:space="preserve">
     <value>Telefoonnummer</value>
   </data>
+  <data name="Pivot Table: nbr max of columns" xml:space="preserve">
+    <value>Draaitabel: nbr max van kolommen</value>
+  </data>
+  <data name="Pivot Table: nbr max of rows" xml:space="preserve">
+    <value>Draaitabel: nbr max van rijen</value>
+  </data>
   <data name="Platform" xml:space="preserve">
     <value>Platform</value>
   </data>
@@ -2399,6 +2405,9 @@
   </data>
   <data name="Use os credential" xml:space="preserve">
     <value>Gebruik os referentie</value>
+  </data>
+  <data name="Use pivot table component?" xml:space="preserve">
+    <value>Draaitabelcomponent gebruiken?</value>
   </data>
   <data name="Use primary keys?" xml:space="preserve">
     <value>Primaire sleutels gebruiken?</value>

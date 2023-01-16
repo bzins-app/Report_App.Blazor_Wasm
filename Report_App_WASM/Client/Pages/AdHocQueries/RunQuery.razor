@@ -4,6 +4,7 @@
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @using Blazor.PivotTable
+@using System.Reflection.Metadata
 @implements IDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -80,12 +81,15 @@
 
                 <div>
                     <MudGrid>
-                        <MudItem>
-                            <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
-                                <MudSelectItem Value="@("Grid")"/>
-                                <MudSelectItem Value="@("pivot")"/>
-                            </MudSelect>
-                        </MudItem>
+                        @if (parameters.UsePivotTable)
+                        {
+                            <MudItem>
+                                <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
+                                    <MudSelectItem Value="@("Grid")"/>
+                                    <MudSelectItem Value="@("pivot")"/>
+                                </MudSelect>
+                            </MudItem>
+                        }
                         <MudItem>
                             <MudIconButton DisableElevation Variant="Variant.Outlined"
                                            OnClick="@(SaveConfiguration)"
@@ -434,8 +438,8 @@
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 30000, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-                var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true };
+                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true , QueryId = QueryId, ActivityName = ActivityName, PivotTableNbrColumns =parameters.PivotTableNbrOfColumnsMax };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)

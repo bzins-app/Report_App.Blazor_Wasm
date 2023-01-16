@@ -88,11 +88,11 @@ public class RemoteDbController : ControllerBase, IDisposable
             {
                 var selectColumns = data.Columns.Cast<DataColumn>().Take(10);
                 var nbrCols = data.Columns.Count;
-
-                if (nbrCols > 10)
-                    for (var x = 10; x < nbrCols; x++)
-                        if (data.Columns.Count > 10)
-                            data.Columns.RemoveAt(10);
+                var maxCols = values.PivotTableNbrColumns;
+                if (nbrCols > maxCols)
+                    for (var x = maxCols; x < nbrCols; x++)
+                        if (data.Columns.Count > maxCols)
+                            data.Columns.RemoveAt(maxCols);
                 var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
                 return Ok(result);
             }
