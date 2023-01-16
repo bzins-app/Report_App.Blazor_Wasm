@@ -288,6 +288,9 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         await _context.ApplicationLogQueryExecution
             .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-rententionDays))
             .ForEachAsync(a => _context.Remove(a));
+        await _context.ApplicationLogAdHocQueries
+            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-rententionDays))
+            .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
 
         logTask.Result = "Ok";
