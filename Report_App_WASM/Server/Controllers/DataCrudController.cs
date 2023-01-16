@@ -53,6 +53,64 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
+    public async Task<IEnumerable<string>> GetTagsTasksAsync(TaskType type,  int activityId=0)
+    {
+        List<string> _tags = new();
+        List<string> _serializedTags;
+        if (activityId > 0)
+        {
+            _serializedTags = await _context.TaskHeader
+                .Where(a => a.IdActivity == activityId && a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags)&&a.Type==type)
+                .Select(a => a.Tags).ToListAsync();
+        }
+        else
+        {
+            _serializedTags = await _context.TaskHeader
+                .Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags) && a.Type == type)
+                .Select(a => a.Tags).ToListAsync();
+        }
+
+        if (_serializedTags != null)
+        {
+            foreach (var value in _serializedTags)
+            {
+                _tags.AddRange(JsonSerializer.Deserialize<List<string>>(value)!);
+            }
+        }
+
+        return _tags.Distinct();
+    }
+
+    [HttpGet]
+    public async Task<IEnumerable<string>> GetTagsQueriesAsync(int activityId = 0)
+    {
+        List<string> _tags = new();
+        List<string> _serializedTags;
+        if (activityId > 0)
+        {
+            _serializedTags = await _context.QueryStore
+                .Where(a => a.IdActivity == activityId && a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags))
+                .Select(a => a.Tags).ToListAsync();
+        }
+        else
+        {
+            _serializedTags = await _context.QueryStore
+                .Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags))
+                .Select(a => a.Tags).ToListAsync();
+        }
+
+        if (_serializedTags != null)
+        {
+            foreach (var value in _serializedTags)
+            {
+                _tags.AddRange(JsonSerializer.Deserialize<List<string>>(value)!);
+            }
+        }
+
+        return _tags.Distinct();
+    }
+
+    [HttpGet]
     public async Task<IEnumerable<ActivityDbConnection>> GetActivityDbConnectionAsync(int activityId)
     {
         return await _context.ActivityDbConnection.Where(a => a.Activity!.ActivityId == activityId).ToArrayAsync();
@@ -90,6 +148,7 @@ public class DataCrudController : ControllerBase, IDisposable
             _newQuery.Parameters = queryToDuplicate.Parameters;
             _newQuery.IdActivity = queryToDuplicate.IdActivity;
             _newQuery.Activity = queryToDuplicate.Activity;
+            _newQuery.ActivityName = queryToDuplicate.ActivityName;
 
             return Ok(await InsertEntity(_newQuery, values.UserName!));
         }

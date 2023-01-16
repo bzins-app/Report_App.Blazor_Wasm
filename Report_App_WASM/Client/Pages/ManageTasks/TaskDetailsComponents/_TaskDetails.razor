@@ -54,7 +54,7 @@
 
     IEnumerable<TaskDetailDto>? _elements = new List<TaskDetailDto>();
     SimpleGrid<TaskDetailDto>? _grid;
-    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    PaginationState _pagination = new() { ItemsPerPage = 5 };
     SimpleGridFieldsContent? _translations = default!;
     DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
     private bool _disable;

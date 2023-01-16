@@ -79,6 +79,7 @@
         {
             Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault() };
             Item.IdActivity = Item.Activity.ActivityId;
+            Item.ActivityName = Item.Activity.ActivityName;
             await _form.Validate();
             if (_form.IsValid && Item.Activity is not null)
             {

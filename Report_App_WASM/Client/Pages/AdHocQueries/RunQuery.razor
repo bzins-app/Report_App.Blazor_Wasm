@@ -313,7 +313,7 @@
         var currentPage = state.Page;
         var pageSize = state.PageSize;
         var getTotalElements = false;
-        if (!_hasTotal&&parameters.CalculateTotalItems)
+        if (!_hasTotal && parameters.CalculateTotalItems)
         {
             getTotalElements = true;
             _total = 0;
@@ -388,7 +388,7 @@
         {
             _extracting = true;
             _cts = new CancellationTokenSource();
-            var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 100000, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+            var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
             await DataService.ExtractAdHocQuery(run, _cts.Token);
             _extracting = false;
         }

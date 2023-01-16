@@ -55,6 +55,7 @@ public sealed class TaskHeader : BaseTraceability
     public bool SendByEmail { get; set; } = false;
     public int ReportsRetentionInDays { get; set; } = 90;
     public string? Comment { get; set; }
+    public string Tags { get; set; } = "[]";
     public string TaskHeaderParameters { get; set; } = "[]";
     public string CronParameters { get; set; } = "[]";
     public bool UseGlobalQueryParameters { get; set; } = false;

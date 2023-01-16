@@ -238,7 +238,7 @@
     <value>Ajout d'une feuille de validation ?</value>
   </data>
   <data name="Adhoc queries overview" xml:space="preserve">
-    <value>Aperçu des requêtes adhoc</value>
+    <value>Vue globale des requêtes</value>
   </data>
   <data name="Administrator email for error notifications" xml:space="preserve">
     <value>Emails pour les notifications d'erreur</value>
@@ -2176,7 +2176,7 @@
     <value>Gestionnaire de tâches</value>
   </data>
   <data name="Tasks overview" xml:space="preserve">
-    <value>Aperçu des tâches</value>
+    <value>Vue globale des tâches</value>
   </data>
   <data name="Tasks per day" xml:space="preserve">
     <value>Tâches par jour</value>
