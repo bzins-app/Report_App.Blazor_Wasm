@@ -162,13 +162,13 @@ public class DataGridController : ODataController, IDisposable
     [HttpGet("odata/DepositPath")]
     public IQueryable<FileDepositPathConfigurationDto> GetDepositPath()
     {
-        return _context.FileDepositPathConfiguration
+        return ( _context.FileDepositPathConfiguration
             .Select(a=>new FileDepositPathConfigurationDto { ConfigurationName=a.ConfigurationName,
             CreateDateTime=a.CreateDateTime, ModDateTime=a.ModDateTime, CreateUser=a.CreateUser, FileDepositPathConfigurationId=a.FileDepositPathConfigurationId,
             FilePath=a.FilePath, ModificationUser = a.ModificationUser
-            , SftpConfigurationId=a.SftpConfiguration.SftpConfigurationId , TryToCreateFolder= a.TryToCreateFolder
+            , SftpConfigurationId=a.SftpConfiguration==null?0: a.SftpConfiguration.SftpConfigurationId, TryToCreateFolder= a.TryToCreateFolder
             , UseSftpProtocol= a.UseSftpProtocol, IsReachable= a.IsReachable
-            }).AsNoTracking();
+            })).AsQueryable();
     }
 
     [EnableQuery]

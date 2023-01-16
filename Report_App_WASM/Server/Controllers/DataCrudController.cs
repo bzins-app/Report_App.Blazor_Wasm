@@ -552,7 +552,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileDepositPathConfiguration> values)
+    public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileDepositPathConfigurationDto> values)
     {
         var val = await _context.FileDepositPathConfiguration.Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId).FirstOrDefaultAsync();
         return Ok(await DeleteEntity(val, values.UserName!));
