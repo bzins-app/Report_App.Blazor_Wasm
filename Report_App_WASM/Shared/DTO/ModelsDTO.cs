@@ -154,6 +154,7 @@ public class DbTableDescriptionsDto : BaseTraceabilityDto, IDto
 
 public class FileDepositPathConfigurationDto : BaseTraceabilityDto, IDto
 {
+    [Key]
     public int FileDepositPathConfigurationId { get; set; }
 
     [Required] [MaxLength(60)] public string? ConfigurationName { get; set; }

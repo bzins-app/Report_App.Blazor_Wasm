@@ -22,7 +22,7 @@ public static class OdataModels
         builder.EntitySet<LdapConfiguration>("Ldap");
         builder.EntitySet<SmtpConfiguration>("Smtp");
         builder.EntitySet<SftpConfiguration>("Sftp");
-        builder.EntitySet<FileDepositPathConfiguration>("DepositPath");
+        builder.EntitySet<FileDepositPathConfigurationDto>("DepositPath");
         builder.EntitySet<Activity>("Activities");
         builder.EntitySet<TaskHeader>("TaskHeader");
         builder.EntitySet<ApplicationUserDto>("Users");

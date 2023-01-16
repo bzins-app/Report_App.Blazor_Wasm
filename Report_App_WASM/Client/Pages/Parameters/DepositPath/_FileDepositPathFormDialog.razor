@@ -21,7 +21,7 @@
             <MudTextField @bind-Value="Item!.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             <MudSwitch @bind-Checked="Item!.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
             <MudSwitch @bind-Checked="Item!.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
-            <MudSelect T="int" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="_sftpConfigurationId"
+            <MudSelect T="int" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="Item.SftpConfigurationId"
                        AnchorOrigin="Origin.BottomCenter" Disabled="!Item!.UseSftpProtocol"
                        Required>
                 @foreach (var value in _listConfigs)
@@ -52,7 +52,7 @@
     MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
-    public FileDepositPathConfigurationDto? Item { get; set; }
+    public FileDepositPathConfigurationDto Item { get; set; } = new();
 
     [Parameter]
     public CrudAction Action { get; set; }
@@ -69,8 +69,10 @@
         MudDialog?.Cancel();
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var controllerActionListConfigs = "SftpInfo";
+        _listConfigs = await DataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
         _sftpConfigurationId = Item.SftpConfigurationId;
     }
 
@@ -99,7 +101,7 @@
 
     private async Task TestConfiguration()
     {
-        var payload = new DepositPathTest { UseSftpProtocol = Item!.UseSftpProtocol, SftpConfigurationId = _sftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
+        var payload = new DepositPathTest { UseSftpProtocol = Item!.UseSftpProtocol, SftpConfigurationId = Item.SftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
         var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi);
         if (result.Success)
         {
