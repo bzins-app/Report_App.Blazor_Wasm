@@ -163,7 +163,7 @@ public class FileDepositPathConfigurationDto : BaseTraceabilityDto, IDto
     public bool IsReachable { get; set; }
     public bool TryToCreateFolder { get; set; }
     public bool UseSftpProtocol { get; set; } = false;
-    public virtual SftpConfigurationDto? SftpConfiguration { get; set; }
+    public int SftpConfigurationId { get; set; }
 }
 
 public class ServicesStatusDto : BaseTraceabilityDto, IDto

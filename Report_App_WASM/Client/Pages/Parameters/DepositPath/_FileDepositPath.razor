@@ -149,7 +149,7 @@
             value.FilePath = item.FilePath;
             value.TryToCreateFolder = item.TryToCreateFolder;
             value.UseSftpProtocol = item.UseSftpProtocol;
-            value.SftpConfiguration = item.SftpConfiguration;
+            value.SftpConfigurationId = item.SftpConfigurationId;
 
             var result = await DataService.PostValues(value, "DepositPathUpdate");
             if (result.Success)
