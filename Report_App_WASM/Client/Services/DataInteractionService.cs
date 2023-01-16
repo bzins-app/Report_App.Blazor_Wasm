@@ -151,7 +151,7 @@ public class DataInteractionService
     }
 
 
-    public async Task ExtractAdHocQuery(RemoteDbCommandParameters values, CancellationToken ct)
+    public async Task ExtractAdHocQuery(RemoteDataPayload payload, CancellationToken ct)
     {
         try
         {
@@ -159,7 +159,7 @@ public class DataInteractionService
             using var _httpClientLong = new HttpClient();
             _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
             _httpClientLong.BaseAddress = _httpClient.BaseAddress;
-            var response = await _httpClientLong.PostAsJsonAsync(url, values);
+            var response = await _httpClientLong.PostAsJsonAsync(url, payload, cancellationToken: ct);
             if (response.StatusCode == HttpStatusCode.Unauthorized ||
                 response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                 response.StatusCode == HttpStatusCode.RequestTimeout)
@@ -168,8 +168,8 @@ public class DataInteractionService
             {
                 _alreadyNotified = false;
                 var downloadresult = await _blazorDownloadFileService.DownloadFile(
-                    values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx",
-                    await response.Content.ReadAsByteArrayAsync(), "application/octet-stream");
+                    payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx",
+                    await response.Content.ReadAsByteArrayAsync(ct), "application/octet-stream");
                 if (downloadresult.Succeeded) response.Dispose();
             }
         }
