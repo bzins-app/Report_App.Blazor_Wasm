@@ -63,33 +63,44 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload values, CancellationToken ct)
+    public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload payload, CancellationToken ct)
     {
+        var log = new ApplicationLogAdHocQueries { QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId, JobDescription = "Grid extraction", RunBy = User?.Identity?.Name, Type = "Grid", Error = false, Result = "Ok" };
         try
         {
             var total = 0;
-            if (values.CalculateTotalElements)
+            if (payload.CalculateTotalElements)
             {
-                var originalQuery = values.Values.QueryToRun;
-                if (values.Values.QueryToRun != null)
+                var originalQuery = payload.Values.QueryToRun;
+                if (payload.Values.QueryToRun != null)
                 {
-                    var query = await GetQueryTotal(values.Values.ActivityId, values.Values.QueryToRun);
-                    values.Values.QueryToRun = query;
+                    var query = await GetQueryTotal(payload.Values.ActivityId, payload.Values.QueryToRun);
+                    payload.Values.QueryToRun = query;
                 }
 
-                var dataTotal = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
-                values.Values.QueryToRun = originalQuery;
+                var dataTotal = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
+                payload.Values.QueryToRun = originalQuery;
                 if (dataTotal != null)
                     total = Convert.ToInt32(dataTotal.AsEnumerable().Select(r => r[0]).FirstOrDefault());
             }
 
-            var data = await _remoteDb.RemoteDbToDatableAsync(values.Values!, ct);
+            var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
             var result = new SubmitResultRemoteData
                 { Success = true, Value = data.ToDictionnary(), TotalElements = total };
+            log.EndDateTime = DateTime.Now;
+            log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+            await _context.AddAsync(log);
+            await _context.SaveChangesAsync();
             return Ok(result);
         }
         catch (Exception e)
         {
+            log.Error = true;
+            log.Result = e.Message.Take(440).ToString();
+            log.EndDateTime = DateTime.Now;
+            log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+            await _context.AddAsync(log);
+            await _context.SaveChangesAsync();
             var result = new SubmitResultRemoteData
                 { Success = false, Message = e.Message, Value = new List<Dictionary<string, object>>() };
             return Ok(result);
@@ -112,27 +123,38 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<FileResult?> RemoteDbExtractValuesAsync(RemoteDbCommandParameters values, CancellationToken ct)
+    public async Task<FileResult?> RemoteDbExtractValuesAsync(RemoteDataPayload payload, CancellationToken ct)
     {
+        var log = new ApplicationLogAdHocQueries { QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId, JobDescription = "Grid extraction", RunBy = User?.Identity?.Name, Type = "Grid", Error = false, Result = "Ok"};
         try
         {
-            _logger.LogInformation("Grid extraction: Start " + values.FileName, values.FileName);
+            _logger.LogInformation("Grid extraction: Start " + payload.Values.FileName, payload.Values.FileName);
             var queriesMaxSizeExtract = await _context.ActivityDbConnection
-                .Where(a => a.Activity.ActivityId == values.ActivityId).Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
+                .Where(a => a.Activity.ActivityId == payload.Values.ActivityId).Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
                 .FirstOrDefaultAsync(cancellationToken: ct);
-            values.MaxSize = queriesMaxSizeExtract;
-            var items = await _remoteDb.RemoteDbToDatableAsync(values, ct);
-            var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
-
+            payload.Values.MaxSize = queriesMaxSizeExtract;
+            var items = await _remoteDb.RemoteDbToDatableAsync(payload.Values, ct);
+            var fileName = payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+            log.NbrOfRows = items.Rows.Count;
             var file = CreateFile.ExcelFromDatable(fileName,
-                new ExcelCreationDatatable(values.FileName, new ExcelTemplate(), items));
+                new ExcelCreationDatatable(payload.Values.FileName, new ExcelTemplate(), items));
             _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines",
                 $" {fileName} {items.Rows.Count} lines");
+            log.EndDateTime= DateTime.Now;
+            log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+           await _context.AddAsync(log);
+           await  _context.SaveChangesAsync();
             return File(file.FileContents, file.ContentType, file.FileDownloadName);
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
+            log.Error = true;
+            log.Result = e.Message.Take(440).ToString();
+            log.EndDateTime = DateTime.Now;
+            log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+            await _context.AddAsync(log);
+            await _context.SaveChangesAsync();
             return null!;
         }
     }

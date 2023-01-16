@@ -6,4 +6,7 @@ public class RemoteDataPayload
 {
     public RemoteDbCommandParameters? Values { get; init; }
     public bool CalculateTotalElements { get; set; }
+    public int QueryId { get; init; }
+    public string? QueryName { get; init; }
+    public string? ActivityName { get; init; }
 }
