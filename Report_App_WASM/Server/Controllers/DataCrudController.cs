@@ -12,6 +12,7 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
+using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers;
 
@@ -535,21 +536,42 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> DepositPathInsert(ApiCrudPayload<FileDepositPathConfiguration> values)
+    public async Task<IActionResult> DepositPathInsert(ApiCrudPayload<FileDepositPathConfigurationDto> values)
     {
-        return Ok(await InsertEntity(values.EntityValue, values.UserName!));
+        var val = new FileDepositPathConfiguration();
+        if (values.EntityValue.SftpConfigurationId > 0)
+        {
+            val.SftpConfiguration = await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
+        }
+        val.ConfigurationName = values.EntityValue.ConfigurationName;
+        val.FilePath = values.EntityValue.FilePath;
+        val.TryToCreateFolder = values.EntityValue.TryToCreateFolder;
+        val.UseSftpProtocol = values.EntityValue.UseSftpProtocol;
+
+        return Ok(await InsertEntity(val, values.UserName!));
     }
 
     [HttpPost]
     public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileDepositPathConfiguration> values)
     {
-        return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
+        var val = await _context.FileDepositPathConfiguration.Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId).FirstOrDefaultAsync();
+        return Ok(await DeleteEntity(val, values.UserName!));
     }
 
     [HttpPost]
-    public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileDepositPathConfiguration> values)
+    public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileDepositPathConfigurationDto> values)
     {
-        return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
+        var val= await _context.FileDepositPathConfiguration.Where(a=>a.FileDepositPathConfigurationId==values.EntityValue.FileDepositPathConfigurationId).FirstOrDefaultAsync();
+        if (values.EntityValue.SftpConfigurationId>0)
+        {
+            val.SftpConfiguration=await _context.SftpConfiguration.Where(a=>a.SftpConfigurationId==values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
+        }
+        val.ConfigurationName=values.EntityValue.ConfigurationName;
+        val.FilePath=values.EntityValue.FilePath;
+        val.TryToCreateFolder=values.EntityValue.TryToCreateFolder;
+        val.UseSftpProtocol=values.EntityValue.UseSftpProtocol;
+
+        return Ok(await UpdateEntity(val, values.UserName!));
     }
 
     [HttpPost]

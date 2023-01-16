@@ -69,23 +69,9 @@
         MudDialog?.Cancel();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        var controllerActionListConfigs = "SftpInfo";
-        _listConfigs = await DataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
-        Item!.SftpConfiguration = new SftpConfigurationDto();
-        if (Action != CrudAction.Create && Item.FileDepositPathConfigurationId > 0)
-        {
-            var contollerSftpConfig = $"GetSTFPConfiguration?SftpConfigurationId={Item.FileDepositPathConfigurationId}";
-            SftpConfigurationDto config = new();
-            config = await DataService.GetUniqueValue(config, contollerSftpConfig);
-            if (config != null)
-            {
-                Item.SftpConfiguration = config;
-            }
-        }
-
-        _sftpConfigurationId = Item.SftpConfiguration.SftpConfigurationId;
+        _sftpConfigurationId = Item.SftpConfigurationId;
     }
 
     private async Task Validate()
@@ -102,12 +88,9 @@
             await _form.Validate();
             if (_form.IsValid)
             {
-                if (_sftpConfigurationId != null || _sftpConfigurationId > 0)
+                if ( _sftpConfigurationId > 0)
                 {
-                    var contollerSftpConfig = $"GetSTFPConfiguration?SftpConfigurationId={_sftpConfigurationId}";
-                    SftpConfigurationDto config = new();
-                    config = await DataService.GetUniqueValue(config, contollerSftpConfig);
-                    Item!.SftpConfiguration = config;
+                    Item!.SftpConfigurationId = _sftpConfigurationId;
                 }
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
