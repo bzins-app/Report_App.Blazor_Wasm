@@ -65,7 +65,7 @@ public class RemoteDbController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload payload, CancellationToken ct)
     {
-        var log = new ApplicationLogAdHocQueries { QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId, JobDescription = "Grid extraction", RunBy = User?.Identity?.Name, Type = "Grid", Error = false, Result = "Ok" };
+        var log = new ApplicationLogAdHocQueries { QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId, JobDescription = "Grid pagination", RunBy = User?.Identity?.Name, Type = "Grid", Error = false, Result = "Ok" };
         try
         {
             var total = 0;
@@ -88,6 +88,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             var result = new SubmitResultRemoteData
                 { Success = true, Value = data.ToDictionnary(), TotalElements = total };
             log.EndDateTime = DateTime.Now;
+            log.NbrOfRows = data.Rows.Count;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
             await _context.AddAsync(log);
             await _context.SaveChangesAsync();
