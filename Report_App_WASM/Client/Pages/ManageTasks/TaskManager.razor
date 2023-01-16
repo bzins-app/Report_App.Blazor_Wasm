@@ -101,7 +101,7 @@
 
 @code
 {
-#nullable enable
+    #nullable enable
     [Parameter]
     public string TypeTask { get; set; } = default!;
 
@@ -144,7 +144,7 @@
             _pagination.ItemsPerPage = PageSize.Value;
             await _pagination.SetCurrentPageIndexAsync(Page.Value);
         }
-
+        selected = null;
         var type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.Alert.ToString() ? TaskType.Alert : TaskType.DataTransfer;
         var urlExt = string.Empty;
         if (!string.IsNullOrEmpty(ActivityName))

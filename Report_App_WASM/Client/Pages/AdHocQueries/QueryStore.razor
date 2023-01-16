@@ -120,6 +120,7 @@
 
         _UserIsSupervisor = user!.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
 
+        selected = null;
         var urlExt = string.Empty;
         if (!string.IsNullOrEmpty(ActivityName))
         {
