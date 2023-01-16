@@ -93,6 +93,9 @@ public class QueryStoreDto : BaseTraceabilityDto, IDto
 {
     public int Id { get; set; }
     public int IdActivity { get; set; }
+    public string? ActivityName { get; set; }
+    public string? Comment { get; set; }
+    public string Tags { get; set; } = "[]";
     public string? QueryName { get; set; }
     public string? Query { get; set; }
     public string Parameters { get; set; } = "[]";
@@ -271,7 +274,7 @@ public sealed class TaskHeaderDto : BaseTraceabilityDto, IDto
     public FileType TypeFile { get; set; }
 
     [MaxLength(20)] public string? TypeFileName { get; set; }
-
+    public string Tags { get; set; } = "[]";
     public bool IsActivated { get; set; } = false;
     public bool SendByEmail { get; set; } = false;
     public int ReportsRetentionInDays { get; set; } = 90;
@@ -421,4 +424,26 @@ public class ApplicationLogReportResultDto : IDto
     public bool IsAvailable { get; set; } = true;
     public string? Result { get; set; }
     public bool Error { get; set; }
+}
+
+
+public class ApplicationLogAdHocQueriesDto : IDto
+{
+    public int Id { get; set; }
+    public int QueryId { get; set; }
+    public DateTime StartDateTime { get; set; }
+    public DateTime EndDateTime { get; set; }
+    public int DurationInSeconds { get; set; }
+    public int ActivityId { get; set; }
+
+    [MaxLength(60)] public string? ActivityName { get; set; }
+
+    [MaxLength(60)] public string? JobDescription { get; set; }
+
+    [MaxLength(60)] public string? Type { get; set; }
+
+    public int NbrOfRows { get; set; }
+    public string? Result { get; set; }
+    public bool Error { get; set; }
+    public string? RunBy { get; set; }
 }

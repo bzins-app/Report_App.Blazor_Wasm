@@ -1,5 +1,6 @@
 ﻿@page "/TaskEdit/{TaskHeaderId:int}"
 @using MudBlazor.Utilities
+@using Report_App_WASM.Shared.Extensions
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
@@ -154,6 +155,22 @@
                             </NotAuthorized>
                         </AuthorizeView>
                     }
+                    <MudField Variant="Variant.Text" InnerPadding="false">Tags</MudField>
+                    <MudPaper Class="pa-2" Outlined="true">
+                        <MudChipSet AllClosable="true" OnClose="RemoveTag">
+                            @foreach (var value in _tags)
+                            {
+                                <MudChip Text="@value"></MudChip>
+                            }
+                        </MudChipSet>
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="OpenPopOver">@Localizer.Get("Add")</MudIconButton>
+                        <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
+                            <div class="d-flex flex-column">
+                                <MudTextField @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Close")</MudButton>
+                            </div>
+                        </MudPopover>
+                    </MudPaper>
                 </MudItem>
             </MudGrid>
         </MudForm>
@@ -204,6 +221,9 @@
     private TypeDb _typeDbTask;
 
     private bool _changesToSave;
+    List<string> _tags = new();
+    private bool _openPopOver;
+    string _tagValue = string.Empty;
 
     JsonSerializerOptions _jsonOpt = new()
     {
@@ -228,6 +248,11 @@
         if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters != "[]")
         {
             _param = JsonSerializer.Deserialize<TaskHeaderParameters>(Item.TaskHeaderParameters, _jsonOpt);
+        }
+
+        if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
+        {
+            _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags, _jsonOpt);
         }
 
         if (Item.FileDepositPathConfigurationId != 0)
@@ -261,6 +286,7 @@
                 Item.TaskEmailRecipients = new List<TaskEmailRecipientDto> { recipients };
             }
             Item.TaskHeaderParameters = JsonSerializer.Serialize(_param);
+            Item.Tags = JsonSerializer.Serialize(_tags);
 
             if (Item.CronParameters == "[]" || string.IsNullOrEmpty(Item.CronParameters))
             {
@@ -351,6 +377,29 @@
     private void FormChanged(FormFieldChangedEventArgs e)
     {
         _changesToSave = true;
+    }
+
+    private void RemoveTag(MudChip chip)
+    {
+        _tags.Remove(chip.Text);
+        _changesToSave = true;
+    }
+
+    private void OpenPopOver()
+    {
+        _tagValue = string.Empty;
+        _openPopOver = true;
+    }
+
+    private void ClosePopOver()
+    {
+        if (!string.IsNullOrEmpty(_tagValue))
+        {
+            _tags.Add(_tagValue.RemoveSpecialCharacters().RemoveDiacritics());
+            _changesToSave = true;
+        }
+        _tagValue = string.Empty;
+        _openPopOver = false;
     }
 
 }

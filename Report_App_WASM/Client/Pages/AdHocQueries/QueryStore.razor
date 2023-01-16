@@ -37,6 +37,15 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
+            @if (_tags.Any())
+            {
+                <MudChipSet SelectedChipsChanged="OnTagSelected" SelectedValues="selected" MultiSelection="true" Filter="true">
+                    @foreach (var value in _tags)
+                    {
+                        <MudChip Text="@value" Variant="Variant.Text" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
+                    }
+                </MudChipSet>
+            }
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     @if (_UserIsSupervisor)
@@ -47,6 +56,10 @@
                                 <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                             </MudStack>
                         </TemplateColumn>
+                    }
+                    @if (string.IsNullOrEmpty(ActivityName))
+                    {
+                        <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
                     }
                     <PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <TemplateColumn Title="@Localizer.Get("Run query")">
@@ -89,6 +102,8 @@
     private bool _rendering;
     bool _empty;
     bool _UserIsSupervisor;
+    List<string> _tags = new();
+    MudChip[] selected;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -104,6 +119,14 @@
         }
 
         _UserIsSupervisor = user!.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
+
+        var urlExt = string.Empty;
+        if (!string.IsNullOrEmpty(ActivityName))
+        {
+            urlExt = $"?activityId={ActivityId.Value}";
+        }
+        var uri = $"{ApiControllers.CrudDataApi}GetTagsQueries{urlExt}";
+        _tags = await Http.GetFromJsonAsync<List<string>>(uri);
     // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty)
         {
@@ -159,7 +182,7 @@
         var customFilters = string.Empty;
         if (ActivityId.HasValue)
         {
-            customFilters = $"IdActivity eq {ActivityId}";
+            customFilters = $"IdActivity eq {ActivityId.Value}";
         }
 
         url += "$count=true";
@@ -186,6 +209,30 @@
         {
             url += "&$filter=" + customFilters;
         }
+        if (selected != null&&selected.Any())
+        {
+            var _tagFilter = string.Empty;
+            var first = false;
+            if (!ActivityId.HasValue && string.IsNullOrEmpty(odataFilters))
+            {
+                _tagFilter = "&$filter=";
+                first = true;
+            }
+            foreach (var tagSelected in selected)
+            {
+                if (first)
+                {
+                    _tagFilter += $"contains(Tags, '{tagSelected.Text}')";
+                    first = false;
+                }
+                else
+                {
+                    _tagFilter += $" and contains(Tags, '{tagSelected.Text}')";
+                }
+            }
+
+            url += _tagFilter;
+        }
 
         try
         {
@@ -208,8 +255,15 @@
     private async Task RemoveFilters()
     {
         _rendering = true;
+        selected = null;
         if (_grid != null) await _grid.RemoveFilters();
         _rendering = false;
+    }
+
+    private async Task OnTagSelected(MudChip[] _selected)
+    {
+        selected = _selected;
+        if (_grid != null)  await OnRefresh();
     }
 
     public async ValueTask DisposeAsync()

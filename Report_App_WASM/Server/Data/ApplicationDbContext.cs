@@ -16,6 +16,7 @@ public class ApplicationDbContext : AuditableIdentityContext
     public virtual DbSet<ApplicationParameters> ApplicationParameters { get; set; } = null!;
     public virtual DbSet<ApplicationLogTask> ApplicationLogTask { get; set; } = null!;
     public virtual DbSet<ApplicationLogTaskDetails> ApplicationLogTaskDetails { get; set; } = null!;
+    public virtual DbSet<ApplicationLogAdHocQueries> ApplicationLogAdHocQueries { get; set; } = null!;
     public virtual DbSet<ApplicationLogQueryExecution> ApplicationLogQueryExecution { get; set; } = null!;
     public virtual DbSet<ApplicationLogEmailSender> ApplicationLogEmailSender { get; set; } = null!;
     public virtual DbSet<ApplicationAuditTrail> ApplicationAuditTrail { get; set; } = null!;
@@ -81,5 +82,7 @@ public class ApplicationDbContext : AuditableIdentityContext
         modelBuilder.Entity<DbTableDescriptions>().HasIndex(b => new { b.TableName, b.ColumnName });
         modelBuilder.Entity<UserSavedConfiguration>()
             .HasIndex(b => new { b.UserId, b.TypeConfiguration, b.IdIntConfiguration });
+        modelBuilder.Entity<ApplicationLogAdHocQueries>()
+            .HasIndex(b => new { b.ActivityId, b.QueryId, b.JobDescription });
     }
 }

@@ -56,6 +56,29 @@
                         <MudSwitch @bind-Checked="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
                     </MudItem>
                 </MudGrid>
+                <MudGrid>
+                    <MudItem sm="12" md="6">
+                        <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3"/>
+                    </MudItem>
+                    <MudItem sm="12" md="6">
+                        <p>Tags</p>
+                        <MudPaper Class="pa-2" Outlined="true">
+                            <MudChipSet AllClosable="true" OnClose="RemoveTag">
+                                @foreach (var value in _tags)
+                                {
+                                    <MudChip Text="@value"></MudChip>
+                                }
+                            </MudChipSet>
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="OpenPopOver">@Localizer.Get("Add")</MudIconButton>
+                            <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
+                                <div class="d-flex flex-column">
+                                    <MudTextField @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Close")</MudButton>
+                                </div>
+                            </MudPopover>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
             </MudForm>
         }
         <MudGrid>
@@ -83,7 +106,7 @@
                     {
                         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
                             <MudTabPanel Text="SQL">
-                                <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 65vh"/>
+                                <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 55vh"/>
                             </MudTabPanel>
                             <MudTabPanel Text="@Localizer.Get("Query parameters")">
                                 <CascadingValue Value="_changesToSave">
@@ -94,7 +117,7 @@
                     }
                     else
                     {
-                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 75vh"/>
+                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 65vh"/>
                     }
                 }
             </MudItem>
@@ -132,7 +155,7 @@
                         </MudForm>
                     </MudPaper>
                 }
-                <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Striped="true" Height="65vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                     <HeaderContent>
                         @if (_values?.Any() == true)
                         {
@@ -190,6 +213,9 @@
     private MudForm? _validateParam = new();
     bool _formParamValidated = true;
     AdHocQueriesParameters parameters = new();
+    List<string> _tags = new();
+    private bool _openPopOver;
+    string _tagValue = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -252,6 +278,10 @@
         if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
+        }
+        if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
+        {
+            _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags);
         }
     }
 
@@ -398,6 +428,8 @@
         {
             _errorMessage = "";
             Item.Parameters = JsonSerializer.Serialize(parameters);
+            Item.Tags = JsonSerializer.Serialize(_tags);
+            Item.ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault();
             var result = await DataService.PostValues(Item, "QueryStoreUpdate");
             if (result.Success)
             {
@@ -422,6 +454,7 @@
         var _activityId = actId.FirstOrDefault();
         Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
         Item.IdActivity = Item.Activity.ActivityId;
+        Item.ActivityName = Item.Activity.ActivityName;
     }
 
     private void FormChanged(FormFieldChangedEventArgs e)
@@ -434,6 +467,28 @@
         _changesToSave = true;
     }
 
+    private void RemoveTag(MudChip chip)
+    {
+        _tags.Remove(chip.Text);
+        _changesToSave = true;
+    }
+
+    private void OpenPopOver()
+    {
+        _tagValue = string.Empty;
+        _openPopOver = true;
+    }
+
+    private void ClosePopOver()
+    {
+        if (!string.IsNullOrEmpty(_tagValue))
+        {
+            _tags.Add(_tagValue.RemoveSpecialCharacters().RemoveDiacritics());
+            _changesToSave = true;
+        }
+        _tagValue = string.Empty;
+        _openPopOver = false;
+    }
 
     public void Dispose()
     {

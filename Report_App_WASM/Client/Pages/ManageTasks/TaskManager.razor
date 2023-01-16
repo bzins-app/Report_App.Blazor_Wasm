@@ -36,6 +36,15 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
+            @if (_tags.Any())
+            {
+                <MudChipSet SelectedChipsChanged="OnTagSelected" SelectedValues="selected" MultiSelection="true" Filter="true">
+                    @foreach (var value in _tags)
+                    {
+                        <MudChip Text="@value" Variant="Variant.Text" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
+                    }
+                </MudChipSet>
+            }
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
@@ -118,7 +127,8 @@
     private string? _errorMessage;
     private string? _pageTitle;
     private bool _rendering;
-
+    List<string> _tags = new();
+    MudChip[] selected = null!;
     bool _empty;
 
 
@@ -134,6 +144,15 @@
             _pagination.ItemsPerPage = PageSize.Value;
             await _pagination.SetCurrentPageIndexAsync(Page.Value);
         }
+
+        var type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.Alert.ToString() ? TaskType.Alert : TaskType.DataTransfer;
+        var urlExt = string.Empty;
+        if (!string.IsNullOrEmpty(ActivityName))
+        {
+            urlExt = $"&&activityId={ActivityId!.Value}";
+        }
+        var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
+        _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
 
     // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty)
@@ -212,6 +231,16 @@
         {
             url += "&$filter=" + customFilters;
         }
+        if (selected != null)
+        {
+            var _tagFilter = string.Empty;
+            foreach (var tagSelected in selected)
+            {
+                _tagFilter += $" and contains(Tags, '{tagSelected.Text}')";
+            }
+
+            url += _tagFilter;
+        }
 
         try
         {
@@ -234,8 +263,15 @@
     private async Task RemoveFilters()
     {
         _rendering = true;
+        selected = null;
         if (_grid != null) await _grid.RemoveFilters();
         _rendering = false;
+    }
+
+    private async Task OnTagSelected(MudChip[] _selected)
+    {
+        selected = _selected;
+        if (_grid != null) await OnRefresh();
     }
 
     public async ValueTask DisposeAsync()
