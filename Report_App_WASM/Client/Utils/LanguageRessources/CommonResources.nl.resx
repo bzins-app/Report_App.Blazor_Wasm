@@ -237,6 +237,9 @@
   <data name="Add validation sheet?" xml:space="preserve">
     <value>Validatieblad toevoegen?</value>
   </data>
+  <data name="Adhoc queries logs" xml:space="preserve">
+    <value>Logboeken voor ad-hocvragen</value>
+  </data>
   <data name="Adhoc queries overview" xml:space="preserve">
     <value>Overzicht adhoc-query's</value>
   </data>

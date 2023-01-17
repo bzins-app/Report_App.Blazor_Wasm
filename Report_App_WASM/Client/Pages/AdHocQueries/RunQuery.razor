@@ -401,7 +401,7 @@
             _extracting = true;
             _cts = new CancellationTokenSource();
             var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-            var remoteDataPayload = new RemoteDataPayload { Values = run, ActivityName = ActivityName, QueryId = QueryId, QueryName = Item.QueryName};
+            var remoteDataPayload = new RemoteDataPayload { Values = run, ActivityName = ActivityName, QueryId = QueryId, QueryName = Item.QueryName };
             await DataService.ExtractAdHocQuery(remoteDataPayload, _cts.Token);
             _extracting = false;
         }

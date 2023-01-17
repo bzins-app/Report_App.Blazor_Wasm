@@ -214,7 +214,7 @@
         {
             url += "&$filter=" + customFilters;
         }
-        if (selected != null&&selected.Any())
+        if (selected != null && selected.Any())
         {
             var _tagFilter = string.Empty;
             var first = false;
@@ -268,7 +268,7 @@
     private async Task OnTagSelected(MudChip[]? _selected)
     {
         selected = _selected;
-        if (_grid != null)  await OnRefresh();
+        if (_grid != null) await OnRefresh();
     }
 
     public async ValueTask DisposeAsync()

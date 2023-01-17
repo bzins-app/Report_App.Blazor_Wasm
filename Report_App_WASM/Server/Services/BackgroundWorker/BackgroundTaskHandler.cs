@@ -174,7 +174,7 @@ public class BackgroundTaskHandler : IDisposable
     }
 
 
-    private async Task FetchData(TaskDetail detail, int maxRows=100000)
+    private async Task FetchData(TaskDetail detail, int maxRows = 100000)
     {
         using var remoteDb = new RemoteDbConnection(_context, _mapper);
         var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!, _jsonOpt);

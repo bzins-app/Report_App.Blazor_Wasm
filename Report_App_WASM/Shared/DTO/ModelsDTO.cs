@@ -154,8 +154,7 @@ public class DbTableDescriptionsDto : BaseTraceabilityDto, IDto
 
 public class FileDepositPathConfigurationDto : BaseTraceabilityDto, IDto
 {
-    [Key]
-    public int FileDepositPathConfigurationId { get; set; }
+    [Key] public int FileDepositPathConfigurationId { get; set; }
 
     [Required] [MaxLength(60)] public string? ConfigurationName { get; set; }
 
@@ -426,7 +425,6 @@ public class ApplicationLogReportResultDto : IDto
     public string? Result { get; set; }
     public bool Error { get; set; }
 }
-
 
 public class ApplicationLogAdHocQueriesDto : IDto
 {

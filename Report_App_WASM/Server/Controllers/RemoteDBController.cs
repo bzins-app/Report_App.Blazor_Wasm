@@ -65,7 +65,12 @@ public class RemoteDbController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload payload, CancellationToken ct)
     {
-        var log = new ApplicationLogAdHocQueries { QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId, JobDescription = "Grid pagination", RunBy = User?.Identity?.Name, Type = "Grid", Error = false, Result = "Ok" };
+        var log = new ApplicationLogAdHocQueries
+        {
+            QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId,
+            JobDescription = "Grid pagination", RunBy = User?.Identity?.Name, Type = "Grid", Error = false,
+            Result = "Ok"
+        };
         try
         {
             var total = 0;
@@ -148,12 +153,18 @@ public class RemoteDbController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<FileResult?> RemoteDbExtractValuesAsync(RemoteDataPayload payload, CancellationToken ct)
     {
-        var log = new ApplicationLogAdHocQueries { QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId, JobDescription = "Grid extraction", RunBy = User?.Identity?.Name, Type = "Grid", Error = false, Result = "Ok"};
+        var log = new ApplicationLogAdHocQueries
+        {
+            QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId,
+            JobDescription = "Grid extraction", RunBy = User?.Identity?.Name, Type = "Grid", Error = false,
+            Result = "Ok"
+        };
         try
         {
             _logger.LogInformation("Grid extraction: Start " + payload.Values.FileName, payload.Values.FileName);
             var queriesMaxSizeExtract = await _context.ActivityDbConnection
-                .Where(a => a.Activity.ActivityId == payload.Values.ActivityId).Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
+                .Where(a => a.Activity.ActivityId == payload.Values.ActivityId)
+                .Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
                 .FirstOrDefaultAsync(cancellationToken: ct);
             payload.Values.MaxSize = queriesMaxSizeExtract;
             var items = await _remoteDb.RemoteDbToDatableAsync(payload.Values, ct);
@@ -163,10 +174,10 @@ public class RemoteDbController : ControllerBase, IDisposable
                 new ExcelCreationDatatable(payload.Values.FileName, new ExcelTemplate(), items));
             _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines",
                 $" {fileName} {items.Rows.Count} lines");
-            log.EndDateTime= DateTime.Now;
+            log.EndDateTime = DateTime.Now;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
-           await _context.AddAsync(log);
-           await  _context.SaveChangesAsync();
+            await _context.AddAsync(log);
+            await _context.SaveChangesAsync();
             return File(file.FileContents, file.ContentType, file.FileDownloadName);
         }
         catch (Exception e)

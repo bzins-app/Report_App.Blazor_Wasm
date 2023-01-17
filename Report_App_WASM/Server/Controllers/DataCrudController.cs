@@ -54,14 +54,15 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<IEnumerable<string>> GetTagsTasksAsync(TaskType type,  int activityId=0)
+    public async Task<IEnumerable<string>> GetTagsTasksAsync(TaskType type, int activityId = 0)
     {
         List<string> _tags = new();
         List<string> _serializedTags;
         if (activityId > 0)
         {
             _serializedTags = await _context.TaskHeader
-                .Where(a => a.IdActivity == activityId && a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags)&&a.Type==type)
+                .Where(a => a.IdActivity == activityId && a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags) &&
+                            a.Type == type)
                 .Select(a => a.Tags).ToListAsync();
         }
         else
@@ -541,8 +542,10 @@ public class DataCrudController : ControllerBase, IDisposable
         var val = new FileDepositPathConfiguration();
         if (values.EntityValue.SftpConfigurationId > 0)
         {
-            val.SftpConfiguration = await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
+            val.SftpConfiguration = await _context.SftpConfiguration
+                .Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
         }
+
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
         val.TryToCreateFolder = values.EntityValue.TryToCreateFolder;
@@ -554,22 +557,28 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileDepositPathConfigurationDto> values)
     {
-        var val = await _context.FileDepositPathConfiguration.Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId).FirstOrDefaultAsync();
+        var val = await _context.FileDepositPathConfiguration
+            .Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId)
+            .FirstOrDefaultAsync();
         return Ok(await DeleteEntity(val, values.UserName!));
     }
 
     [HttpPost]
     public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileDepositPathConfigurationDto> values)
     {
-        var val= await _context.FileDepositPathConfiguration.Where(a=>a.FileDepositPathConfigurationId==values.EntityValue.FileDepositPathConfigurationId).FirstOrDefaultAsync();
-        if (values.EntityValue.SftpConfigurationId>0)
+        var val = await _context.FileDepositPathConfiguration
+            .Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId)
+            .FirstOrDefaultAsync();
+        if (values.EntityValue.SftpConfigurationId > 0)
         {
-            val.SftpConfiguration=await _context.SftpConfiguration.Where(a=>a.SftpConfigurationId==values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
+            val.SftpConfiguration = await _context.SftpConfiguration
+                .Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
         }
-        val.ConfigurationName=values.EntityValue.ConfigurationName;
-        val.FilePath=values.EntityValue.FilePath;
-        val.TryToCreateFolder=values.EntityValue.TryToCreateFolder;
-        val.UseSftpProtocol=values.EntityValue.UseSftpProtocol;
+
+        val.ConfigurationName = values.EntityValue.ConfigurationName;
+        val.FilePath = values.EntityValue.FilePath;
+        val.TryToCreateFolder = values.EntityValue.TryToCreateFolder;
+        val.UseSftpProtocol = values.EntityValue.UseSftpProtocol;
 
         return Ok(await UpdateEntity(val, values.UserName!));
     }

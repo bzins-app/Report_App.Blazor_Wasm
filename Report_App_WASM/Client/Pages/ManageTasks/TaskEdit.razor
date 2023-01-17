@@ -357,7 +357,7 @@
     private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
     {
         _activityId = actId.FirstOrDefault();
-        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault(),};
+        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault(), };
         Item.IdActivity = Item.Activity.ActivityId;
         Item.ActivityName = Item.Activity.ActivityName;
     }

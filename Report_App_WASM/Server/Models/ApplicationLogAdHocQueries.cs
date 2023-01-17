@@ -7,7 +7,7 @@ namespace Report_App_WASM.Server.Models
     {
         public int Id { get; set; }
         public int QueryId { get; set; }
-        public DateTime StartDateTime { get; set; }=DateTime.Now;
+        public DateTime StartDateTime { get; set; } = DateTime.Now;
         public DateTime EndDateTime { get; set; }
         public int DurationInSeconds { get; set; }
         public int ActivityId { get; set; }
