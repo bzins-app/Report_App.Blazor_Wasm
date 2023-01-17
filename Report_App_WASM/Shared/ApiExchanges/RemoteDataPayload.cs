@@ -5,6 +5,7 @@ namespace Report_App_WASM.Shared.ApiExchanges;
 public class RemoteDataPayload
 {
     public RemoteDbCommandParameters? Values { get; init; }
+    public bool LogPayload { get; init; }
     public bool CalculateTotalElements { get; set; }
     public int QueryId { get; init; }
     public string? QueryName { get; init; }
