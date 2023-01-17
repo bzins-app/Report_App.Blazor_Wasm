@@ -68,7 +68,7 @@ public class RemoteDbController : ControllerBase, IDisposable
         var log = new ApplicationLogAdHocQueries
         {
             QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId,
-            JobDescription = "Grid pagination", RunBy = User?.Identity?.Name, Type = "Grid", Error = false,
+            JobDescription = payload.QueryName, RunBy = User?.Identity?.Name, Type = "Grid", Error = false,
             Result = "Ok"
         };
         try
@@ -95,8 +95,11 @@ public class RemoteDbController : ControllerBase, IDisposable
             log.EndDateTime = DateTime.Now;
             log.NbrOfRows = data.Rows.Count;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
-            await _context.AddAsync(log);
-            await _context.SaveChangesAsync();
+            if(payload.LogPayload)
+            {
+                await _context.AddAsync(log);
+                await _context.SaveChangesAsync();
+            }
             return Ok(result);
         }
         catch (Exception e)
@@ -105,8 +108,11 @@ public class RemoteDbController : ControllerBase, IDisposable
             log.Result = e.Message.Take(440).ToString();
             log.EndDateTime = DateTime.Now;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
-            await _context.AddAsync(log);
-            await _context.SaveChangesAsync();
+            if (payload.LogPayload)
+            {
+                await _context.AddAsync(log);
+                await _context.SaveChangesAsync();
+            }
             var result = new SubmitResultRemoteData
                 { Success = false, Message = e.Message, Value = new List<Dictionary<string, object>>() };
             return Ok(result);
@@ -134,7 +140,7 @@ public class RemoteDbController : ControllerBase, IDisposable
         var log = new ApplicationLogAdHocQueries
         {
             QueryId = payload.QueryId, ActivityName = payload.ActivityName, ActivityId = payload.Values.ActivityId,
-            JobDescription = "Grid extraction", RunBy = User?.Identity?.Name, Type = "Grid", Error = false,
+            JobDescription = payload.QueryName, RunBy = User?.Identity?.Name, Type = "Grid extraction", Error = false,
             Result = "Ok"
         };
         try
