@@ -130,8 +130,13 @@ public class RemoteDbController : ControllerBase, IDisposable
         var _typeDb = await GetDbType(activityId);
 
         if (_typeDb == TypeDb.SqlServer && query.ToLower().RemoveSpecialCharacters().Contains("orderby"))
-            query += " OFFSET 0 Rows";
-        return $"select  count(*) from ( {query} ) a";
+        {
+            query += Environment.NewLine+" OFFSET 0 Rows";
+        }
+            
+        return $@"select  count(*) from ( 
+                    {query} 
+                    ) a";
     }
 
     [HttpPost]
