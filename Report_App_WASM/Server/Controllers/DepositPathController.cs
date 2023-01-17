@@ -15,16 +15,11 @@ public class DepositPathController : ControllerBase, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly LocalFilesService _fileService;
-    private readonly FtpService _ftpService;
     private readonly ILogger<DepositPathController> _logger;
-    private readonly SftpService _sftpService;
 
-    public DepositPathController(ILogger<DepositPathController> logger,
-        SftpService sftpService, FtpService ftpService, LocalFilesService fileService, ApplicationDbContext context)
+    public DepositPathController(ILogger<DepositPathController> logger, LocalFilesService fileService, ApplicationDbContext context)
     {
         _logger = logger;
-        _ftpService = ftpService;
-        _sftpService = sftpService;
         _fileService = fileService;
         _context = context;
     }
@@ -46,14 +41,14 @@ public class DepositPathController : ControllerBase, IDisposable
             if (config)
             {
                 using var deposit = new FtpService(_context);
-                var result = await _ftpService.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
+                var result = await deposit.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
                     value.EntityValue.FilePath, value.EntityValue.TryToCreateFolder);
                 return Ok(result);
             }
             else
             {
                 using var deposit = new SftpService(_context);
-                var result = await _sftpService.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
+                var result = await deposit.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
                     value.EntityValue.FilePath!, value.EntityValue.TryToCreateFolder);
                 return Ok(result);
             }

@@ -128,7 +128,7 @@
     private string? _pageTitle;
     private bool _rendering;
     List<string> _tags = new();
-    MudChip[] selected = null!;
+    MudChip[]? selected = null!;
     bool _empty;
 
 
@@ -268,7 +268,7 @@
         _rendering = false;
     }
 
-    private async Task OnTagSelected(MudChip[] _selected)
+    private async Task OnTagSelected(MudChip[]? _selected)
     {
         selected = _selected;
         if (_grid != null) await OnRefresh();

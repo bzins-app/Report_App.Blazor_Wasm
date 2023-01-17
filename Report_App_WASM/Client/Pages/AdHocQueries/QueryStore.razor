@@ -103,7 +103,8 @@
     bool _empty;
     bool _UserIsSupervisor;
     List<string> _tags = new();
-    MudChip[] selected;
+    MudChip[]? selected;
+    int _activityId;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -111,6 +112,8 @@
         var user = await AuthenticationStateProvider.GetUserInfo();
         if (!string.IsNullOrEmpty(ActivityName))
         {
+            _empty = _activityId != ActivityId;
+            _activityId = ActivityId.Value;
             _pageTitle += ": " + ActivityName;
             if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
             {
@@ -124,10 +127,11 @@
         var urlExt = string.Empty;
         if (!string.IsNullOrEmpty(ActivityName))
         {
-            urlExt = $"?activityId={ActivityId.Value}";
+            urlExt = $"?activityId={ActivityId!.Value}";
         }
         var uri = $"{ApiControllers.CrudDataApi}GetTagsQueries{urlExt}";
-        _tags = await Http.GetFromJsonAsync<List<string>>(uri);
+        _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
+
     // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty)
         {
@@ -261,7 +265,7 @@
         _rendering = false;
     }
 
-    private async Task OnTagSelected(MudChip[] _selected)
+    private async Task OnTagSelected(MudChip[]? _selected)
     {
         selected = _selected;
         if (_grid != null)  await OnRefresh();
