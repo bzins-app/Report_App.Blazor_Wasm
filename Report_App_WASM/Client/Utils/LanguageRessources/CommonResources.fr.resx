@@ -237,6 +237,9 @@
   <data name="Add validation sheet?" xml:space="preserve">
     <value>Ajout d'une feuille de validation ?</value>
   </data>
+  <data name="Adhoc queries logs" xml:space="preserve">
+    <value>Journaux de requêtes adhoc</value>
+  </data>
   <data name="Adhoc queries overview" xml:space="preserve">
     <value>Vue globale des requêtes</value>
   </data>

@@ -17,7 +17,7 @@ public static class OdataModels
         builder.EntitySet<ApplicationLogReportResult>("ReportResultLogs");
         builder.EntitySet<ApplicationLogTask>("TaskLogs");
         builder.EntitySet<ApplicationAuditTrail>("AuditTrail");
-
+        builder.EntitySet<ApplicationLogAdHocQueries>("QueriesLogs");
 
         builder.EntitySet<LdapConfiguration>("Ldap");
         builder.EntitySet<SmtpConfiguration>("Smtp");

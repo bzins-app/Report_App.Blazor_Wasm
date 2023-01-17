@@ -14,17 +14,17 @@
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6">@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)</MudText>
-                                </CardHeaderContent>
-                                <CardHeaderActions>
-                                    <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Default" OnClick="() => Delete(element)" />
-                                </CardHeaderActions>
-                            </MudCardHeader>
-                            <MudCardContent>
-                                <MudTextField @bind-value="@element.DisplayName" TextChanged="UpdateParameters" Text="@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)" T="string" Label="@Localizer.Get("Display name")" />
-                                <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@(element.DisplaySequence)" @onclick="UpdateParameters" />
-                                <MudTextField @bind-value="@element.ParameterIdentifier" TextChanged="UpdateParameters" Text="@element.ParameterIdentifier" T="string" Label="@Localizer.Get("Parameter identifier")" />
-                                <MudField Label="@Localizer.Get("Data type")" Disabled="true"> @Localizer.Get(element.ValueType.ToString())</MudField>
-                                @if (element.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Default" OnClick="() => Delete(element)"/>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudTextField @bind-value="@element.DisplayName" TextChanged="UpdateParameters" Text="@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)" T="string" Label="@Localizer.Get("Display name")"/>
+                            <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@(element.DisplaySequence)" @onclick="UpdateParameters"/>
+                            <MudTextField @bind-value="@element.ParameterIdentifier" TextChanged="UpdateParameters" Text="@element.ParameterIdentifier" T="string" Label="@Localizer.Get("Parameter identifier")"/>
+                            <MudField Label="@Localizer.Get("Data type")" Disabled="true"> @Localizer.Get(element.ValueType.ToString())</MudField>
+                            @if (element.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
                             {
                                 <MudSelect @bind-Value="element.DateOption" Label="@Localizer.Get("Select a date calculation")" @bind-Value:after="UpdateParameters">
                                     @foreach (CalulatedDateOption item in Enum.GetValues(typeof(CalulatedDateOption)))
@@ -43,18 +43,18 @@
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.String)
                             {
-                                <MudTextField Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" Text="@element.Value" />
+                                <MudTextField Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" Text="@element.Value"/>
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.Number)
                             {
-                                <MudNumericField Label="@Localizer.Get("Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value" />
+                                <MudNumericField Label="@Localizer.Get("Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value"/>
                             }
                             <MudGrid>
                                 <MudItem md="6">
-                                    <MudSwitch @bind-Checked="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters" />
+                                    <MudSwitch @bind-Checked="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters"/>
                                 </MudItem>
                                 <MudItem md="6">
-                                    <MudSwitch @bind-Checked="element.HideParameter" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" @onclick="UpdateParameters" />
+                                    <MudSwitch @bind-Checked="element.HideParameter" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" @onclick="UpdateParameters"/>
                                 </MudItem>
                             </MudGrid>
                         </MudCardContent>

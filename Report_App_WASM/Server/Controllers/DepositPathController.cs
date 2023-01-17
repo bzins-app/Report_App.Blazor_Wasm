@@ -17,7 +17,8 @@ public class DepositPathController : ControllerBase, IDisposable
     private readonly LocalFilesService _fileService;
     private readonly ILogger<DepositPathController> _logger;
 
-    public DepositPathController(ILogger<DepositPathController> logger, LocalFilesService fileService, ApplicationDbContext context)
+    public DepositPathController(ILogger<DepositPathController> logger, LocalFilesService fileService,
+        ApplicationDbContext context)
     {
         _logger = logger;
         _fileService = fileService;
@@ -32,7 +33,7 @@ public class DepositPathController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value)
     {
-        if (value.EntityValue!.UseSftpProtocol&& value.EntityValue.SftpConfigurationId>0)
+        if (value.EntityValue!.UseSftpProtocol && value.EntityValue.SftpConfigurationId > 0)
         {
             var config = await _context.SftpConfiguration
                 .Where(a => a.SftpConfigurationId == value.EntityValue.SftpConfigurationId)

@@ -58,6 +58,8 @@ public class DataGridController : ODataController, IDisposable
 
         if (values.FunctionName == "AuditTrail") return await GetExtractFile(GetAuditTrail(), values);
 
+        if (values.FunctionName == "QueriesLogs") return await GetExtractFile(GetQueriesLogs(), values);
+
         return await GetExtractFile(GetSystemLogs(), values);
     }
 
@@ -105,6 +107,13 @@ public class DataGridController : ODataController, IDisposable
     public IQueryable<ApplicationLogEmailSender> GetEmailLogs()
     {
         return _context.ApplicationLogEmailSender.OrderByDescending(a => a.Id).AsNoTracking();
+    }
+
+    [EnableQuery(EnsureStableOrdering = false)]
+    [HttpGet("odata/QueriesLogs")]
+    public IQueryable<ApplicationLogAdHocQueries> GetQueriesLogs()
+    {
+        return _context.ApplicationLogAdHocQueries.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
@@ -162,12 +171,16 @@ public class DataGridController : ODataController, IDisposable
     [HttpGet("odata/DepositPath")]
     public IQueryable<FileDepositPathConfigurationDto> GetDepositPath()
     {
-        return ( _context.FileDepositPathConfiguration
-            .Select(a=>new FileDepositPathConfigurationDto { ConfigurationName=a.ConfigurationName,
-            CreateDateTime=a.CreateDateTime, ModDateTime=a.ModDateTime, CreateUser=a.CreateUser, FileDepositPathConfigurationId=a.FileDepositPathConfigurationId,
-            FilePath=a.FilePath, ModificationUser = a.ModificationUser
-            , SftpConfigurationId=a.SftpConfiguration==null?0: a.SftpConfiguration.SftpConfigurationId, TryToCreateFolder= a.TryToCreateFolder
-            , UseSftpProtocol= a.UseSftpProtocol, IsReachable= a.IsReachable
+        return (_context.FileDepositPathConfiguration
+            .Select(a => new FileDepositPathConfigurationDto
+            {
+                ConfigurationName = a.ConfigurationName,
+                CreateDateTime = a.CreateDateTime, ModDateTime = a.ModDateTime, CreateUser = a.CreateUser,
+                FileDepositPathConfigurationId = a.FileDepositPathConfigurationId,
+                FilePath = a.FilePath, ModificationUser = a.ModificationUser,
+                SftpConfigurationId = a.SftpConfiguration == null ? 0 : a.SftpConfiguration.SftpConfigurationId,
+                TryToCreateFolder = a.TryToCreateFolder, UseSftpProtocol = a.UseSftpProtocol,
+                IsReachable = a.IsReachable
             })).AsQueryable();
     }
 
