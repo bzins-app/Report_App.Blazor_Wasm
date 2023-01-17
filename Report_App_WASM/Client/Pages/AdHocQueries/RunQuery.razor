@@ -97,9 +97,9 @@
                         </MudItem>
                         <MudItem>
                             <MudMenu DisableElevation Variant="Variant.Outlined"
-                                     Icon="@Icons.Material.Filled.Settings" Title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" OffsetY="true"
+                                     Icon="@Icons.Material.Filled.Settings" Title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" OffsetY="true" @ref="_menu"
                                      Dense="true">
-                                <MudList Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
+                                <MudList Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;" >
                                     @foreach (var config in _userConfigs)
                                     {
                                         <MudListItem Text="@config.SaveName" Dense="true">
@@ -200,6 +200,7 @@
     private bool _hasTotal;
     private int _total;
     AdHocQueriesParameters parameters = new();
+    MudMenu _menu;
 
     protected override async Task OnInitializedAsync()
     {
@@ -273,22 +274,30 @@
 
     private async Task DeleteConfig(int id)
     {
-        var payload = new UserConfigurationDelete { Id = id };
-        var result = await DataService.PostValues(payload, "UserConfigurationDelete");
-        if (result.Success)
+        _menu.CloseMenu();
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        var feedback = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
+
+        if (feedback != null)
         {
-            Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
-            await GetUserSavedConfigs();
-        }
-        else
-        {
-            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-            _errorMessage = result.Message;
+            var payload = new UserConfigurationDelete { Id = id };
+            var result = await DataService.PostValues(payload, "UserConfigurationDelete");
+            if (result.Success)
+            {
+                Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
+                await GetUserSavedConfigs();
+            }
+            else
+            {
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
+            }
         }
     }
 
     private async Task LoadPivotConfig(string config)
     {
+        _menu.CloseMenu();
         await _pvt.LoadConfig(config);
     }
 
