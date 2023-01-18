@@ -82,7 +82,7 @@
             </MudForm>
         }
         <MudGrid>
-            <MudItem sm="12" lg="12" xl="6">
+            <MudItem sm="12" md="12" lg="6" xl="6">
                 <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
                     <LoadingContent>
                         <MudText>@Localizer.Get("Processing")</MudText>
@@ -121,7 +121,7 @@
                     }
                 }
             </MudItem>
-            <MudItem sm="12" lg="12" xl="6">
+            <MudItem sm="12"  md="12" lg="6" xl="6">
                 @if (param.Count > 0)
                 {
                     <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
