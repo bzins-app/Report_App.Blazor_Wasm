@@ -217,7 +217,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         {
             TypeDb.Oracle => new OracleRemoteDb(),
             TypeDb.SqlServer => new SqlServerRemoteDb(),
-            TypeDb.Db2 => new OracleRemoteDb(),
+            TypeDb.Db2 => new OlebDbDbRemoteDb(),
             TypeDb.MariaDb => new MariaDbRemoteDb(),
             _ => new MySqlDbRemoteDb()
         };
