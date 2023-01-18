@@ -169,7 +169,7 @@ public class DataInteractionService
                 _alreadyNotified = false;
                 var downloadresult = await _blazorDownloadFileService.DownloadFile( fileName:
                     payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx",
-                   bytes: await response.Content.ReadAsByteArrayAsync(ct),contentType: "application/octet-stream", bufferSize: 65536);
+                   stream: await response.Content.ReadAsStreamAsync(ct),contentType: "application/octet-stream", bufferSize: 65536);
                 if (downloadresult.Succeeded) response.Dispose();
             }
         }
