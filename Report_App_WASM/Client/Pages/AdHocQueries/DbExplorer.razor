@@ -198,6 +198,8 @@
         ColNames = new List<DescriptionValues>();
         QueryRun = "";
         QueryBuilder = "";
+        TableNamesStored = new();
+        ColNamesStored = new();
         _table = new MudTable<Dictionary<string, object>.ValueCollection>();
         var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
@@ -218,6 +220,7 @@
                 },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
+        StateHasChanged();
     }
 
     private async Task GetTablesList()
