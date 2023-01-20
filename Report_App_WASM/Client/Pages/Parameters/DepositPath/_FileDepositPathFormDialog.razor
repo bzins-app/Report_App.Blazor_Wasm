@@ -63,7 +63,6 @@
     private List<SelectItem> _listConfigs = new();
     private MudForm _form = default!;
     private string _deletionValidation = null!;
-    private int _sftpConfigurationId;
     private string? _directoryTestResult;
 
 
@@ -76,7 +75,6 @@
     {
         var controllerActionListConfigs = "SftpInfo";
         _listConfigs = await DataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
-        _sftpConfigurationId = Item.SftpConfigurationId;
     }
 
     private async Task Validate()
@@ -93,10 +91,6 @@
             await _form.Validate();
             if (_form.IsValid)
             {
-                if (_sftpConfigurationId > 0)
-                {
-                    Item!.SftpConfigurationId = _sftpConfigurationId;
-                }
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
