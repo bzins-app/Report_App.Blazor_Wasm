@@ -122,7 +122,7 @@
                         <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")"/>
                         <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")"/>
                     }
-                    @if (Item.Type == TaskType.Report)
+                    @if (Item.Type == TaskType.Report&&_depositPathSelect.Any())
                     {
                         <AuthorizeView Roles="Admin">
                             <Authorized>
