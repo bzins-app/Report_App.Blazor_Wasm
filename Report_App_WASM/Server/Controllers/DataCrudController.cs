@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using AutoMapper;
 using CsvHelper;
@@ -670,7 +671,7 @@ public class DataCrudController : ControllerBase, IDisposable
                 };
 
                 var records = new List<TableDescriptionCSV>();
-                using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}"))
+                using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}",true))
                 using (var csv = new CsvReader(reader, config))
                 {
                     records = csv.GetRecords<TableDescriptionCSV>().ToList();
@@ -768,10 +769,10 @@ public class DataCrudController : ControllerBase, IDisposable
 
     private class TableDescriptionCSV
     {
-        public string TableName { get; } = string.Empty;
-        public string TableDescription { get; } = string.Empty;
-        public string ColumnName { get; } = string.Empty;
-        public string ColumnDescription { get; } = string.Empty;
+        public string TableName { get; set; } = string.Empty;
+        public string TableDescription { get; set; } = string.Empty;
+        public string ColumnName { get; set; } = string.Empty;
+        public string ColumnDescription { get; set; } = string.Empty;
         public bool IsSnippet { get; set; }
     }
 }
