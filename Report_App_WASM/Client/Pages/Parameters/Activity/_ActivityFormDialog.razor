@@ -308,6 +308,13 @@
         if (Item!.ActivityDbConnections.Any())
         {
             DbCon = Item.ActivityDbConnections.First();
+            if (DbCon.TypeDb == TypeDb.PostgreSql || DbCon.TypeDb == TypeDb.MariaDb || DbCon.TypeDb == TypeDb.MySql)
+            {
+                if (DbCon.Port == 0)
+                {
+                    DbCon.Port = DbCon.TypeDb == TypeDb.PostgreSql ? 5432 : 3306;
+                }
+            }
         }
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _loading = false;

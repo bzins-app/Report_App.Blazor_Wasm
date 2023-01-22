@@ -219,6 +219,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
             TypeDb.SqlServer => new SqlServerRemoteDb(),
             TypeDb.Db2 => new OlebDbDbRemoteDb(),
             TypeDb.MariaDb => new MariaDbRemoteDb(),
+            TypeDb.PostgreSql => new PostgreSqlRemoteDb(),
             _ => new MySqlDbRemoteDb()
         };
     }
