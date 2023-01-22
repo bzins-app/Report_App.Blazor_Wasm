@@ -670,7 +670,7 @@ public class DataCrudController : ControllerBase, IDisposable
                 };
 
                 var records = new List<TableDescriptionCSV>();
-                using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}", true))
+                using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}"))
                 using (var csv = new CsvReader(reader, config))
                 {
                     records = csv.GetRecords<TableDescriptionCSV>().ToList();
