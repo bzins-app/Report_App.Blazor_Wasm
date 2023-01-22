@@ -9,7 +9,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.0">
+    <PackageReference Include="AutoMapper" Version="12.0.1">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="6.0.2">
@@ -17,17 +17,17 @@
     </PackageReference>
     <PackageReference Include="Community.OData.Linq" Version="2.1.0" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />
-    <PackageReference Include="EPPlus" Version="6.1.1" />
-    <PackageReference Include="FluentFTP" Version="43.0.1" />
+    <PackageReference Include="EPPlus" Version="6.1.2" />
+    <PackageReference Include="FluentFTP" Version="44.0.1" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.0-rc2" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.0-rc2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.12" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.0" />
-    <PackageReference Include="MySql.Data" Version="8.0.31" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.80" />
+    <PackageReference Include="MySql.Data" Version="8.0.32" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.90" />
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.Data.OleDb" Version="7.0.0" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.0" />
     <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="6.0.0" />
