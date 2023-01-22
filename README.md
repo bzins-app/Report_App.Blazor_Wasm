@@ -1,4 +1,4 @@
-# Report applciation on blazor webassembly hosted (readme will be updated soon)
+# Report application on blazor webassembly hosted (readme will be updated soon)
 
 The purpose of this application is to generate reports from databases. You can choose the type of database (Oracle, SQLserver, PostgreSQL, Mariadb or MySQL) but others can be easily added.
 
