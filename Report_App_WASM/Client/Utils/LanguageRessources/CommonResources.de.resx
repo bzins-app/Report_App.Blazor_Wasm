@@ -843,6 +843,9 @@
   <data name="Download a two-factor authenticator app like Microsoft Authenticator for" xml:space="preserve">
     <value>Laden Sie eine Zwei-Faktor-Authentifizierer-Anwendung wie Microsoft Authenticator für</value>
   </data>
+  <data name="Download descriptions" xml:space="preserve">
+    <value>Beschreibungen herunterladen</value>
+  </data>
   <data name="Download duration" xml:space="preserve">
     <value>Dauer des Herunterladens</value>
   </data>
@@ -2162,6 +2165,9 @@
   </data>
   <data name="Tasks today" xml:space="preserve">
     <value>Aufgaben heute</value>
+  </data>
+  <data name="Template for description file" xml:space="preserve">
+    <value>Vorlage für Beschreibungsdatei</value>
   </data>
   <data name="Template tab name to use" xml:space="preserve">
     <value>Name der zu verwendenden Registerkarte der Vorlage</value>

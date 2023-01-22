@@ -1,5 +1,5 @@
 ﻿@inject IJSRuntime JsRuntime
-
+@implements IDisposable
 
 <MudDialog>
     <DialogContent >
@@ -43,7 +43,7 @@
     {
         if (firstRender)
         {
-            await JsRuntime.InvokeVoidAsync("loadScript", "https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js");
+            await JsRuntime.InvokeVoidAsync("loadScript", "https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js");
             await JsRuntime.InvokeVoidAsync("loadScript", "/js/CKEditorInterop.js");
             _objRef = DotNetObjectReference.Create(this);
             await JsRuntime.InvokeVoidAsync("CKEditorInterop.init", _id, _objRef);
@@ -66,4 +66,9 @@
         MudDialog?.Close(DialogResult.Ok(HtmlText));
     }
 
+    public void Dispose()
+    {
+        _objRef?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }

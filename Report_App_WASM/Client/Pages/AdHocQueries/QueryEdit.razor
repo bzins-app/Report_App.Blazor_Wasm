@@ -36,41 +36,42 @@
         {
             <MudForm FieldChanged="FormChanged">
                 <MudGrid>
-                    <MudItem>
-                        <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width: 200px"/>
-                    </MudItem>
-                    <MudItem>
-                        @if (_activities.Any())
-                        {
-                            <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
-                                       AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
-                                       Required>
-                                @foreach (var value in _activities)
+                    <MudItem sm="12" lg="4">
+                        <MudGrid>
+                            <MudItem>
+                                <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width: 200px"/>
+                            </MudItem>
+                            <MudItem>
+                                @if (_activities.Any())
                                 {
-                                    <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                                    <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
+                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
+                                               Required>
+                                        @foreach (var value in _activities)
+                                        {
+                                            <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                                        }
+                                    </MudSelect>
                                 }
-                            </MudSelect>
-                        }
+                            </MudItem>
+                            <MudItem>
+                                <MudSwitch @bind-Checked="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
+                            </MudItem>
+                            <MudItem>
+                                <MudSwitch @bind-Checked="parameters.UsePivotTable" Label="@Localizer.Get("Use pivot table component?")" Color="Color.Primary"/>
+                            </MudItem>
+                            <MudItem>
+                                <MudNumericField @bind-Value="parameters.PivotTableNbrOfColumnsMax" Label="@Localizer.Get("Pivot Table: nbr max of columns")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable" />
+                            </MudItem>
+                            <MudItem>
+                                <MudNumericField @bind-Value="parameters.PivotTableMaxRowsFetched" Label="@Localizer.Get("Pivot Table: nbr max of rows")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable" />
+                            </MudItem>
+                        </MudGrid>
                     </MudItem>
-                    <MudItem>
-                        <MudSwitch @bind-Checked="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
+                    <MudItem sm="6" lg="4">
+                        <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3" />
                     </MudItem>
-                    <MudItem>
-                        <MudSwitch @bind-Checked="parameters.UsePivotTable" Label="@Localizer.Get("Use pivot table component?")" Color="Color.Primary"/>
-                    </MudItem>
-                    <MudItem>
-                        <MudNumericField @bind-Value="parameters.PivotTableNbrOfColumnsMax" Label="@Localizer.Get("Pivot Table: nbr max of columns")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable" />
-                    </MudItem>
-                    <MudItem>
-                        <MudNumericField @bind-Value="parameters.PivotTableMaxRowsFetched" Label="@Localizer.Get("Pivot Table: nbr max of rows")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable" />
-                    </MudItem>
-                </MudGrid>
-                <MudGrid>
-                    <MudItem sm="12" md="6">
-                        <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3"/>
-                    </MudItem>
-                    <MudItem sm="12" md="6">
-                        <p>Tags</p>
+                    <MudItem sm="6" lg="4">
                         <MudPaper Class="pa-2" Outlined="true">
                             <MudChipSet AllClosable="true" OnClose="RemoveTag">
                                 @foreach (var value in _tags)
@@ -81,7 +82,7 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="OpenPopOver">@Localizer.Get("Add")</MudIconButton>
                             <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
                                 <div class="d-flex flex-column">
-                                    <MudTextField @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                    <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags" />
                                     <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Close")</MudButton>
                                 </div>
                             </MudPopover>
@@ -225,6 +226,7 @@
     List<string> _tags = new();
     private bool _openPopOver;
     string _tagValue = string.Empty;
+    List<string> _AvailableTags = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -292,6 +294,9 @@
         {
             _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags);
         }
+
+        var uriTags = $"{ApiControllers.CrudDataApi}GetTagsQueries";
+        _AvailableTags = (await Http.GetFromJsonAsync<List<string>>(uriTags))!;
     }
 
     private async Task RunSql()
@@ -504,4 +509,12 @@
         GC.SuppressFinalize(this);
     }
 
+
+    private async Task<IEnumerable<string>> SearchTags(string value)
+    {
+        await Task.Delay(1);
+        if (string.IsNullOrEmpty(value))
+            return Array.Empty<string>();
+        return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
 }
