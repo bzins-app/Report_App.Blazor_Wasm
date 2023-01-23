@@ -8,7 +8,7 @@ using Report_App_WASM.Shared.RemoteQueryParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
-public class OlebDbDbRemoteDb : IDisposable, IRemoteDb
+public class OlebDbDbRemoteDb : IRemoteDb
 {
     public void Dispose()
     {

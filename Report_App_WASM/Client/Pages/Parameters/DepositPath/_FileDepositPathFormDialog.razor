@@ -17,14 +17,14 @@
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
-            <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudTextField @bind-Value="Item!.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudSwitch @bind-Checked="Item!.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
+            <MudSwitch @bind-Checked="Item.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
             @if (_listConfigs.Any())
             {
-                <MudSwitch @bind-Checked="Item!.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
+                <MudSwitch @bind-Checked="Item.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
                 <MudSelect T="int" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="Item.SftpConfigurationId"
-                           AnchorOrigin="Origin.BottomCenter" Disabled="!Item!.UseSftpProtocol"
+                           AnchorOrigin="Origin.BottomCenter" Disabled="!Item.UseSftpProtocol"
                            Required>
                     @foreach (var value in _listConfigs)
                     {
@@ -98,7 +98,7 @@
 
     private async Task TestConfiguration()
     {
-        var payload = new DepositPathTest { UseSftpProtocol = Item!.UseSftpProtocol, SftpConfigurationId = Item.SftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
+        var payload = new DepositPathTest { UseSftpProtocol = Item.UseSftpProtocol, SftpConfigurationId = Item.SftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
         var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi);
         if (result.Success)
         {

@@ -113,7 +113,7 @@
         if (!string.IsNullOrEmpty(ActivityName))
         {
             _empty = _activityId != ActivityId;
-            _activityId = ActivityId.Value;
+            _activityId = ActivityId!.Value;
             _pageTitle += ": " + ActivityName;
             if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
             {

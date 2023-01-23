@@ -1,6 +1,5 @@
 ﻿@page "/RetrieveReports/{ActivityName}/{ActivityId:int}"
 @implements IAsyncDisposable
-@inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @attribute [Authorize]

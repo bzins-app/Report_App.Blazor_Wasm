@@ -1,6 +1,5 @@
 ﻿@page "/EmailSenderLogs"
 @implements IAsyncDisposable
-@inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@Localizer.Get("Email sender logs")</PageTitle>

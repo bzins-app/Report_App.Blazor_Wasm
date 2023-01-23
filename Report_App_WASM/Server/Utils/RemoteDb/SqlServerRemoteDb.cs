@@ -11,7 +11,7 @@ using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
-public class SqlServerRemoteDb : IDisposable, IRemoteDb
+public class SqlServerRemoteDb : IRemoteDb
 {
     public void Dispose()
     {

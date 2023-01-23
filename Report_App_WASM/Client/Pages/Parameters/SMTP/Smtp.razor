@@ -2,7 +2,6 @@
 @implements IAsyncDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@Localizer.Get("Smtp configuration")</PageTitle>

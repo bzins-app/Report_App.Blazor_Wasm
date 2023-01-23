@@ -9,8 +9,8 @@ public enum TypeDb
     SqlServer = 2,
     MySql = 3,
     MariaDb = 4,
-    PostgreSql=6,
-    Db2 = 10,
+    PostgreSql = 6,
+    Db2 = 10
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

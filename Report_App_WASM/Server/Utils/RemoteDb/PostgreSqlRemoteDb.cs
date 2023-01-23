@@ -11,7 +11,7 @@ using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
-public class PostgreSqlRemoteDb : IDisposable, IRemoteDb
+public class PostgreSqlRemoteDb : IRemoteDb
 {
     public void Dispose()
     {
@@ -76,7 +76,7 @@ public class PostgreSqlRemoteDb : IDisposable, IRemoteDb
             var DbConnection = new NpgsqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new NpgsqlDataAdapter();
             var cmd = new NpgsqlCommand
-            { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
+                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };
             if (run.QueryCommandParameters!.Any())
                 foreach (var parameter in run.QueryCommandParameters)
                     if (parameter.ValueType is QueryCommandParameterValueType.Date
@@ -129,7 +129,7 @@ public class PostgreSqlRemoteDb : IDisposable, IRemoteDb
                     Environment
                         .NewLine; //newline to avoid empty feedback when a comment is open at the last line without CR
                 DbDataAdapter.SelectCommand = cmd;
-                if (run.FillDatatableSchema)  DbDataAdapter.FillSchema(data, SchemaType.Source);
+                if (run.FillDatatableSchema) DbDataAdapter.FillSchema(data, SchemaType.Source);
                 if (run.PaginatedResult)
                     DbDataAdapter.Fill(run.StartRecord, run.MaxSize, data);
                 else

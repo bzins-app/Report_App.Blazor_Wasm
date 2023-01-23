@@ -1,6 +1,5 @@
 ﻿@page "/AuditTrail"
 @implements IAsyncDisposable
-@inject HttpClient Http
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@Localizer.Get("Audit Trail")</PageTitle>

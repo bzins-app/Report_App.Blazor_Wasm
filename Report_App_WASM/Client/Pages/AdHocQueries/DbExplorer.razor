@@ -54,7 +54,7 @@
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd>
-                                    <MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small" />
+                                    <MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small"/>
                                 </MudTd>
                                 <MudTd @ondblclick="() => GetColumnsList(context.Name)">@context.Name</MudTd>
                                 @if (_hasDesc)
@@ -117,7 +117,7 @@
                             <p style="color: red">@_queryTestResult</p>
                         </div>
                     }
-                    <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh" />
+                    <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh"/>
 
                     <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
@@ -146,7 +146,7 @@
                             }
                         </RowTemplate>
                         <PagerContent>
-                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
+                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
                         </PagerContent>
                     </MudTable>
                 </div>
@@ -198,8 +198,8 @@
         ColNames = new List<DescriptionValues>();
         QueryRun = "";
         QueryBuilder = "";
-        TableNamesStored = new();
-        ColNamesStored = new();
+        TableNamesStored = new List<DescriptionValues>();
+        ColNamesStored = new List<DescriptionValues>();
         _table = new MudTable<Dictionary<string, object>.ValueCollection>();
         var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
@@ -209,18 +209,18 @@
         }
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
+        {
+            IsReadOnly = false,
+            Language = _typeDbTask switch
             {
-                IsReadOnly = false,
-                Language = _typeDbTask switch
-                {
-                    TypeDb.MySql => AceLanguage.mysql,
-                    TypeDb.MariaDb => AceLanguage.mysql,
-                    TypeDb.SqlServer => AceLanguage.sqlserver,
-                    TypeDb.PostgreSql => AceLanguage.pgsql,
-                    _ => AceLanguage.sql
+                TypeDb.MySql => AceLanguage.mysql,
+                TypeDb.MariaDb => AceLanguage.mysql,
+                TypeDb.SqlServer => AceLanguage.sqlserver,
+                TypeDb.PostgreSql => AceLanguage.pgsql,
+                _ => AceLanguage.sql
                 },
-                Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
-            };
+            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
+        };
         StateHasChanged();
     }
 

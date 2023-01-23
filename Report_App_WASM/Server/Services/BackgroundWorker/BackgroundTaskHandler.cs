@@ -63,8 +63,8 @@ public class BackgroundTaskHandler : IDisposable
         _header = (await _context.TaskHeader.Where(a => a.TaskHeaderId == parameters.TaskHeaderId)
             .Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients)
             .FirstOrDefaultAsync())!;
-        var _activityConnect = (await _context.ActivityDbConnection
-            .Where(a => a.Activity.ActivityId == _header.IdActivity).FirstOrDefaultAsync());
+        var _activityConnect = await _context.ActivityDbConnection
+            .Where(a => a.Activity.ActivityId == _header.IdActivity).FirstOrDefaultAsync();
         ApplicationLogTask logTask = new()
         {
             ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now,
@@ -681,13 +681,16 @@ public class BackgroundTaskHandler : IDisposable
             var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
             if (listAttach.Any())
             {
-                var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
-                if (result.Success)
-                    await _context.AddAsync(new ApplicationLogTaskDetails
-                        { TaskId = _taskId, Step = "Email sent", Info = subject });
-                else
-                    await _context.AddAsync(new ApplicationLogTaskDetails
-                        { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
+                if (message != null)
+                {
+                    var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
+                    if (result.Success)
+                        await _context.AddAsync(new ApplicationLogTaskDetails
+                            { TaskId = _taskId, Step = "Email sent", Info = subject });
+                    else
+                        await _context.AddAsync(new ApplicationLogTaskDetails
+                            { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
+                }
             }
         }
     }
