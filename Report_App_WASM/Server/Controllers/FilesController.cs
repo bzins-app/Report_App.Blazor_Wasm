@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Report_App_WASM.Server.Data;
 using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Server.Controllers;
@@ -11,15 +10,12 @@ namespace Report_App_WASM.Server.Controllers;
 [ApiController]
 public class FilesController : ControllerBase, IDisposable
 {
-    private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly ILogger<FilesController> _logger;
 
-    public FilesController(ILogger<FilesController> logger,
-        ApplicationDbContext context, IWebHostEnvironment hostingEnvironment)
+    public FilesController(ILogger<FilesController> logger, IWebHostEnvironment hostingEnvironment)
     {
         _logger = logger;
-        _context = context;
         _hostingEnvironment = hostingEnvironment;
     }
 
@@ -36,7 +32,7 @@ public class FilesController : ControllerBase, IDisposable
         {
             var filePath = GetUploadedFilePath(file.FileName);
             returnedFiledPath = filePath.Item1;
-            using var stream = System.IO.File.Create(filePath.Item2);
+            await using var stream = System.IO.File.Create(filePath.Item2);
             await file.CopyToAsync(stream);
         }
         // Process uploaded files

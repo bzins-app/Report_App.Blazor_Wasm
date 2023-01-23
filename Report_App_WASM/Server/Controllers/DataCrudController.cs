@@ -26,20 +26,17 @@ public class DataCrudController : ControllerBase, IDisposable
     private readonly ILogger<DataCrudController> _logger;
     private readonly IMapper _mapper;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public DataCrudController(ILogger<DataCrudController> logger,
         ApplicationDbContext context, IMapper mapper,
-        RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager)
     {
         _logger = logger;
         _context = context;
         _mapper = mapper;
         _roleManager = roleManager;
         _userManager = userManager;
-        _signInManager = signInManager;
     }
 
     public void Dispose()

@@ -195,7 +195,7 @@
     private string _typeReport = "Grid";
     PivotTable<Dictionary<string, object>>? _pvt;
     List<UserConfigurations> _userConfigs = new();
-    string _userName = string.Empty;
+    string? _userName = string.Empty;
     private bool _hasTotal;
     private int _total;
     AdHocQueriesParameters parameters = new();
@@ -208,7 +208,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
-        _userName = user.UserName;
+        _userName = user?.UserName;
         var uriAction = $"GetQueryStore?queryId={QueryId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
         await GetUserSavedConfigs();
@@ -255,7 +255,7 @@
         {
             _errorMessage = string.Empty;
             var SaveName = feedback.Data.ToString();
-            var config = await _pvt.GetConfig();
+            var config = await _pvt?.GetConfig()!;
             var payload = new UserConfigurationSave { SaveName = SaveName, IdIntConfiguration = QueryId, TypeConfiguration = TypeConfiguration.PitvotReport, SavedValues = config };
             var result = await DataService.PostValues(payload, "UserConfigurationSave");
             if (result.Success)
@@ -297,7 +297,7 @@
     private async Task LoadPivotConfig(string config)
     {
         _menu.CloseMenu();
-        await _pvt.LoadConfig(config);
+        await _pvt?.LoadConfig(config)!;
     }
 
     private async Task ConfirmText()
@@ -383,7 +383,7 @@
                     _errorMessage = response.Content.ToString();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _hasTotal = false;
                 _values = new List<Dictionary<string, object>>();
@@ -475,7 +475,7 @@
                     response.Content.ToString();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _values = new List<Dictionary<string, object>>();
             }
