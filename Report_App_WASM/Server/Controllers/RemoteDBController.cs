@@ -138,6 +138,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                 await _context.AddAsync(log);
                 await _context.SaveChangesAsync();
             }
+
             var result = new SubmitResultRemoteData
                 { Success = false, Message = e.Message, Value = new List<Dictionary<string, object>>() };
             return Ok(result);
@@ -155,10 +156,8 @@ public class RemoteDbController : ControllerBase, IDisposable
         var _typeDb = await GetDbType(activityId);
 
         if (_typeDb == TypeDb.SqlServer && query.ToLower().RemoveSpecialCharacters().Contains("orderby"))
-        {
-            query += Environment.NewLine+" OFFSET 0 Rows";
-        }
-            
+            query += Environment.NewLine + " OFFSET 0 Rows";
+
         return $@"select  count(*) from ( 
                     {query} 
                     ) a";
@@ -179,7 +178,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             var queriesMaxSizeExtract = await _context.ActivityDbConnection
                 .Where(a => a.Activity.ActivityId == payload.Values.ActivityId)
                 .Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
-                .FirstOrDefaultAsync(cancellationToken: ct);
+                .FirstOrDefaultAsync(ct);
             payload.Values.MaxSize = queriesMaxSizeExtract;
             var items = await _remoteDb.RemoteDbToDatableAsync(payload.Values, ct);
             var fileName = payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
@@ -213,7 +212,7 @@ public class RemoteDbController : ControllerBase, IDisposable
         try
         {
             var fileDesc = "Db Description";
-            _logger.LogInformation("Db Description extraction: Start ", fileDesc);
+            _logger.LogInformation("Db Description extraction: Start ");
             var values = _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == DbconnectionID);
             var fileName = fileDesc + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
 

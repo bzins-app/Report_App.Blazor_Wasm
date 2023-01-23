@@ -36,12 +36,12 @@
                 <MudItem sm="12" lg="8">
                     <MudGrid>
                         <MudItem sm="12" lg="6">
-                            <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text" />
+                            <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text"/>
                             @if (_activities.Any())
                             {
                                 <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@_activityId"
-                                       AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler"
-                                       Required>
+                                           AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler"
+                                           Required>
                                     @foreach (var value in _activities)
                                     {
                                         <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
@@ -50,53 +50,53 @@
                             }
                             @if (Item.Type == TaskType.Report)
                             {
-                                <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")" />
+                                <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")"/>
                             }
                             @if (_typeDbTask != TypeDb.Db2)
                             {
-                                <MudSwitch @bind-Checked="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Checked="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary"/>
                             }
                         </MudItem>
                         <MudItem sm="12" lg="6">
                             @if (Item.Type == TaskType.Report)
                             {
                                 <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile"
-                                       AnchorOrigin="Origin.BottomCenter"
-                                       Required>
+                                           AnchorOrigin="Origin.BottomCenter"
+                                           Required>
                                     @foreach (FileType item in Enum.GetValues(typeof(FileType)))
                                     {
                                         <MudSelectItem Value="@item">@item</MudSelectItem>
                                     }
                                 </MudSelect>
-                                <MudSwitch @bind-Checked="_param.UseASpecificFileNaming" Label="@Localizer.Get("Use a specific file naming?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Checked="_param.UseASpecificFileNaming" Label="@Localizer.Get("Use a specific file naming?")" Color="Color.Primary"/>
                                 @if (Item.TypeFile == FileType.Excel)
                                 {
-                                    <MudSwitch @bind-Checked="_param.UseAnExcelTemplate" Label="@Localizer.Get("Use an excel template?")" Color="Color.Primary" />
+                                    <MudSwitch @bind-Checked="_param.UseAnExcelTemplate" Label="@Localizer.Get("Use an excel template?")" Color="Color.Primary"/>
                                 }
                                 @if (Item.TypeFile == FileType.Csv)
                                 {
-                                    <MudTextField @bind-Value="_param.Delimiter" Label="@Localizer.Get("CSV delimiter")" />
+                                    <MudTextField @bind-Value="_param.Delimiter" Label="@Localizer.Get("CSV delimiter")"/>
                                 }
                                 @if (Item.TypeFile == FileType.Excel && _param.UseASpecificFileNaming)
                                 {
-                                    <MudTextField @bind-Value="_param.ExcelFileName" Label="@Localizer.Get("File name")" />
+                                    <MudTextField @bind-Value="_param.ExcelFileName" Label="@Localizer.Get("File name")"/>
                                     <p> * @Localizer.Get("Only when query does not require a separate file")</p>
                                 }
                                 @if (Item.TypeFile == FileType.Excel && _param.UseAnExcelTemplate)
                                 {
-                                    <MudTextField @bind-Value="_param.ExcelTemplatePath" Label="@Localizer.Get("Excel Template")" Required ReadOnly />
+                                    <MudTextField @bind-Value="_param.ExcelTemplatePath" Label="@Localizer.Get("Excel Template")" Required ReadOnly/>
                                     @if (!_loading)
                                     {
                                         <MudLink Class="d-flex pa-4" Href="@("/" + _param.ExcelTemplatePath)" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
                                         <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadTemplate" Accept=".xlsx">
                                             <ButtonTemplate>
                                                 <MudFab HtmlTag="label" Class="pa-4"
-                                            Color="Color.Primary"
-                                            Icon="@Icons.Material.Filled.UploadFile"
-                                            Label="@Localizer.Get("Select an excel template")"
-                                            Size="Size.Small"
-                                            Style="text-transform: none"
-                                            for="@context" />
+                                                        Color="Color.Primary"
+                                                        Icon="@Icons.Material.Filled.UploadFile"
+                                                        Label="@Localizer.Get("Select an excel template")"
+                                                        Size="Size.Small"
+                                                        Style="text-transform: none"
+                                                        for="@context"/>
                                             </ButtonTemplate>
                                         </MudFileUpload>
                                     }
@@ -105,7 +105,7 @@
                                         <MudButton Disabled="@_loading" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
                                             @if (_loading)
                                             {
-                                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
                                                 <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
                                             }
                                         </MudButton>
@@ -113,24 +113,24 @@
                                 }
                                 @if (Item.TypeFile == FileType.Excel)
                                 {
-                                    <MudTextField @bind-Value="_param.ValidationSheetText" Label="@Localizer.Get("Information sheet text")" />
+                                    <MudTextField @bind-Value="_param.ValidationSheetText" Label="@Localizer.Get("Information sheet text")"/>
                                 }
                             }
 
                             @if (Item.Type == TaskType.Alert)
                             {
-                                <MudSwitch @bind-Checked="_param.AlertOccurenceByTime" Label="@Localizer.Get("Manage by duration?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Checked="_param.AlertOccurenceByTime" Label="@Localizer.Get("Manage by duration?")" Color="Color.Primary"/>
                                 <p>@Localizer.Get("In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences")</p>
-                                <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")" />
-                                <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")" />
+                                <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")"/>
+                                <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")"/>
                             }
                             @if (Item.Type == TaskType.Report && _depositPathSelect.Any())
                             {
                                 <AuthorizeView Roles="Admin">
                                     <Authorized>
                                         <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileDepositPathConfigurationId"
-                                               AnchorOrigin="Origin.BottomCenter"
-                                               Clearable>
+                                                   AnchorOrigin="Origin.BottomCenter"
+                                                   Clearable>
                                             @if (Item.FileDepositPathConfigurationId == 0)
                                             {
                                                 <MudSelectItem Value="@Item.FileDepositPathConfigurationId">@Localizer.Get("Empty")</MudSelectItem>
@@ -143,8 +143,8 @@
                                     </Authorized>
                                     <NotAuthorized>
                                         <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileDepositPathConfigurationId" Disabled="true"
-                                               AnchorOrigin="Origin.BottomCenter"
-                                               Clearable>
+                                                   AnchorOrigin="Origin.BottomCenter"
+                                                   Clearable>
                                             @if (Item.FileDepositPathConfigurationId == 0)
                                             {
                                                 <MudSelectItem Value="@Item.FileDepositPathConfigurationId">@Localizer.Get("Empty")</MudSelectItem>
@@ -161,7 +161,7 @@
                     </MudGrid>
                 </MudItem>
                 <MudItem sm="12" lg="4">
-                    <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3" />
+                    <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3"/>
                     <MudField Variant="Variant.Text" InnerPadding="false">Tags</MudField>
                     <MudPaper Class="pa-2" Outlined="true">
                         <MudChipSet AllClosable="true" OnClose="RemoveTag">
@@ -173,7 +173,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="OpenPopOver">@Localizer.Get("Add")</MudIconButton>
                         <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
                             <div class="d-flex flex-column">
-                                <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags" />
+                                <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags"/>
                                 <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Close")</MudButton>
                             </div>
                         </MudPopover>
@@ -260,7 +260,7 @@
 
         if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
         {
-            _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags, _jsonOpt);
+            _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags, _jsonOpt)!;
         }
 
         if (Item.FileDepositPathConfigurationId != 0)
@@ -368,9 +368,9 @@
     private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
     {
         _activityId = actId.FirstOrDefault();
-        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault(), };
+        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
         Item.IdActivity = Item.Activity.ActivityId;
-        Item.ActivityName = Item.Activity.ActivityName;
+        if (Item.Activity.ActivityName != null) Item.ActivityName = Item.Activity.ActivityName;
     }
 
     private async Task OnUploadTemplate(IBrowserFile file)

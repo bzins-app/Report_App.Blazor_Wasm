@@ -10,7 +10,7 @@ using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
-public class MariaDbRemoteDb : IDisposable, IRemoteDb
+public class MariaDbRemoteDb : IRemoteDb
 {
     public void Dispose()
     {

@@ -1,7 +1,5 @@
 ﻿@page "/AdhocQueriesLogs"
 @implements IAsyncDisposable
-@inject HttpClient Http
-@inject IDialogService DialogService
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@Localizer.Get("Adhoc queries logs")</PageTitle>
@@ -35,7 +33,7 @@
                     <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of job")" Sortable="true"/>
                     <PropertyColumn Property="@(p => p.JobDescription)" Title="@Localizer.Get("Job description")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
                     <PropertyColumn Property="@(p => p.RunBy)" Title="@Localizer.Get("Run by")" Sortable="true"/>
                     <PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>
                     <PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true"/>

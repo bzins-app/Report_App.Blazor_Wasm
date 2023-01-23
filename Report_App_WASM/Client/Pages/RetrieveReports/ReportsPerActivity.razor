@@ -90,7 +90,7 @@
             UriHelper.NavigateTo("/403");
         }
 
-        selected = null;
+        selected = null!;
         var type = TaskType.Report;
         var urlExt = string.Empty;
         if (!string.IsNullOrEmpty(ActivityName))
@@ -181,7 +181,7 @@
     private async Task RemoveFilters()
     {
         _rendering = true;
-        selected = null;
+        selected = null!;
         if (_grid != null) await _grid.RemoveFilters();
         _rendering = false;
     }

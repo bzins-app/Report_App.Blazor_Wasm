@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Components.Forms;
 using Report_App_WASM.Client.Utils;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ApiExchanges;
-using Report_App_WASM.Shared.RemoteQueryParameters;
 
 namespace Report_App_WASM.Client.Services;
 
@@ -159,7 +158,7 @@ public class DataInteractionService
             using var _httpClientLong = new HttpClient();
             _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
             _httpClientLong.BaseAddress = _httpClient.BaseAddress;
-            var response = await _httpClientLong.PostAsJsonAsync(url, payload, cancellationToken: ct);
+            var response = await _httpClientLong.PostAsJsonAsync(url, payload, ct);
             if (response.StatusCode == HttpStatusCode.Unauthorized ||
                 response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                 response.StatusCode == HttpStatusCode.RequestTimeout)
@@ -167,15 +166,16 @@ public class DataInteractionService
             if (response.IsSuccessStatusCode)
             {
                 _alreadyNotified = false;
-                var downloadresult = await _blazorDownloadFileService.DownloadFile( fileName:
+                var downloadresult = await _blazorDownloadFileService.DownloadFile(
                     payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx",
-                   stream: await response.Content.ReadAsStreamAsync(ct),contentType: "application/octet-stream", bufferSize: 65536);
+                    await response.Content.ReadAsStreamAsync(ct), contentType: "application/octet-stream",
+                    bufferSize: 65536);
                 if (downloadresult.Succeeded) response.Dispose();
             }
         }
-        catch(Exception ex) 
+        catch (Exception ex)
         {
-            Console.WriteLine(ex.Message.ToString());
+            Console.WriteLine(ex.Message);
             // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             //return null;
         }

@@ -69,7 +69,7 @@
                         </MudGrid>
                     </MudItem>
                     <MudItem sm="6" lg="3">
-                        <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3" />
+                        <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3"/>
                     </MudItem>
                     <MudItem sm="6" lg="3">
                         <MudPaper Class="pa-2" Outlined="true">
@@ -82,7 +82,7 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="OpenPopOver">@Localizer.Get("Add")</MudIconButton>
                             <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
                                 <div class="d-flex flex-column">
-                                    <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags" />
+                                    <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags"/>
                                     <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Close")</MudButton>
                                 </div>
                             </MudPopover>
@@ -131,7 +131,7 @@
                     }
                 }
             </MudItem>
-            <MudItem sm="12"  md="12" lg="6" xl="6">
+            <MudItem sm="12" md="12" lg="6" xl="6">
                 @if (param.Count > 0)
                 {
                     <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
@@ -293,7 +293,7 @@
         }
         if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
         {
-            _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags);
+            _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags)!;
         }
 
         var uriTags = $"{ApiControllers.CrudDataApi}GetTagsQueries";
@@ -380,7 +380,7 @@
 
                 var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
-            var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
+                var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
                 {
@@ -442,19 +442,22 @@
         try
         {
             _errorMessage = "";
-            Item.Parameters = JsonSerializer.Serialize(parameters);
-            Item.Tags = JsonSerializer.Serialize(_tags);
-            Item.ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault();
-            var result = await DataService.PostValues(Item, "QueryStoreUpdate");
-            if (result.Success)
+            if (Item != null)
             {
-                _changesToSave = false;
-                Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-                _errorMessage = result.Message;
+                Item.Parameters = JsonSerializer.Serialize(parameters);
+                Item.Tags = JsonSerializer.Serialize(_tags);
+                Item.ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault();
+                var result = await DataService.PostValues(Item, "QueryStoreUpdate");
+                if (result.Success)
+                {
+                    _changesToSave = false;
+                    Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                    _errorMessage = result.Message;
+                }
             }
         }
         catch (Exception e)
@@ -518,4 +521,5 @@
             return Array.Empty<string>();
         return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
+
 }

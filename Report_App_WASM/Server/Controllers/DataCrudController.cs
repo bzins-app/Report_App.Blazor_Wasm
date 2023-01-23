@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Text;
 using System.Text.Json;
 using AutoMapper;
 using CsvHelper;
@@ -60,26 +59,18 @@ public class DataCrudController : ControllerBase, IDisposable
         List<string> _tags = new();
         List<string> _serializedTags;
         if (activityId > 0)
-        {
             _serializedTags = await _context.TaskHeader
                 .Where(a => a.IdActivity == activityId && a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags) &&
                             a.Type == type)
                 .Select(a => a.Tags).ToListAsync();
-        }
         else
-        {
             _serializedTags = await _context.TaskHeader
                 .Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags) && a.Type == type)
                 .Select(a => a.Tags).ToListAsync();
-        }
 
         if (_serializedTags != null)
-        {
             foreach (var value in _serializedTags)
-            {
                 _tags.AddRange(JsonSerializer.Deserialize<List<string>>(value)!);
-            }
-        }
 
         return _tags.Distinct();
     }
@@ -90,25 +81,17 @@ public class DataCrudController : ControllerBase, IDisposable
         List<string> _tags = new();
         List<string> _serializedTags;
         if (activityId > 0)
-        {
             _serializedTags = await _context.QueryStore
                 .Where(a => a.IdActivity == activityId && a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags))
                 .Select(a => a.Tags).ToListAsync();
-        }
         else
-        {
             _serializedTags = await _context.QueryStore
                 .Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags))
                 .Select(a => a.Tags).ToListAsync();
-        }
 
         if (_serializedTags != null)
-        {
             foreach (var value in _serializedTags)
-            {
                 _tags.AddRange(JsonSerializer.Deserialize<List<string>>(value)!);
-            }
-        }
 
         return _tags.Distinct();
     }
@@ -324,10 +307,8 @@ public class DataCrudController : ControllerBase, IDisposable
 
                 foreach (var user in users)
                     if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
-                    {
                         await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
-                        //await _signInManager.RefreshSignInAsync(user);
-                    }
+                //await _signInManager.RefreshSignInAsync(user);
             }
 
             if (string.IsNullOrEmpty(values.EntityValue?.ActivityRoleId))
@@ -542,10 +523,8 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         var val = new FileDepositPathConfiguration();
         if (values.EntityValue.SftpConfigurationId > 0)
-        {
             val.SftpConfiguration = await _context.SftpConfiguration
                 .Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
-        }
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
@@ -571,10 +550,8 @@ public class DataCrudController : ControllerBase, IDisposable
             .Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId)
             .FirstOrDefaultAsync();
         if (values.EntityValue.SftpConfigurationId > 0)
-        {
             val.SftpConfiguration = await _context.SftpConfiguration
                 .Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
-        }
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
@@ -671,7 +648,7 @@ public class DataCrudController : ControllerBase, IDisposable
                 };
 
                 var records = new List<TableDescriptionCSV>();
-                using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}",true))
+                using (var reader = new StreamReader($"wwwroot/{value.EntityValue.FilePath}", true))
                 using (var csv = new CsvReader(reader, config))
                 {
                     records = csv.GetRecords<TableDescriptionCSV>().ToList();

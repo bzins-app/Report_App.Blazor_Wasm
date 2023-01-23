@@ -128,7 +128,7 @@ public class UserManagerController : ControllerBase, IDisposable
     {
         var user = await _userManager.FindByNameAsync(item.EntityValue?.UserName!);
         var result = await _userManager.RemoveFromRolesAsync(user!, item.EntityValue?.Roles!);
-      //  await _signInManager.RefreshSignInAsync(user);
+        //  await _signInManager.RefreshSignInAsync(user);
         _logger.Log(LogLevel.Warning,
             $"User {item.EntityValue?.UserName} has been removed from roles by {item.UserName} " +
             string.Join(",", item.EntityValue.Roles!));
