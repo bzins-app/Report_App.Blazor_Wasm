@@ -36,7 +36,7 @@
         {
             <MudForm FieldChanged="FormChanged">
                 <MudGrid>
-                    <MudItem sm="12" lg="4">
+                    <MudItem sm="12" lg="6">
                         <MudGrid>
                             <MudItem>
                                 <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width: 200px"/>
@@ -59,10 +59,10 @@
                             </MudItem>
                         </MudGrid>
                     </MudItem>
-                    <MudItem sm="6" lg="4">
+                    <MudItem sm="6" lg="3">
                         <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3" />
                     </MudItem>
-                    <MudItem sm="6" lg="4">
+                    <MudItem sm="6" lg="3">
                         <MudPaper Class="pa-2" Outlined="true">
                             <MudChipSet AllClosable="true" OnClose="RemoveTag">
                                 @foreach (var value in _tags)
