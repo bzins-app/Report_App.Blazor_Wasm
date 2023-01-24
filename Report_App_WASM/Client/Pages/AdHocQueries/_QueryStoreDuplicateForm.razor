@@ -12,7 +12,7 @@
         @if (_activities.Any())
         {
             <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="_selectedActivityId" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")">
-                @foreach (var item in _activities.Where(a => Item != null))
+                @foreach (var item in _activities)
                 {
                     <MudSelectItem Value="@item.ActivityId">@item.ActivityName</MudSelectItem>
                 }
@@ -56,7 +56,7 @@
     private async Task ConfirmDuplicate()
     {
         _visible = false;
-        await Clone(_name, Item!.Id);
+        await Clone(_name, Item!.Id, _selectedActivityId);
         Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
         await DataGrid?.RefreshDataAsync()!;
     }
@@ -66,9 +66,9 @@
         _visible = false;
     }
 
-    private async Task Clone(string name, int queryId)
+    private async Task Clone(string name, int queryId, int idActivity)
     {
-        DuplicateQueryStore payload = new() { Name = name, QueryId = queryId, ActivityId = _selectedActivityId };
+        DuplicateQueryStore payload = new() { Name = name, QueryId = queryId, ActivityId = idActivity };
         var result = await DataService.PostValues(payload, "DuplicateQueryStore");
         if (!result.Success)
         {
