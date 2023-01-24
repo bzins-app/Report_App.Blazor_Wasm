@@ -125,16 +125,19 @@ public class DataCrudController : ControllerBase, IDisposable
     public async Task<IActionResult> DuplicateQueryStore(ApiCrudPayload<DuplicateQueryStore> values)
     {
         var _newQuery = new QueryStore { QueryName = values.EntityValue.Name };
-        var queryToDuplicate = await _context.QueryStore.Include(a => a.Activity)
+        var queryToDuplicate = await _context.QueryStore
             .FirstAsync(a => a.Id == values.EntityValue.QueryId);
+        var activityInfo = await _context.Activity
+            .FirstAsync(a => a.ActivityId == values.EntityValue.ActivityId);
         if (queryToDuplicate != null)
         {
             _newQuery.Query = queryToDuplicate.Query;
+            _newQuery.Tags = queryToDuplicate.Tags;
             _newQuery.QueryParameters = queryToDuplicate.QueryParameters;
             _newQuery.Parameters = queryToDuplicate.Parameters;
             _newQuery.IdActivity = queryToDuplicate.IdActivity;
-            _newQuery.Activity = queryToDuplicate.Activity;
-            _newQuery.ActivityName = queryToDuplicate.ActivityName;
+            _newQuery.Activity = activityInfo;
+            _newQuery.ActivityName = activityInfo.ActivityName;
 
             return Ok(await InsertEntity(_newQuery, values.UserName!));
         }
