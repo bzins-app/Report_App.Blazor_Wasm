@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    user: root
+    ports:
+      - '7433:1433'    
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Ultra)SecurePAs$worD!
+      - MSSQL_DB=report_app
+    volumes:
+     - reportapp_db:/var/opt/mssql/data
+
+  report_app_wasm.server:
+    image: ${DOCKER_REGISTRY-}reportappwasmserver
+    ports:
+      - '7080:80'
+      - '7443:433'
+    build:
+      context: .
+      dockerfile: Report_App_WASM\Server\Dockerfile
+    container_name: ReportApp_Blazor_server
+    environment:
+      - 'ConnectionStrings__DefaultConnection=Server=db;Database=report_app;User Id=sa;Password=Ultra)SecurePAs$worD!;MultipleActiveResultSets=true'
+      - 'BaseUserDefaultOptions:Email=admin@report.app'
+      - 'BaseUserDefaultOptions:Password=$tR0ng)cR3d?'
+    volumes:
+      - reportapp_docsstorage:/app/wwwroot/docsstorage
+      - reportapp_upload:/app/wwwroot/upload
+    depends_on:
+      - db  
+
+volumes:
+  reportapp_docsstorage:
+  reportapp_upload:
+  reportapp_db:
