@@ -15,7 +15,7 @@
             </div>
         </a>
     </MudText>
-    <MudDivider/>
+    <MudDivider />
     <MudNavLink Href="Home" Style="padding-top: 15px" Icon="@Icons.Material.Outlined.Home">@Localizer.Get("Home")</MudNavLink>
     @if (_appConst.ActivateTaskSchedulerModule)
     {
@@ -47,7 +47,9 @@
                 <AuthorizeView Roles=@(t.ActivityName)>
                     <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
                         <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
-                        <MudNavLink Href=@($"DbExplorer/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
+                        <AuthorizeView Roles="Admin, Supervisor">
+                            <MudNavLink Href=@($"DbExplorer/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
+                        </AuthorizeView>
                     </MudNavGroup>
                 </AuthorizeView>
             }
