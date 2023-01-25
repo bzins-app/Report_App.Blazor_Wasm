@@ -133,8 +133,14 @@
             urlExt = $"?activityId={ActivityId!.Value}";
         }
         var uri = $"{ApiControllers.CrudDataApi}GetTagsQueries{urlExt}";
-        _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
-
+        try
+        {
+            _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
+        }
+        catch
+        {
+            _tags = new List<string>();
+        }
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty)
         {
