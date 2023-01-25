@@ -105,7 +105,6 @@ public class DataInteractionService
                 response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                 response.StatusCode == HttpStatusCode.RequestTimeout)
                 await SendNotification();
-            response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
             {
                 _alreadyNotified = false;
