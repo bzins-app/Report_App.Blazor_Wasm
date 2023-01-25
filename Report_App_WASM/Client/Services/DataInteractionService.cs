@@ -68,7 +68,6 @@ public class DataInteractionService
                 response.StatusCode == HttpStatusCode.ServiceUnavailable ||
                 response.StatusCode == HttpStatusCode.RequestTimeout)
                 await SendNotification();
-            response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
             {
                 _alreadyNotified = false;
@@ -173,7 +172,6 @@ public class DataInteractionService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             //return null;
         }
