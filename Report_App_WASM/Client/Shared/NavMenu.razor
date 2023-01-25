@@ -47,9 +47,10 @@
                 <AuthorizeView Roles=@(t.ActivityName)>
                     <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
                         <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
-                        <AuthorizeView Roles="Admin, Supervisor">
+                        @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
+                        {
                             <MudNavLink Href=@($"DbExplorer/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
-                        </AuthorizeView>
+                        }
                     </MudNavGroup>
                 </AuthorizeView>
             }
