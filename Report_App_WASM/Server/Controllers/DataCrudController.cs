@@ -300,21 +300,24 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ActivityName!))
+            if(values.EntityValue.ActivityType==ActivityType.SourceDb)
             {
-                await _roleManager.CreateAsync(new IdentityRole<Guid>(values.EntityValue.ActivityName!));
-                var users = await _userManager.GetUsersInRoleAsync("Admin");
+                if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ActivityName!))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole<Guid>(values.EntityValue.ActivityName!));
+                    var users = await _userManager.GetUsersInRoleAsync("Admin");
 
-                foreach (var user in users)
-                    if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
-                        await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
-                //await _signInManager.RefreshSignInAsync(user);
-            }
+                    foreach (var user in users)
+                        if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
+                            await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
+                    //await _signInManager.RefreshSignInAsync(user);
+                }
 
-            if (string.IsNullOrEmpty(values.EntityValue?.ActivityRoleId))
-            {
-                var newRole = await _roleManager.FindByNameAsync(values.EntityValue?.ActivityName!);
-                values.EntityValue!.ActivityRoleId = newRole!.Id.ToString();
+                if (string.IsNullOrEmpty(values.EntityValue?.ActivityRoleId))
+                {
+                    var newRole = await _roleManager.FindByNameAsync(values.EntityValue?.ActivityName!);
+                    values.EntityValue!.ActivityRoleId = newRole!.Id.ToString();
+                }
             }
 
             await _context.AddAsync(values.EntityValue);
@@ -350,17 +353,21 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue?.ActivityRoleId!);
-            if (roleActivity != null)
-                if (roleActivity.Name != values.EntityValue!.ActivityName)
-                {
-                    roleActivity.Name = values.EntityValue.ActivityName;
-                    await _roleManager.UpdateAsync(roleActivity);
-                }
+            if (values.EntityValue.ActivityType == ActivityType.SourceDb)
+            {
+                var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue?.ActivityRoleId!);
+                if (roleActivity != null)
+                    if (roleActivity.Name != values.EntityValue!.ActivityName)
+                    {
+                        roleActivity.Name = values.EntityValue.ActivityName;
+                        await _roleManager.UpdateAsync(roleActivity);
+                    }
 
-            if (values.EntityValue.ActivityDbConnections != null)
-                foreach (var connect in values.EntityValue.ActivityDbConnections)
-                    await UpdateEntity(connect, values.UserName!);
+                if (values.EntityValue.ActivityDbConnections != null)
+                    foreach (var connect in values.EntityValue.ActivityDbConnections)
+                        await UpdateEntity(connect, values.UserName!);
+            }
+
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
         }
         catch (Exception ex)
