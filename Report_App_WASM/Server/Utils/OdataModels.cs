@@ -24,6 +24,7 @@ public static class OdataModels
         builder.EntitySet<SftpConfiguration>("Sftp");
         builder.EntitySet<FileDepositPathConfigurationDto>("DepositPath");
         builder.EntitySet<Activity>("Activities");
+        builder.EntitySet<Activity>("DataTransfers");
         builder.EntitySet<TaskHeader>("TaskHeader");
         builder.EntitySet<ApplicationUserDto>("Users");
         builder.EntitySet<QueryStore>("Queries");

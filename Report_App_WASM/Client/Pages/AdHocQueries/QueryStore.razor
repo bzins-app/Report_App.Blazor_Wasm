@@ -108,23 +108,11 @@
     List<string> _tags = new();
     MudChip[]? selected;
     int _activityId;
+    string _oldActivity = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
         _pageTitle = Localizer.Get("Queries store");
-        var user = await AuthenticationStateProvider.GetUserInfo();
-        if (!string.IsNullOrEmpty(ActivityName))
-        {
-            _empty = _activityId != ActivityId;
-            _activityId = ActivityId!.Value;
-            _pageTitle += ": " + ActivityName;
-            if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
-            {
-                NavigationManager.NavigateTo("/403");
-            }
-        }
-
-        _UserIsSupervisor = user!.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
 
         selected = null;
         var urlExt = string.Empty;
@@ -141,8 +129,8 @@
         {
             _tags = new List<string>();
         }
-    // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        if (_empty)
+        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+        if (_empty || _oldActivity != ActivityName)
         {
             _itemsProvider = async req =>
             {
@@ -158,6 +146,20 @@
                 return GridItemsProviderResult.From(response.Value!, response.Count);
             };
         }
+        var user = await AuthenticationStateProvider.GetUserInfo();
+        if (!string.IsNullOrEmpty(ActivityName))
+        {
+            _empty = _activityId != ActivityId;
+            _activityId = ActivityId!.Value;
+            _pageTitle += ": " + ActivityName;
+            if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+            {
+                NavigationManager.NavigateTo("/403");
+            }
+            _oldActivity = ActivityName;
+        }
+
+        _UserIsSupervisor = user!.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
     }
 
 

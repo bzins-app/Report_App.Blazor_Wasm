@@ -31,8 +31,9 @@
         {
             <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
         }
-        <MudForm FieldChanged="FormChanged">
+       
             <MudGrid>
+                 <MudForm FieldChanged="FormChanged">
                 <MudItem sm="12" lg="8">
                     <MudGrid>
                         <MudItem sm="12" lg="6">
@@ -160,8 +161,11 @@
                         </MudItem>
                     </MudGrid>
                 </MudItem>
+            </MudForm>
                 <MudItem sm="12" lg="4">
+                     <MudForm FieldChanged="FormChanged">
                     <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3"/>
+                </MudForm>
                     <MudField Variant="Variant.Text" InnerPadding="false">Tags</MudField>
                     <MudPaper Class="pa-2" Outlined="true">
                         <MudChipSet AllClosable="true" OnClose="RemoveTag">
@@ -180,7 +184,7 @@
                     </MudPaper>
                 </MudItem>
             </MudGrid>
-        </MudForm>
+        
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true"
                  ApplyEffectsToContainer="true" Class="mt-8">
             <MudTabPanel Text="@Localizer.Get("Queries")">
