@@ -192,6 +192,14 @@ public class DataGridController : ODataController, IDisposable
             .Include(a => a.ActivityDbConnections).AsNoTracking();
     }
 
+    [EnableQuery]
+    [HttpGet("odata/DataTransfers")]
+    public IQueryable<Activity> GetDataTransfers()
+    {
+        return _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb)
+            .Include(a => a.ActivityDbConnections).AsNoTracking();
+    }
+
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/TaskHeader")]
     public IQueryable<TaskHeader> GetTaskHeader()
