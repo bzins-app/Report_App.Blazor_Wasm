@@ -5,6 +5,7 @@ using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Utils.RemoteQueryParameters;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.RemoteQueryParameters;
+#pragma warning disable CA1416
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 

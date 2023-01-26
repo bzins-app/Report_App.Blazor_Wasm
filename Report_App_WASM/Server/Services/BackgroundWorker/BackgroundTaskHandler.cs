@@ -680,7 +680,6 @@ public class BackgroundTaskHandler : IDisposable
 
             var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
             if (listAttach.Any())
-            {
                 if (message != null)
                 {
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
@@ -691,7 +690,6 @@ public class BackgroundTaskHandler : IDisposable
                         await _context.AddAsync(new ApplicationLogTaskDetails
                             { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
                 }
-            }
         }
     }
 }
