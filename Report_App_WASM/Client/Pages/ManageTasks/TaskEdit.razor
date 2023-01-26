@@ -34,8 +34,8 @@
         <MudGrid>
             <MudItem sm="12" lg="8">
                 <MudGrid>
-                    <MudForm FieldChanged="FormChanged">
-                        <MudItem sm="12" lg="6">
+                    <MudItem sm="12" lg="6">
+                        <MudForm FieldChanged="FormChanged">
                             <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text" />
                             @if (_activities.Any())
                             {
@@ -56,8 +56,10 @@
                             {
                                 <MudSwitch @bind-Checked="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary" />
                             }
-                        </MudItem>
-                        <MudItem sm="12" lg="6">
+                        </MudForm>
+                    </MudItem>
+                    <MudItem sm="12" lg="6">
+                        <MudForm FieldChanged="FormChanged">
                             @if (Item.Type == TaskType.Report)
                             {
                                 <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile"
@@ -156,8 +158,8 @@
                                     </NotAuthorized>
                                 </AuthorizeView>
                             }
-                        </MudItem>
-                    </MudForm>
+                        </MudForm>
+                    </MudItem>
                 </MudGrid>
             </MudItem>
             <MudItem sm="12" lg="4">
