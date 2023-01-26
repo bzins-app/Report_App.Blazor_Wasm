@@ -1,6 +1,6 @@
 ﻿@inject ISnackbar Snackbar
 
-<MudIconButton OnClick="() => OpenRunConfirmationComponent()" Icon="@Icons.Material.Filled.ContentCopy"/>
+<MudIconButton OnClick="() => OpenRunConfirmationComponent()" Icon="@Icons.Material.Filled.ContentCopy" />
 
 <MudDialog @bind-IsVisible="_visible" Options="_dialogOptions">
     <TitleContent>
@@ -9,7 +9,16 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="_name" Label="@Localizer.Get("Query Name")"/>
+        @if (_activities.Any())
+        {
+            <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="_selectedActivityId" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")">
+                @foreach (var item in _activities)
+                {
+                    <MudSelectItem Value="@item.ActivityId">@item.ActivityName</MudSelectItem>
+                }
+            </MudSelect>
+        }
+        <MudTextField @bind-Value="_name" Label="@Localizer.Get("Query Name")" />
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="CancelDialog">@Localizer.Get("Cancel")</MudButton>
@@ -29,6 +38,14 @@
 
     private bool _visible;
     private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+    private List<SelectItemActivitiesInfo> _activities = new();
+    private int _selectedActivityId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _selectedActivityId = Item.IdActivity;
+    }
 
     private void OpenRunConfirmationComponent()
     {
@@ -39,7 +56,7 @@
     private async Task ConfirmDuplicate()
     {
         _visible = false;
-        await Clone(_name, Item!.Id);
+        await Clone(_name, Item!.Id, _selectedActivityId);
         Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
         await DataGrid?.RefreshDataAsync()!;
     }
@@ -49,9 +66,9 @@
         _visible = false;
     }
 
-    private async Task Clone(string name, int queryId)
+    private async Task Clone(string name, int queryId, int idActivity)
     {
-        DuplicateQueryStore payload = new() { Name = name, QueryId = queryId };
+        DuplicateQueryStore payload = new() { Name = name, QueryId = queryId, ActivityId = idActivity };
         var result = await DataService.PostValues(payload, "DuplicateQueryStore");
         if (!result.Success)
         {

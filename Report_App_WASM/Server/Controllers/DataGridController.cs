@@ -66,8 +66,8 @@ public class DataGridController : ODataController, IDisposable
     private async Task<FileResult> GetExtractFile<T>(IQueryable<T> source, ODataExtractPayload values) where T : class
     {
         var q = source.OData();
-        if (!string.IsNullOrEmpty(values.FilterValues)) q = q.Filter(values.FilterValues);
-        if (!string.IsNullOrEmpty(values.SortValues)) q = q.OrderBy(values.SortValues);
+        if (!string.IsNullOrEmpty(values.FilterValues)) q = q.Filter(values.FilterValues.Replace("$filter=",""));
+        if (!string.IsNullOrEmpty(values.SortValues)) q = q.OrderBy(values.SortValues.Replace("$orderby=", ""));
         var finalQ = q.ToOriginalQuery();
 
         try
