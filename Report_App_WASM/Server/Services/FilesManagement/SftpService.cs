@@ -40,7 +40,7 @@ public class SftpService : IDisposable
             client.Connect();
             return client.ListDirectory(remoteDirectory);
         }
-        catch (Exception exception)
+        catch (Exception)
         {
             //  _logger.LogError(exception, $"Failed in listing files under [{remoteDirectory}]");
             return null;

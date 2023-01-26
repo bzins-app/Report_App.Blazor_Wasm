@@ -172,6 +172,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                     await _context.AddAsync(logQuery);
                     await _context.SaveChangesAsync();
                 }
+
                 remote.Dispose();
                 return values;
                 //break; // Sucess! Lets exit the loop!

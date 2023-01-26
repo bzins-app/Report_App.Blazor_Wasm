@@ -166,11 +166,11 @@ public class DataInteractionService
                 _alreadyNotified = false;
                 var downloadresult = await _blazorDownloadFileService.DownloadFile(
                     payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx",
-                    await response.Content.ReadAsStreamAsync(ct), contentType: "application/octet-stream");
+                    await response.Content.ReadAsStreamAsync(ct), "application/octet-stream");
                 if (downloadresult.Succeeded) response.Dispose();
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             //return null;

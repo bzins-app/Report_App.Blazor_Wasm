@@ -20,23 +20,23 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@_pageTitle</MudText>
-            <MudSpacer />
+            <MudSpacer/>
             <MudStack Row="true">
                 @if (_UserIsSupervisor)
                 {
                     <MudIconButton DisableElevation Variant="Variant.Outlined"
-                               Size="Size.Small"
-                               OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
+                                   Size="Size.Small"
+                                   OnClick="@(OpenCreateDialog)"
+                                   Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")"/>
                 }
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -55,35 +55,35 @@
                     {
                         <TemplateColumn>
                             <MudStack Row=true>
-                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")" />
-                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                             </MudStack>
                         </TemplateColumn>
                     }
                     @if (string.IsNullOrEmpty(ActivityName))
                     {
-                        <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true" />
+                        <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
                     }
-                    <PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <TemplateColumn Title="@Localizer.Get("Run query")">
-                        <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")" />
+                        <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
                     @if (_UserIsSupervisor)
                     {
                         <TemplateColumn Title="@Localizer.Get("Duplicate")">
                             <CascadingValue Value="@_grid">
-                                <_QueryStoreDuplicateForm Item="context" />
+                                <_QueryStoreDuplicateForm Item="context"/>
                             </CascadingValue>
                         </TemplateColumn>
                     }
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
                 </SimpleGrid>
             </div>
-            <Paginator Value="@_pagination" FieldsContent="@_translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -141,7 +141,7 @@
         {
             _tags = new List<string>();
         }
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+    // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty)
         {
             _itemsProvider = async req =>
@@ -186,8 +186,8 @@
 
     private async Task<ApiResponse<QueryStoreDto>?> GetRemoteData(GridItemsProviderRequest<QueryStoreDto> req)
     {
-        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
@@ -254,7 +254,7 @@
         }
         catch
         {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -296,7 +296,7 @@
         if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
-            // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+    // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             var result = await DataService.PostValues(value, "QueryStoreDelete");
             if (result.Success)
             {
@@ -318,13 +318,13 @@
 
     private void EditItem(QueryStoreDto value)
     {
-        //var uri = UriHelper.GetUriWithQueryParameters("QueryEdit/" + value.Id,
-        //   new Dictionary<string, object>
-        //       {
-        //           ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
-        //           ["Page"] = _pagination.CurrentPageIndex,
-        //           ["PageSize"] = _pagination.ItemsPerPage
-        //       }!);
+    //var uri = UriHelper.GetUriWithQueryParameters("QueryEdit/" + value.Id,
+    //   new Dictionary<string, object>
+    //       {
+    //           ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
+    //           ["Page"] = _pagination.CurrentPageIndex,
+    //           ["PageSize"] = _pagination.ItemsPerPage
+    //       }!);
         UriHelper.NavigateTo("QueryEdit/" + value.Id);
     }
 
@@ -361,6 +361,6 @@
             }
         }
     }
-}
+    }
 
 

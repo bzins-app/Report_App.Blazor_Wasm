@@ -155,12 +155,13 @@ public class RemoteDbController : ControllerBase, IDisposable
                 .Where(a => a.Activity.ActivityId == payload.Values.ActivityId)
                 .Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
                 .FirstOrDefaultAsync(ct);
-            payload.Values.MaxSize = queriesMaxSizeExtract+1;
+            payload.Values.MaxSize = queriesMaxSizeExtract + 1;
             var items = await _remoteDb.RemoteDbToDatableAsync(payload.Values, ct);
             var fileName = payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
             log.NbrOfRows = items.Rows.Count;
             var file = CreateFile.ExcelFromDatable(fileName,
-                new ExcelCreationDatatable(payload.Values.FileName, new ExcelTemplate(), items.AsEnumerable().Take(queriesMaxSizeExtract).CopyToDataTable()));
+                new ExcelCreationDatatable(payload.Values.FileName, new ExcelTemplate(),
+                    items.AsEnumerable().Take(queriesMaxSizeExtract).CopyToDataTable()));
             _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines",
                 $" {fileName} {items.Rows.Count} lines");
             log.EndDateTime = DateTime.Now;
