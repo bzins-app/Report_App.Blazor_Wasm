@@ -127,15 +127,15 @@ public class DataCrudController : ControllerBase, IDisposable
         var _newQuery = new QueryStore { QueryName = values.EntityValue.Name };
         var queryToDuplicate = await _context.QueryStore
             .FirstAsync(a => a.Id == values.EntityValue.QueryId);
-        var activityInfo = await _context.Activity
-            .FirstAsync(a => a.ActivityId == values.EntityValue.ActivityId);
+        var activityInfo = await _context.Activity.Where(a => a.ActivityId == values.EntityValue.ActivityId)
+            .FirstOrDefaultAsync();
         if (queryToDuplicate != null)
         {
             _newQuery.Query = queryToDuplicate.Query;
             _newQuery.Tags = queryToDuplicate.Tags;
             _newQuery.QueryParameters = queryToDuplicate.QueryParameters;
             _newQuery.Parameters = queryToDuplicate.Parameters;
-            _newQuery.IdActivity = queryToDuplicate.IdActivity;
+            _newQuery.IdActivity = activityInfo.ActivityId;
             _newQuery.Activity = activityInfo;
             _newQuery.ActivityName = activityInfo.ActivityName;
 
