@@ -93,6 +93,7 @@ public class ScheduledTasksController : ControllerBase
         return info;
     }
 
+    [HttpPost]
     public async Task<IActionResult> EnqueueTask (ApiRunTask payload)
     {
         if(payload == null) return BadRequest("Payload null");
