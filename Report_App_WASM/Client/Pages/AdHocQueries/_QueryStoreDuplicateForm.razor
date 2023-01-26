@@ -1,6 +1,6 @@
 ﻿@inject ISnackbar Snackbar
 
-<MudIconButton OnClick="() => OpenRunConfirmationComponent()" Icon="@Icons.Material.Filled.ContentCopy" />
+<MudIconButton OnClick="() => OpenRunConfirmationComponent()" Icon="@Icons.Material.Filled.ContentCopy"/>
 
 <MudDialog @bind-IsVisible="_visible" Options="_dialogOptions">
     <TitleContent>
@@ -18,7 +18,7 @@
                 }
             </MudSelect>
         }
-        <MudTextField @bind-Value="_name" Label="@Localizer.Get("Query Name")" />
+        <MudTextField @bind-Value="_name" Label="@Localizer.Get("Query Name")"/>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="CancelDialog">@Localizer.Get("Cancel")</MudButton>
@@ -44,7 +44,7 @@
     protected override async Task OnInitializedAsync()
     {
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        _selectedActivityId = Item.IdActivity;
+        if (Item != null) _selectedActivityId = Item.IdActivity;
     }
 
     private void OpenRunConfirmationComponent()

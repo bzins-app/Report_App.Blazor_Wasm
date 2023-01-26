@@ -66,7 +66,7 @@ public class DataGridController : ODataController, IDisposable
     private async Task<FileResult> GetExtractFile<T>(IQueryable<T> source, ODataExtractPayload values) where T : class
     {
         var q = source.OData();
-        if (!string.IsNullOrEmpty(values.FilterValues)) q = q.Filter(values.FilterValues.Replace("$filter=",""));
+        if (!string.IsNullOrEmpty(values.FilterValues)) q = q.Filter(values.FilterValues.Replace("$filter=", ""));
         if (!string.IsNullOrEmpty(values.SortValues)) q = q.OrderBy(values.SortValues.Replace("$orderby=", ""));
         var finalQ = q.ToOriginalQuery();
 
@@ -189,6 +189,14 @@ public class DataGridController : ODataController, IDisposable
     public IQueryable<Activity> GetActivities()
     {
         return _context.Activity.Where(a => a.ActivityType == ActivityType.SourceDb)
+            .Include(a => a.ActivityDbConnections).AsNoTracking();
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/DataTransfers")]
+    public IQueryable<Activity> GetDataTransfers()
+    {
+        return _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb)
             .Include(a => a.ActivityDbConnections).AsNoTracking();
     }
 
