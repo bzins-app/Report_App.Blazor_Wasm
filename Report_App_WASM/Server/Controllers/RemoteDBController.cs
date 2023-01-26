@@ -109,6 +109,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync();
                 }
+
                 var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
                 return Ok(result);
             }
@@ -122,6 +123,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync();
                 }
+
                 var result = new SubmitResultRemoteData
                     { Success = true, Value = data.ToDictionnary(), TotalElements = total };
                 return Ok(result);
