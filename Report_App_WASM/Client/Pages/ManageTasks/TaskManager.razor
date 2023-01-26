@@ -101,7 +101,7 @@
 
 @code
 {
-#nullable enable
+    #nullable enable
     [Parameter]
     public string TypeTask { get; set; } = default!;
 
@@ -130,15 +130,13 @@
     List<string> _tags = new();
     MudChip[]? selected;
     bool _empty;
+    string _oldActivity = string.Empty;
 
 
     protected override async Task OnParametersSetAsync()
     {
         _pageTitle = TypeTask == TaskType.Report.ToString() ? Localizer.Get("Manage reports") : TypeTask == TaskType.Alert.ToString() ? Localizer.Get("Manage alerts") : Localizer.Get("Manage data transfers");
-        if (!string.IsNullOrEmpty(ActivityName))
-        {
-            _pageTitle += ": " + ActivityName;
-        }
+
         if (Page.HasValue && PageSize.HasValue)
         {
             _pagination.ItemsPerPage = PageSize.Value;
@@ -162,7 +160,7 @@
         }
 
     // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        if (_empty)
+        if (_empty || _oldActivity != ActivityName)
         {
             _itemsProvider = async req =>
             {
@@ -177,6 +175,11 @@
                 _empty = !response.Value!.Any();
                 return GridItemsProviderResult.From(response.Value!, response.Count);
             };
+        }
+        if (!string.IsNullOrEmpty(ActivityName))
+        {
+            _pageTitle += ": " + ActivityName;
+            _oldActivity = ActivityName;
         }
     }
 

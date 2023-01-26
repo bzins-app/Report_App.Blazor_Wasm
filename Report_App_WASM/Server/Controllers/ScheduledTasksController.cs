@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
+using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ExternalApi;
+using Report_App_WASM.Shared.SerializedParameters;
+using System.Text.Json;
 
 namespace Report_App_WASM.Server.Controllers;
 
@@ -14,12 +17,14 @@ public class ScheduledTasksController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<ScheduledTasksController> _logger;
+    private readonly IBackgroundWorkers _backgroundWorkers;
 
     public ScheduledTasksController(ILogger<ScheduledTasksController> logger,
-        ApplicationDbContext context)
+        ApplicationDbContext context, IBackgroundWorkers backgroundWorkers)
     {
         _logger = logger;
         _context = context;
+        _backgroundWorkers = backgroundWorkers;
     }
 
     [HttpGet]
@@ -86,5 +91,42 @@ public class ScheduledTasksController : ControllerBase
         if (feedback != null) info = feedback;
 
         return info;
+    }
+
+    public async Task<IActionResult> EnqueueTask (ApiRunTask payload)
+    {
+        if(payload == null) return BadRequest("Payload null");
+        List<EmailRecipient> recipients = new List<EmailRecipient>();
+        List<QueryCommandParameter> parameters = new List<QueryCommandParameter>();
+        var _th = await _context.TaskHeader.Include(a => a.TaskEmailRecipients).FirstOrDefaultAsync(a => a.TaskHeaderId == payload.TaksId);
+        if (_th == null)
+        {
+            return BadRequest("Task id not found");
+        }
+        if(payload.SendEmail)
+        {
+            var _mailSerialized = _th.TaskEmailRecipients.FirstOrDefault().Email;
+            if(!string.IsNullOrEmpty(_mailSerialized))
+            {
+                recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(_mailSerialized);
+                if(recipients==null)
+                {
+                    recipients = new();
+                }
+            }            
+        }
+        if(!string.IsNullOrEmpty(_th.QueryParameters))
+        {
+            parameters= JsonSerializer.Deserialize<List<QueryCommandParameter>>(_th.QueryParameters);
+            if(parameters==null)
+            {
+                parameters = new();
+            }
+        }
+
+
+        _backgroundWorkers.RunManuallyTask(payload.TaksId,User?.Identity?.Name ,recipients, parameters, payload.GenerateFileToFolder);
+
+        return Ok("Task enqueued successfully");
     }
 }
