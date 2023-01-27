@@ -96,7 +96,7 @@
                 }
                 @if (_appConst.ActivateTaskSchedulerModule)
                 {
-                    <MudNavLink Href="DataTransferParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Data transfer parameters")</MudNavLink>
+                    <MudNavLink Href="DataTransfers" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Data transfer parameters")</MudNavLink>
                     <MudNavLink Href="DepositPath" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Deposit path")</MudNavLink>
                     <MudNavLink Href="/swagger" Target="_blank" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Swagger")</MudNavLink>
                 }
@@ -104,7 +104,7 @@
             <MudNavLink Href="UsersManagement" Icon="@Icons.Material.Outlined.SupervisedUserCircle">@Localizer.Get("Users")</MudNavLink>
         </Authorized>
     </AuthorizeView>
-    <MudNavLink Href="help" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>
+    <MudNavLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm/wiki" Target="_blank" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>
     @if (_appConst.ActivateTaskSchedulerModule)
     {
         <AuthorizeView>
@@ -123,8 +123,8 @@
 </MudNavMenu>
 <MudDivider Class="mt-auto"></MudDivider>
 <MudNavMenu Class="d-flex justify-space-between pa-4">
-    <MudLink Href="#" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">@@2023</MudLink>
-    <MudText Class="" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">version 0.9.8</MudText>
+    <MudLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm" Target="_blank" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">@@2023</MudLink>
+    <MudText Class="" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">version 1.0.0</MudText>
 </MudNavMenu>
 
 @code {

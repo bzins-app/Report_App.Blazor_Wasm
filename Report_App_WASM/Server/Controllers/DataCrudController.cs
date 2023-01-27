@@ -362,11 +362,10 @@ public class DataCrudController : ControllerBase, IDisposable
                         roleActivity.Name = values.EntityValue.ActivityName;
                         await _roleManager.UpdateAsync(roleActivity);
                     }
-
-                if (values.EntityValue.ActivityDbConnections != null)
-                    foreach (var connect in values.EntityValue.ActivityDbConnections)
-                        await UpdateEntity(connect, values.UserName!);
             }
+            if (values.EntityValue.ActivityDbConnections != null)
+                foreach (var connect in values.EntityValue.ActivityDbConnections)
+                    await UpdateEntity(connect, values.UserName!);
 
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
         }

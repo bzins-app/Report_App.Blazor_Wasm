@@ -125,6 +125,20 @@
                                 <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")" />
                                 <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")" />
                             }
+                            @if (Item.Type == TaskType.DataTransfer)
+                            {
+                                @if (_dataTransfers.Any())
+                                {
+                                    <MudSelect T="int" Label="@Localizer.Get("Target data transfer")" @bind-Value="@_param.DataTransferId"
+                                               AnchorOrigin="Origin.BottomCenter" 
+                                               Required>
+                                        @foreach (var value in _dataTransfers)
+                                        {
+                                            <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                }
+                            }
                             @if (Item.Type == TaskType.Report && _depositPathSelect.Any())
                             {
                                 <AuthorizeView Roles="Admin">
@@ -222,6 +236,7 @@
 
     private TaskHeaderDto Item { get; set; } = new();
     private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemActivitiesInfo> _dataTransfers= new();
     private List<SelectItem> _depositPathSelect = new();
     private int _activityId;
     private string? _errorMessage;
@@ -281,6 +296,11 @@
 
         var uriTags = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={Item.Type}";
         _AvailableTags = (await Http.GetFromJsonAsync<List<string>>(uriTags))!;
+
+        if (Item.Type == TaskType.DataTransfer)
+        {
+            _dataTransfers = await DataService.GetValues<SelectItemActivitiesInfo>("DataTransfers", ApiControllers.ApplicationParametersApi);
+        }
 
         _itemToDelete.Clear();
         _changesToSave = false;

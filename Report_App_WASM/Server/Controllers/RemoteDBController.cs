@@ -49,11 +49,11 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> DeleteDataTransferTable([FromBody] string dataTransferTargetTableName)
+    public async Task<IActionResult> DeleteDataTransferTable(ApiCrudPayload<DeleteTablePayload> value)
     {
         try
         {
-            await _remoteDb.DeleteTable(dataTransferTargetTableName);
+            await _remoteDb.DeleteTable(value.EntityValue.TableName, value.EntityValue.IdDataTransfer);
             return Ok(new SubmitResult { Success = true });
         }
         catch (Exception ex)

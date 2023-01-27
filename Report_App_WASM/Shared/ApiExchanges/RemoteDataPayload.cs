@@ -13,3 +13,9 @@ public class RemoteDataPayload
     public bool PivotTable { get; init; }
     public int PivotTableNbrColumns { get; init; }
 }
+
+public class DeleteTablePayload
+{
+    public string TableName { get; set; } = string.Empty;
+    public int IdDataTransfer { get; set; } 
+}

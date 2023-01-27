@@ -11,4 +11,5 @@ public class TaskHeaderParameters
     public bool UseAnExcelTemplate { get; set; } = false;
     public string? ExcelTemplatePath { get; set; }
     public string? ExcelFileName { get; set; }
+    public int DataTransferId { get; set; }
 }
