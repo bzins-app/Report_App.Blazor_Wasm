@@ -13,11 +13,11 @@ public interface IRemoteDbConnection
 {
     Task<SubmitResult> TestConnectionAsync(ActivityDbConnection parameter);
     Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts, int taskId = 0);
-    Task<bool> CkeckTableExists(string query);
-    Task CreateTable(string query);
-    Task LoadDatatableToTable(DataTable data, string? targetTable);
-    Task<MergeResult> MergeTables(string query);
-    Task DeleteTable(string tableName);
+    Task<bool> CkeckTableExists(string query, int activityIdTransfer);
+    Task CreateTable(string query, int activityIdTransfer);
+    Task LoadDatatableToTable(DataTable data, string? targetTable, int activityIdTransfer);
+    Task<MergeResult> MergeTables(string query, int activityIdTransfer);
+    Task DeleteTable(string tableName, int activityIdTransfer);
     Task<string> GetAllTablesScript(int activityId);
     Task<string> GetTableColumnInfoScript(int activityId, string tableName);
     Task<string> GetAllTablesAndColumnsScript(int activityId);
@@ -42,41 +42,41 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public async Task<bool> CkeckTableExists(string query)
+    public async Task<bool> CkeckTableExists(string query,int activityIdTransfer)
     {
-        var activityId = await GetDataTransferActivity();
+        var activityId = await GetDataTransferActivity(activityIdTransfer);
         var _dbInfo = await GetDbInfo(activityId);
         SqlServerRemoteDb remote = new();
         return await remote.CkeckTableExists(_dbInfo, query);
     }
 
-    public async Task DeleteTable(string tableName)
+    public async Task DeleteTable(string tableName, int activityIdTransfer)
     {
-        var activityId = await GetDataTransferActivity();
+        var activityId = await GetDataTransferActivity(activityIdTransfer);
         var _dbInfo = await GetDbInfo(activityId);
         SqlServerRemoteDb remote = new();
         await remote.DeleteTable(_dbInfo, tableName);
     }
 
-    public async Task CreateTable(string query)
+    public async Task CreateTable(string query, int activityIdTransfer)
     {
-        var activityId = await GetDataTransferActivity();
+        var activityId = await GetDataTransferActivity(activityIdTransfer);
         var _dbInfo = await GetDbInfo(activityId);
         SqlServerRemoteDb remote = new();
         await remote.CreateTable(_dbInfo, query);
     }
 
-    public async Task<MergeResult> MergeTables(string query)
+    public async Task<MergeResult> MergeTables(string query, int activityIdTransfer)
     {
-        var activityId = await GetDataTransferActivity();
+        var activityId = await GetDataTransferActivity(activityIdTransfer);
         var _dbInfo = await GetDbInfo(activityId);
         SqlServerRemoteDb remote = new();
         return await remote.MergeTables(_dbInfo, query);
     }
 
-    public async Task LoadDatatableToTable(DataTable data, string? targetTable)
+    public async Task LoadDatatableToTable(DataTable data, string? targetTable, int activityIdTransfer)
     {
-        var activityId = await GetDataTransferActivity();
+        var activityId = await GetDataTransferActivity(activityIdTransfer);
         var _dbInfo = await GetDbInfo(activityId);
         SqlServerRemoteDb remote = new();
         await remote.LoadDatatableToTable(_dbInfo, data, targetTable);
@@ -206,9 +206,9 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         } while (true);
     }
 
-    private async Task<int> GetDataTransferActivity()
+    private async Task<int> GetDataTransferActivity(int activityId)
     {
-        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).Select(a => a.ActivityId)
+        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb&&a.ActivityId== activityId).Select(a => a.ActivityId)
             .FirstOrDefaultAsync();
     }
 

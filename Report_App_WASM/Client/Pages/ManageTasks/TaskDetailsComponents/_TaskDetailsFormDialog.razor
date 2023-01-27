@@ -382,7 +382,9 @@
         if (result != null)
         {
             var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";
-            var confirm = await Http.PostAsJsonAsync(uri, _param.DataTransferTargetTableName!);
+
+            var payload = new DeleteTablePayload { TableName = _param.DataTransferTargetTableName!, IdDataTransfer=_paramHeader.DataTransferId! };
+            var confirm = await Http.PostAsJsonAsync(uri, payload);
             if (confirm.IsSuccessStatusCode)
             {
                 var feedback = await confirm.Content.ReadFromJsonAsync<SubmitResult>();

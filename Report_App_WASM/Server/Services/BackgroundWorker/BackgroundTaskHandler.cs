@@ -133,8 +133,9 @@ public class BackgroundTaskHandler : IDisposable
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     log.TaskId = log.Id;
-
-                    foreach (var value in _fetchedData) await HandleDataTransferTask(detail, value.Value, log);
+                    var _headerParameters = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
+                    
+                    foreach (var value in _fetchedData) await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId);
 
                     log.EndDateTime = DateTime.Now;
                     log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
@@ -305,7 +306,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async Task HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask)
+    private async Task HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,int activityIdTransfer)
     {
         if (data.Rows.Count > 0)
         {
@@ -321,7 +322,7 @@ public class BackgroundTaskHandler : IDisposable
                                                        BEGIN
                                                           select 0
                                                        END;";
-            var result = await _dbReader.CkeckTableExists(checkTableQuery);
+            var result = await _dbReader.CkeckTableExists(checkTableQuery, activityIdTransfer);
 
             if (!result)
             {
@@ -343,14 +344,14 @@ public class BackgroundTaskHandler : IDisposable
                                 detailParam.DataTransferTargetTableName, true);
                 }
 
-                await _dbReader.CreateTable(queryCreate);
+                await _dbReader.CreateTable(queryCreate, activityIdTransfer);
             }
 
             if (!detailParam!.DataTransferUsePk)
             {
                 logTask.Result = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " +
                                  data.Rows.Count;
-                await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName);
+                await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName, activityIdTransfer);
                 await _context.AddAsync(new ApplicationLogTaskDetails
                 {
                     TaskId = _taskId, Step = "Bulk insert completed",
@@ -367,10 +368,10 @@ public class BackgroundTaskHandler : IDisposable
                     CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true,
                         detailParam.DataTransferPk);
 
-                await _dbReader.CreateTable(queryCreate);
+                await _dbReader.CreateTable(queryCreate, activityIdTransfer);
                 try
                 {
-                    await _dbReader.LoadDatatableToTable(data, tempTable);
+                    await _dbReader.LoadDatatableToTable(data, tempTable, activityIdTransfer);
                     await _context.AddAsync(new ApplicationLogTaskDetails
                     {
                         TaskId = _taskId, Step = "Bulk insert completed",
@@ -380,7 +381,7 @@ public class BackgroundTaskHandler : IDisposable
                 }
                 catch (Exception)
                 {
-                    await _dbReader.DeleteTable(tempTable);
+                    await _dbReader.DeleteTable(tempTable, activityIdTransfer);
                     throw;
                 }
 
@@ -444,11 +445,11 @@ public class BackgroundTaskHandler : IDisposable
                                              FROM @SummaryOfChanges
                                              GROUP BY Change;";
 
-                var mergeResult = await _dbReader.MergeTables(mergeSqlTemplate);
+                var mergeResult = await _dbReader.MergeTables(mergeSqlTemplate, activityIdTransfer);
 
                 logTask.Result = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " +
                                  mergeResult.UpdatedCount + " Nbr lines deleted: " + mergeResult.DeletedCount;
-                await _dbReader.DeleteTable(tempTable);
+                await _dbReader.DeleteTable(tempTable, activityIdTransfer);
                 await _context.AddAsync(new ApplicationLogTaskDetails
                 {
                     TaskId = _taskId, Step = "Merge completed",

@@ -23,7 +23,7 @@
 <MudStack Spacing="1" Style="max-height: 80vh; overflow-x: hidden; overflow-y: auto; width: 100%">
 <MudForm Model="@Item" @ref="@_form">
     <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action == CrudAction.Delete"/>
-    <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="true">
+    <MudSelect Label="@Localizer.Get("Type of Database")"  @bind-Value="DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="true">
         @if (DbCon.TypeDb == 0)
         {
             <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
@@ -166,13 +166,12 @@
     private MudForm _form = default!;
     private string _deletionValidation = null!;
 
-    private ActivityDbConnectionDto DbCon { get; set; } = new();
+    private ActivityDbConnectionDto DbCon { get; set; } = new() {TypeDb = TypeDb.SqlServer};
     private string _connectionTestResult = null!;
     private List<SelectItemActivitiesInfo> _activities = new();
     private ApplicationConstantsValues? _appConst;
     private bool _loading;
-    private bool _loadingDescription;
-    private bool _extractDescriptions;
+
 
     private void Cancel()
     {
@@ -201,7 +200,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        DbCon.TypeDb = TypeDb.SqlServer;
+        
         if (Item!.ActivityDbConnections.Any())
         {
             DbCon = Item.ActivityDbConnections.First();
@@ -213,6 +212,7 @@
                 }
             }
         }
+        DbCon.TypeDb = TypeDb.SqlServer;
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _loading = false;
         _appConst = await AppService.GetApplicationConstantsValues();
