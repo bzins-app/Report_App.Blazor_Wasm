@@ -168,6 +168,8 @@ public class BackgroundTaskHandler : IDisposable
             await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ActivityName + ": " + _header.TaskName);
             await _context.AddAsync(new ApplicationLogTaskDetails
                 { TaskId = _taskId, Step = "Error", Info = logTask.Result });
+            _fetchedData.Clear();
+            GC.SuppressFinalize(this);
         }
 
         _context.Update(logTask);
