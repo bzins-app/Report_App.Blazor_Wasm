@@ -151,6 +151,7 @@
         _emails?.Remove(id);
         PopulateEmailItems();
         _param.AdminEmails = JsonSerializer.Serialize(_emails);
+        _success = true;
     }
 
     private void PopulateEmailItems()
@@ -172,6 +173,7 @@
         _emailNotValidated = true;
         PopulateEmailItems();
         _param.AdminEmails = JsonSerializer.Serialize(_emails);
+        _success = true;
     }
 
     private void ChangeBccValue(EmailRecipient id, bool value)
@@ -179,6 +181,7 @@
         var bccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
         bccupdate!.Bcc = value;
         _param.AdminEmails = JsonSerializer.Serialize(_emails);
+        _success = true;
     }
 
     private bool CheckMail()
@@ -210,6 +213,7 @@
         if (!result.Canceled)
         {
             _param.ErrorEMailMessage = result.Data.ToString();
+            _success = true;
         }
     }
 
