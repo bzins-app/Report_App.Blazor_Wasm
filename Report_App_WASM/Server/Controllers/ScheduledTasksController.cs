@@ -94,6 +94,7 @@ public class ScheduledTasksController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles= "ApiAccess")]
     public async Task<IActionResult> EnqueueTask (ApiRunTask payload)
     {
         if(payload == null) return BadRequest("Payload null");
