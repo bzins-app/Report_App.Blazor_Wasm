@@ -319,7 +319,7 @@
                 _cts = new CancellationTokenSource();
 
                 var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = QueryRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = new List<QueryCommandParameter>() };
-                var remoteDataPayload = new RemoteDataPayload { Values = run };
+                var remoteDataPayload = new RemoteDataPayload { Values = run,LogPayload=false };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
