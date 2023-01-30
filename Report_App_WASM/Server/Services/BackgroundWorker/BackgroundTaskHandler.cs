@@ -610,7 +610,7 @@ public class BackgroundTaskHandler : IDisposable
             {
                 var emailPrefix = await _context.ApplicationParameters.Select(a => a.AlertEmailPrefix)
                     .FirstOrDefaultAsync();
-                if (_header.SendByEmail && _header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]")
+                if (_header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]")
                 {
                     var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
                     var message = "";

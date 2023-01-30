@@ -23,19 +23,23 @@
                 return;
             }
 
-            if (string.IsNullOrEmpty(Item.CronParameters) && Item.CronParameters != "[]")
+            if (string.IsNullOrEmpty(Item.CronParameters) || Item.CronParameters == "[]")
             {
                 Item.IsActivated = false;
                 Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because the scheduler value is not defined"), Severity.Error);
 
                 return;
             }
-            if (string.IsNullOrEmpty(Item.CronParameters) && Item.CronParameters != "[]")
+            if (Item.Type==TaskType.Alert)
             {
-                Item.IsActivated = false;
-                Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because the scheduler value is not defined"), Severity.Error);
-
-                return;
+                var uriEmails = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
+                var emailsConfigured = await Http.GetFromJsonAsync<bool>(uriEmails);
+                if (!emailsConfigured)
+                {
+                    Item.SendByEmail = false;
+                    Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because no email recipients have been entered"), Severity.Error);
+                    return;
+                }
             }
             var uri = $"{ApiControllers.CrudDataApi}GetTaskHasDetails?taskHeaderId={Item.TaskHeaderId}";
             var reportDetailsExists = await Http.GetFromJsonAsync<bool>(uri);
