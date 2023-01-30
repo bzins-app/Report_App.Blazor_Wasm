@@ -132,7 +132,7 @@ public class RemoteDbController : ControllerBase, IDisposable
         catch (Exception e)
         {
             log.Error = true;
-            log.Result = e.Message.Take(440).ToString();
+            log.Result =ct.IsCancellationRequested?"Cancelled": e.Message.Take(440).ToString();
             log.EndDateTime = DateTime.Now;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
             if (payload.LogPayload)
