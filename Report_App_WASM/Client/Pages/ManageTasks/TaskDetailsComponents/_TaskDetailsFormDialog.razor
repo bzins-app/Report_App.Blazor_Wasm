@@ -381,17 +381,11 @@
 
         if (result != null)
         {
-            var uri = $"{ApiControllers.RemoteDbApi}DeleteDataTransferTable";
-
             var payload = new DeleteTablePayload { TableName = _param.DataTransferTargetTableName!, IdDataTransfer=_paramHeader.DataTransferId! };
-            var confirm = await Http.PostAsJsonAsync(uri, payload);
-            if (confirm.IsSuccessStatusCode)
+            var confirm = await DataService.PostValues(payload, "DeleteDataTransferTable", ApiControllers.RemoteDbApi);
+            if (!confirm.Success)
             {
-                var feedback = await confirm.Content.ReadFromJsonAsync<SubmitResult>();
-                if (feedback != null && !feedback.Success)
-                {
-                    _queryTestResult = feedback.Message!;
-                }
+                _queryTestResult = confirm.Message;
             }
         }
     }
