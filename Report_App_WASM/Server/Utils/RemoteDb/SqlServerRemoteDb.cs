@@ -130,6 +130,10 @@ public class SqlServerRemoteDb : IRemoteDb
                 if (run.FillDatatableSchema) DbDataAdapter.FillSchema(data, SchemaType.Source);
                 if (run.PaginatedResult)
                     DbDataAdapter.Fill(run.StartRecord, run.MaxSize, data);
+                //{ var paginatedQueryStatement = DbDataAdapter.SelectCommand.CommandText.ToLower().RemoveSpecialCharacters().Contains("orderby") ? $" OFFSET {run.StartRecord} ROWS FETCH NEXT {run.MaxSize} ROWS ONLY " : $" order by 1  OFFSET {run.StartRecord} ROWS FETCH NEXT {run.MaxSize} ROWS ONLY ";
+                //    DbDataAdapter.SelectCommand.CommandText += Environment
+                //        .NewLine + paginatedQueryStatement; 
+                //DbDataAdapter.Fill(data);}
                 else
                     DbDataAdapter.Fill(data);
 

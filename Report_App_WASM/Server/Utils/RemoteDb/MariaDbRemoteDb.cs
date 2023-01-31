@@ -136,7 +136,10 @@ public class MariaDbRemoteDb : IRemoteDb
                 DbDataAdapter.SelectCommand = cmd;
                 if (run.FillDatatableSchema) await DbDataAdapter.FillSchemaAsync(data, SchemaType.Source, cts);
                 if (run.PaginatedResult)
-                    await DbDataAdapter.FillAsync(run.StartRecord, run.MaxSize, cts, data);
+                {
+                    DbDataAdapter.SelectCommand.CommandText += Environment.NewLine + $" LIMIT {run.MaxSize} OFFSET {run.StartRecord} ";
+                    await DbDataAdapter.FillAsync(data, cts);
+                }
                 else
                     await DbDataAdapter.FillAsync(data, cts);
 
