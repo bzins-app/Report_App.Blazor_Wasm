@@ -93,6 +93,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                 catch (Exception ex)
                 {
                     _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ", payload.Values.FileName);
+                    total = payload.Values.MaxSize + 1;
                 }
 
             }
