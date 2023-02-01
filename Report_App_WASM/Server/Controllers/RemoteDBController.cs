@@ -71,32 +71,33 @@ public class RemoteDbController : ControllerBase, IDisposable
             JobDescription = payload.QueryName, RunBy = User?.Identity?.Name, Type = "Grid", Error = false,
             Result = "Ok"
         };
+        var total = 0;
+        if (payload.CalculateTotalElements)
+        {
+            var originalQuery = payload.Values.QueryToRun;
+            if (payload.Values.QueryToRun != null)
+            {
+                var query = await GetQueryTotal(payload.Values.ActivityId, payload.Values.QueryToRun);
+                payload.Values.QueryToRun = query;
+            }
+
+            try
+            {
+                var dataTotal = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
+                payload.Values.QueryToRun = originalQuery;
+                if (dataTotal != null)
+                    total = Convert.ToInt32(dataTotal.AsEnumerable().Select(r => r[0]).FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ", payload.Values.FileName);
+                total = payload.Values.MaxSize + 1;
+            }
+
+        }
         try
         {
-            var total = 0;
-            if (payload.CalculateTotalElements)
-            {
-                var originalQuery = payload.Values.QueryToRun;
-                if (payload.Values.QueryToRun != null)
-                {
-                    var query = await GetQueryTotal(payload.Values.ActivityId, payload.Values.QueryToRun);
-                    payload.Values.QueryToRun = query;
-                }
 
-                try
-                {
-                    var dataTotal = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
-                    payload.Values.QueryToRun = originalQuery;
-                    if (dataTotal != null)
-                        total = Convert.ToInt32(dataTotal.AsEnumerable().Select(r => r[0]).FirstOrDefault());
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ", payload.Values.FileName);
-                    total = payload.Values.MaxSize + 1;
-                }
-
-            }
 
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
             if (payload.PivotTable)
