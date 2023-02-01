@@ -83,10 +83,18 @@ public class RemoteDbController : ControllerBase, IDisposable
                     payload.Values.QueryToRun = query;
                 }
 
-                var dataTotal = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
-                payload.Values.QueryToRun = originalQuery;
-                if (dataTotal != null)
-                    total = Convert.ToInt32(dataTotal.AsEnumerable().Select(r => r[0]).FirstOrDefault());
+                try
+                {
+                    var dataTotal = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
+                    payload.Values.QueryToRun = originalQuery;
+                    if (dataTotal != null)
+                        total = Convert.ToInt32(dataTotal.AsEnumerable().Select(r => r[0]).FirstOrDefault());
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ", payload.Values.FileName);
+                }
+
             }
 
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
