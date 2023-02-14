@@ -30,7 +30,7 @@
 
                 return;
             }
-            if (Item.Type==TaskType.Alert)
+            if (Item.Type == TaskType.Alert)
             {
                 var uriEmails = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
                 var emailsConfigured = await Http.GetFromJsonAsync<bool>(uriEmails);

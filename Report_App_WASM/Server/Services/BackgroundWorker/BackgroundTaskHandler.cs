@@ -133,9 +133,11 @@ public class BackgroundTaskHandler : IDisposable
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     log.TaskId = log.Id;
-                    var _headerParameters = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
-                    
-                    foreach (var value in _fetchedData) await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId);
+                    var _headerParameters =
+                        JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
+
+                    foreach (var value in _fetchedData)
+                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId);
 
                     log.EndDateTime = DateTime.Now;
                     log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
@@ -308,7 +310,8 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async Task HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,int activityIdTransfer)
+    private async Task HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,
+        int activityIdTransfer)
     {
         if (data.Rows.Count > 0)
         {

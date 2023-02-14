@@ -129,7 +129,7 @@
         {
             _tags = new List<string>();
         }
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+    // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty || _oldActivity != ActivityName)
         {
             _itemsProvider = async req =>
@@ -298,7 +298,6 @@
         if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
-    // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             var result = await DataService.PostValues(value, "QueryStoreDelete");
             if (result.Success)
             {

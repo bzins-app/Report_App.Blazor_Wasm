@@ -90,15 +90,14 @@ public class RemoteDbController : ControllerBase, IDisposable
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ", payload.Values.FileName);
+                _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ",
+                    payload.Values.FileName);
                 total = payload.Values.MaxSize + 1;
             }
-
         }
+
         try
         {
-
-
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
             if (payload.PivotTable)
             {
@@ -142,7 +141,7 @@ public class RemoteDbController : ControllerBase, IDisposable
         catch (Exception e)
         {
             log.Error = true;
-            log.Result =ct.IsCancellationRequested?"Cancelled": e.Message.Take(440).ToString();
+            log.Result = ct.IsCancellationRequested ? "Cancelled" : e.Message.Take(440).ToString();
             log.EndDateTime = DateTime.Now;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
             if (payload.LogPayload)

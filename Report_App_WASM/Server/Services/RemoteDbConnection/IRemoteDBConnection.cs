@@ -42,7 +42,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public async Task<bool> CkeckTableExists(string query,int activityIdTransfer)
+    public async Task<bool> CkeckTableExists(string query, int activityIdTransfer)
     {
         var activityId = await GetDataTransferActivity(activityIdTransfer);
         var _dbInfo = await GetDbInfo(activityId);
@@ -208,7 +208,8 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
 
     private async Task<int> GetDataTransferActivity(int activityId)
     {
-        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb&&a.ActivityId== activityId).Select(a => a.ActivityId)
+        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb && a.ActivityId == activityId)
+            .Select(a => a.ActivityId)
             .FirstOrDefaultAsync();
     }
 
