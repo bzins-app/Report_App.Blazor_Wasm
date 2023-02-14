@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
@@ -6,7 +7,6 @@ using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared;
 using Report_App_WASM.Shared.ExternalApi;
 using Report_App_WASM.Shared.SerializedParameters;
-using System.Text.Json;
 
 namespace Report_App_WASM.Server.Controllers;
 
@@ -110,7 +110,7 @@ public class ScheduledTasksController : ControllerBase
             var _mailSerialized = _th.TaskEmailRecipients.FirstOrDefault().Email;
             if(!string.IsNullOrEmpty(_mailSerialized))
             {
-                recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(_mailSerialized);
+                recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(_mailSerialized)!;
                 if(recipients==null)
                 {
                     recipients = new();
@@ -119,11 +119,7 @@ public class ScheduledTasksController : ControllerBase
         }
         if(!string.IsNullOrEmpty(_th.QueryParameters))
         {
-            parameters= JsonSerializer.Deserialize<List<QueryCommandParameter>>(_th.QueryParameters);
-            if(parameters==null)
-            {
-                parameters = new();
-            }
+            parameters= JsonSerializer.Deserialize<List<QueryCommandParameter>>(_th.QueryParameters)! ?? new();
         }
 
 

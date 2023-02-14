@@ -298,7 +298,6 @@
         if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
-    // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             var result = await DataService.PostValues(value, "QueryStoreDelete");
             if (result.Success)
             {

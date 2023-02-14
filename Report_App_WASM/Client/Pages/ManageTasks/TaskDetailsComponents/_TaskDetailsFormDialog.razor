@@ -201,7 +201,7 @@
     private bool _useSpecificFileNaming;
     private bool _loading;
     private List<Dictionary<string, object>>? _data;
-    private string _queryTestResult = null!;
+    private string? _queryTestResult;
     private bool _testResult;
     private CancellationTokenSource? _cts;
     /*
@@ -381,11 +381,14 @@
 
         if (result != null)
         {
-            var payload = new DeleteTablePayload { TableName = _param.DataTransferTargetTableName!, IdDataTransfer=_paramHeader.DataTransferId! };
-            var confirm = await DataService.PostValues(payload, "DeleteDataTransferTable", ApiControllers.RemoteDbApi);
-            if (!confirm.Success)
+            if (_paramHeader != null)
             {
-                _queryTestResult = confirm.Message;
+                var payload = new DeleteTablePayload { TableName = _param.DataTransferTargetTableName!, IdDataTransfer=_paramHeader.DataTransferId };
+                var confirm = await DataService.PostValues(payload, "DeleteDataTransferTable", ApiControllers.RemoteDbApi);
+                if (!confirm.Success)
+                {
+                    _queryTestResult = confirm.Message;
+                }
             }
         }
     }

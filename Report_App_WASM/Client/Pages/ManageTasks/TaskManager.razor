@@ -329,7 +329,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new TaskHeaderDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert, SendByEmail = TypeTask == TaskType.Alert.ToString() ? true : false };
+        var value = new TaskHeaderDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert, SendByEmail = TypeTask == TaskType.Alert.ToString() };
     var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
