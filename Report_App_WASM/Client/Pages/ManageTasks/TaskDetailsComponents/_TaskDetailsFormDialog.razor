@@ -383,7 +383,7 @@
         {
             if (_paramHeader != null)
             {
-                var payload = new DeleteTablePayload { TableName = _param.DataTransferTargetTableName!, IdDataTransfer=_paramHeader.DataTransferId };
+                var payload = new DeleteTablePayload { TableName = _param.DataTransferTargetTableName!, IdDataTransfer = _paramHeader.DataTransferId };
                 var confirm = await DataService.PostValues(payload, "DeleteDataTransferTable", ApiControllers.RemoteDbApi);
                 if (!confirm.Success)
                 {

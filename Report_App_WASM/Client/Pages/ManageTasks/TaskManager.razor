@@ -101,7 +101,7 @@
 
 @code
 {
-    #nullable enable
+#nullable enable
     [Parameter]
     public string TypeTask { get; set; } = default!;
 
@@ -159,7 +159,7 @@
             _tags = new List<string>();
         }
 
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+    // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty || _oldActivity != ActivityName)
         {
             _itemsProvider = async req =>
@@ -210,8 +210,8 @@
 
     private async Task<ApiResponse<TaskHeaderDto>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDto> req)
     {
-        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
@@ -258,7 +258,7 @@
         }
         catch
         {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -300,7 +300,7 @@
         if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
-            // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+    // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             var result = await DataService.PostValues(value, "TaskHeaderDelete");
             if (result.Success)
             {
@@ -330,7 +330,7 @@
     private async Task OpenCreateDialog()
     {
         var value = new TaskHeaderDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert, SendByEmail = TypeTask == TaskType.Alert.ToString() };
-    var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
+        var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
         var feedback = await dialog.Result;

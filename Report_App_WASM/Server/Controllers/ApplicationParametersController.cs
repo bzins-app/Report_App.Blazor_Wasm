@@ -34,28 +34,31 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     [HttpGet("ActivitiesInfo")]
     public async Task<IEnumerable<SelectItemActivitiesInfo>> GetActivitiesInfo()
     {
-        return await _context.Activity.Where(a=>a.ActivityType==ActivityType.SourceDb).AsNoTracking().Select(a => new SelectItemActivitiesInfo
-        {
-            ActivityId = a.ActivityId, ActivityName = a.ActivityName, HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
-            IsVisible = a.Display, LogoPath = a.ActivityLogo, IsActivated = a.IsActivated,
-            DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
-        }).ToArrayAsync();
+        return await _context.Activity.Where(a => a.ActivityType == ActivityType.SourceDb).AsNoTracking().Select(a =>
+            new SelectItemActivitiesInfo
+            {
+                ActivityId = a.ActivityId, ActivityName = a.ActivityName,
+                HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
+                IsVisible = a.Display, LogoPath = a.ActivityLogo, IsActivated = a.IsActivated,
+                DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
+            }).ToArrayAsync();
     }
 
     [Authorize]
     [HttpGet("DataTransfers")]
     public async Task<IEnumerable<SelectItemActivitiesInfo>> GetDataTransfersInfo()
     {
-        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).AsNoTracking().Select(a => new SelectItemActivitiesInfo
-        {
-            ActivityId = a.ActivityId,
-            ActivityName = a.ActivityName,
-            HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
-            IsVisible = a.Display,
-            LogoPath = a.ActivityLogo,
-            IsActivated = a.IsActivated,
-            DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
-        }).ToArrayAsync();
+        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).AsNoTracking().Select(a =>
+            new SelectItemActivitiesInfo
+            {
+                ActivityId = a.ActivityId,
+                ActivityName = a.ActivityName,
+                HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
+                IsVisible = a.Display,
+                LogoPath = a.ActivityLogo,
+                IsActivated = a.IsActivated,
+                DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
+            }).ToArrayAsync();
     }
 
     [Authorize]

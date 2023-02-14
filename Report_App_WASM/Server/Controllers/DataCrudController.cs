@@ -303,7 +303,7 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            if(values.EntityValue.ActivityType==ActivityType.SourceDb)
+            if (values.EntityValue.ActivityType == ActivityType.SourceDb)
             {
                 if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ActivityName!))
                 {
@@ -366,6 +366,7 @@ public class DataCrudController : ControllerBase, IDisposable
                         await _roleManager.UpdateAsync(roleActivity);
                     }
             }
+
             if (values.EntityValue.ActivityDbConnections != null)
                 foreach (var connect in values.EntityValue.ActivityDbConnections)
                     await UpdateEntity(connect, values.UserName!);

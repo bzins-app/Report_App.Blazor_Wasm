@@ -16,20 +16,20 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@Localizer.Get("Data transfer")</MudText>
-            <MudSpacer />
+            <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -37,22 +37,22 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <TemplateColumn>
                         <MudStack Row="true">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" Title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" Title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Configuration name")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)
             {
-                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering" />
+                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering"/>
             }
-            <Paginator Value="@_pagination" FieldsContent="@_translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -85,8 +85,8 @@
 
     private async Task<ApiResponse<ActivityDto>?> GetRemoteData(GridItemsProviderRequest<ActivityDto> req)
     {
-        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/DataTransfers?";
         if (string.IsNullOrEmpty(odataQuery))
@@ -103,7 +103,7 @@
         }
         catch
         {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -132,11 +132,11 @@
     {
         var uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
         var item = new ActivityDto
-            {
-                ActivityName = value.ActivityName,
-                ActivityLogo = value.ActivityLogo,
-                ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDto>(uri)
-            };
+        {
+            ActivityName = value.ActivityName,
+            ActivityLogo = value.ActivityLogo,
+            ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDto>(uri)
+        };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
         var dialog = await DialogService.ShowAsync<_DataTransferFormDialog>("Edit", parameters, _dialogOptions);
