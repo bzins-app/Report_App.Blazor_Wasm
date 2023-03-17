@@ -27,14 +27,14 @@
         <MudCardContent>
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogSystemDto" FieldsContent="_translations">
-                    <PropertyColumn Property="@(p => p!.TimeStampAppHour)" Title="@Localizer.Get("Timestamp")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.EventId)" Title="@Localizer.Get("Event Id")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.Id)" Title="@Localizer.Get("Id")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.Level)" Title="@Localizer.Get("Level")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.Path)" Title="@Localizer.Get("Path")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.Name)" Title="@Localizer.Get("Name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.User)" Title="@Localizer.Get("User name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.Host)" Title="@Localizer.Get("Host")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TimeStampAppHour)" Title="@Localizer.Get("Timestamp")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.EventId)" Title="@Localizer.Get("Event Id")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Id)" Title="@Localizer.Get("Id")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Level)" Title="@Localizer.Get("Level")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Path)" Title="@Localizer.Get("Path")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Name)" Title="@Localizer.Get("Name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.User)" Title="@Localizer.Get("User name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Host)" Title="@Localizer.Get("Host")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)

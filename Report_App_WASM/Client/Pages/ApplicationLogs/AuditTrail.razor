@@ -27,11 +27,11 @@
         <MudCardContent>
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationAuditTrailDto">
-                    <PropertyColumn Property="@(p => p.DateTime)" Title="@Localizer.Get("Timestamp")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.UserId)" Title="@Localizer.Get("User name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of change")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.TableName)" Title="@Localizer.Get("Table name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.PrimaryKey)" Title="@Localizer.Get("Primary key")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DateTime)" Title="@Localizer.Get("Timestamp")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.UserId)" Title="@Localizer.Get("User name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of change")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TableName)" Title="@Localizer.Get("Table name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.PrimaryKey)" Title="@Localizer.Get("Primary key")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)

@@ -30,11 +30,11 @@
         <MudCardContent>
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" TGridItem="UsersPerRole">
-                    <PropertyColumn Property="@(p => p.RoleName)" Title="@Localizer.Get("Role name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.UserName)" Title="@Localizer.Get("User name")" Sortable="true"/>
-                    <TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RoleName)" Title="@Localizer.Get("Role name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.UserName)" Title="@Localizer.Get("User name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.TemplateColumn>
                         <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
-                    </TemplateColumn>
+                    </Blazor.SimpleGrid.TemplateColumn>
                 </SimpleGrid>
             </div>
             <Paginator Value="@_pagination" FieldsContent="@_translations"/>

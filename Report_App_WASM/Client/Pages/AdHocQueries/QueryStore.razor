@@ -53,34 +53,34 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     @if (_UserIsSupervisor)
                     {
-                        <TemplateColumn>
+                        <Blazor.SimpleGrid.TemplateColumn>
                             <MudStack Row=true>
                                 <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
                                 <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
                             </MudStack>
-                        </TemplateColumn>
+                        </Blazor.SimpleGrid.TemplateColumn>
                     }
                     @if (string.IsNullOrEmpty(ActivityName))
                     {
-                        <PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
                     }
-                    <PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
-                    <TemplateColumn Title="@Localizer.Get("Run query")">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
+                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Run query")">
                         <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
-                    </TemplateColumn>
-                    <PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
+                    </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
                     @if (_UserIsSupervisor)
                     {
-                        <TemplateColumn Title="@Localizer.Get("Duplicate")">
+                        <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Duplicate")">
                             <CascadingValue Value="@_grid">
                                 <_QueryStoreDuplicateForm Item="context"/>
                             </CascadingValue>
-                        </TemplateColumn>
+                        </Blazor.SimpleGrid.TemplateColumn>
                     }
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             <Paginator Value="@_pagination" FieldsContent="@_translations"/>
