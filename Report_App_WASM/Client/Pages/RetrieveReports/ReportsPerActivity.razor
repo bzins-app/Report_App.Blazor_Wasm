@@ -35,25 +35,25 @@
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
 
-                    <PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true"/>
                     @if (_typeTask == TaskType.Report.ToString())
                     {
-                        <PropertyColumn Property="@(p => p.TypeFile)" Title="@Localizer.Get("Type of file")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TypeFile)" Title="@Localizer.Get("Type of file")" Sortable="true"/>
                     }
-                    <TemplateColumn Title="@Localizer.Get("Run manually")">
+                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Run manually")">
                         <_TaskRunForm Item="context"/>
-                    </TemplateColumn>
+                    </Blazor.SimpleGrid.TemplateColumn>
                     @if (_typeTask == TaskType.Report.ToString())
                     {
-                        <TemplateColumn Title="@Localizer.Get("Create file manually")">
+                        <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context"/>
-                        </TemplateColumn>
-                        <PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true"/>
+                        </Blazor.SimpleGrid.TemplateColumn>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true"/>
                     }
-                    <PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             <Paginator Value="@_pagination" FieldsContent="@_translations"/>

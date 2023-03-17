@@ -27,17 +27,17 @@
         <MudCardContent>
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogQueryExecutionDto">
-                    <PropertyColumn Property="@(p => p!.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.SqlExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.DownloadDuration)" Title="@Localizer.Get("Download duration")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.TypeDb)" Title="@Localizer.Get("Type of Database")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.Database)" Title="@Localizer.Get("Database name")" Sortable="true"/>
-                    <PropertyColumn Property="@(p => p!.CommandTimeOut)" Title="@Localizer.Get("Command timeout")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.SqlExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.DownloadDuration)" Title="@Localizer.Get("Download duration")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TypeDb)" Title="@Localizer.Get("Type of Database")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Database)" Title="@Localizer.Get("Database name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.CommandTimeOut)" Title="@Localizer.Get("Command timeout")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)
