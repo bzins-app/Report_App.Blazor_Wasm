@@ -15,7 +15,7 @@ services:
      - reportapp_db:/var/opt/mssql/data
 
   report_app_wasm.server:
-    image: ${DOCKER_REGISTRY-}reportappwasmserver
+    image: ${DOCKER_REGISTRY-}reportapp_wasm
     ports:
       - '7080:80'
       - '7443:433'
