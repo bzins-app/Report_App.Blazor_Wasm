@@ -20,7 +20,7 @@ public static class EncryptDecrypt
             return empty;
         }
 
-        //only for PKCS7 and AES. Don't change the configuration without change this check
+        //only for PKCS7 and AES. Don't change the configuration without changing this check
         if (text.Length == 44 && text.EndsWith("=")) return text;
         var getKey = Secretkey();
         var key = Encoding.UTF8.GetBytes(getKey);

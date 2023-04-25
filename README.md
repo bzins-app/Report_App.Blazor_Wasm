@@ -46,7 +46,7 @@ services:
      - reportapp_db:/var/opt/mssql/data
      
   report_app_blazorserv:
-    image: registry.bzins.app/reportappblazorserv:latest
+    image: benoitzins/reportapp_wasm:latest
     ports:
       - '7080:80'
       - '7443:443'

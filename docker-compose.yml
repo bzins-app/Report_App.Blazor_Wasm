@@ -24,7 +24,7 @@ services:
       dockerfile: Report_App_WASM\Server\Dockerfile
     container_name: ReportApp_Blazor_server
     environment:
-      - 'ConnectionStrings__DefaultConnection=Server=db;Database=report_app;User Id=sa;Password=Ultra)SecurePAs$worD!;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DefaultConnection=Server=db;Database=report_app;User Id=sa;Password=Ultra)SecurePAs$worD!;MultipleActiveResultSets=true;TrustServerCertificate=True'
       - 'BaseUserDefaultOptions:Email=admin@report.app'
       - 'BaseUserDefaultOptions:Password=$tR0ng)cR3d?'
     volumes:
