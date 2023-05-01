@@ -103,7 +103,6 @@ builder.Services.AddSwaggerGen(c =>
 
 // Add Hangfire services.
 builder.Services.AddHangfire(configuration => configuration
-    .UseDarkModeSupportForDashboard()
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
