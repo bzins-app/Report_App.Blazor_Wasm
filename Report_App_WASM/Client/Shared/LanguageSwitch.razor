@@ -3,7 +3,7 @@
 @inject IJSRuntime JsRuntime
 
 <MudTooltip Text="@Localizer.Get("Language")">
-    <MudMenu Class="mx-1" Icon="@Icons.Material.Outlined.Translate" Color="Color.Default" Direction="Direction.Bottom" OffsetY="true" AnchorOrigin="Origin.BottomLeft"
+    <MudMenu Class="mx-1" Icon="@Icons.Material.Outlined.Translate" Color="Color.Default"  AnchorOrigin="Origin.BottomLeft"
              Dense="true">
         @foreach (var culture in _supportedCultures)
         {
