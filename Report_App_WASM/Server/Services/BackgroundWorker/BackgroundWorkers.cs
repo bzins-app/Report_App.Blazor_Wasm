@@ -105,7 +105,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                                         GenerateFiles = true
                                     };
                                     var jobId = jobName + "_" + cronId;
-                                    RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam),
+                                    RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None),
                                         cron.CronValue, options);
                                     cronId++;
                                 }
@@ -133,7 +133,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles,
             CustomEmails = emails ?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters,
             ManualRun = true, RunBy = runBy
-        }));
+        }, CancellationToken.None));
     }
 
     void IDisposable.Dispose()
@@ -171,7 +171,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "report";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue,
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
                             options);
                     }
 
@@ -179,7 +179,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "alert";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue,
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
                             options);
                     }
 
@@ -187,7 +187,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "datatransfer";
                         options.QueueName = queueName; //to remove in version 2.0
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam), cron.CronValue,
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
                             options);
                     }
 
@@ -203,18 +203,22 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         }
     }
 
-    public async Task RunTaskJobAsync(TaskJobParameters parameters)
+    public async Task RunTaskJobAsync( TaskJobParameters parameters, CancellationToken g )
     {
         using (var scope = _scopeFactory.CreateScope())
         {
             var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
+            parameters.Cts = g;
             if (db != null)
             {
                 using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
                     _hostingEnvironment);
-                await handler.HandleTask(parameters);
-                handler.Dispose();
+                while (!g.IsCancellationRequested)
+                {
+                    await handler.HandleTask(parameters);
+                    handler.Dispose();
+                }
+
             }
         }
 
