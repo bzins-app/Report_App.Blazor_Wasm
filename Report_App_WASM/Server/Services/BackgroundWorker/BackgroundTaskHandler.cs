@@ -85,6 +85,8 @@ public class BackgroundTaskHandler : IDisposable
 
         await _context.AddAsync(logTask);
         await _context.SaveChangesAsync("backgroundworker");
+        logTask.TaskId = logTask.Id;
+        _context.Update(logTask);
         _taskId = logTask.Id;
         await _context.AddAsync(new ApplicationLogTaskDetails
             { TaskId = _taskId, Step = "Initialization", Info = "Nbr of queries:" + _header.TaskDetails.Count });
