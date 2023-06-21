@@ -41,12 +41,13 @@ public class DashboardController : ControllerBase
         metrics.SizeFilesStoredLocally = await reportsToday.SumAsync(a => a.FileSizeInMb);
         metrics.NbrOfFilesStored = await reportsToday.CountAsync();
 
-        var activeTask = _context.TaskHeader.Where(a => a.IsActivated);
-        metrics.NbrOfActiveReports = await activeTask.Where(a => a.Type == TaskType.Report).CountAsync();
-        metrics.NbrOfActiveAlerts = await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync();
-        metrics.NbrOfActiveDataTransfer = await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync();
+        var servicesStatus= await _context.ServicesStatus.FirstOrDefaultAsync();
+        var activeTask = _context.TaskHeader.Where(a => a.IsActivated&&a.Activity.IsActivated);
+        metrics.NbrOfActiveReports = !servicesStatus.ReportService? 0: await activeTask.Where(a => a.Type == TaskType.Report).CountAsync();
+        metrics.NbrOfActiveAlerts = !servicesStatus.AlertService ? 0 : await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync();
+        metrics.NbrOfActiveDataTransfer = !servicesStatus.DataTransferService ? 0 : await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync();
 
-        metrics.NbrOfActiveQueries = await _context.TaskDetail.Where(a => a.TaskHeader!.IsActivated).CountAsync();
+        metrics.NbrOfActiveQueries = await _context.TaskDetail.Where(a => a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated).CountAsync();
         return metrics;
     }
 
