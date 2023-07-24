@@ -36,7 +36,7 @@ public class FilesController : ControllerBase, IDisposable
         {
             var filePath = GetUploadedFilePath(file.FileName);
             returnedFiledPath = filePath.Item1;
-            using var stream = System.IO.File.Create(filePath.Item2);
+            await using var stream = System.IO.File.Create(filePath.Item2);
             await file.CopyToAsync(stream);
         }
         // Process uploaded files
