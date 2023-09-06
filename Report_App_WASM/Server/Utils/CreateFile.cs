@@ -5,16 +5,17 @@ using Newtonsoft.Json;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
 using OfficeOpenXml.Table;
+using Org.BouncyCastle.Utilities.Zlib;
+using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared.Extensions;
 
 namespace Report_App_WASM.Server.Utils;
 
 public static class CreateFile
 {
-    public static FileContentResult ExcelFromDatable(string? fileName, ExcelCreationDatatable value)
+    public static MemoryFile ExcelFromDatable(string? fileName, ExcelCreationDatatable value)
     {
-        MemoryStream outputStream = new();
-        using ExcelPackage excel = new(outputStream);
+        using ExcelPackage excel = new();
         excel.Workbook.Properties.Author = "Report Service";
         excel.Workbook.Properties.Title = fileName;
         excel.Workbook.Properties.Subject = fileName;
@@ -42,17 +43,19 @@ public static class CreateFile
         }
 
         excel.Save();
-        outputStream.Position = 0;
 
-        return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+        var file = new MemoryFile
         {
-            FileDownloadName = fileName
+            Content = excel.GetAsByteArray(),
+            ContentType = "application/vnd.ms-excel",
+            FileName = fileName
         };
+        excel.Dispose();
+        return file;
     }
 
-    public static FileContentResult ExcelTemplateFromSeveralDatable(ExcelCreationData dataExcel, FileInfo file)
+    public static MemoryFile ExcelTemplateFromSeveralDatable(ExcelCreationData dataExcel, FileInfo file)
     {
-        MemoryStream outputStream = new();
         using ExcelPackage excel = new(file);
         excel.Workbook.Properties.Author = "Report Service";
         excel.Workbook.Properties.Title = dataExcel.FileName;
@@ -93,19 +96,23 @@ public static class CreateFile
             }
         }
 
-        excel.SaveAs(outputStream);
-        outputStream.Position = 0;
+        excel.Save();
 
-        return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+        var oFile = new MemoryFile
         {
-            FileDownloadName = dataExcel.FileName
+            Content = excel.GetAsByteArray(),
+            ContentType = "application/vnd.ms-excel",
+            FileName = dataExcel.FileName
         };
+        excel.Dispose();
+        return oFile;
+
     }
 
-    public static FileContentResult ExcelFromSeveralsDatable(ExcelCreationData dataExcel)
+    public static MemoryFile ExcelFromSeveralsDatable(ExcelCreationData dataExcel)
     {
-        MemoryStream outputStream = new();
-        using ExcelPackage excel = new(outputStream);
+ 
+        using ExcelPackage excel = new();
         excel.Workbook.Properties.Author = "Report Service";
         excel.Workbook.Properties.Title = dataExcel.FileName;
         excel.Workbook.Properties.Subject = dataExcel.FileName;
@@ -198,15 +205,18 @@ public static class CreateFile
         }
 
         excel.Save();
-        outputStream.Position = 0;
 
-        return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+        var oFile = new MemoryFile
         {
-            FileDownloadName = dataExcel.FileName
+            Content = excel.GetAsByteArray(),
+            ContentType = "application/vnd.ms-excel",
+            FileName = dataExcel.FileName
         };
+        excel.Dispose();
+        return oFile;
     }
 
-    public static FileContentResult JsonFromDatable(string fileName, DataTable data, string encoding)
+    public static MemoryFile JsonFromDatable(string fileName, DataTable data, string encoding)
     {
         var strJson = JsonConvert.SerializeObject(data);
         var cleaned = strJson.Replace("\n", "").Replace("\r", "");
@@ -233,14 +243,16 @@ public static class CreateFile
                 bytes = Encoding.UTF8.GetBytes(cleaned);
                 break;
         }
-
-        return new FileContentResult(bytes, "application/json")
+        var oFile = new MemoryFile
         {
-            FileDownloadName = fileName
+            Content = bytes,
+            ContentType = "application/json",
+            FileName = fileName
         };
+        return oFile;
     }
 
-    public static FileContentResult CsvFromDatable(string fileName, DataTable data, string? encoding,
+    public static MemoryFile CsvFromDatable(string fileName, DataTable data, string? encoding,
         string? delimiter = ";", bool removeHeader = false)
     {
         StringBuilder sb = new();
@@ -283,13 +295,17 @@ public static class CreateFile
                 break;
         }
 
-        return new FileContentResult(bytes, "text/csv")
+        var oFile = new MemoryFile
         {
-            FileDownloadName = fileName
+            Content = bytes,
+            ContentType = "text/csv",
+            FileName = fileName
         };
+        return oFile;
+
     }
 
-    public static FileContentResult XmlFromDatable(string? datatableName, string fileName, string? encoding,
+    public static MemoryFile XmlFromDatable(string? datatableName, string fileName, string? encoding,
         DataTable data)
     {
         data.TableName = datatableName;
@@ -324,13 +340,16 @@ public static class CreateFile
                 break;
         }
 
-        return new FileContentResult(bytes, "application/xml")
+        var oFile = new MemoryFile
         {
-            FileDownloadName = fileName
+            Content = bytes,
+            ContentType = "application/xml",
+            FileName = fileName
         };
+        return oFile;
     }
 
-    public static FileContentResult ExcelFromCollection<TEntity>(string fileName, string tabName, List<TEntity> data)
+    public static MemoryFile ExcelFromCollection<TEntity>(string fileName, string tabName, List<TEntity> data)
         where TEntity : class
     {
         MemoryStream outputStream = new();
@@ -361,9 +380,15 @@ public static class CreateFile
         var fName = string.Format(fileName + "-{0}", DateTime.Now.ToString("s") + ".xlsx");
         outputStream.Position = 0;
 
-        return new FileContentResult(excel.GetAsByteArray(), "application/vnd.ms-excel")
+        var oFile = new MemoryFile
         {
-            FileDownloadName = fName
+            Content = excel.GetAsByteArray(),
+            ContentType = "application/vnd.ms-excel",
+            FileName = fName
         };
+        excel.Dispose();
+        outputStream.Dispose();
+        return oFile;
+
     }
 }

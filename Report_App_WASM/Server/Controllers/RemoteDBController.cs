@@ -177,7 +177,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
             await _context.AddAsync(log);
             await _context.SaveChangesAsync();
-            return File(file.FileContents, file.ContentType, file.FileDownloadName);
+            return File(file.Content, file.ContentType, file.FileName);
         }
         catch (Exception e)
         {
@@ -204,7 +204,7 @@ public class RemoteDbController : ControllerBase, IDisposable
 
             var file = CreateFile.ExcelFromCollection(fileName, fileDesc, await values.ToListAsync(ct));
             _logger.LogInformation($"Grid extraction: End {fileName}", $" {fileName}");
-            return File(file.FileContents, file.ContentType, file.FileDownloadName);
+            return File(file.Content, file.ContentType, file.FileName);
         }
         catch (Exception e)
         {

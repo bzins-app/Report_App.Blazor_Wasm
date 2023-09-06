@@ -203,7 +203,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         }
     }
 
-    public async Task RunTaskJobAsync( TaskJobParameters parameters, CancellationToken cts )
+    public async ValueTask RunTaskJobAsync( TaskJobParameters parameters, CancellationToken cts )
     {
         using (var scope = _scopeFactory.CreateScope())
         {
@@ -219,7 +219,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             }
         }
 
-        ReleaseMemory();
+        //ReleaseMemory();
     }
 
     private void ReleaseMemory()

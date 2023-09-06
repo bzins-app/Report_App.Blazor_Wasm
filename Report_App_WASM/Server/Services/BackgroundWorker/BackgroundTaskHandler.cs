@@ -28,7 +28,7 @@ public class BackgroundTaskHandler : IDisposable
     private List<EmailRecipient>? _emails = new();
 
     private Dictionary<TaskDetail, DataTable> _fetchedData = new();
-    private List<FileContentResult> _fileResults = new();
+    private List<MemoryFile> _fileResults = new();
     private TaskHeader _header = null!;
     private TaskJobParameters _jobParameters = null!;
 
@@ -54,10 +54,10 @@ public class BackgroundTaskHandler : IDisposable
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        GC.ReRegisterForFinalize(this);
+        GC.Collect();
     }
 
-    public async Task HandleTask(TaskJobParameters parameters)
+    public async ValueTask HandleTask(TaskJobParameters parameters)
     {
         _jobParameters = parameters;
         _header = (await _context.TaskHeader.Where(a => a.TaskHeaderId == parameters.TaskHeaderId)
@@ -113,7 +113,7 @@ public class BackgroundTaskHandler : IDisposable
                 {
                     await GenerateFile();
                     foreach (var f in _fileResults)
-                        await WriteFileAsync(f, f.FileDownloadName, _jobParameters.GenerateFiles, f.FileDownloadName);
+                        await WriteFileAsync(f, f.FileName, _jobParameters.GenerateFiles, f.FileName);
                     await GenerateEmail();
                     _fileResults.Clear();
                 }
@@ -173,7 +173,6 @@ public class BackgroundTaskHandler : IDisposable
             await _context.AddAsync(new ApplicationLogTaskDetails
                 { TaskId = _taskId, Step = "Error", Info = logTask.Result });
             _fetchedData.Clear();
-            GC.SuppressFinalize(this);
         }
 
         _context.Update(logTask);
@@ -181,7 +180,7 @@ public class BackgroundTaskHandler : IDisposable
     }
 
 
-    private async Task FetchData(TaskDetail detail, int maxRows = 100000)
+    private async ValueTask FetchData(TaskDetail detail, int maxRows = 100000)
     {
         using var remoteDb = new RemoteDbConnection(_context, _mapper);
         var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!, _jsonOpt);
@@ -222,7 +221,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async Task WriteFileAsync(FileContentResult fileResult, string fName, bool useDepositConfiguration,
+    private async ValueTask WriteFileAsync(MemoryFile fileResult, string fName, bool useDepositConfiguration,
         string? subName = null)
     {
         var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
@@ -244,7 +243,7 @@ public class BackgroundTaskHandler : IDisposable
             IsAvailable = true,
             Error = !localFileResult.Success,
             Result = localFileResult.Message,
-            FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.FileContents.Length)
+            FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.Content.Length)
         };
         await _context.AddAsync(filecreationLocal);
         await _context.AddAsync(new ApplicationLogTaskDetails
@@ -312,7 +311,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async Task HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,
+    private async ValueTask HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,
         int activityIdTransfer)
     {
         if (data.Rows.Count > 0)
@@ -467,7 +466,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async Task GenerateFile()
+    private async ValueTask GenerateFile()
     {
         string fName;
         string fExtension;
@@ -477,7 +476,7 @@ public class BackgroundTaskHandler : IDisposable
 
         foreach (var d in _fetchedData)
         {
-            FileContentResult fileCreated;
+            MemoryFile fileCreated;
             var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!, _jsonOpt);
             if (string.IsNullOrEmpty(detailParam?.FileName))
                 fName =
@@ -560,7 +559,7 @@ public class BackgroundTaskHandler : IDisposable
                 ? $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}"
                 : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
 
-            FileContentResult fileCreated;
+            MemoryFile fileCreated;
             if (!headerParam!.UseAnExcelTemplate)
             {
                 ExcelCreationData dataExcel = new()
@@ -593,7 +592,7 @@ public class BackgroundTaskHandler : IDisposable
         _fetchedData.Clear();
     }
 
-    private async Task HandleTaskAlertAsync()
+    private async ValueTask HandleTaskAlertAsync()
     {
         var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters, _jsonOpt);
         if (_fetchedData.Any())
@@ -645,7 +644,7 @@ public class BackgroundTaskHandler : IDisposable
                             var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader?.TaskName, dataExcel);
                             var fName =
                                 $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
-                            listAttach.Add(new Attachment(new MemoryStream(fileResult.FileContents), fName,
+                            listAttach.Add(new Attachment(new MemoryStream(fileResult.Content), fName,
                                 fileResult.ContentType));
                         }
 
@@ -684,7 +683,7 @@ public class BackgroundTaskHandler : IDisposable
 
             List<Attachment> listAttach = new();
             listAttach.AddRange(_fileResults.Select(a =>
-                new Attachment(new MemoryStream(a.FileContents), a.FileDownloadName, a.ContentType)).ToList());
+                new Attachment(new MemoryStream(a.Content), a.FileName, a.ContentType)).ToList());
 
             var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
             if (listAttach.Any())

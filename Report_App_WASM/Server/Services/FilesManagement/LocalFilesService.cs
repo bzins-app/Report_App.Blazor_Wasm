@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Protobuf;
+using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Utilities;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
+using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Server.Services.FilesManagement;
@@ -16,14 +19,14 @@ public class LocalFilesService
         _hostingEnvironment = hostingEnvironment;
     }
 
-    public async Task<SubmitResult> SaveFileForBackupAsync(FileContentResult file, string fileName)
+    public async Task<SubmitResult> SaveFileForBackupAsync(MemoryFile file, string fileName)
     {
         try
         {
             var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
             var filePath = Path.Combine(storagePath, fileName);
             await using var fileWriter = new FileStream(filePath, FileMode.CreateNew);
-            await fileWriter.WriteAsync(file.FileContents);
+            await fileWriter.WriteAsync(file.Content);
         }
         catch (Exception ex)
         {
@@ -33,7 +36,7 @@ public class LocalFilesService
         return new SubmitResult { Success = true, Message = "Ok" };
     }
 
-    public async Task<SubmitResult> SaveFileAsync(FileContentResult file, string fileName, string storagePath,
+    public async Task<SubmitResult> SaveFileAsync(MemoryFile file, string fileName, string storagePath,
         bool tryCreateFolder = false)
     {
         try
@@ -50,7 +53,7 @@ public class LocalFilesService
             if (checkAcces)
             {
                 await using var fileWriter = new FileStream(filePath, FileMode.CreateNew);
-                await fileWriter.WriteAsync(file.FileContents);
+                await fileWriter.WriteAsync(file.Content);
             }
             else
             {
