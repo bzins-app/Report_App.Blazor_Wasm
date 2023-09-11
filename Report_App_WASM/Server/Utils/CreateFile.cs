@@ -1,11 +1,9 @@
 ﻿using System.Data;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
 using OfficeOpenXml.Table;
-using Org.BouncyCastle.Utilities.Zlib;
 using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Shared.Extensions;
 

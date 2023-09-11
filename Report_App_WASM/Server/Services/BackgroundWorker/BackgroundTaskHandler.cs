@@ -2,7 +2,6 @@
 using System.Net.Mail;
 using System.Text.Json;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Report_App_WASM.Server.Data;
 using Report_App_WASM.Server.Models;
