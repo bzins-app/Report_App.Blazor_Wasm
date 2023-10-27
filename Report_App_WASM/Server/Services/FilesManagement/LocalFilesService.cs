@@ -16,7 +16,7 @@ public class LocalFilesService
         _hostingEnvironment = hostingEnvironment;
     }
 
-    public async Task<SubmitResult> SaveFileForBackupAsync(MemoryFile file, string fileName)
+    public async Task<SubmitResult> SaveFileForBackupAsync(MemoryFileContainer file, string fileName)
     {
         try
         {
@@ -33,7 +33,7 @@ public class LocalFilesService
         return new SubmitResult { Success = true, Message = "Ok" };
     }
 
-    public async Task<SubmitResult> SaveFileAsync(MemoryFile file, string fileName, string storagePath,
+    public async Task<SubmitResult> SaveFileAsync(MemoryFileContainer file, string fileName, string storagePath,
         bool tryCreateFolder = false)
     {
         try

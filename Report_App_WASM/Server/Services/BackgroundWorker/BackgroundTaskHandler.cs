@@ -27,7 +27,7 @@ public class BackgroundTaskHandler : IDisposable
     private List<EmailRecipient>? _emails = new();
 
     private Dictionary<TaskDetail, DataTable> _fetchedData = new();
-    private List<MemoryFile> _fileResults = new();
+    private List<MemoryFileContainer> _fileResults = new();
     private TaskHeader _header = null!;
     private TaskJobParameters _jobParameters = null!;
 
@@ -220,7 +220,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async ValueTask WriteFileAsync(MemoryFile fileResult, string fName, bool useDepositConfiguration,
+    private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName, bool useDepositConfiguration,
         string? subName = null)
     {
         var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
@@ -475,7 +475,7 @@ public class BackgroundTaskHandler : IDisposable
 
         foreach (var d in _fetchedData)
         {
-            MemoryFile fileCreated;
+            MemoryFileContainer fileCreated;
             var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!, _jsonOpt);
             if (string.IsNullOrEmpty(detailParam?.FileName))
                 fName =
@@ -558,7 +558,7 @@ public class BackgroundTaskHandler : IDisposable
                 ? $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}"
                 : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
 
-            MemoryFile fileCreated;
+            MemoryFileContainer fileCreated;
             if (!headerParam!.UseAnExcelTemplate)
             {
                 ExcelCreationData dataExcel = new()

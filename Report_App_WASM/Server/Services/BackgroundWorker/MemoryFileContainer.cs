@@ -1,6 +1,6 @@
 ﻿namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
-public record MemoryFile
+public record MemoryFileContainer
 {
     public string FileName { get; init; }
     public string ContentType { get; init; }
