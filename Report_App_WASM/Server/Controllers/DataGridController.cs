@@ -79,7 +79,7 @@ public class DataGridController : ODataController, IDisposable
             var file = CreateFile.ExcelFromCollection(fileName, values.TabName, items);
             _logger.LogInformation($"Grid extraction: End {fileName} {items.Count} lines",
                 $" {fileName} {items.Count} lines");
-            return File(file.FileContents, file.ContentType, file.FileDownloadName);
+            return File(file.Content, file.ContentType, file.FileName);
         }
         catch (Exception e)
         {

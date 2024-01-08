@@ -30,7 +30,7 @@ public class SftpService : IDisposable
             .FirstOrDefaultAsync())!;
     }
 
-    public async Task<IEnumerable<SftpFile>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
+    public async Task<IEnumerable<ISftpFile>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
         using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
