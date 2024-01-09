@@ -214,7 +214,6 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                 using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
                     _hostingEnvironment);
                 await handler.HandleTask(parameters);
-                handler.Dispose();
 
             }
         }

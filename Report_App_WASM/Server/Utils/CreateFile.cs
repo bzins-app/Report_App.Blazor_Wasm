@@ -48,7 +48,6 @@ public static class CreateFile
             ContentType = "application/vnd.ms-excel",
             FileName = fileName
         };
-        excel.Dispose();
         return file;
     }
 
@@ -102,7 +101,6 @@ public static class CreateFile
             ContentType = "application/vnd.ms-excel",
             FileName = dataExcel.FileName
         };
-        excel.Dispose();
         return oFile;
 
     }
@@ -210,7 +208,6 @@ public static class CreateFile
             ContentType = "application/vnd.ms-excel",
             FileName = dataExcel.FileName
         };
-        excel.Dispose();
         return oFile;
     }
 
