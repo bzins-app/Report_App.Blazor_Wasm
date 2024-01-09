@@ -1,6 +1,4 @@
-﻿using Report_App_WASM.Server.Models.AuditModels;
-
-namespace Report_App_WASM.Server.Models;
+﻿namespace Report_App_WASM.Server.Models;
 
 public class QueryStore : BaseTraceability
 {

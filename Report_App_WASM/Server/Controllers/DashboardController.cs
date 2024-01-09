@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiExchanges;
-using Report_App_WASM.Shared.Dashboard;
+﻿using Report_App_WASM.Shared.Dashboard;
 
 namespace Report_App_WASM.Server.Controllers;
 

@@ -1,6 +1,4 @@
-﻿using Report_App_WASM.Shared.SerializedParameters;
-
-namespace Report_App_WASM.Shared.RemoteQueryParameters;
+﻿namespace Report_App_WASM.Shared.RemoteQueryParameters;
 
 public class RemoteDbCommandParameters
 {

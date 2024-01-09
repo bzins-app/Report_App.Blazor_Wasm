@@ -1,14 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using BlazorDownloadFile;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Report_App_WASM.Client.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiExchanges;
 
 namespace Report_App_WASM.Client.Services;
 

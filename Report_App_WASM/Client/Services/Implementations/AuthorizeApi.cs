@@ -1,7 +1,5 @@
 ﻿using System.Net;
-using System.Net.Http.Json;
 using Report_App_WASM.Client.Services.Contracts;
-using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Client.Services.Implementations;
 

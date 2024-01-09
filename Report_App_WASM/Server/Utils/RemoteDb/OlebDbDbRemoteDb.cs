@@ -1,10 +1,4 @@
-﻿using System.Data;
-using System.Data.Common;
-using System.Data.OleDb;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils.RemoteQueryParameters;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.RemoteQueryParameters;
+﻿using System.Data.OleDb;
 
 #pragma warning disable CA1416
 
