@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 
 namespace Report_App_WASM.Client.Pages.UserAccount;
-#nullable enable
+
 public class UserProfile
 {
     public string? Id { get; set; }
