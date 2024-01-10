@@ -90,11 +90,9 @@
 
 @code {
 
-    [Parameter]
-    public string ActivityName { get; set; } = default!;
+    [Parameter] public string ActivityName { get; set; } = default!;
 
-    [Parameter]
-    public int? ActivityId { get; set; }
+    [Parameter] public int? ActivityId { get; set; }
 
     GridItemsProvider<QueryStoreDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
@@ -120,6 +118,7 @@
         {
             urlExt = $"?activityId={ActivityId!.Value}";
         }
+
         var uri = $"{ApiControllers.CrudDataApi}GetTagsQueries{urlExt}";
         try
         {
@@ -129,7 +128,8 @@
         {
             _tags = new List<string>();
         }
-    // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+
+        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty || _oldActivity != ActivityName)
         {
             _itemsProvider = async req =>
@@ -146,6 +146,7 @@
                 return GridItemsProviderResult.From(response.Value!, response.Count);
             };
         }
+
         var user = await AuthenticationStateProvider.GetUserInfo();
         if (!string.IsNullOrEmpty(ActivityName))
         {
@@ -156,6 +157,7 @@
             {
                 NavigationManager.NavigateTo("/403");
             }
+
             _oldActivity = ActivityName;
         }
 
@@ -173,6 +175,7 @@
                 _empty = true;
                 return GridItemsProviderResult.From(Array.Empty<QueryStoreDto>(), 0);
             }
+
             if (response.Value!.Any())
             {
                 _empty = false;
@@ -181,6 +184,7 @@
             {
                 _empty = true;
             }
+
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
@@ -188,8 +192,8 @@
 
     private async Task<ApiResponse<QueryStoreDto>?> GetRemoteData(GridItemsProviderRequest<QueryStoreDto> req)
     {
-    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
@@ -206,10 +210,12 @@
         {
             url += "&" + odataPagination;
         }
+
         if (!string.IsNullOrEmpty(odataSort))
         {
             url += "&" + odataSort;
         }
+
         if (!string.IsNullOrEmpty(odataFilters))
         {
             if (ActivityId.HasValue)
@@ -225,6 +231,7 @@
         {
             url += "&$filter=" + customFilters;
         }
+
         if (selected != null && selected.Any())
         {
             var _tagFilter = string.Empty;
@@ -234,6 +241,7 @@
                 _tagFilter = "&$filter=";
                 first = true;
             }
+
             foreach (var tagSelected in selected)
             {
                 if (first)
@@ -256,7 +264,7 @@
         }
         catch
         {
-    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -319,13 +327,13 @@
 
     private void EditItem(QueryStoreDto value)
     {
-    //var uri = UriHelper.GetUriWithQueryParameters("QueryEdit/" + value.Id,
-    //   new Dictionary<string, object>
-    //       {
-    //           ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
-    //           ["Page"] = _pagination.CurrentPageIndex,
-    //           ["PageSize"] = _pagination.ItemsPerPage
-    //       }!);
+        //var uri = UriHelper.GetUriWithQueryParameters("QueryEdit/" + value.Id,
+        //   new Dictionary<string, object>
+        //       {
+        //           ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
+        //           ["Page"] = _pagination.CurrentPageIndex,
+        //           ["PageSize"] = _pagination.ItemsPerPage
+        //       }!);
         UriHelper.NavigateTo("QueryEdit/" + value.Id);
     }
 
@@ -336,6 +344,7 @@
         {
             value.IdActivity = ActivityId.Value;
         }
+
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Create", parameters);

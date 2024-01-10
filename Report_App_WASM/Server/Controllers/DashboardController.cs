@@ -35,15 +35,30 @@ public class DashboardController : ControllerBase
         metrics.SizeFilesStoredLocally = await reportsToday.SumAsync(a => a.FileSizeInMb);
         metrics.NbrOfFilesStored = await reportsToday.CountAsync();
 
-        var servicesStatus= await _context.ServicesStatus.FirstOrDefaultAsync();
-        var activeTask = _context.TaskHeader.Where(a => a.IsActivated&&a.Activity.IsActivated);
-        metrics.NbrOfActiveReports = !servicesStatus.ReportService? 0: await activeTask.Where(a => a.Type == TaskType.Report).CountAsync();
-        metrics.NbrOfActiveAlerts = !servicesStatus.AlertService ? 0 : await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync();
-        metrics.NbrOfActiveDataTransfer = !servicesStatus.DataTransferService ? 0 : await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync();
+        var servicesStatus = await _context.ServicesStatus.FirstOrDefaultAsync();
+        var activeTask = _context.TaskHeader.Where(a => a.IsActivated && a.Activity.IsActivated);
+        metrics.NbrOfActiveReports = !servicesStatus.ReportService
+            ? 0
+            : await activeTask.Where(a => a.Type == TaskType.Report).CountAsync();
+        metrics.NbrOfActiveAlerts = !servicesStatus.AlertService
+            ? 0
+            : await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync();
+        metrics.NbrOfActiveDataTransfer = !servicesStatus.DataTransferService
+            ? 0
+            : await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync();
 
-        metrics.NbrOfActiveQueries = await _context.TaskDetail.Where(a => a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated&& a.TaskHeader.Type == TaskType.Report&& servicesStatus.ReportService).CountAsync()
-            + await _context.TaskDetail.Where(a => a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated && a.TaskHeader.Type == TaskType.Alert && servicesStatus.AlertService).CountAsync()
-            + await _context.TaskDetail.Where(a => a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated && a.TaskHeader.Type == TaskType.DataTransfer && servicesStatus.DataTransferService).CountAsync()
+        metrics.NbrOfActiveQueries = await _context.TaskDetail.Where(a =>
+                                             a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated &&
+                                             a.TaskHeader.Type == TaskType.Report && servicesStatus.ReportService)
+                                         .CountAsync()
+                                     + await _context.TaskDetail.Where(a =>
+                                             a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated &&
+                                             a.TaskHeader.Type == TaskType.Alert && servicesStatus.AlertService)
+                                         .CountAsync()
+                                     + await _context.TaskDetail.Where(a =>
+                                         a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated &&
+                                         a.TaskHeader.Type == TaskType.DataTransfer &&
+                                         servicesStatus.DataTransferService).CountAsync()
             ;
         return metrics;
     }

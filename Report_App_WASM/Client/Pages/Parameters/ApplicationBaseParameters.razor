@@ -121,8 +121,9 @@
     {
         if (_filesToDelete.Any())
         {
-    //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
+
         await DataService.PostValues(_param, "ApplicationParametersUpdate");
         StateHasChanged();
         if (_initialAppLogo != _param.ApplicationLogo || _initialAppName != _param.ApplicationLogo)
@@ -141,8 +142,9 @@
         if (!string.IsNullOrEmpty(_completeLogoPath))
         {
             _filesToDelete.Add(_completeLogoPath);
-    //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
+
         UriHelper.NavigateTo("/");
     }
 
@@ -169,6 +171,7 @@
         {
             _emails?.Add(new EmailRecipient { Email = _email });
         }
+
         _email = "";
         _emailNotValidated = true;
         PopulateEmailItems();
@@ -196,6 +199,7 @@
         {
             _emailNotValidated = true;
         }
+
         return _emailNotValidated;
     }
 

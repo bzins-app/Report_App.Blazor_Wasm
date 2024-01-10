@@ -63,14 +63,11 @@
 
 @code
 {
-    [Parameter]
-    public int? ActivityId { get; set; }
+    [Parameter] public int? ActivityId { get; set; }
 
-    [Parameter]
-    public string? ActivityName { get; set; }
+    [Parameter] public string? ActivityName { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 
     private readonly string _typeTask = TaskType.Report.ToString();
     GridItemsProvider<TaskHeaderDto>? _itemsProvider;
@@ -96,6 +93,7 @@
         {
             urlExt = $"&&activityId={ActivityId!.Value}";
         }
+
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
         _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
     }
@@ -110,6 +108,7 @@
             {
                 return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
             }
+
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
@@ -117,8 +116,8 @@
 
     private async Task<ApiResponse<TaskHeaderDto>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDto> req)
     {
-    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
@@ -136,10 +135,12 @@
         {
             url += "&" + odataPagination;
         }
+
         if (!string.IsNullOrEmpty(odataSort))
         {
             url += "&" + odataSort;
         }
+
         if (!string.IsNullOrEmpty(odataFilters))
         {
             url += "&" + odataFilters + " and " + customFilters;
@@ -148,6 +149,7 @@
         {
             url += "&$filter=" + customFilters;
         }
+
         if (selected != null)
         {
             var _tagFilter = string.Empty;
@@ -165,7 +167,7 @@
         }
         catch
         {
-    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }

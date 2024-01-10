@@ -281,6 +281,5 @@ public class SqlServerRemoteDb : IRemoteDb
                 await bulkCopy.WriteToServerAsync(data);
             }
         }
-
     }
 }

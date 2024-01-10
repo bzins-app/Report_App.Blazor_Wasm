@@ -45,8 +45,7 @@
 
 @code {
 
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     private ApplicationConstantsValues _appConst = new();
 
@@ -60,6 +59,7 @@
         {
             _switchDisabled = false;
         }
+
         _status = await DataService.GetUniqueValue(_status, "GetServiceStatus");
         _appConst = (await AppService.GetApplicationConstantsValues())!;
     }
@@ -108,6 +108,7 @@
                 return;
             }
         }
+
         _status.EmailService = value;
         await DataService.PostValues(_status, "UpdateServicesStatus", ApiControllers.BackgroudWorkerApi);
 

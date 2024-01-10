@@ -70,6 +70,7 @@
             {
                 return GridItemsProviderResult.From(Array.Empty<ApplicationLogTaskDto>(), 0);
             }
+
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
 
@@ -78,8 +79,8 @@
 
     private async Task<ApiResponse<ApplicationLogTaskDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogTaskDto> req)
     {
-    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/TaskLogs?";
         if (string.IsNullOrEmpty(odataQuery))
@@ -90,13 +91,14 @@
         {
             url += odataQuery;
         }
+
         try
         {
             return await DataService.GetODataValues<ApplicationLogTaskDto>(url, req.CancellationToken);
         }
         catch
         {
-    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }

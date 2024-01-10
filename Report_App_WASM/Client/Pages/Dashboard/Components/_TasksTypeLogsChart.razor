@@ -40,11 +40,9 @@ else
 
 @code {
 
-    [Parameter]
-    public string? Height { get; set; } = null;
+    [Parameter] public string? Height { get; set; } = null;
 
-    [Parameter]
-    public List<TaksLogsValues>? _taskLogs { get; set; }
+    [Parameter] public List<TaksLogsValues>? _taskLogs { get; set; }
 
     private ApexChartOptions<TaksLogsValues> _options = new();
     private ApexChart<TaksLogsValues>? _chart;
@@ -54,15 +52,15 @@ else
 
     protected override void OnInitialized()
     {
-    // _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
+        // _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
         _options.Chart.Stacked = true;
         _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
         _options.Theme = new Theme { Palette = PaletteType.Palette8 };
-    //options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
+        //options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
         _options.Stroke = new Stroke { Curve = Curve.Smooth, Width = 2 };
-    //Stacked 100% test
-    //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
-    //options.Chart.Toolbar = new Toolbar { Show = false };
+        //Stacked 100% test
+        //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
+        //options.Chart.Toolbar = new Toolbar { Show = false };
     }
 
 }

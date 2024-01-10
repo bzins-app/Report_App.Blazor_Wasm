@@ -192,8 +192,7 @@
 
 @code {
 
-    [Parameter]
-    public int QueryId { get; set; }
+    [Parameter] public int QueryId { get; set; }
 
     private QueryStoreDto? Item;
     private TypeDb _typeDbTask;
@@ -237,6 +236,7 @@
                 _typeDbTask = response.Select(a => a.TypeDb).First();
             }
         }
+
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
         {
@@ -248,7 +248,7 @@
                 TypeDb.SqlServer => AceLanguage.sqlserver,
                 TypeDb.PostgreSql => AceLanguage.pgsql,
                 _ => AceLanguage.sql
-                },
+            },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
@@ -265,22 +265,26 @@
                     param?.Add(value);
                 }
             }
+
             foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
             {
                 if (t.ValueType == QueryCommandParameterValueType.Date)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
                 }
+
                 if (t.ValueType == QueryCommandParameterValueType.DateTime)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
                 }
             }
         }
+
         if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
+
         if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
         {
             _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags)!;
@@ -308,18 +312,21 @@
                 {
                     param?.Add(value);
                 }
+
                 foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
                 {
                     if (t.ValueType == QueryCommandParameterValueType.Date)
                     {
                         t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
                     }
+
                     if (t.ValueType == QueryCommandParameterValueType.DateTime)
                     {
                         t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
                     }
                 }
             }
+
             if (_table != null)
             {
                 _table.CurrentPage = 0;
@@ -342,6 +349,7 @@
             await _validateParam.Validate();
             _formParamValidated = _validateParam.IsValid;
         }
+
         await _table?.ReloadServerData()!;
     }
 
@@ -399,6 +407,7 @@
                 _queryTestResult = ex.Message;
             }
         }
+
         _loading = false;
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
@@ -421,8 +430,10 @@
             {
                 UriHelper.NavigateTo(uri);
             }
+
             return;
         }
+
         UriHelper.NavigateTo(uri);
     }
 
@@ -494,6 +505,7 @@
             _tags.Add(_tagValue.RemoveSpecialCharacters().RemoveDiacritics());
             _changesToSave = true;
         }
+
         _tagValue = string.Empty;
         _openPopOver = false;
     }

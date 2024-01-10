@@ -8,8 +8,7 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
     private string? _email;
 
@@ -60,6 +59,7 @@
                 var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
                 await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             }
+
             Snackbar.Add(Localizer.Get("Alert") + " " + Localizer.Get("Job on going"), Severity.Success);
         }
     }

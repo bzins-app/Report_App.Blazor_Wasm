@@ -157,11 +157,9 @@
 
 @code {
 
-    [Parameter]
-    public string ActivityName { get; set; } = default!;
+    [Parameter] public string ActivityName { get; set; } = default!;
 
-    [Parameter]
-    public int ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
     private List<DescriptionValues> TableNames = new();
     private List<DescriptionValues> TableNamesStored = new();
@@ -194,6 +192,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+
         TableNames = new List<DescriptionValues>();
         ColNames = new List<DescriptionValues>();
         QueryRun = "";
@@ -207,6 +206,7 @@
         {
             _typeDbTask = response.Select(a => a.TypeDb).First();
         }
+
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
         {
@@ -218,7 +218,7 @@
                 TypeDb.SqlServer => AceLanguage.sqlserver,
                 TypeDb.PostgreSql => AceLanguage.pgsql,
                 _ => AceLanguage.sql
-                },
+            },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
         StateHasChanged();
@@ -301,6 +301,7 @@
             _table!.CurrentPage = 0;
             await _table.ReloadServerData();
         }
+
         _loadingTestQuery = false;
     }
 
@@ -348,6 +349,7 @@
                 _queryTestResult = ex.Message;
             }
         }
+
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 

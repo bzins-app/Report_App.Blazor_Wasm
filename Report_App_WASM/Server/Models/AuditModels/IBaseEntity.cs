@@ -1,5 +1,3 @@
 ﻿namespace Report_App_WASM.Server.Models.AuditModels;
 
-public interface IBaseEntity
-{
-}
+public interface IBaseEntity;

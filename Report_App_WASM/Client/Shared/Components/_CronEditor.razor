@@ -78,11 +78,9 @@
 
     private string cronValueItem { get; set; } = string.Empty;
 
-    [Parameter]
-    public string Value { get; set; } = string.Empty;
+    [Parameter] public string Value { get; set; } = string.Empty;
 
-    [Parameter]
-    public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
     private class SelectItem
     {
@@ -183,10 +181,12 @@
         {
             listMinutesSelect.Add(new SelectItem { Value = i.ToString(), DisplayValue = i < 10 ? "0" + i : i.ToString() });
         }
+
         for (var i = 0; i < 24; i++)
         {
             listHoursSelect.Add(new SelectItem { Value = i.ToString(), DisplayValue = i < 10 ? "0" + i : i.ToString() });
         }
+
         for (var i = 1; i < 32; i++)
         {
             listDayOfMonthSelect.Add(new SelectItem { Value = i.ToString(), DisplayValue = i < 10 ? "0" + i : i.ToString() });
@@ -235,10 +235,12 @@
         {
             listDayOfMonthSelect.Where(a => a.Value == t).All(a => a.Selected = true);
         }
+
         foreach (var t in monthsArr)
         {
             listMonthSelect.Where(a => a.Value == t).All(a => a.Selected = true);
         }
+
         foreach (var t in dayOfWeekArr)
         {
             listDayOfWeekSelect.Where(a => a.Value == t).All(a => a.Selected = true);
@@ -258,6 +260,7 @@
         {
             cronValueItem = "";
         }
+
         await OnValuesChanged();
     }
 
@@ -273,6 +276,7 @@
         {
             t.Selected = false;
         }
+
         listMinutesEmpty = true;
         selectedMinutes = null!;
     }
@@ -288,6 +292,7 @@
         {
             t.Selected = false;
         }
+
         if (selectedMinutes != null && selectedMinutes.Length > 0)
         {
             foreach (var t in selectedMinutes)
@@ -320,10 +325,13 @@
                 {
                     CronConstruct = CronConstruct + "," + t.Value;
                 }
+
                 i++;
             }
+
             CronMinute = CronConstruct;
         }
+
         listMinutesEmpty = false;
         ResetListEveryMinute();
         await GenerateCronValue();
@@ -336,6 +344,7 @@
         {
             ResetListMinutesSelect();
         }
+
         CronMinute = "*/" + val;
         await GenerateCronValue();
         StateHasChanged();
@@ -347,6 +356,7 @@
         {
             t.Selected = false;
         }
+
         listHoursEmpty = true;
         selectedHours = null!;
     }
@@ -362,6 +372,7 @@
         {
             t.Selected = false;
         }
+
         if (selectedHours != null && selectedHours.Length > 0)
         {
             foreach (var t in selectedHours)
@@ -394,10 +405,13 @@
                 {
                     CronConstruct = CronConstruct + "," + t.Value;
                 }
+
                 i++;
             }
+
             CronHour = CronConstruct;
         }
+
         listHoursEmpty = false;
         ResetListEveryHour();
         await GenerateCronValue();
@@ -410,6 +424,7 @@
         {
             ResetListHoursSelect();
         }
+
         CronHour = "*/" + val;
         await GenerateCronValue();
         StateHasChanged();
@@ -421,6 +436,7 @@
         {
             t.Selected = false;
         }
+
         selectedDayOfMonth = null!;
     }
 
@@ -430,6 +446,7 @@
         {
             t.Selected = false;
         }
+
         if (selectedDayOfMonth != null && selectedDayOfMonth.Length > 0)
         {
             if (!selectedDayOfMonth.Any(a => a.Text == "L" || a.Text == "LW"))
@@ -473,10 +490,13 @@
                 {
                     CronConstruct = CronConstruct + "," + t.Value;
                 }
+
                 i++;
             }
+
             CronDayOfMonth = CronConstruct;
         }
+
         await GenerateCronValue();
     }
 
@@ -486,6 +506,7 @@
         {
             t.Selected = false;
         }
+
         selectedMonth = null!;
     }
 
@@ -495,6 +516,7 @@
         {
             t.Selected = false;
         }
+
         if (selectedMonth != null && selectedMonth.Length > 0)
         {
             foreach (var t in selectedMonth)
@@ -527,10 +549,13 @@
                 {
                     CronConstruct = CronConstruct + "," + t.Value;
                 }
+
                 i++;
             }
+
             CronMonth = CronConstruct;
         }
+
         await GenerateCronValue();
     }
 
@@ -540,6 +565,7 @@
         {
             t.Selected = false;
         }
+
         selectedDayOfWeek = null!;
     }
 
@@ -549,6 +575,7 @@
         {
             t.Selected = false;
         }
+
         if (selectedDayOfWeek != null && selectedDayOfWeek.Length > 0)
         {
             foreach (var t in selectedDayOfWeek)
@@ -581,10 +608,13 @@
                 {
                     CronConstruct = CronConstruct + "," + t.Value;
                 }
+
                 i++;
             }
+
             CronDayOfWeek = CronConstruct;
         }
+
         await GenerateCronValue();
     }
 

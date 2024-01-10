@@ -5,8 +5,7 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto Item { get; set; } = new();
+    [Parameter] public TaskHeaderDto Item { get; set; } = new();
 
     private async Task ChangeStatusAsync(bool value)
     {
@@ -30,6 +29,7 @@
 
                 return;
             }
+
             if (Item.Type == TaskType.Alert)
             {
                 var uriEmails = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
@@ -41,6 +41,7 @@
                     return;
                 }
             }
+
             var uri = $"{ApiControllers.CrudDataApi}GetTaskHasDetails?taskHeaderId={Item.TaskHeaderId}";
             var reportDetailsExists = await Http.GetFromJsonAsync<bool>(uri);
             if (!reportDetailsExists)

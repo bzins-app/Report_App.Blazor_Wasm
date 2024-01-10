@@ -28,11 +28,9 @@
 
 @code {
 
-    [CascadingParameter]
-    public SimpleGrid<QueryStoreDto>? DataGrid { get; set; }
+    [CascadingParameter] public SimpleGrid<QueryStoreDto>? DataGrid { get; set; }
 
-    [Parameter]
-    public QueryStoreDto? Item { get; set; }
+    [Parameter] public QueryStoreDto? Item { get; set; }
 
     string _name = "";
 

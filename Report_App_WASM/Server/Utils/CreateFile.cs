@@ -99,12 +99,10 @@ public static class CreateFile
             FileName = dataExcel.FileName
         };
         return oFile;
-
     }
 
     public static MemoryFileContainer ExcelFromSeveralsDatable(ExcelCreationData dataExcel)
     {
- 
         using ExcelPackage excel = new();
         excel.Workbook.Properties.Author = "Report Service";
         excel.Workbook.Properties.Title = dataExcel.FileName;
@@ -235,6 +233,7 @@ public static class CreateFile
                 bytes = Encoding.UTF8.GetBytes(cleaned);
                 break;
         }
+
         var oFile = new MemoryFileContainer
         {
             Content = bytes,
@@ -294,7 +293,6 @@ public static class CreateFile
             FileName = fileName
         };
         return oFile;
-
     }
 
     public static MemoryFileContainer XmlFromDatable(string? datatableName, string fileName, string? encoding,
@@ -381,6 +379,5 @@ public static class CreateFile
         excel.Dispose();
         outputStream.Dispose();
         return oFile;
-
     }
 }

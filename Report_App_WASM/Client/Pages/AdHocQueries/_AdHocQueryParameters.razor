@@ -68,14 +68,11 @@
 
 @code {
 
-    [Parameter]
-    public EventCallback<bool> ValueChanged { get; set; }
+    [Parameter] public EventCallback<bool> ValueChanged { get; set; }
 
-    [Parameter]
-    public QueryStoreDto? Item { get; set; }
+    [Parameter] public QueryStoreDto? Item { get; set; }
 
-    [Parameter]
-    public string? Style { get; set; }
+    [Parameter] public string? Style { get; set; }
 
     List<QueryCommandParameter?>? _parameters = new();
 

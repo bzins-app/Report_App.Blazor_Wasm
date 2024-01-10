@@ -7,18 +7,13 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action switch
-                           {
-                               CrudAction.Update => Icons.Material.Filled.Edit,
-                               CrudAction.Create => Icons.Material.Filled.Create,
-                               _ => Icons.Material.Filled.DeleteForever
-                               })" Class="mr-3 mb-n1"/>
+            <MudIcon Icon="@(Action switch { CrudAction.Update => Icons.Material.Filled.Edit, CrudAction.Create => Icons.Material.Filled.Create, _ => Icons.Material.Filled.DeleteForever })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
                 CrudAction.Update => "Edit",
                 CrudAction.Create => "Add",
                 _ => "Delete"
-                })
+            })
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -52,6 +47,7 @@
                                 <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")"/>
                                 <p>* @Localizer.Get("Only when query is generated in separated file")</p>
                             }
+
                             if (_useExcelTemplate && !_param.SeparateExcelFile)
                             {
                                 <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTabName" Label="@Localizer.Get("Template tab name to use")" Required/>
@@ -84,6 +80,7 @@
 
                             </MudSelect>
                         }
+
                         @if (_fileType == FileType.Csv.ToString())
                         {
                             <MudSwitch @bind-Checked="_param.RemoveHeader" Label="@Localizer.Get("Remove Header")" Color="Color.Primary"/>
@@ -173,20 +170,15 @@
 
 @code {
 
-    [CascadingParameter]
-    MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter]
-    public TaskDetailDto? Item { get; set; }
+    [Parameter] public TaskDetailDto? Item { get; set; }
 
-    [Parameter]
-    public TaskHeaderDto? Header { get; set; }
+    [Parameter] public TaskHeaderDto? Header { get; set; }
 
-    [Parameter]
-    public int ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
-    [Parameter]
-    public CrudAction Action { get; set; }
+    [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = default!;
     private string? _deletionValidation;
@@ -203,7 +195,9 @@
     private List<Dictionary<string, object>>? _data;
     private string? _queryTestResult;
     private bool _testResult;
+
     private CancellationTokenSource? _cts;
+
     /*
     private List<string>? _encodingType;
     */
@@ -226,6 +220,7 @@
         {
             _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters, _jsonOpt)!;
         }
+
         if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
         {
             _paramHeader = JsonSerializer.Deserialize<TaskHeaderParameters>(Header.TaskHeaderParameters, _jsonOpt);
@@ -239,6 +234,7 @@
         {
             _typeDbActivity = response.Select(a => a.TypeDb).First();
         }
+
         _loading = false;
         _opt = new AceEditorOptions
         {
@@ -250,7 +246,7 @@
                 TypeDb.SqlServer => AceLanguage.sqlserver,
                 TypeDb.PostgreSql => AceLanguage.pgsql,
                 _ => AceLanguage.sql
-                },
+            },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
     }
@@ -305,6 +301,7 @@
                     }
                 }
             }
+
             var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };
             var remoteDataPayload = new RemoteDataPayload { Values = run };
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
@@ -370,6 +367,7 @@
             {
                 _param.DataTransferPk.Add(_pKName);
             }
+
             _pKName = "";
         }
     }

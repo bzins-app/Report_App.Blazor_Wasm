@@ -37,14 +37,11 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
-    [Parameter]
-    public bool ChangePending { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> ChangePendingChanged { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
     private List<CronParameters>? _crons = new();
     SimpleGrid<CronEditView>? _grid;
@@ -99,11 +96,13 @@
                 var toUpdate = _crons.FirstOrDefault(a => a?.CronValue == dataBefore);
                 if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
             }
+
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
             UpdateElements();
         }
+
         _disable = false;
     }
 
@@ -122,6 +121,7 @@
             SetItemCronValues();
             UpdateElements();
         }
+
         _disable = false;
     }
 

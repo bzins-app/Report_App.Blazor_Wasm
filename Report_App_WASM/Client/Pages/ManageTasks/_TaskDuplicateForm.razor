@@ -19,11 +19,9 @@
 
 @code {
 
-    [CascadingParameter]
-    public SimpleGrid<TaskHeaderDto>? DataGrid { get; set; }
+    [CascadingParameter] public SimpleGrid<TaskHeaderDto>? DataGrid { get; set; }
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
     string _name = "";
 
