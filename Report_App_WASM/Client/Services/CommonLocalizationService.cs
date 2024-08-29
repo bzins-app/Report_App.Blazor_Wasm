@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.Localization;
 using Report_App_WASM.Client.Utils.LanguageRessources;
 
 namespace Report_App_WASM.Client.Services;

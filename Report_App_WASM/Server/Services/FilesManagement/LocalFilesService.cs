@@ -1,9 +1,4 @@
-﻿using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Services.BackgroundWorker;
-using Report_App_WASM.Shared;
-
-namespace Report_App_WASM.Server.Services.FilesManagement;
+﻿namespace Report_App_WASM.Server.Services.FilesManagement;
 
 public class LocalFilesService
 {

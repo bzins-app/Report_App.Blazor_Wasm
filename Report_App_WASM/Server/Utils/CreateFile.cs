@@ -1,11 +1,8 @@
-﻿using System.Data;
-using System.Text;
+﻿using System.Text;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
 using OfficeOpenXml.Table;
-using Report_App_WASM.Server.Services.BackgroundWorker;
-using Report_App_WASM.Shared.Extensions;
 
 namespace Report_App_WASM.Server.Utils;
 
@@ -48,7 +45,6 @@ public static class CreateFile
             ContentType = "application/vnd.ms-excel",
             FileName = fileName
         };
-        excel.Dispose();
         return file;
     }
 
@@ -102,14 +98,11 @@ public static class CreateFile
             ContentType = "application/vnd.ms-excel",
             FileName = dataExcel.FileName
         };
-        excel.Dispose();
         return oFile;
-
     }
 
     public static MemoryFileContainer ExcelFromSeveralsDatable(ExcelCreationData dataExcel)
     {
- 
         using ExcelPackage excel = new();
         excel.Workbook.Properties.Author = "Report Service";
         excel.Workbook.Properties.Title = dataExcel.FileName;
@@ -210,7 +203,6 @@ public static class CreateFile
             ContentType = "application/vnd.ms-excel",
             FileName = dataExcel.FileName
         };
-        excel.Dispose();
         return oFile;
     }
 
@@ -241,6 +233,7 @@ public static class CreateFile
                 bytes = Encoding.UTF8.GetBytes(cleaned);
                 break;
         }
+
         var oFile = new MemoryFileContainer
         {
             Content = bytes,
@@ -300,7 +293,6 @@ public static class CreateFile
             FileName = fileName
         };
         return oFile;
-
     }
 
     public static MemoryFileContainer XmlFromDatable(string? datatableName, string fileName, string? encoding,
@@ -387,6 +379,5 @@ public static class CreateFile
         excel.Dispose();
         outputStream.Dispose();
         return oFile;
-
     }
 }

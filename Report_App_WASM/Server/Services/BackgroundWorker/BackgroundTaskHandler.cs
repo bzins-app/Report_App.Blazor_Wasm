@@ -1,18 +1,8 @@
-﻿using System.Data;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Text.Json;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
-using Report_App_WASM.Server.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
-using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 

@@ -7,8 +7,7 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
     private async Task OpenRunConfirmationComponent()
     {
@@ -23,6 +22,7 @@
             await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             Snackbar.Add(Localizer.Get(Item.TypeName) + " " + Localizer.Get("Job on going"), Severity.Success);
         }
+
         StateHasChanged();
     }
 

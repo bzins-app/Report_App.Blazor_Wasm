@@ -1,11 +1,4 @@
-﻿using System.Data;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils.RemoteDb;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.RemoteQueryParameters;
+﻿using Report_App_WASM.Server.Utils.RemoteDb;
 
 namespace Report_App_WASM.Server.Services.RemoteDb;
 

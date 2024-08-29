@@ -1,16 +1,6 @@
 ﻿using System.Text;
 using System.Text.Encodings.Web;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Services.BackgroundWorker;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiExchanges;
 
 namespace Report_App_WASM.Server.Controllers;
 

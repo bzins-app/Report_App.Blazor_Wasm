@@ -1,6 +1,4 @@
 ﻿using FluentValidation;
-using Report_App_WASM.Client.Services;
-using Report_App_WASM.Shared;
 
 namespace Report_App_WASM.Client.Pages.UserAccount;
 

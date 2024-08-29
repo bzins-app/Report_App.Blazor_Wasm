@@ -1,8 +1,4 @@
-﻿using System.Data;
-using System.Dynamic;
-using System.Text;
-
-namespace Report_App_WASM.Shared.Extensions;
+﻿namespace Report_App_WASM.Shared.Extensions;
 
 public static class DataTableExtensions
 {

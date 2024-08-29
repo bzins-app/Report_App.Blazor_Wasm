@@ -27,7 +27,7 @@
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
                 <MudTd DataLabel="@Localizer.Get("Blind copy")">
-                    <MudSwitch Checked="@context.Bcc" CheckedChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
+                    <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary" />
                 </MudTd>
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>
@@ -39,14 +39,11 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
-    [Parameter]
-    public bool ChangePending { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> ChangePendingChanged { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
     private List<EmailRecipient>? _emails = new();
     List<EmailRecipient> _emailItems = new();
@@ -71,6 +68,7 @@
             _recipients = new TaskEmailRecipientDto { TaskHeader = Item, Email = "[]", Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
             Item.TaskEmailRecipients = new List<TaskEmailRecipientDto> { _recipients };
         }
+
         _activityEmails = (await DataService.GetValues<EmailRecipient>($"GetEmailsPerActivity?activityId={Item!.IdActivity}")).Select(a => a.Email).ToList()!;
     }
 
@@ -114,6 +112,7 @@
                 await ChangePendingChanged.InvokeAsync(ChangePending);
             }
         }
+
         _email = "";
     }
 
@@ -128,6 +127,7 @@
         {
             _displayTagMessage = true;
         }
+
         _htmlText = _recipients.Message;
         var maxWidth = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
         var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
@@ -143,7 +143,7 @@
     }
 
 
-    private async Task<IEnumerable<string>> SearchEmail(string value)
+    private async Task<IEnumerable<string>> SearchEmail(string value, CancellationToken token)
     {
         await Task.Delay(1);
         if (string.IsNullOrEmpty(value))

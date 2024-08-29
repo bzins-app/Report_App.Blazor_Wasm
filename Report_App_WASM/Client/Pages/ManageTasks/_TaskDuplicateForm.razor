@@ -19,16 +19,14 @@
 
 @code {
 
-    [CascadingParameter]
-    public SimpleGrid<TaskHeaderDto>? DataGrid { get; set; }
+    [CascadingParameter] public SimpleGrid<TaskHeaderDto>? DataGrid { get; set; }
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
     string _name = "";
 
     private bool _visible;
-    private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+    private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Small, FullWidth = true };
 
     private void OpenRunConfirmationComponent()
     {

@@ -149,7 +149,7 @@
         Model.Options = (await AppService.GetIdentityOptionsAsync())!;
         Changepassword.Options = await AppService.GetIdentityOptionsAsync();
         Model.UserName = user?.UserName;
-    // Model.Id = user.Id;
+        // Model.Id = user.Id;
         Model.Email = user?.UserMail;
         var _appConst = await AppService.GetApplicationConstantsValues();
         _ldapSignin = _appConst!.LdapLogin;
@@ -162,7 +162,7 @@
         await _form.Validate();
         if (_form.IsValid)
         {
-    // await DataService.PostValues(,action, ApiControllers.UserManagerApi);
+            // await DataService.PostValues(,action, ApiControllers.UserManagerApi);
 
             Snackbar.Add("Data updated", Severity.Info);
         }

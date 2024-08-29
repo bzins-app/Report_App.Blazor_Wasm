@@ -8,11 +8,11 @@ public class ApplicationTheme
     {
         var theme = new MudTheme
         {
-            Palette = new PaletteLight()
+            PaletteLight = new PaletteLight()
             {
                 DrawerBackground = "#001529",
                 DrawerText = "#FFFFFF7F",
-                Background = Colors.Grey.Lighten5,
+                Background = Colors.Gray.Lighten5,
                 AppbarBackground = Colors.Shades.White,
                 AppbarText = Colors.Shades.Black
             },
@@ -75,7 +75,7 @@ public class ApplicationTheme
                 InfoContrastText = "#f6f6f6",
                 Black = "#27272f",
                 Background = "#0e1824",
-                BackgroundGrey = "#27272f",
+                BackgroundGray = "#27272f",
                 Surface = "#121e2d",
                 DrawerBackground = "#121e2d",
                 DrawerText = "#8fa6bf",

@@ -1,6 +1,4 @@
-﻿using Report_App_WASM.Shared.SerializedParameters;
-
-namespace Report_App_WASM.Shared.Extensions;
+﻿namespace Report_App_WASM.Shared.Extensions;
 
 public static class DateTimeExtensions
 {

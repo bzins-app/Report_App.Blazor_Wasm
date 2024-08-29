@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Report_App_WASM.Shared.DTO;
+﻿namespace Report_App_WASM.Shared.DTO;
 
 public class BaseTraceabilityDto
 {

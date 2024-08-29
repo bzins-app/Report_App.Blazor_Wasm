@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Shared.DTO;
+﻿using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Utils;
 

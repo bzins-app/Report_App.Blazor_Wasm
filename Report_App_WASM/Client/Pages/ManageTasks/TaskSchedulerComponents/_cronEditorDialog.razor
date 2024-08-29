@@ -12,11 +12,9 @@
 
 @code {
 
-    [CascadingParameter]
-    MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter]
-    public string? Value { get; set; }
+    [Parameter] public string? Value { get; set; }
 
     private void Cancel()
     {

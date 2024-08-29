@@ -1,10 +1,4 @@
-﻿using System.Net.Http.Json;
-using Blazor.SimpleGrid;
-using Report_App_WASM.Client.Services.Implementations;
-using Report_App_WASM.Client.Utils;
-using Report_App_WASM.Shared;
-
-namespace Report_App_WASM.Client.Services;
+﻿namespace Report_App_WASM.Client.Services;
 
 public class ApplicationService
 {

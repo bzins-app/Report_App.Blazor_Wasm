@@ -50,17 +50,13 @@
 
 @code {
 
-    [CascadingParameter]
-    MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter]
-    public List<Dictionary<string, object>>? Data { get; set; }
+    [Parameter] public List<Dictionary<string, object>>? Data { get; set; }
 
-    [Parameter]
-    public string? QueryTestResult { get; set; }
+    [Parameter] public string? QueryTestResult { get; set; }
 
-    [Parameter]
-    public bool TestResult { get; set; }
+    [Parameter] public bool TestResult { get; set; }
 
     private void Cancel()
     {
