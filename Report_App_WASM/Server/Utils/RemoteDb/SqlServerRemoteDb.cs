@@ -1,13 +1,5 @@
-﻿using System.Data;
-using System.Data.Common;
-using System.Text;
+﻿using System.Text;
 using Microsoft.Data.SqlClient;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils.RemoteQueryParameters;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
-using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -193,7 +185,6 @@ public class SqlServerRemoteDb : IRemoteDb
             while (reader.Read())
             {
                 var actionType = reader.GetInt32(0);
-                await conn.DisposeAsync();
                 switch (actionType)
                 {
                     case 1:
@@ -222,7 +213,6 @@ public class SqlServerRemoteDb : IRemoteDb
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query.ToString(), conn);
         await sqlCommand.ExecuteNonQueryAsync();
-        await conn.DisposeAsync();
     }
 
     public async Task CreateTable(ActivityDbConnection dbInfo, string query)
@@ -232,7 +222,6 @@ public class SqlServerRemoteDb : IRemoteDb
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query, conn);
         await sqlCommand.ExecuteNonQueryAsync();
-        await conn.DisposeAsync();
     }
 
     public async Task<MergeResult> MergeTables(ActivityDbConnection dbInfo, string query)
@@ -292,7 +281,5 @@ public class SqlServerRemoteDb : IRemoteDb
                 await bulkCopy.WriteToServerAsync(data);
             }
         }
-
-        await conn.DisposeAsync();
     }
 }

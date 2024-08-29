@@ -1,6 +1,4 @@
-﻿using Report_App_WASM.Shared.RemoteQueryParameters;
-
-namespace Report_App_WASM.Shared.ApiExchanges;
+﻿namespace Report_App_WASM.Shared.ApiExchanges;
 
 public class RemoteDataPayload
 {

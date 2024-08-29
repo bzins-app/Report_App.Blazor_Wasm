@@ -38,10 +38,10 @@
         <MudCardContent>
             @if (_tags.Any())
             {
-                <MudChipSet SelectedChipsChanged="OnTagSelected" SelectedValues="selected" MultiSelection="true" Filter="true">
+                <MudChipSet @bind-SelectedValues="selected" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var value in _tags)
                     {
-                        <MudChip Text="@value" Variant="Variant.Text" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
+                        <MudChip Text="@value" Value="value" Variant="Variant.Text" OnClick="OnTagSelected" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
                     }
                 </MudChipSet>
             }
@@ -101,23 +101,15 @@
 
 @code
 {
-#nullable enable
-    [Parameter]
-    public string TypeTask { get; set; } = default!;
+    [Parameter] public string TypeTask { get; set; } = default!;
 
-    [Parameter]
-    public string ActivityName { get; set; } = default!;
+    [Parameter] public string ActivityName { get; set; } = default!;
 
-    [Parameter]
-    public int? ActivityId { get; set; }
+    [Parameter] public int? ActivityId { get; set; }
 
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? Page { get; set; }
+    [Parameter] [SupplyParameterFromQuery] public int? Page { get; set; }
 
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? PageSize { get; set; }
+    [Parameter] [SupplyParameterFromQuery] public int? PageSize { get; set; }
 
 
     GridItemsProvider<TaskHeaderDto>? _itemsProvider;
@@ -128,7 +120,7 @@
     private string? _pageTitle;
     private bool _rendering;
     List<string> _tags = new();
-    MudChip[]? selected;
+    IReadOnlyCollection<string>? selected;
     bool _empty;
     string _oldActivity = string.Empty;
 
@@ -142,6 +134,7 @@
             _pagination.ItemsPerPage = PageSize.Value;
             await _pagination.SetCurrentPageIndexAsync(Page.Value);
         }
+
         selected = null;
         var type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.Alert.ToString() ? TaskType.Alert : TaskType.DataTransfer;
         var urlExt = string.Empty;
@@ -149,6 +142,7 @@
         {
             urlExt = $"&&activityId={ActivityId!.Value}";
         }
+
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
         try
         {
@@ -159,7 +153,7 @@
             _tags = new List<string>();
         }
 
-    // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
+        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if (_empty || _oldActivity != ActivityName)
         {
             _itemsProvider = async req =>
@@ -176,6 +170,7 @@
                 return GridItemsProviderResult.From(response.Value!, response.Count);
             };
         }
+
         if (!string.IsNullOrEmpty(ActivityName))
         {
             _pageTitle += ": " + ActivityName;
@@ -195,6 +190,7 @@
                 _empty = true;
                 return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
             }
+
             if (response.Value!.Any())
             {
                 _empty = false;
@@ -203,6 +199,7 @@
             {
                 _empty = true;
             }
+
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
@@ -210,8 +207,8 @@
 
     private async Task<ApiResponse<TaskHeaderDto>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDto> req)
     {
-    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
@@ -229,10 +226,12 @@
         {
             url += "&" + odataPagination;
         }
+
         if (!string.IsNullOrEmpty(odataSort))
         {
             url += "&" + odataSort;
         }
+
         if (!string.IsNullOrEmpty(odataFilters))
         {
             url += "&" + odataFilters + " and " + customFilters;
@@ -241,12 +240,13 @@
         {
             url += "&$filter=" + customFilters;
         }
+
         if (selected != null)
         {
             var _tagFilter = string.Empty;
             foreach (var tagSelected in selected)
             {
-                _tagFilter += $" and contains(Tags, '{tagSelected.Text}')";
+                _tagFilter += $" and contains(Tags, '{tagSelected}')";
             }
 
             url += _tagFilter;
@@ -258,7 +258,7 @@
         }
         catch
         {
-    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -278,9 +278,8 @@
         _rendering = false;
     }
 
-    private async Task OnTagSelected(MudChip[]? _selected)
+    private async Task OnTagSelected()
     {
-        selected = _selected;
         if (_grid != null) await OnRefresh();
     }
 
@@ -300,7 +299,7 @@
         if (!feedback.Canceled)
         {
             _errorMessage = string.Empty;
-    // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+            // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             var result = await DataService.PostValues(value, "TaskHeaderDelete");
             if (result.Success)
             {

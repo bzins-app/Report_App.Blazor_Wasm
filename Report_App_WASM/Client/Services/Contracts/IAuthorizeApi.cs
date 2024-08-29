@@ -1,6 +1,4 @@
-﻿using Report_App_WASM.Shared;
-
-namespace Report_App_WASM.Client.Services.Contracts;
+﻿namespace Report_App_WASM.Client.Services.Contracts;
 
 public interface IAuthorizeApi
 {

@@ -1,8 +1,4 @@
-﻿using System.Data;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Shared.RemoteQueryParameters;
-
-namespace Report_App_WASM.Server.Utils.RemoteDb;
+﻿namespace Report_App_WASM.Server.Utils.RemoteDb;
 
 public interface IRemoteDb : IDisposable
 {

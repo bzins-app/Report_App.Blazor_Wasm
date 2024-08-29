@@ -54,12 +54,9 @@
 
 @code
 {
-#nullable enable
-    [Parameter]
-    public int ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
-    [Parameter]
-    public string? ActivityName { get; set; }
+    [Parameter] public string? ActivityName { get; set; }
 
     private string? _title;
     GridItemsProvider<ApplicationLogReportResultDto>? _itemsProvider;
@@ -77,6 +74,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+
         _title = Localizer.Get("Retrieve reports") + ": " + ActivityName;
     }
 
@@ -90,6 +88,7 @@
             {
                 return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDto>(), 0);
             }
+
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
@@ -97,8 +96,8 @@
 
     private async Task<ApiResponse<ApplicationLogReportResultDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDto> req)
     {
-    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
@@ -110,10 +109,12 @@
         {
             url += "&" + odataPagination;
         }
+
         if (!string.IsNullOrEmpty(odataSort))
         {
             url += "&" + odataSort;
         }
+
         if (!string.IsNullOrEmpty(odataFilters))
         {
             url += "&" + odataFilters + " and " + customFilters;
@@ -129,7 +130,7 @@
         }
         catch
         {
-    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }

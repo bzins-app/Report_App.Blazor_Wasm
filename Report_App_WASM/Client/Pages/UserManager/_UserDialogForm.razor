@@ -2,18 +2,13 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action switch
-                           {
-                               CrudAction.Update => Icons.Material.Filled.Edit,
-                               CrudAction.Create => Icons.Material.Filled.Create,
-                               _ => Icons.Material.Filled.DeleteForever
-                               })" Class="mr-3 mb-n1"/>
+            <MudIcon Icon="@(Action switch { CrudAction.Update => Icons.Material.Filled.Edit, CrudAction.Create => Icons.Material.Filled.Create, _ => Icons.Material.Filled.DeleteForever })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
             {
                 CrudAction.Update => "Edit",
                 CrudAction.Create => "Add",
                 _ => "Delete"
-                })
+            })
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -36,14 +31,11 @@
 
 @code {
 
-    [CascadingParameter]
-    MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter]
-    public ApplicationUserDto Item { get; set; } = null!;
+    [Parameter] public ApplicationUserDto Item { get; set; } = null!;
 
-    [Parameter]
-    public CrudAction Action { get; set; }
+    [Parameter] public CrudAction Action { get; set; }
 
     private MudForm? _form;
     private UserFormModel Model { get; } = new();

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Report_App_WASM.Shared;
+﻿namespace Report_App_WASM.Shared;
 
 public class UsersPerRole
 {

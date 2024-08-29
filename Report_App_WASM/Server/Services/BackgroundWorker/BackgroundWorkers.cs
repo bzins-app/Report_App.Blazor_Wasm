@@ -1,17 +1,10 @@
 ﻿using System.Net.Mail;
 using System.Text.Json;
-using AutoMapper;
 using Hangfire;
 using Hangfire.Storage;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
-using Report_App_WASM.Server.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
@@ -105,7 +98,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                                         GenerateFiles = true
                                     };
                                     var jobId = jobName + "_" + cronId;
-                                    RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None),
+                                    RecurringJob.AddOrUpdate(jobId, queueName,
+                                        () => RunTaskJobAsync(jobParam, CancellationToken.None),
                                         cron.CronValue, options);
                                     cronId++;
                                 }
@@ -171,7 +165,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "report";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
+                        RecurringJob.AddOrUpdate(jobId, queueName,
+                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
                             options);
                     }
 
@@ -179,7 +174,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "alert";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
+                        RecurringJob.AddOrUpdate(jobId, queueName,
+                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
                             options);
                     }
 
@@ -187,7 +183,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "datatransfer";
                         options.QueueName = queueName; //to remove in version 2.0
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
+                        RecurringJob.AddOrUpdate(jobId, queueName,
+                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
                             options);
                     }
 
@@ -203,7 +200,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         }
     }
 
-    public async ValueTask RunTaskJobAsync( TaskJobParameters parameters, CancellationToken cts )
+    public async ValueTask RunTaskJobAsync(TaskJobParameters parameters, CancellationToken cts)
     {
         using (var scope = _scopeFactory.CreateScope())
         {
@@ -214,8 +211,6 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                 using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
                     _hostingEnvironment);
                 await handler.HandleTask(parameters);
-                handler.Dispose();
-
             }
         }
 

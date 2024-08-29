@@ -40,17 +40,13 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
-    [Parameter]
-    public List<TaskDetailDto>? ItemToDelete { get; set; }
+    [Parameter] public List<TaskDetailDto>? ItemToDelete { get; set; }
 
-    [Parameter]
-    public bool ChangePending { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> ChangePendingChanged { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
     IEnumerable<TaskDetailDto>? _elements = new List<TaskDetailDto>();
     SimpleGrid<TaskDetailDto>? _grid;
@@ -99,13 +95,14 @@
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
         }
+
         _disable = false;
     }
 
     private async Task OpenDeleteDialog(TaskDetailDto value)
     {
         _disable = true;
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
         var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
@@ -116,6 +113,7 @@
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();
         }
+
         _disable = false;
     }
 

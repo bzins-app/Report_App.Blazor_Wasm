@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
-
-namespace Report_App_WASM.Shared.Extensions;
+﻿namespace Report_App_WASM.Shared.Extensions;
 
 public static class StringExtensions
 {

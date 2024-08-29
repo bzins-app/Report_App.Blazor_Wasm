@@ -1,12 +1,4 @@
-﻿using System.Data;
-using System.Data.Common;
-using MySql.Data.MySqlClient;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils.RemoteQueryParameters;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
-using Report_App_WASM.Shared.SerializedParameters;
+﻿using MySql.Data.MySqlClient;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 

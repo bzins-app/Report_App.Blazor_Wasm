@@ -37,21 +37,18 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
-    [Parameter]
-    public bool ChangePending { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> ChangePendingChanged { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
     private List<CronParameters>? _crons = new();
     SimpleGrid<CronEditView>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
     private List<CronEditView> _elements = new();
-    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Large, FullWidth = true };
     private bool _disable;
 
     private class CronEditView
@@ -99,18 +96,20 @@
                 var toUpdate = _crons.FirstOrDefault(a => a?.CronValue == dataBefore);
                 if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
             }
+
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
             UpdateElements();
         }
+
         _disable = false;
     }
 
     private async Task OpenDeleteDialog(CronEditView value)
     {
         _disable = true;
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
         var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
@@ -122,6 +121,7 @@
             SetItemCronValues();
             UpdateElements();
         }
+
         _disable = false;
     }
 

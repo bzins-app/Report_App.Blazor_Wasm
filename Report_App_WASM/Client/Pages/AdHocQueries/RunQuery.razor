@@ -171,14 +171,11 @@
 
 @code {
 
-    [Parameter]
-    public int QueryId { get; set; }
+    [Parameter] public int QueryId { get; set; }
 
-    [Parameter]
-    public string ActivityName { get; set; } = default!;
+    [Parameter] public string ActivityName { get; set; } = default!;
 
-    [Parameter]
-    public int ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
     private QueryStoreDto? Item;
     private List<QueryCommandParameter> param = new();
@@ -222,18 +219,21 @@
                     param?.Add(value);
                 }
             }
+
             foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
             {
                 if (t.ValueType == QueryCommandParameterValueType.Date)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
                 }
+
                 if (t.ValueType == QueryCommandParameterValueType.DateTime)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
                 }
             }
         }
+
         if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
@@ -319,7 +319,7 @@
         }
     }
 
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
     {
         _loading = true;
         var currentPage = state.Page;
@@ -389,6 +389,7 @@
                 _values = new List<Dictionary<string, object>>();
             }
         }
+
         _loading = false;
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _hasTotal ? _total : _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }

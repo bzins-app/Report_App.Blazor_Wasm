@@ -28,16 +28,14 @@
 
 @code {
 
-    [CascadingParameter]
-    public SimpleGrid<QueryStoreDto>? DataGrid { get; set; }
+    [CascadingParameter] public SimpleGrid<QueryStoreDto>? DataGrid { get; set; }
 
-    [Parameter]
-    public QueryStoreDto? Item { get; set; }
+    [Parameter] public QueryStoreDto? Item { get; set; }
 
     string _name = "";
 
     private bool _visible;
-    private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+    private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Small, FullWidth = true };
     private List<SelectItemActivitiesInfo> _activities = new();
     private int _selectedActivityId;
 

@@ -1,7 +1,4 @@
-﻿using System.Data.Common;
-using Report_App_WASM.Shared;
-
-namespace Report_App_WASM.Server.Utils.RemoteQueryParameters;
+﻿namespace Report_App_WASM.Server.Utils.RemoteQueryParameters;
 
 public class RemoteConnectionParameter
 {

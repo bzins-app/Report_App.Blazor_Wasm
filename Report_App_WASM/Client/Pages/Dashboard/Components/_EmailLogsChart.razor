@@ -40,8 +40,7 @@ else
 
 @code {
 
-    [Parameter]
-    public string? Height { get; set; } = null;
+    [Parameter] public string? Height { get; set; } = null;
 
     private List<EmailsLogsValues>? _logs;
     private ApexChartOptions<EmailsLogsValues> _options = new();
@@ -54,8 +53,8 @@ else
         _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy" } };
         _options.Theme = new Theme { Palette = PaletteType.Palette3 };
         _options.Colors = new List<string> { "#008FFB", "#FF4560", "#FEB019" };
-    //Stacked 100% test
-    //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
+        //Stacked 100% test
+        //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
         _options.Chart.Toolbar = new Toolbar { Show = false };
     }
 

@@ -1,22 +1,14 @@
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
-using AutoMapper;
 using Hangfire;
 using Hangfire.SqlServer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Report_App_WASM.Server;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
-using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
-using Report_App_WASM.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
