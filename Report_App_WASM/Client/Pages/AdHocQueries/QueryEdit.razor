@@ -57,7 +57,7 @@
                                 <MudSwitch @bind-Value="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
                             </MudItem>
                             <MudItem>
-                                <MudSwitch @bind-Checked="parameters.UsePivotTable" Label="@Localizer.Get("Use pivot table component?")" Color="Color.Primary"/>
+                                <MudSwitch @bind-Value="parameters.UsePivotTable" Label="@Localizer.Get("Use pivot table component?")" Color="Color.Primary" />
                             </MudItem>
                             <MudItem>
                                 <MudNumericField @bind-Value="parameters.PivotTableNbrOfColumnsMax" Label="@Localizer.Get("Pivot Table: nbr max of columns")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>

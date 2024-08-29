@@ -98,7 +98,7 @@
                             <MudMenu DisableElevation Variant="Variant.Outlined"
                                      Icon="@Icons.Material.Filled.Settings" Title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" OffsetY="true" @ref="_menu"
                                      Dense="true">
-                                <MudList Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
+                                <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
                                     @foreach (var config in _userConfigs)
                                     {
                                         <MudListItem Text="@config.SaveName" Dense="true">
@@ -130,7 +130,7 @@
         }
         @if (!_pivotTable)
         {
-            <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="57vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+            <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="57vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
                 <HeaderContent>
                     @if (_values?.Any() == true)
                     {
@@ -273,8 +273,8 @@
 
     private async Task DeleteConfig(int id)
     {
-        _menu.CloseMenu();
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        await _menu.CloseMenuAsync();
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
         var feedback = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (feedback != null)
@@ -296,7 +296,7 @@
 
     private async Task LoadPivotConfig(string config)
     {
-        _menu.CloseMenu();
+        await _menu.CloseMenuAsync();
         await _pvt?.LoadConfig(config)!;
     }
 
