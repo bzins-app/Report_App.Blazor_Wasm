@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="MySql.Data" Version="8.0.32.1" />
     <PackageReference Include="Npgsql" Version="8.0.3" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.5.0" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.5.1" />
     <PackageReference Include="SSH.NET" Version="2024.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
     <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
