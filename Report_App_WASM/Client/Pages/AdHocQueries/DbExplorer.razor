@@ -119,7 +119,7 @@
                     }
                     <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh"/>
 
-                    <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
                             @if (_values?.Any() == true)
                             {
@@ -305,7 +305,7 @@
         _loadingTestQuery = false;
     }
 
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
     {
         var currentPage = state.Page;
         var pageSize = state.PageSize;

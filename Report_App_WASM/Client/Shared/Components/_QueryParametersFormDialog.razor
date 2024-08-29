@@ -26,7 +26,7 @@
                 </MudSelect>
                 <MudField Label="@Localizer.Get("Calculated date")">@(_param.ValueType == QueryCommandParameterValueType.Date ? _param.DateOption.GetCalculateDateTime().Date.ToString("d") : _param.DateOption.GetCalculateDateTime())</MudField>
             }
-            <MudSwitch @bind-Checked="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
+            <MudSwitch T="bool" @bind-Value="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" />
         </MudForm>
     </DialogContent>
     <DialogActions>

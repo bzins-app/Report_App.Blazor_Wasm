@@ -38,7 +38,7 @@
         }
 
         var parameters = new DialogParameters { ["userEmail"] = userEmail, ["recipientsEmails"] = recipientsEmails, ["queryParameters"] = queryParameters };
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Small, FullWidth = true };
         var dialog = await DialogService.ShowAsync<_ManualRun>(Localizer.Get("Confirm manual job"), parameters, dialogOptions);
         var result = await dialog.Result;
         if (!result.Canceled)

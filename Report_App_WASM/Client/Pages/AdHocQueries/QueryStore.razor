@@ -42,10 +42,10 @@
         <MudCardContent>
             @if (_tags.Any())
             {
-                <MudChipSet SelectedChipsChanged="OnTagSelected" SelectedValues="selected" MultiSelection="true" Filter="true">
+                <MudChipSet @bind-SelectedValues="selected" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var value in _tags)
                     {
-                        <MudChip Text="@value" Variant="Variant.Text" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
+                        <MudChip Text="@value" Value="value" Variant="Variant.Text" OnClick="OnTagSelected" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
                     }
                 </MudChipSet>
             }
@@ -104,7 +104,7 @@
     bool _empty;
     bool _UserIsSupervisor;
     List<string> _tags = new();
-    MudChip[]? selected;
+    IReadOnlyCollection<string>? selected;
     int _activityId;
     string _oldActivity = string.Empty;
 
@@ -246,12 +246,12 @@
             {
                 if (first)
                 {
-                    _tagFilter += $"contains(Tags, '{tagSelected.Text}')";
+                    _tagFilter += $"contains(Tags, '{tagSelected}')";
                     first = false;
                 }
                 else
                 {
-                    _tagFilter += $" and contains(Tags, '{tagSelected.Text}')";
+                    _tagFilter += $" and contains(Tags, '{tagSelected}')";
                 }
             }
 
@@ -284,9 +284,8 @@
         _rendering = false;
     }
 
-    private async Task OnTagSelected(MudChip[]? _selected)
+    private async Task OnTagSelected()
     {
-        selected = _selected;
         if (_grid != null) await OnRefresh();
     }
 

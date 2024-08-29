@@ -54,7 +54,7 @@
                                 }
                             </MudItem>
                             <MudItem>
-                                <MudSwitch @bind-Checked="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
+                                <MudSwitch @bind-Value="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
                             </MudItem>
                         </MudGrid>
                     </MudItem>
@@ -63,7 +63,7 @@
                     </MudItem>
                     <MudItem sm="6" lg="3">
                         <MudPaper Class="pa-2" Outlined="true">
-                            <MudChipSet AllClosable="true" OnClose="RemoveTag">
+                            <MudChipSet AllClosable="true" OnClose="RemoveTag" T="string">
                                 @foreach (var value in _tags)
                                 {
                                     <MudChip Text="@value"></MudChip>
@@ -155,7 +155,7 @@
                         </MudForm>
                     </MudPaper>
                 }
-                <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                <MudTable ServerData="ServerReload" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                     <HeaderContent>
                         @if (_values?.Any() == true)
                         {
@@ -353,7 +353,7 @@
         await _table?.ReloadServerData()!;
     }
 
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
     {
         _loading = true;
         var currentPage = state.Page;
@@ -423,7 +423,7 @@
 
         if (_changesToSave)
         {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
             var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?") + Environment.NewLine + Localizer.Get("There are changes pending"), Localizer.Get("Confirm"), null, Localizer.Get("Cancel"), dialogOptions);
 
             if (result != null)
@@ -486,9 +486,9 @@
         _changesToSave = true;
     }
 
-    private void RemoveTag(MudChip chip)
+    private void RemoveTag(MudChip<string> mudChip)
     {
-        _tags.Remove(chip.Text);
+        _tags.Remove(mudChip.Value);
         _changesToSave = true;
     }
 
@@ -516,7 +516,7 @@
     }
 
 
-    private async Task<IEnumerable<string>> SearchTags(string value)
+    private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
     {
         await Task.Delay(1);
         if (string.IsNullOrEmpty(value))

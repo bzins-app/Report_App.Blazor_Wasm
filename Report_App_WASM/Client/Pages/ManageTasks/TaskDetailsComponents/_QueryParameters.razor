@@ -48,7 +48,7 @@
                                 {
                                     <MudNumericField Label="@Localizer.Get("Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters"/>
                                 }
-                                <MudSwitch @bind-Checked="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters"/>
+                                <MudSwitch @bind-Value="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters" />
                             </MudCardContent>
                         </MudCard>
                     </MudItem>
@@ -93,7 +93,7 @@
 
     private async Task Delete(QueryCommandParameter element)
     {
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true,BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
         var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)

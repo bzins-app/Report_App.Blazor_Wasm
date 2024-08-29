@@ -35,7 +35,7 @@
                         <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port /Instance" Margin="Margin.Dense"/>
                         <MudGrid>
                             <MudItem md="6">
-                                <MudSwitch @bind-Checked="DbCon.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary"/>
+                                <MudSwitch @bind-Value="DbCon.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
                             </MudItem>
                             <MudItem md="6">
                                 <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("DB schema")" Disabled="!DbCon.UseDbSchema" Margin="Margin.Dense"/>
@@ -54,16 +54,16 @@
                         <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense"/>
                         <MudGrid>
                             <MudItem md="6">
-                                <MudSwitch @bind-Checked="DbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary"/>
+                                <MudSwitch @bind-Value="DbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
                             </MudItem>
                             <MudItem md="6">
                                 <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!DbCon.UseDbSchema" Margin="Margin.Dense"/>
                             </MudItem>
                             <MudItem md="6">
-                                <MudSwitch @bind-Checked="DbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary"/>
+                                <MudSwitch @bind-Value="DbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudSwitch @bind-Checked="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true"/>
+                                <MudSwitch @bind-Value="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true"/>
                             </MudItem>
                             <MudItem md="6">
                                 <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense"/>
@@ -145,15 +145,14 @@
                         <MudGrid>
                             <MudItem>
                                 <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
-                                    <ButtonTemplate>
+                                    <ActivatorContent>
                                         <MudFab HtmlTag="label" Class="pa-4"
                                                 Color="Color.Secondary"
                                                 Icon="@Icons.Material.Filled.Image"
                                                 Label="@Localizer.Get("Select activity Logo")"
                                                 Size="Size.Small"
-                                                Style="text-transform: none"
-                                                for="@context"/>
-                                    </ButtonTemplate>
+                                                Style="text-transform: none"/>
+                                    </ActivatorContent>
                                 </MudFileUpload>
                             </MudItem>
                             <MudItem>
@@ -172,15 +171,14 @@
                         {
                             <MudItem>
                                 <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
-                                    <ButtonTemplate>
+                                    <ActivatorContent>
                                         <MudFab HtmlTag="label"
                                                 Color="Color.Secondary"
                                                 Icon="@Icons.Material.Filled.UploadFile"
                                                 Label="@Localizer.Get("Select a file")"
                                                 Size="Size.Small"
-                                                Style="text-transform: none"
-                                                for="@context"/>
-                                    </ButtonTemplate>
+                                                Style="text-transform: none"/>
+                                    </ActivatorContent>
                                 </MudFileUpload>
                             </MudItem>
                             <MudItem>
@@ -202,7 +200,7 @@
                     </MudGrid>
                     <MudGrid>
                         <MudItem>
-                            <MudSwitch @bind-Checked="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true"/>
+                            <MudSwitch @bind-Value="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
                         </MudItem>
                         <MudItem>
                             @if (DbCon.UseTablesDescriptions)
@@ -222,7 +220,7 @@
                         @if (_activities.Any())
                         {
                             <MudItem md="6">
-                                <MudSwitch @bind-Checked="DbCon.UseDescriptionsFromAnotherActivity" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary"/>
+                                <MudSwitch @bind-Value="DbCon.UseDescriptionsFromAnotherActivity" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary"/>
                             </MudItem>
                             <MudItem md="6">
                                 <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherActivity">

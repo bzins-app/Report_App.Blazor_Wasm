@@ -14,10 +14,10 @@
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             <MudTextField @bind-Value="Item.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudSwitch @bind-Checked="Item.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
+            <MudSwitch T="bool" @bind-Value="Item.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete" />
             @if (_listConfigs.Any())
             {
-                <MudSwitch @bind-Checked="Item.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
+                <MudSwitch @bind-Value="Item.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete" />
                 <MudSelect T="int" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="Item.SftpConfigurationId"
                            AnchorOrigin="Origin.BottomCenter" Disabled="!Item.UseSftpProtocol"
                            Required>

@@ -83,7 +83,7 @@
         {
             <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
         }
-        <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="59vh" Striped="true" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+        <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="59vh" Striped="true" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
             <HeaderContent>
                 @if (_values?.Any() == true)
                 {
@@ -194,7 +194,7 @@
         await _table.ReloadServerData();
     }
 
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
     {
         _loading = true;
         var currentPage = state.Page;

@@ -2,56 +2,56 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Reporting tool</title>
-    <link rel="icon" href="baseicon.ico"/>
-    <base href="/"/>
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet"/>
-    <link href="css/app.css" rel="stylesheet"/>
-    <link href="Report_App_WASM.Client.styles.css" rel="stylesheet"/>
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
-    <link href="_content/CodeBeam.MudExtensions/MudExtensions.min.css" rel="stylesheet"/>
+    <link rel="icon" href="baseicon.ico" />
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="Report_App_WASM.Client.styles.css" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.css" rel="stylesheet" />
 </head>
 
 <body>
-<div id="app">
-    <svg class="loading-progress">
-        <circle r="40%" cx="50%" cy="50%"/>
-        <circle r="40%" cx="50%" cy="50%"/>
-    </svg>
-    <div class="loading-progress-text"></div>
-</div>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
-<script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
-<script src="_framework/blazor.webassembly.js"></script>
-<script>
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>
         window.cultureInfo = {
             get: () => window.localStorage['ReportApp_Culture'],
             set: (value) => window.localStorage['ReportApp_Culture'] = value
         };
     </script>
-<script>
+    <script>
         window.AppTheme = {
             get: () => window.localStorage['ReportApp_Theme'],
             set: (value) => window.localStorage['ReportApp_Theme'] = value
         };
     </script>
-<script>
+    <script>
         window.getBrowserLanguage = function () {
             return (navigator.languages && navigator.languages.length) ? navigator.languages[0] :
                 navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
         }
     </script>
-<script src="_content/MudBlazor/MudBlazor.min.js"></script>
-<script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
-<script src="js/LoadScripts.js"></script>
-<script src="_content/Blazor.AceEditorJs/BlazorAceEditor.min.js"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
+    <script src="js/LoadScripts.js"></script>
+    <script src="_content/Blazor.AceEditorJs/BlazorAceEditor.min.js"></script>
 </body>
 
 </html>

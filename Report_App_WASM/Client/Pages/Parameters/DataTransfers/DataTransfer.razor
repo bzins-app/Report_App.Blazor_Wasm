@@ -65,7 +65,7 @@
     SimpleGrid<ActivityDto> _grid = default!;
     private string? _errorMessage;
     private bool _rendering;
-    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Medium, FullWidth = true };
 
     protected override void OnInitialized()
     {
