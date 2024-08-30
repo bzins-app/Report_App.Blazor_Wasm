@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\Images\TablesDescriptionTemplate.csv">
+    <Content Update="wwwroot\images\TablesDescriptionTemplate.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
