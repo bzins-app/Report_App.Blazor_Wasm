@@ -1,6 +1,6 @@
 ﻿@inject ISnackbar Snackbar
 
-<MudSwitch Value="@Item!.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)" />
+<MudSwitch Style="justify-content: center" Value="@Item!.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)" />
 
 @code {
 

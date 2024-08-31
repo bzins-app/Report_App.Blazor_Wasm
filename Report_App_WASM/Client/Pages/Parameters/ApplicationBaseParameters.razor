@@ -23,7 +23,9 @@
             <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required/>
             <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required/>
             <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required/>
-            <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Edit error email")</MudButton>
+            <div style="padding-top:10px">
+                <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small" >@Localizer.Get("Edit error email")</MudButton>
+            </div>
             <MudText Typo="Typo.h6" Class="pa-4">@Localizer.Get("Logo")</MudText>
             <div style="padding-bottom: 5px">
                 @if (!string.IsNullOrEmpty(_param.ApplicationLogo))
@@ -45,8 +47,8 @@
         <div style="padding-top: 15px">
             <MudTextField T="string" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="@_email"
                           Validation="@CheckMail()"/>
-            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small"
-                       Class="ml-auto mt-3 mb-3" OnClick="@(() => Add())">
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small" 
+                        OnClick="@(() => Add())">
                 @Localizer.Get("Add recipient")
             </MudButton>
             <MudTable Items="@_emailItems" Hover="true" Dense="true">

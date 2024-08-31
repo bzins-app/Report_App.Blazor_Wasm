@@ -125,15 +125,17 @@
                             <MudNumericField @bind-Value="DbCon.DataTransferMaxNbrofRowsFetched" Label="@(Localizer.Get("DataTransfer") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense"/>
                         </MudItem>
                     </MudGrid>
-                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
-                        <LoadingContent>
-                            <MudText>@Localizer.Get("Processing")</MudText>
-                        </LoadingContent>
-                        <ChildContent>
-                            <MudText>@Localizer.Get("Test Db connection")</MudText>
-                        </ChildContent>
-                    </MudLoadingButton>
-                    <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
+                    <div>
+                        <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
+                            <LoadingContent>
+                                <MudText>@Localizer.Get("Processing")</MudText>
+                            </LoadingContent>
+                            <ChildContent>
+                                <MudText>@Localizer.Get("Test Db connection")</MudText>
+                            </ChildContent>
+                        </MudLoadingButton>
+                        <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
+                    </div>
                     <MudPaper Class="pa-2" Outlined="true">
                         <div>
                             <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
