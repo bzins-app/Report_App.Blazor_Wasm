@@ -1,7 +1,7 @@
 ﻿@inject ISnackbar Snackbar
 @inject HttpClient Http
 
-<MudSwitch Value="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)" />
+<MudSwitch Style="justify-content: center" Value="@Item.SendByEmail" Color="Color.Primary" ThumbIcon="@(Item.SendByEmail ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.SendByEmail ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)" />
 
 @code {
 
