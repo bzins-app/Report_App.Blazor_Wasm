@@ -129,9 +129,9 @@ public class MySqlDbRemoteDb : IRemoteDb
                 if (run.FillDatatableSchema) await DbDataAdapter.FillSchemaAsync(data, SchemaType.Source, cts);
                 if (run.PaginatedResult)
                 {
-                    DbDataAdapter.SelectCommand.CommandText +=
-                        Environment.NewLine + $" LIMIT {run.MaxSize} OFFSET {run.StartRecord} ";
-                    await DbDataAdapter.FillAsync(data, cts);
+                    //DbDataAdapter.SelectCommand.CommandText +=
+                    //    Environment.NewLine + $" LIMIT {run.MaxSize} OFFSET {run.StartRecord} ";
+                    await DbDataAdapter.FillAsync(run.StartRecord, run.MaxSize, cts, data);
                 }
                 else
                 {
