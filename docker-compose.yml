@@ -12,7 +12,7 @@ services:
       - SA_PASSWORD=Ultra)SecurePAs$worD!
       - MSSQL_DB=report_app
     volumes:
-     - reportapp_db:/var/opt/mssql/data
+     - reportapp_db:/var/opt/mssql
 
   report_app_wasm.server:
     image: ${DOCKER_REGISTRY-}reportapp_wasm
