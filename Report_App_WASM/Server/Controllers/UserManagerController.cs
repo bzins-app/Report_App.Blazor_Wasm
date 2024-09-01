@@ -72,6 +72,10 @@ public class UserManagerController : ControllerBase, IDisposable
             var password = item.EntityValue.Password;
             // appUser.PasswordHash = "";
             var result = await _userManager.CreateAsync(appUser, password!);
+            if (!result.Succeeded)
+            {
+                return Ok(new SubmitResult { Success = false, Message = result.Errors.First().Description });
+            }
             if (result.Succeeded)
             {
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
