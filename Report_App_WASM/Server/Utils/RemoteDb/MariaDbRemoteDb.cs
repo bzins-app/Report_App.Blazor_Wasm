@@ -168,7 +168,7 @@ public class MariaDbRemoteDb : IRemoteDb
         var databaseInfo = "";
         if (dbInfo.UseDbSchema) databaseInfo = $";database={dbInfo.DbSchema}";
         value.ConnnectionString =
-            $"server={dbInfo.ConnectionPath};port={dbInfo.Port}{databaseInfo};uid={dbInfo.ConnectionLogin};password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+            $"server={dbInfo.ConnectionPath};port={dbInfo.Port}{databaseInfo};uid={dbInfo.ConnectionLogin};password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};SslMode=Preferred;";
 
         return value;
     }
