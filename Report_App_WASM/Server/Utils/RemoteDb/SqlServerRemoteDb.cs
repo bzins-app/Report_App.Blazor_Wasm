@@ -15,8 +15,8 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script = dbInfo.UseDbSchema
-                ? $"SELECT table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1"
-                : "SELECT table_name FROM information_schema.tables order by 1";
+                ? $"SELECT  concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1"
+                : "SELECT concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name FROM information_schema.tables order by 1";
         return script;
     }
 
@@ -27,11 +27,12 @@ public class SqlServerRemoteDb : IRemoteDb
         {
             if (dbInfo.UseDbSchema)
                 script =
-                    "select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
-                    $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and table.TABLE_CATALOG='{dbInfo.DbSchema}' order by 1 ,2";
+                    $"select  concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
+                    $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and tables.TABLE_CATALOG='{dbInfo.DbSchema}' order by 1 ,2";
             else
                 script =
-                    "select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id ";
+                    "select concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
+                    $"  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
         }
 
         return script;
@@ -42,7 +43,9 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script =
-                $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  where tab.name='{tableName}'";
+                $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  " +
+                $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name " +
+                $"where concat(tables.TABLE_SCHEMA,'.',tab.name) ='{tableName}'";
         return script;
     }
 
