@@ -15,8 +15,8 @@ public class PostgreSqlRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script = dbInfo.UseDbSchema
-                ? $"SELECT table_name FROM information_schema.tables where table_schema='{dbInfo.DbSchema}' order by 1"
-                : "SELECT table_name FROM information_schema.tables order by 1";
+                ? $"SELECT table_name FROM information_schema.tables where table_catalog='{dbInfo.DbSchema}' and table_schema='public' order by 1"
+                : "SELECT table_name FROM information_schema.tables where table_schema='public' order by 1";
         return script;
     }
 
@@ -29,7 +29,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
                     from information_schema.tables t
                     inner join information_schema.columns c on c.table_name = t.table_name 
                                                     and c.table_schema = t.table_schema
-                    where table_schema='{dbInfo.DbSchema}'
+                    where t.table_catalog='{dbInfo.DbSchema}' and t.table_schema='public' 
                           and t.table_type = 'BASE TABLE'
                     order by 1,2;";
         return script;
@@ -39,12 +39,12 @@ public class PostgreSqlRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = @$"select t.table_name,
+            script = @$"select 
                     c.column_name 
                     from information_schema.tables t
                     inner join information_schema.columns c on c.table_name = t.table_name 
                                                     and c.table_schema = t.table_schema
-                    where table_schema='{dbInfo.DbSchema}' and c.column_name='{tableName}'
+                    where t.table_catalog='{dbInfo.DbSchema}' and t.table_name='{tableName}' and t.table_schema='public'
                           and t.table_type = 'BASE TABLE'
                     order by 1";
         return script;
