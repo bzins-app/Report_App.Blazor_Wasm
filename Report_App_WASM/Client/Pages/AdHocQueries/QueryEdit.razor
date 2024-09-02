@@ -73,7 +73,7 @@
                             <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
                                 <div class="d-flex flex-column">
                                     <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags"/>
-                                    <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Close")</MudButton>
+                                    <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Validate")</MudButton>
                                 </div>
                             </MudPopover>
                         </MudPaper>
@@ -488,7 +488,7 @@
 
     private void RemoveTag(MudChip<string> mudChip)
     {
-        _tags.Remove(mudChip.Value);
+        _tags.Remove(mudChip.Text);
         _changesToSave = true;
     }
 
@@ -520,7 +520,7 @@
     {
         await Task.Delay(1);
         if (string.IsNullOrEmpty(value))
-            return Array.Empty<string>();
+            return _AvailableTags;
         return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
