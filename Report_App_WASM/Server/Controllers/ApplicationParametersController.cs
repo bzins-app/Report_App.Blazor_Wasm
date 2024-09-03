@@ -96,7 +96,7 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
     {
         return await _context.TaskEmailRecipient.Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId)
-            .Select(a => a.Email).FirstOrDefaultAsync() != "[]" || await _context.TaskEmailRecipient
+            .Select(a => a.Email).FirstOrDefaultAsync() != "[]" && await _context.TaskEmailRecipient
             .Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
     }
 
