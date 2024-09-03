@@ -7,9 +7,7 @@ public static class EncryptDecrypt
 {
     private static string Secretkey()
     {
-#pragma warning disable CS8603 // Possible null reference return.
         return HashKey.Key;
-#pragma warning restore CS8603 // Possible null reference return.
     }
 
     public static string EncryptString(string? text)
