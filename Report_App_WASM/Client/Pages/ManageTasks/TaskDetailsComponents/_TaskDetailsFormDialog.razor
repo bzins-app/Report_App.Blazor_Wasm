@@ -45,7 +45,6 @@
                             <MudSwitch @bind-Value="_param.SeparateExcelFile" Label="@Localizer.Get("Separated excel file?")" Color="Color.Primary" />
                             @if (_useSpecificFileNaming)
                             {
-                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")" />
                                 <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")" />
                                 <p>* @Localizer.Get("Only when query is generated in separated file")</p>
                             }
