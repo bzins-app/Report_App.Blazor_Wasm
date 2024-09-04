@@ -88,7 +88,7 @@ public class ApplicationTheme
                 ActionDisabled = "rgba(255,255,255, 0.26)",
                 ActionDisabledBackground = "rgba(255,255,255, 0.12)",
                 DarkDarken = "rgba(21,27,34,0.7)",
-                Divider = "#192a3f",
+                Divider = "rgba(255,255,255, 0.06)",
                 DividerLight = "rgba(255,255,255, 0.06)",
                 TableLines = "#192a3f",
                 LinesDefault = "rgba(255,255,255, 0.12)",
