@@ -16,4 +16,12 @@ public static class ApiControllers
     public const string FilesApi = "api/Files/";
     public const string DepositPathApi = "api/DepositPath/";
     public const string AuthorizeApi = "api/Authorize/";
+    public const string ApplicationVersion = "202409beta";
+    public const int VersionYear = 2024;
+}
+
+public static class ApplicationInfo
+{
+    public const string ApplicationVersion = "202409beta";
+    public const int VersionYear = 2024;
 }
