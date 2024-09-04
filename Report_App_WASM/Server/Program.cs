@@ -183,11 +183,12 @@ app.UseResponseCompression();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
 app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
+
 
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
 
 app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 {
