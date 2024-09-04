@@ -99,7 +99,10 @@ builder.Services.AddSwaggerGen(c =>
     c.DocumentFilter<SwaggerFilters>();
 });
 
-
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
 // Add Hangfire services.
 builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -176,7 +179,7 @@ if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/docsstorage")))
 if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/upload")))
     Directory.CreateDirectory(Path.Combine(env.ContentRootPath, "wwwroot/upload"));
 
-//app.UseResponseCompression();
+app.UseResponseCompression();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
 app.UseBlazorFrameworkFiles();
