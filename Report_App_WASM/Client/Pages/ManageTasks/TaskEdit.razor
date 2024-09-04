@@ -92,7 +92,7 @@
                                     <MudTextField @bind-Value="_param.ExcelTemplatePath" Label="@Localizer.Get("Excel Template")" Required ReadOnly/>
                                     @if (!_loading)
                                     {
-                                        <MudLink Class="d-flex pa-4" Href="@("/" + _param.ExcelTemplatePath)" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
+                                                    <MudLink Class="d-flex pa-4" Href="@("/" + _param.ExcelTemplatePath)" Target="_blank" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
                                         <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadTemplate" Accept=".xlsx">
                                             <ActivatorContent>
                                                 <MudFab HtmlTag="label" Class="pa-4"
