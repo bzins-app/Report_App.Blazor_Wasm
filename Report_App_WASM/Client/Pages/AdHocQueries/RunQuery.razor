@@ -90,13 +90,13 @@
                             </MudItem>
                         }
                         <MudItem>
-                            <MudIconButton DisableElevation Variant="Variant.Outlined"
+                            <MudIconButton Variant="Variant.Outlined"
                                            OnClick="@(SaveConfiguration)"
-                                           Icon="@Icons.Material.Filled.Save" Title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                                           Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
                         </MudItem>
                         <MudItem>
-                            <MudMenu DisableElevation Variant="Variant.Outlined"
-                                     Icon="@Icons.Material.Filled.Settings" Title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" OffsetY="true" @ref="_menu"
+                            <MudMenu Variant="Variant.Outlined"
+                                     Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
                                      Dense="true">
                                 <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
                                     @foreach (var config in _userConfigs)
@@ -116,9 +116,9 @@
                             </MudMenu>
                         </MudItem>
                         <MudItem>
-                            <MudIconButton DisableElevation Variant="Variant.Outlined"
+                            <MudIconButton Variant="Variant.Outlined"
                                            OnClick="@(ExtractElements)"
-                                           Icon="@Icons.Custom.FileFormats.FileExcel" Title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                                           Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
                         </MudItem>
                     </MudGrid>
                 </div>

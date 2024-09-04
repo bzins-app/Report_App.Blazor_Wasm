@@ -24,19 +24,19 @@
             <MudStack Row="true">
                 @if (_UserIsSupervisor)
                 {
-                    <MudIconButton DisableElevation Variant="Variant.Outlined"
+                    <MudIconButton Variant="Variant.Outlined"
                                    Size="Size.Small"
                                    OnClick="@(OpenCreateDialog)"
-                                   Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")"/>
+                                   Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")" />
                 }
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -55,8 +55,8 @@
                     {
                         <Blazor.SimpleGrid.TemplateColumn>
                             <MudStack Row=true>
-                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" Title="@Localizer.Get("Edit")"/>
-                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" title="@Localizer.Get("Edit")" />
+                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
                             </MudStack>
                         </Blazor.SimpleGrid.TemplateColumn>
                     }
@@ -66,7 +66,7 @@
                     }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Run query")">
-                        <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" Title="@Localizer.Get("Run query")"/>
+                        <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" title="@Localizer.Get("Run query")" />
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
                     @if (_UserIsSupervisor)
