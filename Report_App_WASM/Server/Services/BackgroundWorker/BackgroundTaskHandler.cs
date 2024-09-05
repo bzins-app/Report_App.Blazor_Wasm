@@ -127,8 +127,12 @@ public class BackgroundTaskHandler : IDisposable
                     var _headerParameters =
                         JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
 
+                    int i=0;
                     foreach (var value in _fetchedData)
-                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId);
+                    {
+                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId,i);
+                        i++;
+                    }
 
                     log.EndDateTime = DateTime.Now;
                     log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
@@ -301,7 +305,7 @@ public class BackgroundTaskHandler : IDisposable
     }
 
     private async ValueTask HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,
-        int activityIdTransfer)
+        int activityIdTransfer, int loopNumber)
     {
         if (data.Rows.Count > 0)
         {
@@ -336,7 +340,7 @@ public class BackgroundTaskHandler : IDisposable
                     else
                         queryCreate =
                             CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                                detailParam.DataTransferTargetTableName, true);
+                                detailParam.DataTransferTargetTableName, loopNumber==0?true:false);
                 }
 
                 await _dbReader.CreateTable(queryCreate, activityIdTransfer);

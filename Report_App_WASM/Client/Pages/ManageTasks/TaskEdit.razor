@@ -206,7 +206,7 @@
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true"
                  ApplyEffectsToContainer="true" Class="mt-8">
             <MudTabPanel Text="@Localizer.Get("Queries")">
-                <Report_App_WASM.Client.Pages.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" itemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave"/>
+                <Report_App_WASM.Client.Pages.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" ItemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave"/>
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Global query parameters")" Disabled="@(!Item.UseGlobalQueryParameters)">
                 <Report_App_WASM.Client.Pages.ManageTasks.GlobalQueryParameters._GlobalQueryParameters Item="@Item" @bind-changePending="@_changesToSave"/>
@@ -214,9 +214,12 @@
             <MudTabPanel Text="@Localizer.Get("Scheduler")">
                 <Report_App_WASM.Client.Pages.ManageTasks.TaskSchedulerComponents._TaskSchedulers Item="@Item" @bind-changePending="@_changesToSave"/>
             </MudTabPanel>
-            <MudTabPanel Text="@Localizer.Get("Manage recipients")">
-                <Report_App_WASM.Client.Pages.ManageTasks.TaskEmailRecipients._TaskRecipients Item="@Item" @bind-changePending="@_changesToSave"/>
-            </MudTabPanel>
+            @if (Item.Type != TaskType.DataTransfer)
+            {
+                <MudTabPanel Text="@Localizer.Get("Manage recipients")">
+                    <Report_App_WASM.Client.Pages.ManageTasks.TaskEmailRecipients._TaskRecipients Item="@Item" @bind-changePending="@_changesToSave"/>
+                </MudTabPanel>
+            }
         </MudTabs>
     </MudCardContent>
 </MudCard>
@@ -308,6 +311,12 @@
         try
         {
             _errorMessage = "";
+            if (Item.Type == TaskType.DataTransfer&&_param.DataTransferId==0)
+            {
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = Localizer.Get("A Target database must be selected");
+                return;
+            }
             if (Item.IsActivated)
             {
                 await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
@@ -449,5 +458,6 @@
             return _AvailableTags;
         return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
+
 
 }

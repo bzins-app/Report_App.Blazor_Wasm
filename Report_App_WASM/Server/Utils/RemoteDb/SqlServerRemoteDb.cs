@@ -238,6 +238,7 @@ public class SqlServerRemoteDb : IRemoteDb
         var result = new MergeResult();
 
         if (reader.HasRows)
+        {
             while (reader.Read())
             {
                 var actionType = reader.GetString(0);
@@ -256,6 +257,13 @@ public class SqlServerRemoteDb : IRemoteDb
                         break;
                 }
             }
+        }
+        else
+        {
+            result.UpdatedCount = 0;
+            result.InsertedCount = 0;
+            result.DeletedCount = 0;
+        }
 
         await conn.DisposeAsync();
         return result;
