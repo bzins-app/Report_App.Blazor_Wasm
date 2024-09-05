@@ -301,6 +301,13 @@ public class DataCrudController : ControllerBase, IDisposable
                         if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
                             await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
                     //await _signInManager.RefreshSignInAsync(user);
+
+                    //demo
+                    var usersDemo = await _userManager.GetUsersInRoleAsync("Demo");
+
+                    foreach (var user in usersDemo)
+                        if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
+                            await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
                 }
 
                 if (string.IsNullOrEmpty(values.EntityValue?.ActivityRoleId))

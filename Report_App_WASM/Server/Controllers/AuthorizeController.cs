@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Report_App_WASM.Server.Controllers;
@@ -16,9 +17,10 @@ public class AuthorizeController : ControllerBase
     private readonly ILogger<AuthorizeController> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
     public AuthorizeController(UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager, ApplicationDbContext context,
+        SignInManager<ApplicationUser> signInManager, ApplicationDbContext context, RoleManager<IdentityRole<Guid>> roleManager,
         ILogger<AuthorizeController> logger, IBackgroundWorkers emailSender)
     {
         _userManager = userManager;
@@ -26,6 +28,7 @@ public class AuthorizeController : ControllerBase
         _context = context;
         _logger = logger;
         _emailSender = emailSender;
+        _roleManager = roleManager;
     }
 
     [HttpPost]
@@ -86,6 +89,69 @@ public class AuthorizeController : ControllerBase
             var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
             if (result.Succeeded)
             {
+                await _signInManager.SignInAsync(userNew, rememberMe);
+                _logger.LogInformation("User logged in:" + parameters.UserName);
+                return Ok();
+            }
+
+            foreach (var error in result.Errors) errors.Add(error.Description);
+            if (!result.Succeeded) return BadRequest(string.Join(',', errors));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("Invalid login attempt during AD auth " + parameters.UserName + " Error:" +
+                                   ex.Message);
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return BadRequest(ex.Message);
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DemoLogin(LoginParameters parameters)
+    {
+        try
+        {
+            var rememberMe = true;
+;
+            var userMail = await _userManager.FindByEmailAsync(parameters.UserName);
+            if (userMail != null)
+            {
+                await _signInManager.SignInAsync(userMail, rememberMe);
+                _logger.LogInformation("User logged in:" + parameters.UserName);
+                return Ok();
+            }
+
+
+            var user = await _userManager.FindByNameAsync(parameters.UserName!);
+            if (user != null)
+            {
+                await _signInManager.SignInAsync(user, rememberMe);
+                _logger.LogInformation("User logged in:" + parameters.UserName);
+                return Ok();
+            }
+
+            List<string> errors = new();
+            var userNew = new ApplicationUser
+            {
+                UserName = parameters.UserName,
+                Email = parameters.UserName,
+                CreateUser = "AD screen",
+                ModDateTime = DateTime.Now,
+                ModificationUser = "Register screen",
+                Culture = CultureInfo.CurrentCulture.Name,
+                EmailConfirmed = true
+            };
+            var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
+            
+            if (result.Succeeded)
+            {
+                var rolesToAdd =await  _roleManager.Roles.Where(a => a.Name != "Admin" && a.Name != "Supervisor").Select(a=>a.Name).ToListAsync();
+                if (rolesToAdd!=null||rolesToAdd.Any())
+                {
+                    await _userManager.AddToRolesAsync(userNew, rolesToAdd);
+                }
                 await _signInManager.SignInAsync(userNew, rememberMe);
                 _logger.LogInformation("User logged in:" + parameters.UserName);
                 return Ok();

@@ -46,6 +46,14 @@ public class DataInteractionService
         CancellationToken ct = default) where T : class?
     {
         var uri = $"{controller}{controllerAction}";
+        if (controllerAction != "RunManually"|| controllerAction != "TestConnection")
+        {
+            var role = (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.IsInRole("Demo");
+            if (role.HasValue&&role.Value)
+            {
+                return new SubmitResult { Success = false, Message = "Demo mode" };
+            }
+        }
 
         ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
         try

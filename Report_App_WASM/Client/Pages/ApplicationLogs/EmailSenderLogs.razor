@@ -1,6 +1,6 @@
 ﻿@page "/EmailSenderLogs"
 @implements IAsyncDisposable
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+@attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <PageTitle>@Localizer.Get("Email sender logs")</PageTitle>
 <ErrorBoundary>

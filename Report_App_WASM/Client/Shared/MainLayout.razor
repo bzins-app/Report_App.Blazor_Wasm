@@ -17,7 +17,11 @@
 <MudLayout>
     <MudAppBar Color="Color.Surface">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle"/>
-        <img src="@_appConst?.ApplicationLogo" alt="@_appConst?.ApplicationName" style="max-height: 55px; max-width: 95%; padding-left: 10px;"/>
+        <img src="@_appConst?.ApplicationLogo" alt="@_appConst?.ApplicationName" style="max-height: 55px; max-width: 95%; padding-left: 10px;padding-right: 10px;" />
+        @if (_isDemo)
+        {
+            <MudButton Variant="Variant.Filled" Href="/mailcatcher" Target="_blank" Size="Size.Small" Color="Color.Warning" Style="text-transform: none">@Localizer.Get("Open demo emails view")</MudButton>
+        }
         <MudSpacer/>
         <MudTooltip Duration="1000" Text="@(_isDarkMode ? Localizer.Get("Switch to Light Theme") : Localizer.Get("Switch to Dark Theme"))">
             <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Rounded.LightMode : Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@(() => DarkModeChange(!UserAppTheme.DarkTheme))"/>
@@ -53,12 +57,14 @@
     public bool DrawerOpen = true;
     private ApplicationConstantsValues? _appConst;
     private bool _notConnnectedStatus;
+    private bool _isDemo = false;
 
     protected override async Task OnInitializedAsync()
     {
         _appConst = await AppService.GetApplicationConstantsValues();
         _isDarkMode = UserAppTheme.DarkTheme;
         DataService.NotifyNotConnected += ChangeConnectionStatus;
+        _isDemo = ApplicationInfo.Demo;
     }
 
     void DrawerToggle()

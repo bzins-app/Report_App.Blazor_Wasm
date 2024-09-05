@@ -30,6 +30,15 @@ public class AuthorizeApi : IAuthorizeApi
         result.EnsureSuccessStatusCode();
     }
 
+    public async Task LoginDemo(LoginParameters loginParameters)
+    {
+        //var stringContent = new StringContent(JsonSerializer.Serialize(loginParameters), Encoding.UTF8, "application/json");
+        var result = await _httpClient.PostAsJsonAsync("api/Authorize/DemoLogin", loginParameters);
+        if (result.StatusCode == HttpStatusCode.BadRequest)
+            throw new Exception(await result.Content.ReadAsStringAsync());
+        result.EnsureSuccessStatusCode();
+    }
+
     public async Task Logout()
     {
         var result = await _httpClient.PostAsync("api/Authorize/Logout", null);

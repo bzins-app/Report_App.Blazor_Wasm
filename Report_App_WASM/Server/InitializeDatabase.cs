@@ -32,6 +32,8 @@ public class InitializeDatabase
         if (_context.ApplicationUser.Any())
         {
             await InitAppRoles();
+            //Demo
+            await EnsureDemoRoleisCreated();
             return; //if user is not empty, DB has been seed
         }
 
@@ -41,6 +43,8 @@ public class InitializeDatabase
         await CreateDefaultSuperAdmin();
         await ApplicationParameters();
         await DefaultServiceStatus();
+        //Demo
+        await EnsureDemoRoleisCreated();
     }
 
     private async Task CreateHashKey()
@@ -62,6 +66,12 @@ public class InitializeDatabase
         foreach (var t in roles)
             if (!await _roleManager.RoleExistsAsync(t).ConfigureAwait(true))
                 await _roleManager.CreateAsync(new IdentityRole<Guid>(t)).ConfigureAwait(true);
+    }
+
+    private async Task EnsureDemoRoleisCreated()
+    {
+        if (!await _roleManager.RoleExistsAsync("Demo").ConfigureAwait(true))
+            await _roleManager.CreateAsync(new IdentityRole<Guid>("Demo")).ConfigureAwait(true);
     }
 
     private async Task CreateDefaultSuperAdmin()
