@@ -9,7 +9,14 @@
     private async Task ChangeStatusAsync(bool value)
     {
         Item!.Display = value;
-        await DataService.PostValues(Item, "ActivityUpdate");
+       var result= await DataService.PostValues(Item, "ActivityUpdate");
+        if(!result.Success)
+        {
+            Item.Display = !value;
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(result.Message, Severity.Error);
+            return;
+        }
 
         Snackbar.Add(Item.Display ? Item.ActivityName + " " + Localizer.Get("is diplayed") : Item.ActivityName + " " + Localizer.Get("is not displayed"), Item.Display ? Severity.Success : Severity.Normal);
     }
