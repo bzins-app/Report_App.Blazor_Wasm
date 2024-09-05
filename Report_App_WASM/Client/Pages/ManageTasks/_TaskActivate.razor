@@ -53,7 +53,14 @@
             }
         }
 
-        await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+        var result= await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+        if(!result.Success)
+        {
+            Item.IsActivated = !value;
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(result.Message, Severity.Error);
+            return;
+        }
         await DataService.PostValues(new TaskActivatePayload { Activate = Item.IsActivated, TaskHeaderId = Item.TaskHeaderId }, "TaskActivate");
 
         Snackbar.Add(Item.IsActivated ? Item.TaskName + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
