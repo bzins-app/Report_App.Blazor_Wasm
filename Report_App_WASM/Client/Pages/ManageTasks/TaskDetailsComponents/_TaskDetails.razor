@@ -23,6 +23,7 @@
                         <MudStack Row="true" Justify="Justify.Center">
                             <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
                             <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" OnClick="() => OpenCreateDialog(context)" title="@Localizer.Get("Duplicate")" />
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
@@ -121,6 +122,30 @@
     private async Task OpenCreateDialog()
     {
         var value = new TaskDetailDto();
+        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
+
+        var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
+        var feedback = await dialog.Result;
+
+        if (!feedback.Canceled)
+        {
+            Item.TaskDetails.Add((TaskDetailDto)feedback.Data);
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
+            UpdateElements();
+        }
+    }
+
+    private async Task OpenCreateDialog(TaskDetailDto toDuplicate)
+    {
+        var value = new TaskDetailDto
+        {
+                Query = toDuplicate.Query,
+                QueryName = toDuplicate.QueryName+ " (Copy)",
+                QueryParameters = toDuplicate.QueryParameters,
+                DetailSequence = toDuplicate.DetailSequence,
+                TaskDetailParameters = toDuplicate.TaskDetailParameters
+        };
         var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
