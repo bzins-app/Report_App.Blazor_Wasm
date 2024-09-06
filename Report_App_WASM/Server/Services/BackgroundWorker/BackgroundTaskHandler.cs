@@ -116,7 +116,7 @@ public class BackgroundTaskHandler : IDisposable
                     ApplicationLogTask log = new()
                     {
                         ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName,
-                        StartDateTime = DateTime.Now, JobDescription = _header.TaskName+"-" + detail.QueryName,
+                        StartDateTime = DateTime.Now, JobDescription = (_header.TaskName+"-" + detail.QueryName)[..59],
                         Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,Result = "Running"
                     };
 
