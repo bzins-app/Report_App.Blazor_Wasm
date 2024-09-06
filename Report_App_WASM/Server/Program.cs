@@ -134,30 +134,35 @@ var env = builder.Environment;
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    try
+    bool loop = true;
+    while (loop)
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        services.GetRequiredService<UserManager<ApplicationUser>>();
-        services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-        var dbInit = services.GetRequiredService<InitializeDatabase>();
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            services.GetRequiredService<UserManager<ApplicationUser>>();
+            services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var dbInit = services.GetRequiredService<InitializeDatabase>();
 
-        dbInit.InitializeAsync().Wait();
-        HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
-            .FirstOrDefault();
-        var parameters = context.ApplicationParameters.FirstOrDefault();
-        ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
-        ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
-        ApplicationConstants.ActivateAdHocQueriesModule = parameters.ActivateAdHocQueriesModule;
-        ApplicationConstants.ActivateTaskSchedulerModule = parameters.ActivateTaskSchedulerModule;
-        var ldapParameters = context.LdapConfiguration.Any(a => a.IsActivated);
-        ApplicationConstants.LdapLogin = ldapParameters!;
-        ApplicationConstants.WindowsEnv = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+            dbInit.InitializeAsync().Wait();
+            HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
+                .FirstOrDefault() ?? throw new InvalidOperationException("Cannot retrieve mandatory key");
+            var parameters = context.ApplicationParameters.FirstOrDefault();
+            ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
+            ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
+            ApplicationConstants.ActivateAdHocQueriesModule = parameters.ActivateAdHocQueriesModule;
+            ApplicationConstants.ActivateTaskSchedulerModule = parameters.ActivateTaskSchedulerModule;
+            var ldapParameters = context.LdapConfiguration.Any(a => a.IsActivated);
+            ApplicationConstants.LdapLogin = ldapParameters!;
+            ApplicationConstants.WindowsEnv = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            loop = false;
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database.");
+        }
     }
 }
 
