@@ -116,14 +116,13 @@ public class BackgroundTaskHandler : IDisposable
                     ApplicationLogTask log = new()
                     {
                         ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName,
-                        StartDateTime = DateTime.Now, JobDescription = detail.QueryName,
-                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy
+                        StartDateTime = DateTime.Now, JobDescription = _header.TaskName+"-" + detail.QueryName,
+                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,Result = "Running"
                     };
 
                     await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync("backgroundworker");
-                    log.TaskId = log.Id;
                     var _headerParameters =
                         JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
 
@@ -136,6 +135,10 @@ public class BackgroundTaskHandler : IDisposable
 
                     log.EndDateTime = DateTime.Now;
                     log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
+                    if (log.Result== "Running")
+                    {
+                        log.Result = "No lines fetched";
+                    }
                     _context.Update(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     _fetchedData.Clear();
