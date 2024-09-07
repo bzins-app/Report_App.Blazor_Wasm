@@ -44,7 +44,6 @@ var identityDefaultOptionsConfigurationSection = builder.Configuration.GetSectio
 builder.Services.Configure<IdentityDefaultOptions>(identityDefaultOptionsConfigurationSection);
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IRemoteDbConnection, RemoteDbConnection>();
 builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
@@ -135,7 +134,9 @@ var env = builder.Environment;
 using (var scope = app.Services.CreateScope())
 {
     bool loop = true;
-    while (loop)
+    int retryCount = 0;
+    const int maxRetries = 5;
+    while (loop && retryCount < maxRetries)
     {
         var services = scope.ServiceProvider;
         try
@@ -160,8 +161,14 @@ using (var scope = app.Services.CreateScope())
         }
         catch (Exception ex)
         {
+            retryCount++;
             var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while seeding the database.");
+            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}", retryCount, maxRetries);
+            if (retryCount >= maxRetries)
+            {
+                throw;
+            }
+            Task.Delay(TimeSpan.FromSeconds(10)).Wait(); // Wait before retrying
         }
     }
 }
