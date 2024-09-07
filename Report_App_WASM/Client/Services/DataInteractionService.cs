@@ -28,7 +28,7 @@ public class DataInteractionService
 
     public event Action<bool>? NotifyNotConnected;
 
-    private async Task SendNotification()
+    private Task SendNotification()
     {
         if (!_alreadyNotified)
         {
@@ -36,13 +36,7 @@ public class DataInteractionService
             NotifyNotConnected?.Invoke(true);
         }
 
-        await Task.CompletedTask;
-    }
-
-    private async Task<HttpResponseMessage> PostAsync<T>(string uri, T payload, CancellationToken ct = default)
-    {
-        JsonSerializerOptions options = new() { ReferenceHandler = ReferenceHandler.IgnoreCycles };
-        return await _httpClient.PostAsJsonAsync(uri, payload, options, ct);
+        return Task.CompletedTask;
     }
 
     private async Task<SubmitResult> HandleResponse(HttpResponseMessage response, CancellationToken ct = default)
@@ -60,13 +54,11 @@ public class DataInteractionService
         return new SubmitResult { Success = false };
     }
 
-    public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
+    private async Task<SubmitResult> PostDataAsync<T>(string uri, T payload, HttpClient client, CancellationToken ct = default)
     {
-        var uri = $"{controller}{controllerAction}";
-        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = await GetUserIdAsync() };
         try
         {
-            var response = await PostAsync(uri, payload, ct);
+            var response = await client.PostAsJsonAsync(uri, payload, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.IgnoreCycles }, ct);
             return await HandleResponse(response, ct);
         }
         catch (Exception ex)
@@ -75,20 +67,19 @@ public class DataInteractionService
         }
     }
 
-    public async Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
+    public Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
     {
         var uri = $"{controller}{controllerAction}";
-        using var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
-        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = await GetUserIdAsync() };
-        try
-        {
-            var response = await httpClientLong.PostAsJsonAsync(uri, payload, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.IgnoreCycles }, ct);
-            return await HandleResponse(response, ct);
-        }
-        catch (Exception ex)
-        {
-            return new SubmitResult { Success = false, Message = ex.Message };
-        }
+        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = GetUserIdAsync().Result };
+        return PostDataAsync(uri, payload, _httpClient, ct);
+    }
+
+    public Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
+    {
+        var uri = $"{controller}{controllerAction}";
+        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = GetUserIdAsync().Result };
+        var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        return PostDataAsync(uri, payload, httpClientLong, ct);
     }
 
     private async Task HandleDownloadResponse(HttpResponseMessage response, string fileName)
@@ -104,7 +95,7 @@ public class DataInteractionService
     public async Task ExtractGridLogs(ODataExtractPayload values)
     {
         var url = "odata/ExtractLogs";
-        using var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
         var response = await httpClientLong.PostAsJsonAsync(url, values);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
             await SendNotification();
@@ -114,7 +105,7 @@ public class DataInteractionService
     public async Task ExtractAdHocQuery(RemoteDataPayload payload, CancellationToken ct)
     {
         var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
-        using var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
         var response = await httpClientLong.PostAsJsonAsync(url, payload, ct);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
             await SendNotification();
