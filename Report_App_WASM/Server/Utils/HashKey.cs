@@ -2,5 +2,5 @@
 
 public static class HashKey
 {
-    public static string? Key { get; set; }
+    public static string Key { get; set; } = string.Empty;
 }

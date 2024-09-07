@@ -21,61 +21,53 @@ public class DataInteractionService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
-
     private async Task<string?> GetUserIdAsync()
     {
-        return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity
-            ?.Name; // FindFirst(ClaimTypes.NameIdentifier).Value;
+        return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;
     }
 
     public event Action<bool>? NotifyNotConnected;
 
-
-    private async Task SendNotification()
+    private Task SendNotification()
     {
         if (!_alreadyNotified)
         {
             _alreadyNotified = true;
-            NotifyNotConnected.Invoke(true);
+            NotifyNotConnected?.Invoke(true);
         }
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi,
-        CancellationToken ct = default) where T : class?
+    private async Task<SubmitResult> HandleResponse(HttpResponseMessage response, CancellationToken ct = default)
     {
-        var uri = $"{controller}{controllerAction}";
-        if (controllerAction != "RunManually"|| controllerAction != "TestConnection")
+        if (response.StatusCode == HttpStatusCode.BadRequest)
+            throw new Exception(await response.Content.ReadAsStringAsync(ct));
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
+            await SendNotification();
+        if (response.IsSuccessStatusCode)
+        {
+            _alreadyNotified = false;
+            return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
+        }
+
+        return new SubmitResult { Success = false };
+    }
+
+    private async Task<SubmitResult> PostDataAsync<T>(string uri, T payload, HttpClient client, CancellationToken ct = default)
+    {
+        if (!uri.Contains("RunManually") || !uri.Contains("TestConnection"))
         {
             var role = (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.IsInRole("Demo");
-            if (role.HasValue&&role.Value)
+            if (role.HasValue && role.Value)
             {
                 return new SubmitResult { Success = false, Message = "Demo mode" };
             }
         }
-
-        ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
         try
         {
-            JsonSerializerOptions options = new()
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            };
-            var response = await _httpClient.PostAsJsonAsync(uri, payload, options, ct);
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-                throw new Exception(await response.Content.ReadAsStringAsync(ct));
-            if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                response.StatusCode == HttpStatusCode.ServiceUnavailable ||
-                response.StatusCode == HttpStatusCode.RequestTimeout)
-                await SendNotification();
-            if (response.IsSuccessStatusCode)
-            {
-                _alreadyNotified = false;
-                return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
-            }
-
-            return new SubmitResult { Success = false };
+            var response = await client.PostAsJsonAsync(uri, payload, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.IgnoreCycles }, ct);
+            return await HandleResponse(response, ct);
         }
         catch (Exception ex)
         {
@@ -83,101 +75,50 @@ public class DataInteractionService
         }
     }
 
-    public async Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi,
-        CancellationToken ct = default) where T : class?
+    public Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
     {
         var uri = $"{controller}{controllerAction}";
-        using var _httpClientLong = new HttpClient();
-        _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
-        _httpClientLong.BaseAddress = _httpClient.BaseAddress;
+        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = GetUserIdAsync().Result };
+        return PostDataAsync(uri, payload, _httpClient, ct);
+    }
 
-        ApiCrudPayload<T> payload = new() { EntityValue = value, UserName = await GetUserIdAsync() };
-        try
-        {
-            JsonSerializerOptions options = new()
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            };
-            var response = await _httpClientLong.PostAsJsonAsync(uri, payload, options, ct);
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-                throw new Exception(await response.Content.ReadAsStringAsync(ct));
-            if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                response.StatusCode == HttpStatusCode.ServiceUnavailable ||
-                response.StatusCode == HttpStatusCode.RequestTimeout)
-                await SendNotification();
-            if (response.IsSuccessStatusCode)
-            {
-                _alreadyNotified = false;
-                return (await response.Content.ReadFromJsonAsync<SubmitResult>(cancellationToken: ct))!;
-            }
+    public Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi, CancellationToken ct = default) where T : class?
+    {
+        var uri = $"{controller}{controllerAction}";
+        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = GetUserIdAsync().Result };
+        var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        return PostDataAsync(uri, payload, httpClientLong, ct);
+    }
 
-            return new SubmitResult { Success = false };
-        }
-        catch (Exception ex)
+    private async Task HandleDownloadResponse(HttpResponseMessage response, string fileName)
+    {
+        if (response.IsSuccessStatusCode)
         {
-            return new SubmitResult { Success = false, Message = ex.Message };
+            _alreadyNotified = false;
+            var downloadResult = await _blazorDownloadFileService.DownloadFile(fileName, await response.Content.ReadAsByteArrayAsync(), "application/octet-stream");
+            if (downloadResult.Succeeded) response.Dispose();
         }
     }
 
     public async Task ExtractGridLogs(ODataExtractPayload values)
     {
-        try
-        {
-            var url = "odata/ExtractLogs";
-            using var _httpClientLong = new HttpClient();
-            _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
-            _httpClientLong.BaseAddress = _httpClient.BaseAddress;
-            var response = await _httpClientLong.PostAsJsonAsync(url, values);
-            if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                response.StatusCode == HttpStatusCode.ServiceUnavailable ||
-                response.StatusCode == HttpStatusCode.RequestTimeout)
-                await SendNotification();
-            if (response.IsSuccessStatusCode)
-            {
-                _alreadyNotified = false;
-                var downloadresult = await _blazorDownloadFileService.DownloadFile(
-                    values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx",
-                    await response.Content.ReadAsByteArrayAsync(), "application/octet-stream");
-                if (downloadresult.Succeeded) response.Dispose();
-            }
-        }
-        catch
-        {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
-            //return null;
-        }
+        var url = "odata/ExtractLogs";
+        var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        var response = await httpClientLong.PostAsJsonAsync(url, values);
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
+            await SendNotification();
+        await HandleDownloadResponse(response, $"{values.FileName} {DateTime.Now:yyyyMMdd_HH_mm_ss}.xlsx");
     }
-
 
     public async Task ExtractAdHocQuery(RemoteDataPayload payload, CancellationToken ct)
     {
-        try
-        {
-            var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
-            using var _httpClientLong = new HttpClient();
-            _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
-            _httpClientLong.BaseAddress = _httpClient.BaseAddress;
-            var response = await _httpClientLong.PostAsJsonAsync(url, payload, ct);
-            if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                response.StatusCode == HttpStatusCode.ServiceUnavailable ||
-                response.StatusCode == HttpStatusCode.RequestTimeout)
-                await SendNotification();
-            if (response.IsSuccessStatusCode)
-            {
-                _alreadyNotified = false;
-                var downloadresult = await _blazorDownloadFileService.DownloadFile(
-                    payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx",
-                    await response.Content.ReadAsStreamAsync(ct), "application/octet-stream");
-                if (downloadresult.Succeeded) response.Dispose();
-            }
-        }
-        catch (Exception)
-        {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
-            //return null;
-        }
+        var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
+        var httpClientLong = new HttpClient { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        var response = await httpClientLong.PostAsJsonAsync(url, payload, ct);
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
+            await SendNotification();
+        await HandleDownloadResponse(response, $"{payload.Values.FileName} {DateTime.Now:yyyyMMdd_HH_mm_ss}.xlsx");
     }
-
 
     public async Task<List<T>> GetValues<T>(string controllerAction, string controller = CrudApi) where T : class
     {
@@ -185,13 +126,9 @@ public class DataInteractionService
         try
         {
             var response = await _httpClient.GetAsync(uri);
-            if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                response.StatusCode == HttpStatusCode.ServiceUnavailable ||
-                response.StatusCode == HttpStatusCode.RequestTimeout)
+            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
                 await SendNotification();
-            if (response.IsSuccessStatusCode) return (await response.Content.ReadFromJsonAsync<List<T>>())!;
-
-            return new List<T>();
+            return response.IsSuccessStatusCode ? (await response.Content.ReadFromJsonAsync<List<T>>())! : new List<T>();
         }
         catch
         {
@@ -199,20 +136,15 @@ public class DataInteractionService
         }
     }
 
-    public async Task<T> GetUniqueValue<T>(T value, string controllerAction, string controller = CrudApi)
-        where T : class?
+    public async Task<T> GetUniqueValue<T>(T value, string controllerAction, string controller = CrudApi) where T : class?
     {
         var uri = $"{controller}{controllerAction}";
         try
         {
             var response = await _httpClient.GetAsync(uri);
-            if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                response.StatusCode == HttpStatusCode.ServiceUnavailable ||
-                response.StatusCode == HttpStatusCode.RequestTimeout)
+            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
                 await SendNotification();
-            if (response.IsSuccessStatusCode) return (await response.Content.ReadFromJsonAsync<T>())!;
-
-            return value;
+            return response.IsSuccessStatusCode ? (await response.Content.ReadFromJsonAsync<T>())! : value;
         }
         catch
         {
@@ -226,15 +158,11 @@ public class DataInteractionService
         {
             long maxFileSize = 1024 * 1024 * 20;
             using var content = new MultipartFormDataContent();
-            var fileContent =
-                new StreamContent(file.OpenReadStream(maxFileSize));
-
-            fileContent.Headers.ContentType =
-                new MediaTypeHeaderValue(file.ContentType);
-            content.Add(
-                fileContent,
-                "\"file\"",
-                file.Name);
+            var fileContent = new StreamContent(file.OpenReadStream(maxFileSize))
+            {
+                Headers = { ContentType = new MediaTypeHeaderValue(file.ContentType) }
+            };
+            content.Add(fileContent, "\"file\"", file.Name);
             var response = await _httpClient.PostAsync($"{ApiControllers.FilesApi}Upload", content);
             return (await response.Content.ReadFromJsonAsync<SubmitResult>())!;
         }
@@ -247,11 +175,8 @@ public class DataInteractionService
     public async Task<ApiResponse<T>> GetODataValues<T>(string uri, CancellationToken ct) where T : class
     {
         var response = await _httpClient.GetAsync(uri, ct);
-        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable
-            or HttpStatusCode.RequestTimeout)
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable or HttpStatusCode.RequestTimeout)
             await SendNotification();
-        if (response.IsSuccessStatusCode)
-            return (await response.Content.ReadFromJsonAsync<ApiResponse<T>>(cancellationToken: ct))!;
-        return null!;
+        return response.IsSuccessStatusCode ? (await response.Content.ReadFromJsonAsync<ApiResponse<T>>(cancellationToken: ct))! : null!;
     }
 }
