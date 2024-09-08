@@ -216,7 +216,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     public async Task DeleteLocalFilesAsync()
     {
         ApplicationLogTask logTask = new()
-            { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
+        { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
         try
         {
             var qry = _context.ApplicationLogReportResult.Where(a => a.IsAvailable == true).GroupJoin(
@@ -265,36 +265,32 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             .Select(a => a.LogsRetentionInDays)
             .FirstOrDefaultAsync();
 
-        var tasks = new List<Task>
-        {
-            _context.ApplicationLogSystem
-                .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
-                .ForEachAsync(a => _context.Remove(a)),
-            _context.ApplicationLogTask
-                .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-                .ForEachAsync(a => _context.Remove(a)),
-            _context.ApplicationLogTaskDetails
-                .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
-                .ForEachAsync(a => _context.Remove(a)),
-            _context.ApplicationLogEmailSender
-                .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-                .ForEachAsync(a => _context.Remove(a)),
-            _context.ApplicationAuditTrail
-                .Where(a => a.DateTime.Date < DateTime.Today.AddDays(-retentionDays))
-                .ForEachAsync(a => _context.Remove(a)),
-            _context.ApplicationLogReportResult
-                .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-retentionDays) && !a.IsAvailable)
-                .ForEachAsync(a => _context.Remove(a)),
-            _context.ApplicationLogQueryExecution
-                .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-                .ForEachAsync(a => _context.Remove(a)),
-            _context.ApplicationLogAdHocQueries
-                .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-                .ForEachAsync(a => _context.Remove(a))
-        };
 
-        await Task.WhenAll(tasks);
-        await _context.SaveChangesAsync();
+        await _context.ApplicationLogSystem
+            .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogTask
+            .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogTaskDetails
+            .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogEmailSender
+            .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationAuditTrail
+            .Where(a => a.DateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogReportResult
+            .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-retentionDays) && !a.IsAvailable)
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogQueryExecution
+            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogAdHocQueries
+            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+
 
         logTask.Result = "Ok";
         logTask.Error = false;
