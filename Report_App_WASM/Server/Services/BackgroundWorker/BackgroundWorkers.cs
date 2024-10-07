@@ -1,17 +1,10 @@
 ﻿using System.Net.Mail;
 using System.Text.Json;
-using AutoMapper;
 using Hangfire;
 using Hangfire.Storage;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
-using Report_App_WASM.Server.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
@@ -105,7 +98,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                                         GenerateFiles = true
                                     };
                                     var jobId = jobName + "_" + cronId;
-                                    RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None),
+                                    RecurringJob.AddOrUpdate(jobId, queueName,
+                                        () => RunTaskJobAsync(jobParam, CancellationToken.None),
                                         cron.CronValue, options);
                                     cronId++;
                                 }
@@ -130,36 +124,45 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     {
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
         {
-            TaskHeaderId = taskHeaderId, Cts = CancellationToken.None, GenerateFiles = generateFiles,
-            CustomEmails = emails ?? new List<EmailRecipient>(), CustomQueryParameters = customQueryParameters,
-            ManualRun = true, RunBy = runBy
+            TaskHeaderId = taskHeaderId,
+            Cts = CancellationToken.None,
+            GenerateFiles = generateFiles,
+            CustomEmails = emails ?? new List<EmailRecipient>(),
+            CustomQueryParameters = customQueryParameters,
+            ManualRun = true,
+            RunBy = runBy
         }, CancellationToken.None));
     }
 
     void IDisposable.Dispose()
     {
-        GC.Collect();
         GC.SuppressFinalize(this);
     }
+
 
     private async Task HandleTasksJobs(int taskHeaderId, bool activate)
     {
         var services = await _context.ServicesStatus
-            .Select(a => new { a.AlertService, a.ReportService, a.DataTransferService }).FirstOrDefaultAsync();
-        var taskHeader = await _context.TaskHeader.AsNoTrackingWithIdentityResolution()
+            .Select(a => new { a.AlertService, a.ReportService, a.DataTransferService })
+            .FirstOrDefaultAsync();
+
+        var taskHeader = await _context.TaskHeader
+            .AsNoTrackingWithIdentityResolution()
             .Where(a => a.TaskHeaderId == taskHeaderId)
             .Select(a => new { a.TaskName, a.Type, a.TypeName, a.Activity.ActivityName, a.CronParameters })
             .FirstOrDefaultAsync();
+
         var jobName = taskHeader!.TypeName + " Id:" + taskHeaderId;
+
         if (activate)
         {
             var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
-            if (!string.IsNullOrEmpty(taskHeader.CronParameters) || taskHeader.CronParameters != "[]")
+            if (!string.IsNullOrEmpty(taskHeader.CronParameters) && taskHeader.CronParameters != "[]")
             {
                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);
-                var cronId = 0;
-                foreach (var cron in crons!)
+                for (int cronId = 0; cronId < crons.Count; cronId++)
                 {
+                    var cron = crons[cronId];
                     var jobId = jobName + "_" + cronId;
                     var jobParam = new TaskJobParameters
                     {
@@ -167,70 +170,53 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                         Cts = CancellationToken.None,
                         GenerateFiles = true
                     };
+
                     if (taskHeader.Type == TaskType.Report && services!.ReportService)
                     {
                         var queueName = "report";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
-                            options);
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
-
-                    if (taskHeader.Type == TaskType.Alert && services!.AlertService)
+                    else if (taskHeader.Type == TaskType.Alert && services!.AlertService)
                     {
                         var queueName = "alert";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
-                            options);
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
-
-                    if (taskHeader.Type == TaskType.DataTransfer && services!.DataTransferService)
+                    else if (taskHeader.Type == TaskType.DataTransfer && services!.DataTransferService)
                     {
                         var queueName = "datatransfer";
-                        options.QueueName = queueName; //to remove in version 2.0
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue,
-                            options);
+                        options.QueueName = queueName;
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
-
-                    cronId++;
                 }
             }
         }
         else
         {
-            List<RecurringJobDto> recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
+            var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
             foreach (var j in recurringJobs.Where(a => a.Id.Contains(" Id:" + taskHeaderId + "_")))
                 RecurringJob.RemoveIfExists(j.Id);
         }
     }
 
-    public async ValueTask RunTaskJobAsync( TaskJobParameters parameters, CancellationToken cts )
+    public async ValueTask RunTaskJobAsync(TaskJobParameters parameters, CancellationToken cts)
     {
-        using (var scope = _scopeFactory.CreateScope())
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        parameters.Cts = cts;
+
+        if (db != null)
         {
-            var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            parameters.Cts = cts;
-            if (db != null)
-            {
-                using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
-                    _hostingEnvironment);
-                await handler.HandleTask(parameters);
-                handler.Dispose();
-
-            }
+            using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper, _hostingEnvironment);
+            await handler.HandleTask(parameters);
         }
-
-        //ReleaseMemory();
-    }
-
-    private void ReleaseMemory()
-    {
-        GC.Collect();
     }
 
     public async Task DeleteLocalFilesAsync()
     {
         ApplicationLogTask logTask = new()
-            { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
+        { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
         try
         {
             var qry = _context.ApplicationLogReportResult.Where(a => a.IsAvailable == true).GroupJoin(
@@ -268,31 +254,43 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     public async Task DeleteLogsAsync()
     {
-        ApplicationLogTask logTask = new()
-            { StartDateTime = DateTime.Now, JobDescription = "Logs cleaner", Type = "Cleaner service" };
-        var rententionDays =
-            await _context.ApplicationParameters.Select(a => a.LogsRetentionInDays).FirstOrDefaultAsync();
-        await _context.ApplicationLogSystem.Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-rententionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.ApplicationLogTask.Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-rententionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.ApplicationLogTaskDetails.Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-rententionDays))
-            .ForEachAsync(a => _context.Remove(a));
+        var logTask = new ApplicationLogTask
+        {
+            StartDateTime = DateTime.Now,
+            JobDescription = "Logs cleaner",
+            Type = "Cleaner service"
+        };
+
+        var retentionDays = await _context.ApplicationParameters
+            .Select(a => a.LogsRetentionInDays)
+            .FirstOrDefaultAsync();
+
+
+        await _context.ApplicationLogSystem
+            .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogTask
+            .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationLogTaskDetails
+            .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
         await _context.ApplicationLogEmailSender
-            .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-rententionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.ApplicationAuditTrail.Where(a => a.DateTime.Date < DateTime.Today.AddDays(-rententionDays))
-            .ForEachAsync(a => _context.Remove(a));
+            .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+        await _context.ApplicationAuditTrail
+            .Where(a => a.DateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
         await _context.ApplicationLogReportResult
-            .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-rententionDays) && a.IsAvailable == false)
-            .ForEachAsync(a => _context.Remove(a));
+            .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-retentionDays) && !a.IsAvailable)
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
         await _context.ApplicationLogQueryExecution
-            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-rententionDays))
-            .ForEachAsync(a => _context.Remove(a));
+            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
         await _context.ApplicationLogAdHocQueries
-            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-rententionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
+            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+
 
         logTask.Result = "Ok";
         logTask.Error = false;

@@ -1,7 +1,4 @@
-﻿using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.SerializedParameters;
-
-namespace Report_App_WASM.Server.Services.BackgroundWorker;
+﻿namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
 public class TaskJobParameters
 {

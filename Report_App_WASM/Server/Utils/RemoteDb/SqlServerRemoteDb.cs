@@ -1,13 +1,5 @@
-﻿using System.Data;
-using System.Data.Common;
-using System.Text;
+﻿using System.Text;
 using Microsoft.Data.SqlClient;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils.RemoteQueryParameters;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
-using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -23,8 +15,8 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script = dbInfo.UseDbSchema
-                ? $"SELECT table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1"
-                : "SELECT table_name FROM information_schema.tables order by 1";
+                ? $"SELECT  concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1"
+                : "SELECT concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name FROM information_schema.tables order by 1";
         return script;
     }
 
@@ -35,11 +27,12 @@ public class SqlServerRemoteDb : IRemoteDb
         {
             if (dbInfo.UseDbSchema)
                 script =
-                    "select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
-                    $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and table.TABLE_CATALOG='{dbInfo.DbSchema}' order by 1 ,2";
+                    $"select  concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
+                    $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and tables.TABLE_CATALOG='{dbInfo.DbSchema}' order by 1 ,2";
             else
                 script =
-                    "select tab.name as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id ";
+                    "select concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
+                    $"  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
         }
 
         return script;
@@ -50,7 +43,9 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script =
-                $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  where tab.name='{tableName}'";
+                $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  " +
+                $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name " +
+                $"where concat(tables.TABLE_SCHEMA,'.',tab.name) ='{tableName}'";
         return script;
     }
 
@@ -193,7 +188,6 @@ public class SqlServerRemoteDb : IRemoteDb
             while (reader.Read())
             {
                 var actionType = reader.GetInt32(0);
-                await conn.DisposeAsync();
                 switch (actionType)
                 {
                     case 1:
@@ -222,7 +216,6 @@ public class SqlServerRemoteDb : IRemoteDb
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query.ToString(), conn);
         await sqlCommand.ExecuteNonQueryAsync();
-        await conn.DisposeAsync();
     }
 
     public async Task CreateTable(ActivityDbConnection dbInfo, string query)
@@ -232,7 +225,6 @@ public class SqlServerRemoteDb : IRemoteDb
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query, conn);
         await sqlCommand.ExecuteNonQueryAsync();
-        await conn.DisposeAsync();
     }
 
     public async Task<MergeResult> MergeTables(ActivityDbConnection dbInfo, string query)
@@ -246,6 +238,7 @@ public class SqlServerRemoteDb : IRemoteDb
         var result = new MergeResult();
 
         if (reader.HasRows)
+        {
             while (reader.Read())
             {
                 var actionType = reader.GetString(0);
@@ -264,6 +257,13 @@ public class SqlServerRemoteDb : IRemoteDb
                         break;
                 }
             }
+        }
+        else
+        {
+            result.UpdatedCount = 0;
+            result.InsertedCount = 0;
+            result.DeletedCount = 0;
+        }
 
         await conn.DisposeAsync();
         return result;
@@ -292,7 +292,5 @@ public class SqlServerRemoteDb : IRemoteDb
                 await bulkCopy.WriteToServerAsync(data);
             }
         }
-
-        await conn.DisposeAsync();
     }
 }

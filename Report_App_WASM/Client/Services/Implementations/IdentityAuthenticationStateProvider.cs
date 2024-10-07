@@ -1,7 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Components.Authorization;
-using Report_App_WASM.Client.Services.Contracts;
-using Report_App_WASM.Shared;
+﻿using Report_App_WASM.Client.Services.Contracts;
 
 namespace Report_App_WASM.Client.Services.Implementations;
 

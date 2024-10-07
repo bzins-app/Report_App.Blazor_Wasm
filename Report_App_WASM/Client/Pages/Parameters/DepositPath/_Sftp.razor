@@ -18,27 +18,27 @@
             <MudText Typo="Typo.h6">@Localizer.Get("Sftp configuration")</MudText>
             <MudSpacer/>
             <MudStack Row="true">
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")"/>
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")" />
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
-                        <MudStack Row="true">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" Title="@Localizer.Get("Edit")"/>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
+                        <MudStack Row="true" Justify="Justify.Center">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
@@ -57,7 +57,6 @@
 
 @code
 {
-#nullable enable
     GridItemsProvider<SftpConfigurationDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
@@ -75,6 +74,7 @@
             {
                 return GridItemsProviderResult.From(Array.Empty<SftpConfigurationDto>(), 0);
             }
+
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
@@ -82,8 +82,8 @@
 
     private async Task<ApiResponse<SftpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SftpConfigurationDto> req)
     {
-    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/Sftp?";
         if (string.IsNullOrEmpty(odataQuery))
@@ -94,13 +94,14 @@
         {
             url += odataQuery;
         }
+
         try
         {
             return await DataService.GetODataValues<SftpConfigurationDto>(url, req.CancellationToken);
         }
         catch
         {
-    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }

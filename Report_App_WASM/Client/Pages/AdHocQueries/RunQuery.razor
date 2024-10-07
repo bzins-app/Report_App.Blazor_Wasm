@@ -74,16 +74,16 @@
                     }
                 </div>
 
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                <MudIconButton Variant="Variant.Outlined"
                                OnClick="@(ExtractElements)"
-                               Icon="@Icons.Material.Filled.Download" Title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                               Icon="@Icons.Material.Filled.Download" title="@Localizer.Get("Download")" Disabled="@_extracting" />
             </div>
         </MudPaper>
         @if (_extracting)
         {
             <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
         }
-        <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="59vh" Striped="true" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+        <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="59vh" Striped="true" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
             <HeaderContent>
                 @if (_values?.Any() == true)
                 {
@@ -118,14 +118,11 @@
 
 @code {
 
-    [Parameter]
-    public int QueryId { get; set; }
+    [Parameter] public int QueryId { get; set; }
 
-    [Parameter]
-    public string ActivityName { get; set; } = default!;
+    [Parameter] public string ActivityName { get; set; } = default!;
 
-    [Parameter]
-    public int ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
     private QueryStoreDto? Item;
     private List<QueryCommandParameter> param = new();
@@ -149,6 +146,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+
         var uriAction = $"GetQueryStore?queryId={QueryId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
 
@@ -162,18 +160,21 @@
                     param?.Add(value);
                 }
             }
+
             foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
             {
                 if (t.ValueType == QueryCommandParameterValueType.Date)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
                 }
+
                 if (t.ValueType == QueryCommandParameterValueType.DateTime)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
                 }
             }
         }
+
         if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
@@ -188,11 +189,12 @@
             await _validateParam?.Validate()!;
             _formParamValidated = _validateParam.IsValid;
         }
+
         _table!.CurrentPage = 0;
         await _table.ReloadServerData();
     }
 
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
     {
         _loading = true;
         var currentPage = state.Page;
@@ -262,6 +264,7 @@
                 _values = new List<Dictionary<string, object>>();
             }
         }
+
         _loading = false;
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _hasTotal ? _total : _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }

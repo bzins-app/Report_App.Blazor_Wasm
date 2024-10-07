@@ -22,11 +22,9 @@
 
 @code {
 
-    [SupplyParameterFromQuery]
-    public string userId { get; set; } = string.Empty;
+    [SupplyParameterFromQuery] public string userId { get; set; } = string.Empty;
 
-    [SupplyParameterFromQuery]
-    public string code { get; set; } = string.Empty;
+    [SupplyParameterFromQuery] public string code { get; set; } = string.Empty;
 
     private string? error;
 
@@ -36,6 +34,7 @@
         {
             NavigationManager.NavigateTo("/Index");
         }
+
         var payload = new ConfirmEmailValues { UserId = userId, Code = code };
         var result = await DataService.PostValues(payload, "ConfirmEmail", ApiControllers.AuthorizeApi);
         if (!result.Success)

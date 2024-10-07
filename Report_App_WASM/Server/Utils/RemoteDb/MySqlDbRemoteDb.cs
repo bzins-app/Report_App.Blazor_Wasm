@@ -1,12 +1,4 @@
-﻿using System.Data;
-using System.Data.Common;
-using MySql.Data.MySqlClient;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils.RemoteQueryParameters;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
-using Report_App_WASM.Shared.SerializedParameters;
+﻿using MySql.Data.MySqlClient;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -137,9 +129,9 @@ public class MySqlDbRemoteDb : IRemoteDb
                 if (run.FillDatatableSchema) await DbDataAdapter.FillSchemaAsync(data, SchemaType.Source, cts);
                 if (run.PaginatedResult)
                 {
-                    DbDataAdapter.SelectCommand.CommandText +=
-                        Environment.NewLine + $" LIMIT {run.MaxSize} OFFSET {run.StartRecord} ";
-                    await DbDataAdapter.FillAsync(data, cts);
+                    //DbDataAdapter.SelectCommand.CommandText +=
+                    //    Environment.NewLine + $" LIMIT {run.MaxSize} OFFSET {run.StartRecord} ";
+                    await DbDataAdapter.FillAsync(run.StartRecord, run.MaxSize, cts, data);
                 }
                 else
                 {
@@ -176,7 +168,7 @@ public class MySqlDbRemoteDb : IRemoteDb
         var databaseInfo = "";
         if (dbInfo.UseDbSchema) databaseInfo = $";database={dbInfo.DbSchema}";
         value.ConnnectionString =
-            $"server={dbInfo.ConnectionPath};port={dbInfo.Port}{databaseInfo};uid={dbInfo.ConnectionLogin};password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+            $"server={dbInfo.ConnectionPath};port={dbInfo.Port}{databaseInfo};uid={dbInfo.ConnectionLogin};Pwd={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};SslMode=Preferred;";
 
         return value;
     }

@@ -54,7 +54,7 @@
                                 }
                             </MudItem>
                             <MudItem>
-                                <MudSwitch @bind-Checked="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
+                                <MudSwitch @bind-Value="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
                             </MudItem>
                         </MudGrid>
                     </MudItem>
@@ -63,7 +63,7 @@
                     </MudItem>
                     <MudItem sm="6" lg="3">
                         <MudPaper Class="pa-2" Outlined="true">
-                            <MudChipSet AllClosable="true" OnClose="RemoveTag">
+                            <MudChipSet AllClosable="true" OnClose="RemoveTag" T="string">
                                 @foreach (var value in _tags)
                                 {
                                     <MudChip Text="@value"></MudChip>
@@ -73,7 +73,7 @@
                             <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
                                 <div class="d-flex flex-column">
                                     <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags"/>
-                                    <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Close")</MudButton>
+                                    <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Validate")</MudButton>
                                 </div>
                             </MudPopover>
                         </MudPaper>
@@ -155,7 +155,7 @@
                         </MudForm>
                     </MudPaper>
                 }
-                <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                <MudTable ServerData="ServerReload" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                     <HeaderContent>
                         @if (_values?.Any() == true)
                         {
@@ -192,8 +192,7 @@
 
 @code {
 
-    [Parameter]
-    public int QueryId { get; set; }
+    [Parameter] public int QueryId { get; set; }
 
     private QueryStoreDto? Item;
     private TypeDb _typeDbTask;
@@ -237,6 +236,7 @@
                 _typeDbTask = response.Select(a => a.TypeDb).First();
             }
         }
+
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
         {
@@ -248,7 +248,7 @@
                 TypeDb.SqlServer => AceLanguage.sqlserver,
                 TypeDb.PostgreSql => AceLanguage.pgsql,
                 _ => AceLanguage.sql
-                },
+            },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
@@ -265,22 +265,26 @@
                     param?.Add(value);
                 }
             }
+
             foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
             {
                 if (t.ValueType == QueryCommandParameterValueType.Date)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
                 }
+
                 if (t.ValueType == QueryCommandParameterValueType.DateTime)
                 {
                     t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
                 }
             }
         }
+
         if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
+
         if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
         {
             _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags)!;
@@ -308,18 +312,21 @@
                 {
                     param?.Add(value);
                 }
+
                 foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
                 {
                     if (t.ValueType == QueryCommandParameterValueType.Date)
                     {
                         t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
                     }
+
                     if (t.ValueType == QueryCommandParameterValueType.DateTime)
                     {
                         t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
                     }
                 }
             }
+
             if (_table != null)
             {
                 _table.CurrentPage = 0;
@@ -342,10 +349,11 @@
             await _validateParam.Validate();
             _formParamValidated = _validateParam.IsValid;
         }
+
         await _table?.ReloadServerData()!;
     }
 
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
     {
         _loading = true;
         var currentPage = state.Page;
@@ -399,6 +407,7 @@
                 _queryTestResult = ex.Message;
             }
         }
+
         _loading = false;
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
@@ -414,15 +423,17 @@
 
         if (_changesToSave)
         {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
             var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?") + Environment.NewLine + Localizer.Get("There are changes pending"), Localizer.Get("Confirm"), null, Localizer.Get("Cancel"), dialogOptions);
 
             if (result != null)
             {
                 UriHelper.NavigateTo(uri);
             }
+
             return;
         }
+
         UriHelper.NavigateTo(uri);
     }
 
@@ -475,9 +486,9 @@
         _changesToSave = true;
     }
 
-    private void RemoveTag(MudChip chip)
+    private void RemoveTag(MudChip<string> mudChip)
     {
-        _tags.Remove(chip.Text);
+        _tags.Remove(mudChip.Text);
         _changesToSave = true;
     }
 
@@ -494,6 +505,7 @@
             _tags.Add(_tagValue.RemoveSpecialCharacters().RemoveDiacritics());
             _changesToSave = true;
         }
+
         _tagValue = string.Empty;
         _openPopOver = false;
     }
@@ -504,11 +516,11 @@
     }
 
 
-    private async Task<IEnumerable<string>> SearchTags(string value)
+    private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
     {
         await Task.Delay(1);
         if (string.IsNullOrEmpty(value))
-            return Array.Empty<string>();
+            return _AvailableTags;
         return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 

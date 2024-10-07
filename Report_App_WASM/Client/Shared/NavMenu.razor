@@ -56,7 +56,6 @@
             }
         </MudNavGroup>
     }
-    <MudNavLink Href="Services" Icon="@Icons.Material.Outlined.DesignServices">@Localizer.Get("Services status")</MudNavLink>
     <AuthorizeView Roles="Admin, Supervisor">
         <Authorized>
             @if (_appConst.ActivateTaskSchedulerModule)
@@ -71,6 +70,7 @@
             {
                 <MudNavLink Href="QueryStoreGlobal" Icon="@Icons.Material.Outlined.AddChart">@Localizer.Get("Adhoc queries overview")</MudNavLink>
             }
+            <MudDivider DividerType="DividerType.Inset" />
             <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
                 <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
                 @if (_appConst.ActivateTaskSchedulerModule)
@@ -86,6 +86,7 @@
                 <MudNavLink Href="EmailSenderLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Email Sender")</MudNavLink>
                 <MudNavLink Href="SystemLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("System")</MudNavLink>
             </MudNavGroup>
+            <MudNavLink Href="Services" Icon="@Icons.Material.Outlined.DesignServices">@Localizer.Get("Services status")</MudNavLink>
             <MudNavGroup Title="@Localizer.Get("Base parameters")" Icon="@Icons.Material.Outlined.SettingsApplications">
                 <MudNavLink Href="ApplicationParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
                 <MudNavLink Href="Activities" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Activities manager")</MudNavLink>
@@ -102,13 +103,8 @@
                 }
             </MudNavGroup>
             <MudNavLink Href="UsersManagement" Icon="@Icons.Material.Outlined.SupervisedUserCircle">@Localizer.Get("Users")</MudNavLink>
-        </Authorized>
-    </AuthorizeView>
-    <MudNavLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm/wiki" Target="_blank" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>
-    @if (_appConst.ActivateTaskSchedulerModule)
-    {
-        <AuthorizeView>
-            <Authorized>
+            @if (_appConst.ActivateTaskSchedulerModule)
+            {
                 @if (context.User.IsInRole("Admin"))
                 {
                     <MudNavLink Href="/Hangfire" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
@@ -117,20 +113,21 @@
                 {
                     <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
                 }
-            </Authorized>
-        </AuthorizeView>
-    }
+            }
+            <MudDivider DividerType="DividerType.Inset" />
+        </Authorized>
+    </AuthorizeView>
+    <MudNavLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm/wiki" Target="_blank" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>
 </MudNavMenu>
 <MudDivider Class="mt-auto" Style="flex-grow: unset !important"></MudDivider>
 <MudNavMenu Class="d-flex justify-space-between pa-4">
-    <MudLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm" Target="_blank" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">@@2023</MudLink>
-    <MudText Class="" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">version 202312</MudText>
+    <MudLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm" Target="_blank" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">@@@ApplicationInfo.VersionYear</MudLink>
+    <MudText Class="" Style="color: #6F6F6F !important; font-size: 0.625rem; line-height: 1.125rem;">version @ApplicationInfo.ApplicationVersion</MudText>
 </MudNavMenu>
 
 @code {
 
-    [Parameter]
-    public bool IsDarkMode { get; set; }
+    [Parameter] public bool IsDarkMode { get; set; }
 
     private List<SelectItemActivitiesInfo> _activities = new();
     private ApplicationConstantsValues _appConst = new();

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Models;
-using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
+﻿using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
 namespace Report_App_WASM.Server.Data;
 

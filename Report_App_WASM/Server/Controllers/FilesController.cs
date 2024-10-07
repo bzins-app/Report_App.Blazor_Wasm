@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Shared;
-
-namespace Report_App_WASM.Server.Controllers;
+﻿namespace Report_App_WASM.Server.Controllers;
 
 [ApiExplorerSettings(IgnoreApi = true)]
 [Authorize]

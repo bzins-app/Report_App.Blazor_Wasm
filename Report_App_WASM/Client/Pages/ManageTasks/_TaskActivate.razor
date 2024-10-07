@@ -1,12 +1,11 @@
 ﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
 
-<MudSwitch Checked="@Item.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)"/>
+<MudSwitch Style="justify-content: center" Value="@Item.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)" />
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto Item { get; set; } = new();
+    [Parameter] public TaskHeaderDto Item { get; set; } = new();
 
     private async Task ChangeStatusAsync(bool value)
     {
@@ -30,6 +29,7 @@
 
                 return;
             }
+
             if (Item.Type == TaskType.Alert)
             {
                 var uriEmails = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
@@ -41,6 +41,7 @@
                     return;
                 }
             }
+
             var uri = $"{ApiControllers.CrudDataApi}GetTaskHasDetails?taskHeaderId={Item.TaskHeaderId}";
             var reportDetailsExists = await Http.GetFromJsonAsync<bool>(uri);
             if (!reportDetailsExists)
@@ -52,7 +53,14 @@
             }
         }
 
-        await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+        var result= await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+        if(!result.Success)
+        {
+            Item.IsActivated = !value;
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(result.Message, Severity.Error);
+            return;
+        }
         await DataService.PostValues(new TaskActivatePayload { Activate = Item.IsActivated, TaskHeaderId = Item.TaskHeaderId }, "TaskActivate");
 
         Snackbar.Add(Item.IsActivated ? Item.TaskName + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);

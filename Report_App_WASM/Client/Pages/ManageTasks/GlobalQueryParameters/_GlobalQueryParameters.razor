@@ -52,10 +52,10 @@
                             }
                             <MudGrid>
                                 <MudItem md="6">
-                                    <MudSwitch @bind-Checked="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters"/>
+                                    <MudSwitch @bind-Value="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters" />
                                 </MudItem>
                                 <MudItem md="6">
-                                    <MudSwitch @bind-Checked="element.HideParameter" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" @onclick="UpdateParameters"/>
+                                    <MudSwitch @bind-Value="element.HideParameter" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" @onclick="UpdateParameters" />
                                 </MudItem>
                             </MudGrid>
                         </MudCardContent>
@@ -68,14 +68,11 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> ChangePendingChanged { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
-    [Parameter]
-    public bool ChangePending { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
 
     List<QueryCommandParameter>? _parameters = new();
 
@@ -101,7 +98,7 @@
 
     private async Task Delete(QueryCommandParameter element)
     {
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
         var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)

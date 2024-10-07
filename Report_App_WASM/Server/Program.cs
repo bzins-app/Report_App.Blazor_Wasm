@@ -1,22 +1,14 @@
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
-using AutoMapper;
 using Hangfire;
 using Hangfire.SqlServer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Report_App_WASM.Server;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Services.BackgroundWorker;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
-using Report_App_WASM.Server.Utils;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
-using Report_App_WASM.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +23,14 @@ builder.Host.ConfigureLogging((hostingContext, logging) =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString,
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(60),
+                errorNumbersToAdd: null);
+        }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -45,7 +44,6 @@ var identityDefaultOptionsConfigurationSection = builder.Configuration.GetSectio
 builder.Services.Configure<IdentityDefaultOptions>(identityDefaultOptionsConfigurationSection);
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IRemoteDbConnection, RemoteDbConnection>();
 builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
@@ -100,7 +98,10 @@ builder.Services.AddSwaggerGen(c =>
     c.DocumentFilter<SwaggerFilters>();
 });
 
-
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
 // Add Hangfire services.
 builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -132,30 +133,43 @@ var env = builder.Environment;
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    try
+    bool loop = true;
+    int retryCount = 0;
+    const int maxRetries = 5;
+    while (loop && retryCount < maxRetries)
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        services.GetRequiredService<UserManager<ApplicationUser>>();
-        services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-        var dbInit = services.GetRequiredService<InitializeDatabase>();
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            services.GetRequiredService<UserManager<ApplicationUser>>();
+            services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var dbInit = services.GetRequiredService<InitializeDatabase>();
 
-        dbInit.InitializeAsync().Wait();
-        HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
-            .FirstOrDefault();
-        var parameters = context.ApplicationParameters.FirstOrDefault();
-        ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
-        ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
-        ApplicationConstants.ActivateAdHocQueriesModule = parameters.ActivateAdHocQueriesModule;
-        ApplicationConstants.ActivateTaskSchedulerModule = parameters.ActivateTaskSchedulerModule;
-        var ldapParameters = context.LdapConfiguration.Any(a => a.IsActivated);
-        ApplicationConstants.LdapLogin = ldapParameters!;
-        ApplicationConstants.WindowsEnv = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+            dbInit.InitializeAsync().Wait();
+            HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
+                .FirstOrDefault() ?? throw new InvalidOperationException("Cannot retrieve mandatory key");
+            var parameters = context.ApplicationParameters.FirstOrDefault();
+            ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
+            ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
+            ApplicationConstants.ActivateAdHocQueriesModule = parameters.ActivateAdHocQueriesModule;
+            ApplicationConstants.ActivateTaskSchedulerModule = parameters.ActivateTaskSchedulerModule;
+            var ldapParameters = context.LdapConfiguration.Any(a => a.IsActivated);
+            ApplicationConstants.LdapLogin = ldapParameters!;
+            ApplicationConstants.WindowsEnv = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            loop = false;
+        }
+        catch (Exception ex)
+        {
+            retryCount++;
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}", retryCount, maxRetries);
+            if (retryCount >= maxRetries)
+            {
+                throw;
+            }
+            Task.Delay(TimeSpan.FromSeconds(10)).Wait(); // Wait before retrying
+        }
     }
 }
 
@@ -177,15 +191,16 @@ if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/docsstorage")))
 if (!Directory.Exists(Path.Combine(env.ContentRootPath, "wwwroot/upload")))
     Directory.CreateDirectory(Path.Combine(env.ContentRootPath, "wwwroot/upload"));
 
-//app.UseResponseCompression();
+app.UseResponseCompression();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
 app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
+
 
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
 
 app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 {

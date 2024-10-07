@@ -6,10 +6,10 @@
         <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
             <MudTabPanel Text="@Localizer.Get("Each selected hour")">
                 <p>@Localizer.Get("Each selected hour")</p>
-                <MudChipSet @bind-SelectedChips="selectedHours" MultiSelection="true" Filter="false">
+                <MudChipSet @bind-SelectedValues="selectedHours" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var t in listHoursSelect)
                     {
-                        <MudChip Text="@t.Value" Default="t.Selected" OnClick="HourSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@t.DisplayValue</MudChip>
+                        <MudChip T="SelectItem" Text="t.Value" Value="t" OnClick="HourSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@t.DisplayValue</MudChip>
                     }
                 </MudChipSet>
             </MudTabPanel>
@@ -21,10 +21,10 @@
         <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
             <MudTabPanel Text="@Localizer.Get("Each selected minute")">
                 <p>@Localizer.Get("Each selected minute")</p>
-                <MudChipSet @bind-SelectedChips="selectedMinutes" MultiSelection="true" Filter="false">
+                <MudChipSet @bind-SelectedValues="selectedMinutes" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var t in listMinutesSelect)
                     {
-                        <MudChip Text="@t.Value" Default="t.Selected" OnClick="MinuteSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@t.DisplayValue</MudChip>
+                        <MudChip T="SelectItem" Text="@t.Value" Value="t" OnClick="MinuteSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@t.DisplayValue</MudChip>
                     }
                 </MudChipSet>
             </MudTabPanel>
@@ -36,28 +36,28 @@
         <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
             <MudTabPanel Text="@Localizer.Get("Day of week")">
                 <p>@Localizer.Get("Day of week")</p>
-                <MudChipSet @bind-SelectedChips="selectedDayOfWeek" MultiSelection="true" Filter="false">
+                <MudChipSet @bind-SelectedValues="selectedDayOfWeek" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var t in listDayOfWeekSelect)
                     {
-                        <MudChip Text="@t.Value" Default="t.Selected" OnClick="DayOfWeekSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@Localizer.Get(t.DisplayValue)</MudChip>
+                        <MudChip T="SelectItem"  Text="@t.Value" Value="t" OnClick="DayOfWeekSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@Localizer.Get(t.DisplayValue)</MudChip>
                     }
                 </MudChipSet>
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Each month")">
                 <p>@Localizer.Get("Each month")</p>
-                <MudChipSet @bind-SelectedChips="selectedMonth" MultiSelection="true" Filter="false">
+                <MudChipSet @bind-SelectedValues="selectedMonth" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var t in listMonthSelect)
                     {
-                        <MudChip Text="@t.Value" Default="t.Selected" OnClick="MonthSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@Localizer.Get(t.DisplayValue)</MudChip>
+                        <MudChip T="SelectItem" Text="@t.Value" Value="t" OnClick="MonthSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@Localizer.Get(t.DisplayValue)</MudChip>
                     }
                 </MudChipSet>
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Day of month")">
                 <p>@Localizer.Get("Day of month")</p>
-                <MudChipSet @bind-SelectedChips="selectedDayOfMonth" MultiSelection="true" Filter="false">
+                <MudChipSet @bind-SelectedValues="selectedDayOfMonth" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var t in listDayOfMonthSelect)
                     {
-                        <MudChip Text="@t.Value" Default="t.Selected" OnClick="DayOfMonthSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@Localizer.Get(t.DisplayValue)</MudChip>
+                        <MudChip T="SelectItem" Text="@t.Value" Value="t" OnClick="DayOfMonthSelected" Variant="Variant.Text" SelectedColor="Color.Info" Size="Size.Small">@Localizer.Get(t.DisplayValue)</MudChip>
                     }
                 </MudChipSet>
             </MudTabPanel>
@@ -76,13 +76,13 @@
 
 @code {
 
+
+
     private string cronValueItem { get; set; } = string.Empty;
 
-    [Parameter]
-    public string Value { get; set; } = string.Empty;
+    [Parameter] public string Value { get; set; } = string.Empty;
 
-    [Parameter]
-    public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
     private class SelectItem
     {
@@ -111,11 +111,11 @@
     List<SelectItem> listMonthSelect = new();
     List<SelectItem> listDayOfWeekSelect = new();
 
-    MudChip[] selectedMinutes = default!;
-    MudChip[] selectedHours = default!;
-    MudChip[] selectedDayOfMonth = default!;
-    MudChip[] selectedMonth = default!;
-    MudChip[] selectedDayOfWeek = default!;
+    IReadOnlyCollection<SelectItem> selectedMinutes = default!;
+    IReadOnlyCollection<SelectItem> selectedHours = default!;
+    IReadOnlyCollection<SelectItem> selectedDayOfMonth = default!;
+    IReadOnlyCollection<SelectItem> selectedMonth = default!;
+    IReadOnlyCollection<SelectItem> selectedDayOfWeek = default!;
 
     private List<string> TransfromToArray(string val)
     {
@@ -179,14 +179,26 @@
         }
 
         await GenerateCronValue();
+        InitializeSelectItems();
+        SetSelectedItems(minutesArr, listMinutesSelect, ref selectedMinutes);
+        SetSelectedItems(hoursArr, listHoursSelect, ref selectedHours);
+        SetSelectedItems(dayOfMonthArr, listDayOfMonthSelect, ref selectedDayOfMonth);
+        SetSelectedItems(monthsArr, listMonthSelect, ref selectedMonth);
+        SetSelectedItems(dayOfWeekArr, listDayOfWeekSelect, ref selectedDayOfWeek);
+    }
+
+    private void InitializeSelectItems()
+    {
         for (var i = 0; i < 60; i++)
         {
             listMinutesSelect.Add(new SelectItem { Value = i.ToString(), DisplayValue = i < 10 ? "0" + i : i.ToString() });
         }
+
         for (var i = 0; i < 24; i++)
         {
             listHoursSelect.Add(new SelectItem { Value = i.ToString(), DisplayValue = i < 10 ? "0" + i : i.ToString() });
         }
+
         for (var i = 1; i < 32; i++)
         {
             listDayOfMonthSelect.Add(new SelectItem { Value = i.ToString(), DisplayValue = i < 10 ? "0" + i : i.ToString() });
@@ -220,113 +232,40 @@
             new() { Value = "5", DisplayValue = "Friday" },
             new() { Value = "6", DisplayValue = "Saturday" }
         };
+    }
 
-        foreach (var t in minutesArr)
+    private void SetSelectedItems(List<string> values, List<SelectItem> list, ref IReadOnlyCollection<SelectItem> selected)
+    {
+        foreach (var t in values)
         {
-            listMinutesSelect.Where(a => a.Value == t).All(a => a.Selected = true);
+            list.Where(a => a.Value == t).All(a => a.Selected = true);
         }
-
-        foreach (var t in hoursArr)
-        {
-            listHoursSelect.Where(a => a.Value == t).All(a => a.Selected = true);
-        }
-
-        foreach (var t in dayOfMonthArr)
-        {
-            listDayOfMonthSelect.Where(a => a.Value == t).All(a => a.Selected = true);
-        }
-        foreach (var t in monthsArr)
-        {
-            listMonthSelect.Where(a => a.Value == t).All(a => a.Selected = true);
-        }
-        foreach (var t in dayOfWeekArr)
-        {
-            listDayOfWeekSelect.Where(a => a.Value == t).All(a => a.Selected = true);
-        }
+        selected = list.Where(a => a.Selected).ToList();
     }
 
     private async Task GenerateCronValue()
     {
-        CronValue = CronMinute + " " + CronHour + " " + CronDayOfMonth + " " + CronMonth + " " + CronDayOfWeek;
+        CronValue = $"{CronMinute} {CronHour} {CronDayOfMonth} {CronMonth} {CronDayOfWeek}";
         CronDescription = ExpressionDescriptor.GetDescription(CronValue);
 
-        if (CronValue != "* * * * *")
-        {
-            cronValueItem = CronValue;
-        }
-        else
-        {
-            cronValueItem = "";
-        }
+        cronValueItem = CronValue != "* * * * *" ? CronValue : string.Empty;
+
         await OnValuesChanged();
     }
 
-    public async Task OnValuesChanged()
+    private async Task OnValuesChanged()
     {
         Value = cronValueItem;
         await ValueChanged.InvokeAsync(Value);
     }
 
-    private void ResetListMinutesSelect()
+    private void ResetList(List<SelectItem> list, ref IReadOnlyCollection<SelectItem> selected)
     {
-        foreach (var t in listMinutesSelect)
+        foreach (var t in list)
         {
             t.Selected = false;
         }
-        listMinutesEmpty = true;
-        selectedMinutes = null!;
-    }
-
-    private void ResetListEveryMinute()
-    {
-        everyMinute = 0;
-    }
-
-    private async Task MinuteSelected()
-    {
-        foreach (var t in listMinutesSelect)
-        {
-            t.Selected = false;
-        }
-        if (selectedMinutes != null && selectedMinutes.Length > 0)
-        {
-            foreach (var t in selectedMinutes)
-            {
-                var item = listMinutesSelect.FirstOrDefault(a => a.Value.ToString() == t.Text);
-                item!.Selected = true;
-            }
-        }
-
-        var m = listMinutesSelect.FindAll(a => a.Selected);
-        if (!m.Any())
-        {
-            CronMinute = "*";
-        }
-        else if (m.Count == 1)
-        {
-            CronMinute = m.FirstOrDefault()!.Value;
-        }
-        else
-        {
-            var i = 0;
-            var CronConstruct = "";
-            foreach (var t in m)
-            {
-                if (i == 0)
-                {
-                    CronConstruct = CronConstruct + t.Value;
-                }
-                else
-                {
-                    CronConstruct = CronConstruct + "," + t.Value;
-                }
-                i++;
-            }
-            CronMinute = CronConstruct;
-        }
-        listMinutesEmpty = false;
-        ResetListEveryMinute();
-        await GenerateCronValue();
+        selected = null!;
     }
 
     private async Task EachMinuteSelected(double val)
@@ -334,73 +273,17 @@
         everyMinute = val;
         if (!listMinutesEmpty)
         {
-            ResetListMinutesSelect();
+            ResetList(listMinutesSelect, ref selectedMinutes);
         }
+
         CronMinute = "*/" + val;
         await GenerateCronValue();
         StateHasChanged();
     }
 
-    private void ResetListHoursSelect()
+    private void ResetListEveryMinute()
     {
-        foreach (var t in listHoursSelect)
-        {
-            t.Selected = false;
-        }
-        listHoursEmpty = true;
-        selectedHours = null!;
-    }
-
-    private void ResetListEveryHour()
-    {
-        everyHour = 0;
-    }
-
-    private async Task HourSelected()
-    {
-        foreach (var t in listHoursSelect)
-        {
-            t.Selected = false;
-        }
-        if (selectedHours != null && selectedHours.Length > 0)
-        {
-            foreach (var t in selectedHours)
-            {
-                var item = listHoursSelect.FirstOrDefault(a => a.Value.ToString() == t.Text);
-                item!.Selected = true;
-            }
-        }
-
-        var m = listHoursSelect.FindAll(a => a.Selected);
-        if (!m.Any())
-        {
-            CronHour = "*";
-        }
-        else if (m.Count == 1)
-        {
-            CronHour = m.FirstOrDefault()!.Value;
-        }
-        else
-        {
-            var i = 0;
-            var CronConstruct = "";
-            foreach (var t in m)
-            {
-                if (i == 0)
-                {
-                    CronConstruct = CronConstruct + t.Value;
-                }
-                else
-                {
-                    CronConstruct = CronConstruct + "," + t.Value;
-                }
-                i++;
-            }
-            CronHour = CronConstruct;
-        }
-        listHoursEmpty = false;
-        ResetListEveryHour();
-        await GenerateCronValue();
+        everyMinute = 0;
     }
 
     private async Task EachHourSelected(double val)
@@ -408,195 +291,92 @@
         everyHour = val;
         if (!listHoursEmpty)
         {
-            ResetListHoursSelect();
+            ResetList(listHoursSelect, ref selectedHours);
         }
+
         CronHour = "*/" + val;
         await GenerateCronValue();
         StateHasChanged();
     }
 
-    private void ResetListDayOfMonthSelect()
+    private void ResetListEveryHour()
     {
-        foreach (var t in listDayOfMonthSelect)
-        {
-            t.Selected = false;
-        }
-        selectedDayOfMonth = null!;
+        everyHour = 0;
     }
 
     private async Task DayOfMonthSelected()
     {
-        foreach (var t in listDayOfMonthSelect)
-        {
-            t.Selected = false;
-        }
-        if (selectedDayOfMonth != null && selectedDayOfMonth.Length > 0)
-        {
-            if (!selectedDayOfMonth.Any(a => a.Text == "L" || a.Text == "LW"))
-            {
-                foreach (var t in selectedDayOfMonth)
-                {
-                    var item = listDayOfMonthSelect.FirstOrDefault(a => a.Value.ToString() == t.Text);
-                    item!.Selected = true;
-                }
-            }
-            else
-            {
-                var value = selectedDayOfMonth.Where(a => a.Text == "L" || a.Text == "LW").Select(a => a.Text).FirstOrDefault();
-                selectedDayOfMonth = selectedDayOfMonth.Where(a => a.Text == value).ToArray();
-                listDayOfMonthSelect.ForEach(a => a.Selected = false);
-                var item = listDayOfMonthSelect.FirstOrDefault(a => a.Value.ToString() == value);
-                item!.Selected = true;
-            }
-        }
-
-        var m = listDayOfMonthSelect.FindAll(a => a.Selected);
-        if (!m.Any())
-        {
-            CronDayOfMonth = "*";
-        }
-        else if (m.Count == 1)
-        {
-            CronDayOfMonth = m.FirstOrDefault()!.Value;
-        }
-        else
-        {
-            var i = 0;
-            var CronConstruct = "";
-            foreach (var t in m)
-            {
-                if (i == 0)
-                {
-                    CronConstruct = CronConstruct + t.Value;
-                }
-                else
-                {
-                    CronConstruct = CronConstruct + "," + t.Value;
-                }
-                i++;
-            }
-            CronDayOfMonth = CronConstruct;
-        }
+        UpdateSelectedItems(listDayOfMonthSelect, ref selectedDayOfMonth);
+        CronDayOfMonth = GetCronExpression(listDayOfMonthSelect);
         await GenerateCronValue();
     }
 
-    private void ResetListMonthSelect()
+    private async Task HourSelected()
     {
-        foreach (var t in listMonthSelect)
-        {
-            t.Selected = false;
-        }
-        selectedMonth = null!;
+        UpdateSelectedItems(listHoursSelect, ref selectedHours);
+        CronHour = GetCronExpression(listHoursSelect);
+        ResetListEveryHour();
+        listHoursEmpty = false;
+        await GenerateCronValue();
+    }
+
+    private async Task MinuteSelected()
+    {
+        UpdateSelectedItems(listMinutesSelect, ref selectedMinutes);
+        CronMinute = GetCronExpression(listMinutesSelect);
+        ResetListEveryMinute();
+        listMinutesEmpty = false;
+        await GenerateCronValue();
     }
 
     private async Task MonthSelected()
     {
-        foreach (var t in listMonthSelect)
-        {
-            t.Selected = false;
-        }
-        if (selectedMonth != null && selectedMonth.Length > 0)
-        {
-            foreach (var t in selectedMonth)
-            {
-                var item = listMonthSelect.FirstOrDefault(a => a.Value.ToString() == t.Text);
-                item!.Selected = true;
-            }
-        }
-
-        var m = listMonthSelect.FindAll(a => a.Selected);
-        if (!m.Any())
-        {
-            CronMonth = "*";
-        }
-        else if (m.Count == 1)
-        {
-            CronMonth = m.FirstOrDefault()!.Value;
-        }
-        else
-        {
-            var i = 0;
-            var CronConstruct = "";
-            foreach (var t in m)
-            {
-                if (i == 0)
-                {
-                    CronConstruct = CronConstruct + t.Value;
-                }
-                else
-                {
-                    CronConstruct = CronConstruct + "," + t.Value;
-                }
-                i++;
-            }
-            CronMonth = CronConstruct;
-        }
+        UpdateSelectedItems(listMonthSelect, ref selectedMonth);
+        CronMonth = GetCronExpression(listMonthSelect);
         await GenerateCronValue();
-    }
-
-    private void ResetListDayOfWeekSelect()
-    {
-        foreach (var t in listDayOfWeekSelect)
-        {
-            t.Selected = false;
-        }
-        selectedDayOfWeek = null!;
     }
 
     private async Task DayOfWeekSelected()
     {
-        foreach (var t in listDayOfWeekSelect)
+        UpdateSelectedItems(listDayOfWeekSelect, ref selectedDayOfWeek);
+        CronDayOfWeek = GetCronExpression(listDayOfWeekSelect);
+        await GenerateCronValue();
+    }
+
+    private void UpdateSelectedItems(List<SelectItem> list, ref IReadOnlyCollection<SelectItem> selected)
+    {
+        foreach (var t in list)
         {
             t.Selected = false;
         }
-        if (selectedDayOfWeek != null && selectedDayOfWeek.Length > 0)
+
+        if (selected != null && selected.Count > 0)
         {
-            foreach (var t in selectedDayOfWeek)
+            var selectedValues = selected.Select(a => a.Value).ToList();
+            foreach (var t in list.Where(a => selectedValues.Contains(a.Value)))
             {
-                var item = listDayOfWeekSelect.FirstOrDefault(a => a.Value.ToString() == t.Text);
-                item!.Selected = true;
+                t.Selected = true;
             }
         }
 
-        var m = listDayOfWeekSelect.FindAll(a => a.Selected);
-        if (!m.Any())
-        {
-            CronDayOfWeek = "*";
-        }
-        else if (m.Count == 1)
-        {
-            CronDayOfWeek = m.FirstOrDefault()!.Value;
-        }
-        else
-        {
-            var i = 0;
-            var CronConstruct = "";
-            foreach (var t in m)
-            {
-                if (i == 0)
-                {
-                    CronConstruct = CronConstruct + t.Value;
-                }
-                else
-                {
-                    CronConstruct = CronConstruct + "," + t.Value;
-                }
-                i++;
-            }
-            CronDayOfWeek = CronConstruct;
-        }
-        await GenerateCronValue();
+        selected = list.Where(a => a.Selected).ToList();
+    }
+
+    private string GetCronExpression(List<SelectItem> list)
+    {
+        var selectedItems = list.Where(a => a.Selected).ToList();
+        return selectedItems.Any() ? string.Join(",", selectedItems.Select(a => a.Value)) : "*";
     }
 
     private async Task ResetRequested()
     {
-        ResetListMinutesSelect();
-        ResetListEveryMinute();
-        ResetListHoursSelect();
-        ResetListEveryHour();
-        ResetListDayOfMonthSelect();
-        ResetListMonthSelect();
-        ResetListDayOfWeekSelect();
+        ResetList(listMinutesSelect, ref selectedMinutes);
+        ResetList(listHoursSelect, ref selectedHours);
+        ResetList(listDayOfMonthSelect, ref selectedDayOfMonth);
+        ResetList(listMonthSelect, ref selectedMonth);
+        ResetList(listDayOfWeekSelect, ref selectedDayOfWeek);
+        everyMinute = 0;
+        everyHour = 0;
         CronMinute = "*";
         CronHour = "*";
         CronDayOfMonth = "*";
@@ -605,5 +385,4 @@
         await GenerateCronValue();
         StateHasChanged();
     }
-
 }

@@ -1,11 +1,10 @@
 ﻿@inject ISnackbar Snackbar
 
-<MudSwitch Checked="@Item!.IsActivated" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" CheckedChanged="(bool value) => ChangeStatusAsync(value)"/>
+<MudSwitch Style="justify-content: center" Value="@Item!.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)" />
 
 @code {
 
-    [Parameter]
-    public SmtpConfigurationDto? Item { get; set; }
+    [Parameter] public SmtpConfigurationDto? Item { get; set; }
 
     private async Task ChangeStatusAsync(bool value)
     {

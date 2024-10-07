@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
+﻿using Microsoft.Extensions.Options;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
 
 namespace Report_App_WASM.Server;

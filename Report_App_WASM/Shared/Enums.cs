@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Report_App_WASM.Shared;
+﻿namespace Report_App_WASM.Shared;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum TypeDb

@@ -54,7 +54,7 @@
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd>
-                                    <MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" Title="@Localizer.Get("Display table values")" Size="Size.Small"/>
+                                    <MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" title="@Localizer.Get("Display table values")" Size="Size.Small" />
                                 </MudTd>
                                 <MudTd @ondblclick="() => GetColumnsList(context.Name)">@context.Name</MudTd>
                                 @if (_hasDesc)
@@ -119,7 +119,7 @@
                     }
                     <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh"/>
 
-                    <MudTable ServerData="@(new Func<TableState, Task<TableData<Dictionary<string, object>.ValueCollection>>>(ServerReload))" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
                             @if (_values?.Any() == true)
                             {
@@ -157,11 +157,9 @@
 
 @code {
 
-    [Parameter]
-    public string ActivityName { get; set; } = default!;
+    [Parameter] public string ActivityName { get; set; } = default!;
 
-    [Parameter]
-    public int ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
     private List<DescriptionValues> TableNames = new();
     private List<DescriptionValues> TableNamesStored = new();
@@ -194,6 +192,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+
         TableNames = new List<DescriptionValues>();
         ColNames = new List<DescriptionValues>();
         QueryRun = "";
@@ -207,6 +206,7 @@
         {
             _typeDbTask = response.Select(a => a.TypeDb).First();
         }
+
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
         {
@@ -218,7 +218,7 @@
                 TypeDb.SqlServer => AceLanguage.sqlserver,
                 TypeDb.PostgreSql => AceLanguage.pgsql,
                 _ => AceLanguage.sql
-                },
+            },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
         StateHasChanged();
@@ -301,10 +301,11 @@
             _table!.CurrentPage = 0;
             await _table.ReloadServerData();
         }
+
         _loadingTestQuery = false;
     }
 
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state)
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
     {
         var currentPage = state.Page;
         var pageSize = state.PageSize;
@@ -348,6 +349,7 @@
                 _queryTestResult = ex.Message;
             }
         }
+
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 

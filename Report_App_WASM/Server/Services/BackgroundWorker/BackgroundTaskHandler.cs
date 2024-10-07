@@ -1,18 +1,8 @@
-﻿using System.Data;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Text.Json;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
-using Report_App_WASM.Server.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.Extensions;
-using Report_App_WASM.Shared.RemoteQueryParameters;
-using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
@@ -127,21 +117,28 @@ public class BackgroundTaskHandler : IDisposable
                     {
                         ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName,
                         StartDateTime = DateTime.Now, JobDescription = detail.QueryName,
-                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy
+                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,Result = "Running"
                     };
 
                     await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync("backgroundworker");
-                    log.TaskId = log.Id;
                     var _headerParameters =
                         JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
 
+                    int i=0;
                     foreach (var value in _fetchedData)
-                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId);
+                    {
+                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId,i);
+                        i++;
+                    }
 
                     log.EndDateTime = DateTime.Now;
                     log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
+                    if (log.Result== "Running")
+                    {
+                        log.Result = "No lines fetched";
+                    }
                     _context.Update(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     _fetchedData.Clear();
@@ -311,7 +308,7 @@ public class BackgroundTaskHandler : IDisposable
     }
 
     private async ValueTask HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,
-        int activityIdTransfer)
+        int activityIdTransfer, int loopNumber)
     {
         if (data.Rows.Count > 0)
         {
@@ -346,7 +343,7 @@ public class BackgroundTaskHandler : IDisposable
                     else
                         queryCreate =
                             CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                                detailParam.DataTransferTargetTableName, true);
+                                detailParam.DataTransferTargetTableName, loopNumber==0?true:false);
                 }
 
                 await _dbReader.CreateTable(queryCreate, activityIdTransfer);

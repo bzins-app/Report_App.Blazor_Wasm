@@ -17,13 +17,15 @@
     <MudCardContent>
         <MudForm Model="@_param" @ref="_form" @bind-IsValid="@_success">
             <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required/>
-            <MudSwitch @bind-Checked="_param!.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary"/>
-            <MudSwitch @bind-Checked="_param!.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary"/>
+            <MudSwitch @bind-Value="_param!.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary"/>
+            <MudSwitch @bind-Value="_param!.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary" />
             <MudNumericField @bind-Value="_param.LogsRetentionInDays" Label="@Localizer.Get("Logs: Archiving duration")"/>
             <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required/>
             <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required/>
             <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required/>
-            <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Edit error email")</MudButton>
+            <div style="padding-top:10px">
+                <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small" >@Localizer.Get("Edit error email")</MudButton>
+            </div>
             <MudText Typo="Typo.h6" Class="pa-4">@Localizer.Get("Logo")</MudText>
             <div style="padding-bottom: 5px">
                 @if (!string.IsNullOrEmpty(_param.ApplicationLogo))
@@ -32,22 +34,21 @@
                 }
             </div>
             <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" Accept=".jpg, .jpeg, .png, .gif">
-                <ButtonTemplate>
+                <ActivatorContent>
                     <MudFab HtmlTag="label" Class="pa-4"
                             Color="Color.Primary"
                             StartIcon="@Icons.Material.Filled.Image"
                             Label="@Localizer.Get("Select application Logo")"
                             Size="Size.Small"
-                            Style="text-transform: none"
-                            for="@context"/>
-                </ButtonTemplate>
+                            Style="text-transform: none"/>
+                </ActivatorContent>
             </MudFileUpload>
         </MudForm>
         <div style="padding-top: 15px">
             <MudTextField T="string" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="@_email"
                           Validation="@CheckMail()"/>
-            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small"
-                       Class="ml-auto mt-3 mb-3" OnClick="@(() => Add())">
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small" 
+                        OnClick="@(() => Add())">
                 @Localizer.Get("Add recipient")
             </MudButton>
             <MudTable Items="@_emailItems" Hover="true" Dense="true">
@@ -59,7 +60,7 @@
                 <RowTemplate>
                     <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
                     <MudTd DataLabel="@Localizer.Get("Blind copy")">
-                        <MudSwitch Checked="@context.Bcc" CheckedChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
+                        <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary" />
                     </MudTd>
                     <MudTd>
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>
@@ -121,8 +122,9 @@
     {
         if (_filesToDelete.Any())
         {
-    //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
+
         await DataService.PostValues(_param, "ApplicationParametersUpdate");
         StateHasChanged();
         if (_initialAppLogo != _param.ApplicationLogo || _initialAppName != _param.ApplicationLogo)
@@ -141,8 +143,9 @@
         if (!string.IsNullOrEmpty(_completeLogoPath))
         {
             _filesToDelete.Add(_completeLogoPath);
-    //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
         }
+
         UriHelper.NavigateTo("/");
     }
 
@@ -169,6 +172,7 @@
         {
             _emails?.Add(new EmailRecipient { Email = _email });
         }
+
         _email = "";
         _emailNotValidated = true;
         PopulateEmailItems();
@@ -196,6 +200,7 @@
         {
             _emailNotValidated = true;
         }
+
         return _emailNotValidated;
     }
 

@@ -1,16 +1,7 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using AutoMapper.QueryableExtensions;
 using Community.OData.Linq;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.EntityFrameworkCore;
-using Report_App_WASM.Server.Data;
-using Report_App_WASM.Server.Models;
-using Report_App_WASM.Server.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.ApiExchanges;
 using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers;

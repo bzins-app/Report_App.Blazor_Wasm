@@ -7,17 +7,12 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action switch
-                           {
-                               CrudAction.Update => Icons.Material.Filled.Edit,
-                               CrudAction.Create => Icons.Material.Filled.Create,
-                               _ => Icons.Material.Filled.DeleteForever
-                               })" Class="mr-3 mb-n1"/>
+            <MudIcon Icon="@(Action switch { CrudAction.Update => Icons.Material.Filled.Edit, CrudAction.Create => Icons.Material.Filled.Create, _ => Icons.Material.Filled.DeleteForever })" Class="mr-3 mb-n1" />
             @Localizer.Get(Action switch
-            {
-                CrudAction.Update => "Edit",
-                CrudAction.Create => "Add",
-                _ => "Delete"
+                {
+                    CrudAction.Update => "Edit",
+                    CrudAction.Create => "Add",
+                    _ => "Delete"
                 })
         </MudText>
     </TitleContent>
@@ -25,55 +20,57 @@
         <MudForm Model="@Item" @ref="@_form">
             <MudGrid>
                 <MudItem sm="12" md="4" lg="2" Style="padding-right: 10px">
-                    <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required/>
-                    <MudNumericField @bind-Value="Item.DetailSequence" Label="@Localizer.Get("Query sequence")"/>
-                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OpenTestQuery" Variant="Variant.Filled" Color="Color.Primary">
-                        <LoadingContent>
-                            @Localizer.Get("Processing")
-                        </LoadingContent>
-                        <ChildContent>
-                            @Localizer.Get("Test query")
-                        </ChildContent>
-                    </MudLoadingButton>
-                    @if (_loading)
-                    {
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelTest">@Localizer.Get("Cancel")</MudButton>
-                    }
+                    <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required />
+                    <MudNumericField @bind-Value="Item.DetailSequence" Label="@Localizer.Get("Query sequence")" />
+                    <div>
+                        <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OpenTestQuery" Variant="Variant.Filled" Color="Color.Primary">
+                            <LoadingContent>
+                                @Localizer.Get("Processing")
+                            </LoadingContent>
+                            <ChildContent>
+                                @Localizer.Get("Test query")
+                            </ChildContent>
+                        </MudLoadingButton>
+                        @if (_loading)
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelTest">@Localizer.Get("Cancel")</MudButton>
+                        }
+                    </div>
                     @if (_taskType == TaskType.Report.ToString())
                     {
-                        <br/>
-                        <MudSwitch @bind-Checked="_param.GenerateIfEmpty" Label="@Localizer.Get("Generate if empty?")" Color="Color.Primary"/>
+                        <br />
+                        <MudSwitch @bind-Value="_param.GenerateIfEmpty" Label="@Localizer.Get("Generate if empty?")" Color="Color.Primary" />
                         if (_fileType == FileType.Excel.ToString())
                         {
-                            <MudSwitch @bind-Checked="_param.SeparateExcelFile" Label="@Localizer.Get("Separated excel file?")" Color="Color.Primary"/>
+                            <MudSwitch @bind-Value="_param.SeparateExcelFile" Label="@Localizer.Get("Separated excel file?")" Color="Color.Primary" />
                             @if (_useSpecificFileNaming)
                             {
-                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")"/>
-                                <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")"/>
+                                <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")" />
                                 <p>* @Localizer.Get("Only when query is generated in separated file")</p>
                             }
+
                             if (_useExcelTemplate && !_param.SeparateExcelFile)
                             {
-                                <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTabName" Label="@Localizer.Get("Template tab name to use")" Required/>
-                                <MudSwitch @bind-Checked="_param.ExcelTemplate.UseAnExcelDataTable" Label="@Localizer.Get("Use an excel data table?")" Color="Color.Primary"/>
+                                <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTabName" Label="@Localizer.Get("Template tab name to use")" Required />
+                                <MudSwitch @bind-Value="_param.ExcelTemplate.UseAnExcelDataTable" Label="@Localizer.Get("Use an excel data table?")" Color="Color.Primary" />
                                 @if (_param.ExcelTemplate.UseAnExcelDataTable)
                                 {
-                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelDataTableName" Label="@Localizer.Get("Excel data table name")" Required/>
+                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelDataTableName" Label="@Localizer.Get("Excel data table name")" Required />
                                 }
                                 else
                                 {
-                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTemplateCellReference" Label="@Localizer.Get("Cell reference")" Required/>
+                                    <MudTextField @bind-Value="_param.ExcelTemplate.ExcelTemplateCellReference" Label="@Localizer.Get("Cell reference")" Required />
                                 }
                             }
                             else
                             {
-                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")"/>
-                                <MudSwitch @bind-Checked="_param.AddValidationSheet" Label="@Localizer.Get("Add validation sheet?")" Color="Color.Primary"/>
+                                <MudTextField @bind-Value="_param.ExcelTabName" Label="@Localizer.Get("Excel tab name")" />
+                                <MudSwitch @bind-Value="_param.AddValidationSheet" Label="@Localizer.Get("Add validation sheet?")" Color="Color.Primary" />
                             }
                         }
                         else
                         {
-                            <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")"/>
+                            <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")" />
                             <MudSelect T="string" Label="@Localizer.Get("Encoding type")" @bind-Value="@_param.EncodingType"
                                        AnchorOrigin="Origin.BottomCenter"
                                        Required>
@@ -84,16 +81,17 @@
 
                             </MudSelect>
                         }
+
                         @if (_fileType == FileType.Csv.ToString())
                         {
-                            <MudSwitch @bind-Checked="_param.RemoveHeader" Label="@Localizer.Get("Remove Header")" Color="Color.Primary"/>
+                            <MudSwitch @bind-Value="_param.RemoveHeader" Label="@Localizer.Get("Remove Header")" Color="Color.Primary" />
                         }
                     }
                     @if (_taskType == TaskType.DataTransfer.ToString())
                     {
-                        <MudTextField @bind-Value="_param.DataTransferTargetTableName" Label="@Localizer.Get("Target table name")" Required/>
-                        <MudSwitch @bind-Checked="_param.DataTransferCreateTable" Label="@Localizer.Get("Create target table?")" Color="Color.Primary"/>
-                        <MudSwitch @bind-Checked="_param.DataTransferUsePk" Label="@Localizer.Get("Use primary keys?")" Color="Color.Primary" @onclick="ResetCommandBehaviour"/>
+                        <MudTextField @bind-Value="_param.DataTransferTargetTableName" Label="@Localizer.Get("Target table name")" Required />
+                        <MudSwitch @bind-Value="_param.DataTransferCreateTable" Label="@Localizer.Get("Create target table?")" Color="Color.Primary" />
+                        <MudSwitch @bind-Value="_param.DataTransferUsePk" Label="@Localizer.Get("Use primary keys?")" Color="Color.Primary" @onclick="ResetCommandBehaviour" />
 
                         @if (_param.DataTransferUsePk)
                         {
@@ -105,7 +103,7 @@
                                     <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
                                 }
                             </MudSelect>
-                            <MudTextField T="string" Label="@Localizer.Get("Enter the primary key column")" @bind-Value="@_pKName"/>
+                            <MudTextField T="string" Label="@Localizer.Get("Enter the primary key column")" @bind-Value="@_pKName" />
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
                                        Class="ml-auto mt-3 mb-3" OnClick="@(Add)">
                                 @Localizer.Get("Add the primary key")
@@ -145,16 +143,16 @@
                     {
                         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
                             <MudTabPanel Text="SQL">
-                                <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt"/>
+                                <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt" />
                             </MudTabPanel>
                             <MudTabPanel Text="@Localizer.Get("Query parameters")">
-                                <_QueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery"/>
+                                <_QueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery" />
                             </MudTabPanel>
                         </MudTabs>
                     }
                     else
                     {
-                        <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt"/>
+                        <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt" />
                     }
                 </MudItem>
             </MudGrid>
@@ -162,7 +160,7 @@
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
-            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")"/>
+            <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")" />
         }
     </DialogContent>
     <DialogActions>
@@ -173,20 +171,15 @@
 
 @code {
 
-    [CascadingParameter]
-    MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter]
-    public TaskDetailDto? Item { get; set; }
+    [Parameter] public TaskDetailDto? Item { get; set; }
 
-    [Parameter]
-    public TaskHeaderDto? Header { get; set; }
+    [Parameter] public TaskHeaderDto? Header { get; set; }
 
-    [Parameter]
-    public int ActivityId { get; set; }
+    [Parameter] public int ActivityId { get; set; }
 
-    [Parameter]
-    public CrudAction Action { get; set; }
+    [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = default!;
     private string? _deletionValidation;
@@ -203,7 +196,9 @@
     private List<Dictionary<string, object>>? _data;
     private string? _queryTestResult;
     private bool _testResult;
+
     private CancellationTokenSource? _cts;
+
     /*
     private List<string>? _encodingType;
     */
@@ -213,9 +208,9 @@
     private string? _pKName;
 
     JsonSerializerOptions _jsonOpt = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -226,6 +221,7 @@
         {
             _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters, _jsonOpt)!;
         }
+
         if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
         {
             _paramHeader = JsonSerializer.Deserialize<TaskHeaderParameters>(Header.TaskHeaderParameters, _jsonOpt);
@@ -239,20 +235,21 @@
         {
             _typeDbActivity = response.Select(a => a.TypeDb).First();
         }
+
         _loading = false;
         _opt = new AceEditorOptions
-        {
-            IsReadOnly = false,
-            Language = _typeDbActivity switch
             {
-                TypeDb.MySql => AceLanguage.mysql,
-                TypeDb.MariaDb => AceLanguage.mysql,
-                TypeDb.SqlServer => AceLanguage.sqlserver,
-                TypeDb.PostgreSql => AceLanguage.pgsql,
-                _ => AceLanguage.sql
+                IsReadOnly = false,
+                Language = _typeDbActivity switch
+                {
+                    TypeDb.MySql => AceLanguage.mysql,
+                    TypeDb.MariaDb => AceLanguage.mysql,
+                    TypeDb.SqlServer => AceLanguage.sqlserver,
+                    TypeDb.PostgreSql => AceLanguage.pgsql,
+                    _ => AceLanguage.sql
                 },
-            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
-        };
+                Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
+            };
     }
 
     private void Cancel()
@@ -305,6 +302,7 @@
                     }
                 }
             }
+
             var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };
             var remoteDataPayload = new RemoteDataPayload { Values = run };
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
@@ -339,7 +337,7 @@
         }
     }
 
-    private readonly DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true };
+    private readonly DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true };
 
     private async Task OpenTestQuery()
     {
@@ -370,13 +368,14 @@
             {
                 _param.DataTransferPk.Add(_pKName);
             }
+
             _pKName = "";
         }
     }
 
     private async Task DeleteTableConfirmation()
     {
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
         var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Deleting can not be undone!"), Localizer.Get("Confirm"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)

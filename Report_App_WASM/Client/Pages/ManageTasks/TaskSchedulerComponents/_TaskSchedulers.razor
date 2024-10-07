@@ -7,23 +7,23 @@
             <MudText Typo="Typo.h6">@Localizer.Get("Crons")</MudText>
             <MudSpacer/>
             <MudStack Row="true">
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" Title="@Localizer.Get("Add")"/>
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")" />
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")"/>
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow: auto">
                 <SimpleGrid Items="@_elements.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
-                        <MudStack Row="true">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" Title="@Localizer.Get("Edit")"/>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" Title="@Localizer.Get("Delete")"/>
+                        <MudStack Row="true" Justify="Justify.Center">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CronValue)" Title="@Localizer.Get("Cron expression")" Sortable="true"/>
@@ -37,21 +37,18 @@
 
 @code {
 
-    [Parameter]
-    public TaskHeaderDto? Item { get; set; }
+    [Parameter] public TaskHeaderDto? Item { get; set; }
 
-    [Parameter]
-    public bool ChangePending { get; set; }
+    [Parameter] public bool ChangePending { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> ChangePendingChanged { get; set; }
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
     private List<CronParameters>? _crons = new();
     SimpleGrid<CronEditView>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
     private List<CronEditView> _elements = new();
-    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, DisableBackdropClick = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+    DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Large, FullWidth = true };
     private bool _disable;
 
     private class CronEditView
@@ -99,18 +96,20 @@
                 var toUpdate = _crons.FirstOrDefault(a => a?.CronValue == dataBefore);
                 if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
             }
+
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
             UpdateElements();
         }
+
         _disable = false;
     }
 
     private async Task OpenDeleteDialog(CronEditView value)
     {
         _disable = true;
-        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, DisableBackdropClick = false, MaxWidth = MaxWidth.ExtraSmall };
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
         var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
 
         if (result != null)
@@ -122,6 +121,7 @@
             SetItemCronValues();
             UpdateElements();
         }
+
         _disable = false;
     }
 

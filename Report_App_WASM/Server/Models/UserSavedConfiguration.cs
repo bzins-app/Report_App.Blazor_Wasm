@@ -1,7 +1,4 @@
-﻿using Report_App_WASM.Server.Models.AuditModels;
-using Report_App_WASM.Shared;
-
-namespace Report_App_WASM.Server.Models;
+﻿namespace Report_App_WASM.Server.Models;
 
 public class UserSavedConfiguration : BaseTraceability
 {

@@ -225,9 +225,6 @@
   <data name="Add recipient" xml:space="preserve">
     <value>Ontvanger toevoegen</value>
   </data>
-  <data name="Add recipients" xml:space="preserve">
-    <value>Ontvangers toevoegen</value>
-  </data>
   <data name="Add recipients to email report" xml:space="preserve">
     <value>Ontvangers toevoegen aan e-mail rapport</value>
   </data>
@@ -263,12 +260,6 @@
   </data>
   <data name="Alert title" xml:space="preserve">
     <value>Titel van de waarschuwing</value>
-  </data>
-  <data name="Alert title1" xml:space="preserve">
-    <value>Titel van de waarschuwing1</value>
-  </data>
-  <data name="Alert1" xml:space="preserve">
-    <value>Waarschuwing1</value>
   </data>
   <data name="Alerts" xml:space="preserve">
     <value>Waarschuwingen</value>
@@ -537,9 +528,6 @@
   <data name="Column name" xml:space="preserve">
     <value>Kolom naam</value>
   </data>
-  <data name="Column name1" xml:space="preserve">
-    <value>Kolomnaam1</value>
-  </data>
   <data name="Columns" xml:space="preserve">
     <value>Kolommen</value>
   </data>
@@ -600,9 +588,6 @@
   <data name="Confirm password" xml:space="preserve">
     <value>Bevestig wachtwoord</value>
   </data>
-  <data name="Confirm Password1" xml:space="preserve">
-    <value>Bevestig Wachtwoord1</value>
-  </data>
   <data name="Confirm the deletion by entering" xml:space="preserve">
     <value>Bevestig de verwijdering door in te toetsen</value>
   </data>
@@ -657,9 +642,6 @@
   <data name="Create a new network credential" xml:space="preserve">
     <value>Creëer een nieuwe netwerk credential</value>
   </data>
-  <data name="Create a new report" xml:space="preserve">
-    <value>Maak een nieuw rapport</value>
-  </data>
   <data name="Create a new Sftp profil" xml:space="preserve">
     <value>Maak een nieuw Sftp profiel</value>
   </data>
@@ -673,9 +655,6 @@
     <value>Maak account</value>
   </data>
   <data name="Create activity" xml:space="preserve">
-    <value>Activiteit aanmaken</value>
-  </data>
-  <data name="Create an activity" xml:space="preserve">
     <value>Activiteit aanmaken</value>
   </data>
   <data name="create an alert" xml:space="preserve">
@@ -749,9 +728,6 @@
   </data>
   <data name="Database Maintenance" xml:space="preserve">
     <value>Databank onderhoud</value>
-  </data>
-  <data name="Database name" xml:space="preserve">
-    <value>Databasenaam</value>
   </data>
   <data name="Database rows per table" xml:space="preserve">
     <value>Database rijen per tabel</value>
@@ -915,17 +891,8 @@
   <data name="Edit a data transfer" xml:space="preserve">
     <value>Bewerk een gegevensoverdracht</value>
   </data>
-  <data name="Edit a query" xml:space="preserve">
-    <value>Een query bewerken</value>
-  </data>
-  <data name="Edit a report" xml:space="preserve">
-    <value>Een rapport bewerken</value>
-  </data>
   <data name="Edit activity" xml:space="preserve">
     <value>Activiteit bewerken</value>
-  </data>
-  <data name="Edit an activity" xml:space="preserve">
-    <value>Een activiteit bewerken</value>
   </data>
   <data name="Edit an alert" xml:space="preserve">
     <value>Een waarschuwing bewerken</value>
@@ -1197,12 +1164,6 @@
   <data name="Go back to email report list" xml:space="preserve">
     <value>Ga terug naar email rapport lijst</value>
   </data>
-  <data name="Go back to reports list" xml:space="preserve">
-    <value>Ga terug naar de rapporten lijst</value>
-  </data>
-  <data name="Go back to the activity list" xml:space="preserve">
-    <value>Ga terug naar de activiteitenlijst</value>
-  </data>
   <data name="Go to first page" xml:space="preserve">
     <value>Ga naar de eerste pagina</value>
   </data>
@@ -1269,9 +1230,6 @@
   <data name="Incorrect password" xml:space="preserve">
     <value>Onjuist wachtwoord</value>
   </data>
-  <data name="Indicate the database name?" xml:space="preserve">
-    <value>Geef de naam van de database op?</value>
-  </data>
   <data name="Information sheet text" xml:space="preserve">
     <value>Informatie blad tekst</value>
   </data>
@@ -1283,9 +1241,6 @@
   </data>
   <data name="Inventory" xml:space="preserve">
     <value>Inventaris</value>
-  </data>
-  <data name="IP or Servername" xml:space="preserve">
-    <value>IP of Servernaam</value>
   </data>
   <data name="Is activated?" xml:space="preserve">
     <value>Is geactiveerd?</value>
@@ -1626,9 +1581,6 @@
   <data name="Not equals" xml:space="preserve">
     <value>Niet gelijk aan</value>
   </data>
-  <data name="Not sent by email" xml:space="preserve">
-    <value>Niet verzonden per e-mail</value>
-  </data>
   <data name="Nov" xml:space="preserve">
     <value>Nov</value>
   </data>
@@ -1648,9 +1600,6 @@
     <value>Okt</value>
   </data>
   <data name="of" xml:space="preserve">
-    <value>van</value>
-  </data>
-  <data name="of1" xml:space="preserve">
     <value>van</value>
   </data>
   <data name="Off" xml:space="preserve">
@@ -2031,9 +1980,6 @@
   <data name="send by email" xml:space="preserve">
     <value>Verstuur per e-mail</value>
   </data>
-  <data name="Send by email?" xml:space="preserve">
-    <value>Versturen per e-mail?</value>
-  </data>
   <data name="Send for all recipients" xml:space="preserve">
     <value>Verzenden voor alle ontvangers</value>
   </data>
@@ -2051,9 +1997,6 @@
   </data>
   <data name="Separated excel file?" xml:space="preserve">
     <value>Gescheiden excel bestand?</value>
-  </data>
-  <data name="Sequence" xml:space="preserve">
-    <value>Volgorde</value>
   </data>
   <data name="Service down" xml:space="preserve">
     <value>Service uit</value>
@@ -2196,9 +2139,6 @@
   <data name="Tasks in error" xml:space="preserve">
     <value>Taken in fout</value>
   </data>
-  <data name="Tasks manager" xml:space="preserve">
-    <value>Taken manager</value>
-  </data>
   <data name="Tasks overview" xml:space="preserve">
     <value>Overzicht van taken</value>
   </data>
@@ -2255,9 +2195,6 @@
   </data>
   <data name="This activity is Visible?" xml:space="preserve">
     <value>Deze activiteit is zichtbaar?</value>
-  </data>
-  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
-    <value>Dit proces schakelt 2FA uit totdat u uw authenticator app heeft geverifieerd.  Als u de configuratie van uw authenticator-app niet voltooit, kunt u de toegang tot uw account verliezen.</value>
   </data>
   <data name="Thursday" xml:space="preserve">
     <value>Donderdag</value>
@@ -2427,9 +2364,6 @@
   <data name="Use the same tables descriptions than" xml:space="preserve">
     <value>Gebruik dezelfde tabelbeschrijvingen dan</value>
   </data>
-  <data name="Use Windows authentication?" xml:space="preserve">
-    <value>Windows-verificatie gebruiken?</value>
-  </data>
   <data name="User actions logs" xml:space="preserve">
     <value>Gebruikers acties logs</value>
   </data>
@@ -2585,5 +2519,68 @@
   </data>
   <data name="Your password must contain at least one uppercase letter" xml:space="preserve">
     <value>Uw wachtwoord moet minstens één hoofdletter bevatten</value>
+  </data>
+  <data name="Add recipients" xml:space="preserve">
+    <value>Ontvangers toevoegen</value>
+  </data>
+  <data name="Create a new report" xml:space="preserve">
+    <value>Maak een nieuw rapport</value>
+  </data>
+  <data name="Create an activity" xml:space="preserve">
+    <value>Activiteit aanmaken</value>
+  </data>
+  <data name="Database name" xml:space="preserve">
+    <value>Databasenaam</value>
+  </data>
+  <data name="Edit a query" xml:space="preserve">
+    <value>Een query bewerken</value>
+  </data>
+  <data name="Edit a report" xml:space="preserve">
+    <value>Een rapport bewerken</value>
+  </data>
+  <data name="Edit an activity" xml:space="preserve">
+    <value>Een activiteit bewerken</value>
+  </data>
+  <data name="Go back to reports list" xml:space="preserve">
+    <value>Ga terug naar de rapporten lijst</value>
+  </data>
+  <data name="Go back to the activity list" xml:space="preserve">
+    <value>Ga terug naar de activiteitenlijst</value>
+  </data>
+  <data name="Indicate the database name?" xml:space="preserve">
+    <value>Geef de naam van de database op?</value>
+  </data>
+  <data name="IP or Servername" xml:space="preserve">
+    <value>IP of Servernaam</value>
+  </data>
+  <data name="Not sent by email" xml:space="preserve">
+    <value>Niet verzonden per e-mail</value>
+  </data>
+  <data name="Send by email?" xml:space="preserve">
+    <value>Versturen per e-mail?</value>
+  </data>
+  <data name="Sequence" xml:space="preserve">
+    <value>Volgorde</value>
+  </data>
+  <data name="Tasks manager" xml:space="preserve">
+    <value>Taken manager</value>
+  </data>
+  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
+    <value>Dit proces schakelt 2FA uit totdat u uw authenticator app heeft geverifieerd.  Als u de configuratie van uw authenticator-app niet voltooit, kunt u de toegang tot uw account verliezen.</value>
+  </data>
+  <data name="Use Windows authentication?" xml:space="preserve">
+    <value>Windows-verificatie gebruiken?</value>
+  </data>
+  <data name="Demo connection" xml:space="preserve">
+    <value>Verbinding maken met demo-account</value>
+  </data>
+  <data name="Connect to demo account" xml:space="preserve">
+    <value>Demo verbinding</value>
+  </data>
+  <data name="Open demo emails view" xml:space="preserve">
+    <value>Demomails bekijken</value>
+  </data>
+  <data name="A Target database must be selected" xml:space="preserve">
+    <value>Er moet een doeldatabase worden geselecteerd</value>
   </data>
 </root>

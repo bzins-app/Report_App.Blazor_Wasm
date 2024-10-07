@@ -12,23 +12,23 @@
             <MudText Typo="Typo.h6">@Localizer.Get("Run reports manually"): @ActivityName</MudText>
             <MudSpacer/>
             <MudStack Row="true">
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" Title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
-                <MudIconButton DisableElevation Variant="Variant.Outlined"
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" Title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
             @if (_tags.Any())
             {
-                <MudChipSet SelectedChipsChanged="OnTagSelected" SelectedValues="selected" MultiSelection="true" Filter="true">
+                <MudChipSet @bind-SelectedValues="selected" SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var value in _tags)
                     {
-                        <MudChip Text="@value" Variant="Variant.Text" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
+                        <MudChip Text="@value" Value="value" Variant="Variant.Text" OnClick="OnTagSelected" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
                     }
                 </MudChipSet>
             }
@@ -63,15 +63,11 @@
 
 @code
 {
-#nullable enable
-    [Parameter]
-    public int? ActivityId { get; set; }
+    [Parameter] public int? ActivityId { get; set; }
 
-    [Parameter]
-    public string? ActivityName { get; set; }
+    [Parameter] public string? ActivityName { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 
     private readonly string _typeTask = TaskType.Report.ToString();
     GridItemsProvider<TaskHeaderDto>? _itemsProvider;
@@ -80,7 +76,7 @@
     SimpleGrid<TaskHeaderDto> _grid = default!;
     private bool _rendering;
     List<string> _tags = new();
-    MudChip[] selected = null!;
+    IReadOnlyCollection<string> selected = null!;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -97,6 +93,7 @@
         {
             urlExt = $"&&activityId={ActivityId!.Value}";
         }
+
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
         _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
     }
@@ -111,6 +108,7 @@
             {
                 return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
             }
+
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
         _translations = AppService.GetGridTranslations();
@@ -118,8 +116,8 @@
 
     private async Task<ApiResponse<TaskHeaderDto>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDto> req)
     {
-    // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-    // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
@@ -137,10 +135,12 @@
         {
             url += "&" + odataPagination;
         }
+
         if (!string.IsNullOrEmpty(odataSort))
         {
             url += "&" + odataSort;
         }
+
         if (!string.IsNullOrEmpty(odataFilters))
         {
             url += "&" + odataFilters + " and " + customFilters;
@@ -149,12 +149,13 @@
         {
             url += "&$filter=" + customFilters;
         }
+
         if (selected != null)
         {
             var _tagFilter = string.Empty;
             foreach (var tagSelected in selected)
             {
-                _tagFilter += $" and contains(Tags, '{tagSelected.Text}')";
+                _tagFilter += $" and contains(Tags, '{tagSelected}')";
             }
 
             url += _tagFilter;
@@ -166,7 +167,7 @@
         }
         catch
         {
-    // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -186,9 +187,8 @@
         _rendering = false;
     }
 
-    private async Task OnTagSelected(MudChip[] _selected)
+    private async Task OnTagSelected()
     {
-        selected = _selected;
         if (_grid != null) await OnRefresh();
     }
 

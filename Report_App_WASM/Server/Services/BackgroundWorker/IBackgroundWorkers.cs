@@ -1,7 +1,4 @@
 ﻿using System.Net.Mail;
-using Report_App_WASM.Server.Utils;
-using Report_App_WASM.Shared;
-using Report_App_WASM.Shared.SerializedParameters;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
