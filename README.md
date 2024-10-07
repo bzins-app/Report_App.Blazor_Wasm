@@ -1,20 +1,29 @@
 # Report application on blazor webassembly hosted 
 
-The purpose of this application is to generate reports from databases. You can choose the type of database (Oracle, SQLserver, PostgreSQL, Mariadb or MySQL) but others can be easily added.
+This application is designed to generate reports and manage database operations efficiently. It is built with ASP.NET Core (NET 8) and offers three main features:
 
-Once you have entered the connection credentials, you can create report or alerts define which email recipients or a network path via FTP or sFTP
-Each job can be "croned" with a dedicated tool.
+1. **Report Generation**: Users can create reports in various formats such as XLS, XLS templates, XML, CSV, and more. These reports can either be sent via email to a designated recipient list or dropped to FTP/SFTP locations. Email alerts can also be scheduled using a visual cron editor to ensure timely delivery.
 
-This application is built with ASP.NET Core (NET 7).
+2. **Database Querying and Bulk Insert**: The application allows users to query databases and perform bulk data inserts into other databases, either into existing tables or by creating new ones with a primary key. This functionality is fully schedulable via cron jobs, enabling automated and recurring database operations.
 
-An example is available at: https://reportappdemo.dev.bzins.app/ -> Update on going. 
-To log in, use the user "superviseur" and the password "$tR0ng)cR3d?"
+3. **Query Store and Data Visualization**: Users can store and run queries manually to extract data, visualize results in pivot tables, or generate charts. This feature provides a powerful interface for data analysis directly within the application.
 
-Number of official Microsoft libraries are used like EntityFramework core or identity manager.
+Moreover, an API is available to trigger jobs externally, allowing seamless integration with other systems.
 
-* The layout uses the Mud Blazor UI framework: https://mudblazor.com/
-* Datagrid and data rendering is powered by a fork of QuickGrid: https://aspnet.github.io/quickgridsamples/
-* BackgroundWorkers are handled by Hangfire: https://www.hangfire.io/
+### Additional Features and Technologies:
+- The application supports multiple database types, including Oracle, SQL Server, PostgreSQL, MariaDB, and MySQL, with the ability to add others easily.
+- It utilizes official Microsoft libraries such as Entity Framework Core and Identity Manager.
+- The layout is built using the MudBlazor UI framework (https://mudblazor.com/), while data rendering and grids are powered by a fork of QuickGrid (https://aspnet.github.io/quickgridsamples/).
+- Background tasks are managed using Hangfire (https://www.hangfire.io/), enabling robust job scheduling and execution.
+
+A demo version is available at: [https://reportappdemo.dev.bzins.app/](https://reportappdemo.dev.bzins.app/) 
+
+
+Below are some UI screenshots:
+
+---
+
+This combines all key points, outlining the application's structure, features, and technologies used. Let me know if you'd like further adjustments!
 
 
 Below some UI screenshots:
@@ -26,7 +35,7 @@ Below some UI screenshots:
 
 ## How to start:
 
-With docker-compose: base user "admin@report.app" and base password "$tR0ng)cR3d?". In the future those parameters will be customisable.
+With docker-compose: base user "admin@report.app" and base password "$tR0ngcR3d?". In the future those parameters will be customisable.
 
 ```yml
 version: '3.4'
@@ -43,7 +52,7 @@ services:
       - SA_PASSWORD=Ultra)SecurePAs$worD!
       - MSSQL_DB=report_app
     volumes:
-     - reportapp_db:/var/opt/mssql/data
+     - reportapp_db:/var/opt/mssql
      
   report_app_blazorserv:
     image: benoitzins/reportapp_wasm:latest
@@ -56,9 +65,9 @@ services:
     container_name: ReportApp_Blazor_server
     restart: always
     environment:
-      - 'ConnectionStrings__DefaultConnection=Server=db;Database=report_app;User Id=sa;Password=Ultra)SecurePAs$worD!;MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DefaultConnection=Server=db;Database=report_app;User Id=sa;Password=UltraSecurePAs$worD!;MultipleActiveResultSets=true'
       - 'BaseUserDefaultOptions:Email=admin@report.app'
-      - 'BaseUserDefaultOptions:Password=$tR0ng)cR3d?'
+      - 'BaseUserDefaultOptions:Password=$tR0ngcR3d?'
     volumes:
       - reportapp_docsstorage:/app/wwwroot/docsstorage
       - reportapp_upload:/app/wwwroot/upload
@@ -69,3 +78,4 @@ volumes:
   reportapp_upload:
   reportapp_db:
 ```
+

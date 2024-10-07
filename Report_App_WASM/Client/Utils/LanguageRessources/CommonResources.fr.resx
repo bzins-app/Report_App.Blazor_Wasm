@@ -225,9 +225,6 @@
   <data name="Add recipient" xml:space="preserve">
     <value>Ajouter un destinataire</value>
   </data>
-  <data name="Add recipients" xml:space="preserve">
-    <value>Ajouter des destinataires</value>
-  </data>
   <data name="Add recipients to email report" xml:space="preserve">
     <value>Ajouter des adresses email</value>
   </data>
@@ -645,9 +642,6 @@
   <data name="Create a new network credential" xml:space="preserve">
     <value>Ajouter une configuration d'identification réseau</value>
   </data>
-  <data name="Create a new report" xml:space="preserve">
-    <value>Créer un nouveau rapport</value>
-  </data>
   <data name="Create a new Sftp profil" xml:space="preserve">
     <value>Créer un nouveau profil Sftp</value>
   </data>
@@ -661,9 +655,6 @@
     <value>Créer un compte</value>
   </data>
   <data name="Create activity" xml:space="preserve">
-    <value>Créer une activité</value>
-  </data>
-  <data name="Create an activity" xml:space="preserve">
     <value>Créer une activité</value>
   </data>
   <data name="create an alert" xml:space="preserve">
@@ -737,9 +728,6 @@
   </data>
   <data name="Database Maintenance" xml:space="preserve">
     <value>Maintenance DB</value>
-  </data>
-  <data name="Database name" xml:space="preserve">
-    <value>Nom de la base de données</value>
   </data>
   <data name="Database rows per table" xml:space="preserve">
     <value>Nbr de lignes par table</value>
@@ -903,17 +891,8 @@
   <data name="Edit a data transfer" xml:space="preserve">
     <value>Modifier un transfert de données</value>
   </data>
-  <data name="Edit a query" xml:space="preserve">
-    <value>Modifier une requête</value>
-  </data>
-  <data name="Edit a report" xml:space="preserve">
-    <value>Modifier un rapport</value>
-  </data>
   <data name="Edit activity" xml:space="preserve">
     <value>Modifier l'activité</value>
-  </data>
-  <data name="Edit an activity" xml:space="preserve">
-    <value>Modifier une activité</value>
   </data>
   <data name="Edit an alert" xml:space="preserve">
     <value>Modifier une alerte</value>
@@ -1185,12 +1164,6 @@
   <data name="Go back to email report list" xml:space="preserve">
     <value>Retour à la liste des emails</value>
   </data>
-  <data name="Go back to reports list" xml:space="preserve">
-    <value>Retourner à la liste des rapports</value>
-  </data>
-  <data name="Go back to the activity list" xml:space="preserve">
-    <value>Retourner à la liste des activités</value>
-  </data>
   <data name="Go to first page" xml:space="preserve">
     <value>Aller à la première page</value>
   </data>
@@ -1257,9 +1230,6 @@
   <data name="Incorrect password" xml:space="preserve">
     <value>Mot de passe incorrect</value>
   </data>
-  <data name="Indicate the database name?" xml:space="preserve">
-    <value>Indiquer le nom de la base de données?</value>
-  </data>
   <data name="Information sheet text" xml:space="preserve">
     <value>Texte de la feuille d'information</value>
   </data>
@@ -1271,9 +1241,6 @@
   </data>
   <data name="Inventory" xml:space="preserve">
     <value>Stock</value>
-  </data>
-  <data name="IP or Servername" xml:space="preserve">
-    <value>IP ou nom du serveur</value>
   </data>
   <data name="Is activated?" xml:space="preserve">
     <value>Est activé?</value>
@@ -1613,9 +1580,6 @@
   </data>
   <data name="Not equals" xml:space="preserve">
     <value>N'est pas égal à</value>
-  </data>
-  <data name="Not sent by email" xml:space="preserve">
-    <value>Pas d'envoi par email</value>
   </data>
   <data name="Nov" xml:space="preserve">
     <value>Nov</value>
@@ -2019,9 +1983,6 @@
   <data name="send by email" xml:space="preserve">
     <value>envoyer par email</value>
   </data>
-  <data name="Send by email?" xml:space="preserve">
-    <value>Envoyer par email?</value>
-  </data>
   <data name="Send for all recipients" xml:space="preserve">
     <value>Envoyer pour tous les destinataires</value>
   </data>
@@ -2039,9 +2000,6 @@
   </data>
   <data name="Separated excel file?" xml:space="preserve">
     <value>Fichier excel séparé ?</value>
-  </data>
-  <data name="Sequence" xml:space="preserve">
-    <value>Séquence</value>
   </data>
   <data name="Service down" xml:space="preserve">
     <value>Service éteint</value>
@@ -2184,9 +2142,6 @@
   <data name="Tasks in error" xml:space="preserve">
     <value>Tâches en erreur</value>
   </data>
-  <data name="Tasks manager" xml:space="preserve">
-    <value>Gestionnaire de tâches</value>
-  </data>
   <data name="Tasks overview" xml:space="preserve">
     <value>Vue globale des tâches</value>
   </data>
@@ -2243,9 +2198,6 @@
   </data>
   <data name="This activity is Visible?" xml:space="preserve">
     <value>Rendre cette activité visible?</value>
-  </data>
-  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
-    <value>Ce processus désactive la 2FA jusqu'à ce que vous vérifiiez votre application d'authentification.  Si vous ne terminez pas la configuration de votre application d'authentification, vous risquez de perdre l'accès à votre compte.</value>
   </data>
   <data name="Thursday" xml:space="preserve">
     <value>Jeudi</value>
@@ -2418,9 +2370,6 @@
   <data name="Use the same tables descriptions than" xml:space="preserve">
     <value>Utiliser les mêmes descriptions de tables que</value>
   </data>
-  <data name="Use Windows authentication?" xml:space="preserve">
-    <value>Utiliser l'authentification Windows?</value>
-  </data>
   <data name="User actions logs" xml:space="preserve">
     <value>Activités des utilisateurs</value>
   </data>
@@ -2576,5 +2525,68 @@
   </data>
   <data name="Your password must contain at least one uppercase letter" xml:space="preserve">
     <value>Votre mot de passe doit contenir au moins une lettre majuscule.</value>
+  </data>
+  <data name="Add recipients" xml:space="preserve">
+    <value>Ajouter des destinataires</value>
+  </data>
+  <data name="Create a new report" xml:space="preserve">
+    <value>Créer un nouveau rapport</value>
+  </data>
+  <data name="Create an activity" xml:space="preserve">
+    <value>Créer une activité</value>
+  </data>
+  <data name="Database name" xml:space="preserve">
+    <value>Nom de la base de données</value>
+  </data>
+  <data name="Edit a query" xml:space="preserve">
+    <value>Modifier une requête</value>
+  </data>
+  <data name="Edit a report" xml:space="preserve">
+    <value>Modifier un rapport</value>
+  </data>
+  <data name="Edit an activity" xml:space="preserve">
+    <value>Modifier une activité</value>
+  </data>
+  <data name="Go back to reports list" xml:space="preserve">
+    <value>Retourner à la liste des rapports</value>
+  </data>
+  <data name="Go back to the activity list" xml:space="preserve">
+    <value>Retourner à la liste des activités</value>
+  </data>
+  <data name="Indicate the database name?" xml:space="preserve">
+    <value>Indiquer le nom de la base de données?</value>
+  </data>
+  <data name="IP or Servername" xml:space="preserve">
+    <value>IP ou nom du serveur</value>
+  </data>
+  <data name="Not sent by email" xml:space="preserve">
+    <value>Pas d'envoi par email</value>
+  </data>
+  <data name="Send by email?" xml:space="preserve">
+    <value>Envoyer par email?</value>
+  </data>
+  <data name="Sequence" xml:space="preserve">
+    <value>Séquence</value>
+  </data>
+  <data name="Tasks manager" xml:space="preserve">
+    <value>Gestionnaire de tâches</value>
+  </data>
+  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
+    <value>Ce processus désactive la 2FA jusqu'à ce que vous vérifiiez votre application d'authentification.  Si vous ne terminez pas la configuration de votre application d'authentification, vous risquez de perdre l'accès à votre compte.</value>
+  </data>
+  <data name="Use Windows authentication?" xml:space="preserve">
+    <value>Utiliser l'authentification Windows?</value>
+  </data>
+  <data name="Demo connection" xml:space="preserve">
+    <value>Se connecter au compte de demonstration</value>
+  </data>
+  <data name="Connect to demo account" xml:space="preserve">
+    <value>Connexion</value>
+  </data>
+  <data name="Open demo emails view" xml:space="preserve">
+    <value>Afficher les emails générés</value>
+  </data>
+  <data name="A Target database must be selected" xml:space="preserve">
+    <value>Une base de données cible doit être sélectionnée</value>
   </data>
 </root>
