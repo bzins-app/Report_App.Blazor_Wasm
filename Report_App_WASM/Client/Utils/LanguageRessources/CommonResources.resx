@@ -118,2429 +118,2429 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="A report is a process that creates a file based on one or several queries against the database settings configured at the activity level. A report must be scheduled. The file format can be choosen and if need the a deposit path can be defined. A report can be also sent by email." xml:space="preserve">
-    <value />
+    <value>A report is a process that creates a file based on one or several queries against the database settings configured at the activity level. A report must be scheduled. The file format can be choosen and if need the a deposit path can be defined. A report can be also sent by email.</value>
   </data>
   <data name="Accept" xml:space="preserve">
-    <value />
+    <value>Accept</value>
   </data>
   <data name="Acces failed count" xml:space="preserve">
-    <value />
+    <value>Acces failed count</value>
   </data>
   <data name="Access denied" xml:space="preserve">
-    <value />
+    <value>Access denied</value>
   </data>
   <data name="account" xml:space="preserve">
-    <value />
+    <value>account</value>
   </data>
   <data name="Account updated" xml:space="preserve">
-    <value />
+    <value>Account updated</value>
   </data>
   <data name="Actions" xml:space="preserve">
-    <value />
+    <value>Actions</value>
   </data>
   <data name="Activate Adhoc queries module?" xml:space="preserve">
-    <value />
+    <value>Activate Adhoc queries module?</value>
   </data>
   <data name="Activate report and email" xml:space="preserve">
-    <value />
+    <value>Activate report and email</value>
   </data>
   <data name="Activate SSL" xml:space="preserve">
-    <value />
+    <value>Activate SSL</value>
   </data>
   <data name="Activate Tasks scheduler module?" xml:space="preserve">
-    <value />
+    <value>Activate Tasks scheduler module?</value>
   </data>
   <data name="Activate the alert" xml:space="preserve">
-    <value />
+    <value>Activate the alert</value>
   </data>
   <data name="Activate Workers and logs" xml:space="preserve">
-    <value />
+    <value>Activate Workers and logs</value>
   </data>
   <data name="Active" xml:space="preserve">
-    <value />
+    <value>Active</value>
   </data>
   <data name="Activities" xml:space="preserve">
-    <value />
+    <value>Activities</value>
   </data>
   <data name="Activities list" xml:space="preserve">
-    <value />
+    <value>Activities list</value>
   </data>
   <data name="Activities manager" xml:space="preserve">
-    <value />
+    <value>Activities manager</value>
   </data>
   <data name="Activity" xml:space="preserve">
-    <value />
+    <value>Activity</value>
   </data>
   <data name="Activity deposit path" xml:space="preserve">
-    <value />
+    <value>Activity deposit path</value>
   </data>
   <data name="Activity id" xml:space="preserve">
-    <value />
+    <value>Activity id</value>
   </data>
   <data name="Activity manager" xml:space="preserve">
-    <value />
+    <value>Activity manager</value>
   </data>
   <data name="Activity name" xml:space="preserve">
-    <value />
+    <value>Activity name</value>
   </data>
   <data name="Activity overview" xml:space="preserve">
-    <value />
+    <value>Activity overview</value>
   </data>
   <data name="Activity parameters" xml:space="preserve">
-    <value />
+    <value>Activity parameters</value>
   </data>
   <data name="Ad hoc queries" xml:space="preserve">
-    <value />
+    <value>Ad hoc queries</value>
   </data>
   <data name="Add" xml:space="preserve">
-    <value />
+    <value>Add</value>
   </data>
   <data name="Add a parameter" xml:space="preserve">
-    <value />
+    <value>Add a parameter</value>
   </data>
   <data name="Add a query" xml:space="preserve">
-    <value />
+    <value>Add a query</value>
   </data>
   <data name="Add a report" xml:space="preserve">
-    <value />
+    <value>Add a report</value>
   </data>
   <data name="Add another service to log in." xml:space="preserve">
-    <value />
+    <value>Add another service to log in.</value>
   </data>
   <data name="Add authenticator app" xml:space="preserve">
-    <value />
+    <value>Add authenticator app</value>
   </data>
   <data name="Add email recipient" xml:space="preserve">
-    <value />
+    <value>Add email recipient</value>
   </data>
   <data name="Add new credentials" xml:space="preserve">
-    <value />
+    <value>Add new credentials</value>
   </data>
   <data name="Add new Sftp" xml:space="preserve">
-    <value />
+    <value>Add new Sftp</value>
   </data>
   <data name="Add query" xml:space="preserve">
-    <value />
+    <value>Add query</value>
   </data>
   <data name="Add recipient" xml:space="preserve">
-    <value />
+    <value>Add recipient</value>
   </data>
   <data name="Add recipients to email report" xml:space="preserve">
-    <value />
+    <value>Add recipients to email report</value>
   </data>
   <data name="Add the primary key" xml:space="preserve">
-    <value />
+    <value>Add the primary key</value>
   </data>
   <data name="Add validation sheet?" xml:space="preserve">
-    <value />
+    <value>Add validation sheet?</value>
   </data>
   <data name="Adhoc queries logs" xml:space="preserve">
-    <value />
+    <value>Adhoc queries logs</value>
   </data>
   <data name="Adhoc queries overview" xml:space="preserve">
-    <value />
+    <value>Adhoc queries overview</value>
   </data>
   <data name="Administrator email for error notifications" xml:space="preserve">
-    <value />
+    <value>Administrator email for error notifications</value>
   </data>
   <data name="Affected columns" xml:space="preserve">
-    <value />
+    <value>Affected columns</value>
   </data>
   <data name="Alert" xml:space="preserve">
-    <value />
+    <value>Alert</value>
   </data>
   <data name="Alert details" xml:space="preserve">
-    <value />
+    <value>Alert details</value>
   </data>
   <data name="Alert email prefix" xml:space="preserve">
-    <value />
+    <value>Alert email prefix</value>
   </data>
   <data name="Alert service" xml:space="preserve">
-    <value />
+    <value>Alert service</value>
   </data>
   <data name="Alert title" xml:space="preserve">
-    <value />
+    <value>Alert title</value>
   </data>
   <data name="Alerts" xml:space="preserve">
-    <value />
+    <value>Alerts</value>
   </data>
   <data name="All related data and sudata will be totally removed" xml:space="preserve">
-    <value />
+    <value>All related data and sudata will be totally removed</value>
   </data>
   <data name="Allready have an account?" xml:space="preserve">
-    <value />
+    <value>Allready have an account?</value>
   </data>
   <data name="Already uploaded?" xml:space="preserve">
-    <value />
+    <value>Already uploaded?</value>
   </data>
   <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
-    <value />
+    <value>An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
-    <value />
+    <value>An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined</value>
   </data>
   <data name="An error has occurred" xml:space="preserve">
-    <value />
+    <value>An error has occurred</value>
   </data>
   <data name="An error has occurred. This application may no longer respond until reloaded." xml:space="preserve">
-    <value />
+    <value>An error has occurred. This application may no longer respond until reloaded.</value>
   </data>
   <data name="An unhandled exception has occurred. See browser dev tools for details." xml:space="preserve">
-    <value />
+    <value>An unhandled exception has occurred. See browser dev tools for details.</value>
   </data>
   <data name="and" xml:space="preserve">
-    <value />
+    <value>and</value>
   </data>
   <data name="App DB name" xml:space="preserve">
-    <value />
+    <value>App DB name</value>
   </data>
   <data name="Append" xml:space="preserve">
-    <value />
+    <value>Append</value>
   </data>
   <data name="Application Dashboard" xml:space="preserve">
-    <value />
+    <value>Application Dashboard</value>
   </data>
   <data name="Application DB size" xml:space="preserve">
-    <value />
+    <value>Application DB size</value>
   </data>
   <data name="Application intent read only?" xml:space="preserve">
-    <value />
+    <value>Application intent read only?</value>
   </data>
   <data name="Application logs charts" xml:space="preserve">
-    <value />
+    <value>Application logs charts</value>
   </data>
   <data name="Application logs follow up" xml:space="preserve">
-    <value />
+    <value>Application logs follow up</value>
   </data>
   <data name="Application Manager" xml:space="preserve">
-    <value />
+    <value>Application Manager</value>
   </data>
   <data name="Application name" xml:space="preserve">
-    <value />
+    <value>Application name</value>
   </data>
   <data name="Application parameters" xml:space="preserve">
-    <value />
+    <value>Application parameters</value>
   </data>
   <data name="Application structure" xml:space="preserve">
-    <value />
+    <value>Application structure</value>
   </data>
   <data name="Apply filters" xml:space="preserve">
-    <value />
+    <value>Apply filters</value>
   </data>
   <data name="Apr" xml:space="preserve">
-    <value />
+    <value>Apr</value>
   </data>
   <data name="Archiving duration in days" xml:space="preserve">
-    <value />
+    <value>Archiving duration in days</value>
   </data>
   <data name="Are you sure you want to create a file to the directory? It could interfer with other processes" xml:space="preserve">
-    <value />
+    <value>Are you sure you want to create a file to the directory? It could interfer with other processes</value>
   </data>
   <data name="Are you sure you want to transfer data? It could interfer with other processes" xml:space="preserve">
-    <value />
+    <value>Are you sure you want to transfer data? It could interfer with other processes</value>
   </data>
   <data name="Are you sure?" xml:space="preserve">
-    <value />
+    <value>Are you sure?</value>
   </data>
   <data name="Ask an administrator to grant you rights" xml:space="preserve">
-    <value />
+    <value>Ask an administrator to grant you rights</value>
   </data>
   <data name="Assign a role" xml:space="preserve">
-    <value />
+    <value>Assign a role</value>
   </data>
   <data name="Assign role" xml:space="preserve">
-    <value />
+    <value>Assign role</value>
   </data>
   <data name="Associate your" xml:space="preserve">
-    <value />
+    <value>Associate your</value>
   </data>
   <data name="Audit system logs" xml:space="preserve">
-    <value />
+    <value>Audit system logs</value>
   </data>
   <data name="Audit Trail" xml:space="preserve">
-    <value />
+    <value>Audit Trail</value>
   </data>
   <data name="Audit trail: values changed" xml:space="preserve">
-    <value />
+    <value>Audit trail: values changed</value>
   </data>
   <data name="Audits" xml:space="preserve">
-    <value />
+    <value>Audits</value>
   </data>
   <data name="Aug" xml:space="preserve">
-    <value />
+    <value>Aug</value>
   </data>
   <data name="Average time of sync (in seconds)" xml:space="preserve">
-    <value />
+    <value>Average time of sync (in seconds)</value>
   </data>
   <data name="Back" xml:space="preserve">
-    <value />
+    <value>Back</value>
   </data>
   <data name="Back to Home" xml:space="preserve">
-    <value />
+    <value>Back to Home</value>
   </data>
   <data name="Back to login page?" xml:space="preserve">
-    <value />
+    <value>Back to login page?</value>
   </data>
   <data name="Background" xml:space="preserve">
-    <value />
+    <value>Background</value>
   </data>
   <data name="Background jobs manager" xml:space="preserve">
-    <value />
+    <value>Background jobs manager</value>
   </data>
   <data name="Background taks" xml:space="preserve">
-    <value />
+    <value>Background taks</value>
   </data>
   <data name="Background Tasks" xml:space="preserve">
-    <value />
+    <value>Background Tasks</value>
   </data>
   <data name="Background tasks logs" xml:space="preserve">
-    <value />
+    <value>Background tasks logs</value>
   </data>
   <data name="Background workers logs" xml:space="preserve">
-    <value />
+    <value>Background workers logs</value>
   </data>
   <data name="BackgroundWorkers" xml:space="preserve">
-    <value />
+    <value>BackgroundWorkers</value>
   </data>
   <data name="Base parameters" xml:space="preserve">
-    <value />
+    <value>Base parameters</value>
   </data>
   <data name="Base view" xml:space="preserve">
-    <value />
+    <value>Base view</value>
   </data>
   <data name="before you can log in with a recovery code." xml:space="preserve">
-    <value />
+    <value>before you can log in with a recovery code.</value>
   </data>
   <data name="Blind copy" xml:space="preserve">
-    <value />
+    <value>Blind copy</value>
   </data>
   <data name="Boxed" xml:space="preserve">
-    <value />
+    <value>Boxed</value>
   </data>
   <data name="Branch" xml:space="preserve">
-    <value />
+    <value>Branch</value>
   </data>
   <data name="Browser" xml:space="preserve">
-    <value />
+    <value>Browser</value>
   </data>
   <data name="Build filters" xml:space="preserve">
-    <value />
+    <value>Build filters</value>
   </data>
   <data name="Business area" xml:space="preserve">
-    <value />
+    <value>Business area</value>
   </data>
   <data name="Cache Is Activated?" xml:space="preserve">
-    <value />
+    <value>Cache Is Activated?</value>
   </data>
   <data name="Calculate the total nbr of results?" xml:space="preserve">
-    <value />
+    <value>Calculate the total nbr of results?</value>
   </data>
   <data name="Calculated date" xml:space="preserve">
-    <value />
+    <value>Calculated date</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value />
+    <value>Cancel</value>
   </data>
   <data name="cannot be enabled because no email recipients have been entered" xml:space="preserve">
-    <value />
+    <value>cannot be enabled because no email recipients have been entered</value>
   </data>
   <data name="cannot be enabled because no query is attached to this job" xml:space="preserve">
-    <value />
+    <value>cannot be enabled because no query is attached to this job</value>
   </data>
   <data name="cannot be enabled because no query is attached to this report" xml:space="preserve">
-    <value />
+    <value>cannot be enabled because no query is attached to this report</value>
   </data>
   <data name="cannot be enabled because no Smtp configuration has been activated" xml:space="preserve">
-    <value />
+    <value>cannot be enabled because no Smtp configuration has been activated</value>
   </data>
   <data name="cannot be enabled because the related activity is not enabled" xml:space="preserve">
-    <value />
+    <value>cannot be enabled because the related activity is not enabled</value>
   </data>
   <data name="cannot be enabled because the scheduler value is not defined" xml:space="preserve">
-    <value />
+    <value>cannot be enabled because the scheduler value is not defined</value>
   </data>
   <data name="Caution !" xml:space="preserve">
-    <value />
+    <value>Caution !</value>
   </data>
   <data name="Cell reference" xml:space="preserve">
-    <value />
+    <value>Cell reference</value>
   </data>
   <data name="Change email" xml:space="preserve">
-    <value />
+    <value>Change email</value>
   </data>
   <data name="Change password" xml:space="preserve">
-    <value />
+    <value>Change password</value>
   </data>
   <data name="Change your account settings" xml:space="preserve">
-    <value />
+    <value>Change your account settings</value>
   </data>
   <data name="Changed password successfully" xml:space="preserve">
-    <value />
+    <value>Changed password successfully</value>
   </data>
   <data name="check if a report or an alert will be correctly sent by email" xml:space="preserve">
-    <value />
+    <value>check if a report or an alert will be correctly sent by email</value>
   </data>
   <data name="Check if service is active" xml:space="preserve">
-    <value />
+    <value>Check if service is active</value>
   </data>
   <data name="Check if the activity exists" xml:space="preserve">
-    <value />
+    <value>Check if the activity exists</value>
   </data>
   <data name="Check Smtp configuration" xml:space="preserve">
-    <value />
+    <value>Check Smtp configuration</value>
   </data>
   <data name="Check task" xml:space="preserve">
-    <value />
+    <value>Check task</value>
   </data>
   <data name="Chek if your report or alert is active and for report if the &quot;Send by email&quot; button is on" xml:space="preserve">
-    <value />
+    <value>Chek if your report or alert is active and for report if the "Send by email" button is on</value>
   </data>
   <data name="Choose a credential configuration" xml:space="preserve">
-    <value />
+    <value>Choose a credential configuration</value>
   </data>
   <data name="Choose a deposit path" xml:space="preserve">
-    <value />
+    <value>Choose a deposit path</value>
   </data>
   <data name="Choose a deposit path configuration" xml:space="preserve">
-    <value />
+    <value>Choose a deposit path configuration</value>
   </data>
   <data name="Choose an Sftp configuration" xml:space="preserve">
-    <value />
+    <value>Choose an Sftp configuration</value>
   </data>
   <data name="Choose first parameters" xml:space="preserve">
-    <value />
+    <value>Choose first parameters</value>
   </data>
   <data name="Cleaner service" xml:space="preserve">
-    <value />
+    <value>Cleaner service</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value />
+    <value>Close</value>
   </data>
   <data name="Close your account" xml:space="preserve">
-    <value />
+    <value>Close your account</value>
   </data>
   <data name="Color Scheme" xml:space="preserve">
-    <value />
+    <value>Color Scheme</value>
   </data>
   <data name="ColorIcon" xml:space="preserve">
-    <value />
+    <value>ColorIcon</value>
   </data>
   <data name="Column name" xml:space="preserve">
-    <value />
+    <value>Column name</value>
   </data>
   <data name="Columns" xml:space="preserve">
-    <value />
+    <value>Columns</value>
   </data>
   <data name="Command behaviour" xml:space="preserve">
-    <value />
+    <value>Command behaviour</value>
   </data>
   <data name="Comment" xml:space="preserve">
-    <value />
+    <value>Comment</value>
   </data>
   <data name="Compact" xml:space="preserve">
-    <value />
+    <value>Compact</value>
   </data>
   <data name="Company" xml:space="preserve">
-    <value />
+    <value>Company</value>
   </data>
   <data name="Company name" xml:space="preserve">
-    <value />
+    <value>Company name</value>
   </data>
   <data name="Condensed" xml:space="preserve">
-    <value />
+    <value>Condensed</value>
   </data>
   <data name="Condition" xml:space="preserve">
-    <value />
+    <value>Condition</value>
   </data>
   <data name="Configuration name" xml:space="preserve">
-    <value />
+    <value>Configuration name</value>
   </data>
   <data name="Configure a custom deposit path" xml:space="preserve">
-    <value />
+    <value>Configure a custom deposit path</value>
   </data>
   <data name="Configure authenticator app" xml:space="preserve">
-    <value />
+    <value>Configure authenticator app</value>
   </data>
   <data name="Configure the scheduler" xml:space="preserve">
-    <value />
+    <value>Configure the scheduler</value>
   </data>
   <data name="Configure the scheduler and deposit path" xml:space="preserve">
-    <value />
+    <value>Configure the scheduler and deposit path</value>
   </data>
   <data name="Configure the scheduler and deposit path1" xml:space="preserve">
-    <value />
+    <value>Configure the scheduler and deposit path1</value>
   </data>
   <data name="Confirm" xml:space="preserve">
-    <value />
+    <value>Confirm</value>
   </data>
   <data name="Confirm duplication" xml:space="preserve">
-    <value />
+    <value>Confirm duplication</value>
   </data>
   <data name="Confirm email" xml:space="preserve">
-    <value />
+    <value>Confirm email</value>
   </data>
   <data name="Confirm email change" xml:space="preserve">
-    <value />
+    <value>Confirm email change</value>
   </data>
   <data name="Confirm manual job" xml:space="preserve">
-    <value />
+    <value>Confirm manual job</value>
   </data>
   <data name="Confirm password" xml:space="preserve">
-    <value />
+    <value>Confirm password</value>
   </data>
   <data name="Confirm the deletion by entering" xml:space="preserve">
-    <value />
+    <value>Confirm the deletion by entering</value>
   </data>
   <data name="Connection Feedback:" xml:space="preserve">
-    <value />
+    <value>Connection Feedback:</value>
   </data>
   <data name="Connection login" xml:space="preserve">
-    <value />
+    <value>Connection login</value>
   </data>
   <data name="Connection path" xml:space="preserve">
-    <value />
+    <value>Connection path</value>
   </data>
   <data name="Connection port" xml:space="preserve">
-    <value />
+    <value>Connection port</value>
   </data>
   <data name="Contains" xml:space="preserve">
-    <value />
+    <value>Contains</value>
   </data>
   <data name="Create a new account" xml:space="preserve">
-    <value />
+    <value>Create a new account</value>
   </data>
   <data name="Create a new activity" xml:space="preserve">
-    <value />
+    <value>Create a new activity</value>
   </data>
   <data name="Create a new alert" xml:space="preserve">
-    <value />
+    <value>Create a new alert</value>
   </data>
   <data name="Create a new branch" xml:space="preserve">
-    <value />
+    <value>Create a new branch</value>
   </data>
   <data name="Create a new business area" xml:space="preserve">
-    <value />
+    <value>Create a new business area</value>
   </data>
   <data name="Create a new company" xml:space="preserve">
-    <value />
+    <value>Create a new company</value>
   </data>
   <data name="Create a new data transfer" xml:space="preserve">
-    <value />
+    <value>Create a new data transfer</value>
   </data>
   <data name="Create a new deposit path" xml:space="preserve">
-    <value />
+    <value>Create a new deposit path</value>
   </data>
   <data name="Create a new deposit path1" xml:space="preserve">
-    <value />
+    <value>Create a new deposit path1</value>
   </data>
   <data name="Create a new email report" xml:space="preserve">
-    <value />
+    <value>Create a new email report</value>
   </data>
   <data name="Create a new Ldap profil" xml:space="preserve">
-    <value />
+    <value>Create a new Ldap profil</value>
   </data>
   <data name="Create a new network credential" xml:space="preserve">
-    <value />
+    <value>Create a new network credential</value>
   </data>
   <data name="Create a new Sftp profil" xml:space="preserve">
-    <value />
+    <value>Create a new Sftp profil</value>
   </data>
   <data name="Create a new Smtp profil" xml:space="preserve">
-    <value />
+    <value>Create a new Smtp profil</value>
   </data>
   <data name="create a report" xml:space="preserve">
-    <value />
+    <value>create a report</value>
   </data>
   <data name="Create account" xml:space="preserve">
-    <value />
+    <value>Create account</value>
   </data>
   <data name="Create activity" xml:space="preserve">
-    <value />
+    <value>Create activity</value>
   </data>
   <data name="create an alert" xml:space="preserve">
-    <value />
+    <value>create an alert</value>
   </data>
   <data name="Create by" xml:space="preserve">
-    <value />
+    <value>Create by</value>
   </data>
   <data name="Create file manually" xml:space="preserve">
-    <value />
+    <value>Create file manually</value>
   </data>
   <data name="Create target table?" xml:space="preserve">
-    <value />
+    <value>Create target table?</value>
   </data>
   <data name="Create the alert" xml:space="preserve">
-    <value />
+    <value>Create the alert</value>
   </data>
   <data name="Create the report" xml:space="preserve">
-    <value />
+    <value>Create the report</value>
   </data>
   <data name="Create/modify users" xml:space="preserve">
-    <value />
+    <value>Create/modify users</value>
   </data>
   <data name="Created at" xml:space="preserve">
-    <value />
+    <value>Created at</value>
   </data>
   <data name="Created by" xml:space="preserve">
-    <value />
+    <value>Created by</value>
   </data>
   <data name="Created date" xml:space="preserve">
-    <value />
+    <value>Created date</value>
   </data>
   <data name="Created hour" xml:space="preserve">
-    <value />
+    <value>Created hour</value>
   </data>
   <data name="Cron description" xml:space="preserve">
-    <value />
+    <value>Cron description</value>
   </data>
   <data name="Cron expression" xml:space="preserve">
-    <value />
+    <value>Cron expression</value>
   </data>
   <data name="CSV delimiter" xml:space="preserve">
-    <value />
+    <value>CSV delimiter</value>
   </data>
   <data name="Dark" xml:space="preserve">
-    <value />
+    <value>Dark</value>
   </data>
   <data name="Dark Mode" xml:space="preserve">
-    <value />
+    <value>Dark Mode</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
-    <value />
+    <value>Dashboard</value>
   </data>
   <data name="Data DB name" xml:space="preserve">
-    <value />
+    <value>Data DB name</value>
   </data>
   <data name="Data DB size" xml:space="preserve">
-    <value />
+    <value>Data DB size</value>
   </data>
   <data name="Data Sync Is Activated?" xml:space="preserve">
-    <value />
+    <value>Data Sync Is Activated?</value>
   </data>
   <data name="Data transfer parameters" xml:space="preserve">
-    <value />
+    <value>Data transfer parameters</value>
   </data>
   <data name="Data transfer service" xml:space="preserve">
-    <value />
+    <value>Data transfer service</value>
   </data>
   <data name="Data type" xml:space="preserve">
-    <value />
+    <value>Data type</value>
   </data>
   <data name="Database Maintenance" xml:space="preserve">
-    <value />
+    <value>Database Maintenance</value>
   </data>
   <data name="Database rows per table" xml:space="preserve">
-    <value />
+    <value>Database rows per table</value>
   </data>
   <data name="Database Type" xml:space="preserve">
-    <value />
+    <value>Database Type</value>
   </data>
   <data name="Day of month" xml:space="preserve">
-    <value />
+    <value>Day of month</value>
   </data>
   <data name="Day of week" xml:space="preserve">
-    <value />
+    <value>Day of week</value>
   </data>
   <data name="DB explorer" xml:space="preserve">
-    <value />
+    <value>DB explorer</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="DB schema" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
   <data name="Db tables" xml:space="preserve">
-    <value />
+    <value>Db tables</value>
   </data>
   <data name="Dec" xml:space="preserve">
-    <value />
+    <value>Dec</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value />
+    <value>Default</value>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value />
+    <value>Delete</value>
   </data>
   <data name="Delete data and close my account" xml:space="preserve">
-    <value />
+    <value>Delete data and close my account</value>
   </data>
   <data name="Delete Personal Data" xml:space="preserve">
-    <value />
+    <value>Delete Personal Data</value>
   </data>
   <data name="Delete the target table" xml:space="preserve">
-    <value />
+    <value>Delete the target table</value>
   </data>
   <data name="Delete user" xml:space="preserve">
-    <value />
+    <value>Delete user</value>
   </data>
   <data name="Deleting can not be undone!" xml:space="preserve">
-    <value />
+    <value>Deleting can not be undone!</value>
   </data>
   <data name="Deleting this data will permanently remove your account, and this cannot be recovered." xml:space="preserve">
-    <value />
+    <value>Deleting this data will permanently remove your account, and this cannot be recovered.</value>
   </data>
   <data name="Deposit path" xml:space="preserve">
-    <value />
+    <value>Deposit path</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value />
+    <value>Description</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value />
+    <value>Details</value>
   </data>
   <data name="Disable 2FA" xml:space="preserve">
-    <value />
+    <value>Disable 2FA</value>
   </data>
   <data name="Disable two-factor authentication (2FA)" xml:space="preserve">
-    <value />
+    <value>Disable two-factor authentication (2FA)</value>
   </data>
   <data name="disabled" xml:space="preserve">
-    <value />
+    <value>disabled</value>
   </data>
   <data name="Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should" xml:space="preserve">
-    <value />
+    <value>Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should</value>
   </data>
   <data name="Dispatching" xml:space="preserve">
-    <value />
+    <value>Dispatching</value>
   </data>
   <data name="Display details" xml:space="preserve">
-    <value />
+    <value>Display details</value>
   </data>
   <data name="Display name" xml:space="preserve">
-    <value />
+    <value>Display name</value>
   </data>
   <data name="Display sequence" xml:space="preserve">
-    <value />
+    <value>Display sequence</value>
   </data>
   <data name="Display table values" xml:space="preserve">
-    <value />
+    <value>Display table values</value>
   </data>
   <data name="Display until 10k lines" xml:space="preserve">
-    <value />
+    <value>Display until 10k lines</value>
   </data>
   <data name="Domain" xml:space="preserve">
-    <value />
+    <value>Domain</value>
   </data>
   <data name="Domain1" xml:space="preserve">
-    <value />
+    <value>Domain1</value>
   </data>
   <data name="Don't have access to your authenticator device? You can" xml:space="preserve">
-    <value />
+    <value>Don't have access to your authenticator device? You can</value>
   </data>
   <data name="Don't have an account?" xml:space="preserve">
-    <value />
+    <value>Don't have an account?</value>
   </data>
   <data name="Download" xml:space="preserve">
-    <value />
+    <value>Download</value>
   </data>
   <data name="Download a two-factor authenticator app like Microsoft Authenticator for" xml:space="preserve">
-    <value />
+    <value>Download a two-factor authenticator app like Microsoft Authenticator for</value>
   </data>
   <data name="Download descriptions" xml:space="preserve">
-    <value />
+    <value>Download descriptions</value>
   </data>
   <data name="Download duration" xml:space="preserve">
-    <value />
+    <value>Download duration</value>
   </data>
   <data name="Download example" xml:space="preserve">
-    <value />
+    <value>Download example</value>
   </data>
   <data name="Download template" xml:space="preserve">
-    <value />
+    <value>Download template</value>
   </data>
   <data name="Download Your Data" xml:space="preserve">
-    <value />
+    <value>Download Your Data</value>
   </data>
   <data name="Drop file" xml:space="preserve">
-    <value />
+    <value>Drop file</value>
   </data>
   <data name="Duplicate" xml:space="preserve">
-    <value />
+    <value>Duplicate</value>
   </data>
   <data name="Duration in seconds" xml:space="preserve">
-    <value />
+    <value>Duration in seconds</value>
   </data>
   <data name="Dynamic Reports" xml:space="preserve">
-    <value />
+    <value>Dynamic Reports</value>
   </data>
   <data name="Each day" xml:space="preserve">
-    <value />
+    <value>Each day</value>
   </data>
   <data name="Each month" xml:space="preserve">
-    <value />
+    <value>Each month</value>
   </data>
   <data name="Each selected day" xml:space="preserve">
-    <value />
+    <value>Each selected day</value>
   </data>
   <data name="Each selected day1" xml:space="preserve">
-    <value />
+    <value>Each selected day1</value>
   </data>
   <data name="Each selected hour" xml:space="preserve">
-    <value />
+    <value>Each selected hour</value>
   </data>
   <data name="Each selected minute" xml:space="preserve">
-    <value />
+    <value>Each selected minute</value>
   </data>
   <data name="Each selected month" xml:space="preserve">
-    <value />
+    <value>Each selected month</value>
   </data>
   <data name="Each week" xml:space="preserve">
-    <value />
+    <value>Each week</value>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value />
+    <value>Edit</value>
   </data>
   <data name="Edit a data transfer" xml:space="preserve">
-    <value />
+    <value>Edit a data transfer</value>
   </data>
   <data name="Edit activity" xml:space="preserve">
-    <value />
+    <value>Edit activity</value>
   </data>
   <data name="Edit an alert" xml:space="preserve">
-    <value />
+    <value>Edit an alert</value>
   </data>
   <data name="Edit an email report" xml:space="preserve">
-    <value />
+    <value>Edit an email report</value>
   </data>
   <data name="Edit email message" xml:space="preserve">
-    <value />
+    <value>Edit email message</value>
   </data>
   <data name="Edit error email" xml:space="preserve">
-    <value />
+    <value>Edit error email</value>
   </data>
   <data name="Edit error email template" xml:space="preserve">
-    <value />
+    <value>Edit error email template</value>
   </data>
   <data name="Edit name and logo" xml:space="preserve">
-    <value />
+    <value>Edit name and logo</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value />
+    <value>Email</value>
   </data>
   <data name="Email confirmed?" xml:space="preserve">
-    <value />
+    <value>Email confirmed?</value>
   </data>
   <data name="Email entered is not correct" xml:space="preserve">
-    <value />
+    <value>Email entered is not correct</value>
   </data>
   <data name="Email message" xml:space="preserve">
-    <value />
+    <value>Email message</value>
   </data>
   <data name="Email prefix" xml:space="preserve">
-    <value />
+    <value>Email prefix</value>
   </data>
   <data name="Email Sender" xml:space="preserve">
-    <value />
+    <value>Email Sender</value>
   </data>
   <data name="Email sender Is Activated?" xml:space="preserve">
-    <value />
+    <value>Email sender Is Activated?</value>
   </data>
   <data name="Email sender logs" xml:space="preserve">
-    <value />
+    <value>Email sender logs</value>
   </data>
   <data name="Email service" xml:space="preserve">
-    <value />
+    <value>Email service</value>
   </data>
   <data name="Email title" xml:space="preserve">
-    <value />
+    <value>Email title</value>
   </data>
   <data name="Empty" xml:space="preserve">
-    <value />
+    <value>Empty</value>
   </data>
   <data name="enabled" xml:space="preserve">
-    <value />
+    <value>enabled</value>
   </data>
   <data name="Encoding type" xml:space="preserve">
-    <value />
+    <value>Encoding type</value>
   </data>
   <data name="End date time" xml:space="preserve">
-    <value />
+    <value>End date time</value>
   </data>
   <data name="EndOfLastMonth" xml:space="preserve">
-    <value />
+    <value>EndOfLastMonth</value>
   </data>
   <data name="EndOfLastWeek" xml:space="preserve">
-    <value />
+    <value>EndOfLastWeek</value>
   </data>
   <data name="EndOfThisMonth" xml:space="preserve">
-    <value />
+    <value>EndOfThisMonth</value>
   </data>
   <data name="EndOfThisQuarter" xml:space="preserve">
-    <value />
+    <value>EndOfThisQuarter</value>
   </data>
   <data name="EndOfThisWeek" xml:space="preserve">
-    <value />
+    <value>EndOfThisWeek</value>
   </data>
   <data name="EndOfThisYear" xml:space="preserve">
-    <value />
+    <value>EndOfThisYear</value>
   </data>
   <data name="Ends with" xml:space="preserve">
-    <value />
+    <value>Ends with</value>
   </data>
   <data name="Enter a keyword" xml:space="preserve">
-    <value />
+    <value>Enter a keyword</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate" xml:space="preserve">
-    <value />
+    <value>Enter a report title, select an activity then the type of file you want to generate</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate and validate" xml:space="preserve">
-    <value />
+    <value>Enter a report title, select an activity then the type of file you want to generate and validate</value>
   </data>
   <data name="Enter an alert title, select an activity and validate" xml:space="preserve">
-    <value />
+    <value>Enter an alert title, select an activity and validate</value>
   </data>
   <data name="Enter the email address" xml:space="preserve">
-    <value />
+    <value>Enter the email address</value>
   </data>
   <data name="Enter the primary key column" xml:space="preserve">
-    <value />
+    <value>Enter the primary key column</value>
   </data>
   <data name="Enter the query here" xml:space="preserve">
-    <value />
+    <value>Enter the query here</value>
   </data>
   <data name="Enter value" xml:space="preserve">
-    <value />
+    <value>Enter value</value>
   </data>
   <data name="Enter Your Current and New Password" xml:space="preserve">
-    <value />
+    <value>Enter Your Current and New Password</value>
   </data>
   <data name="Equals" xml:space="preserve">
-    <value />
+    <value>Equals</value>
   </data>
   <data name="Error email prefix" xml:space="preserve">
-    <value />
+    <value>Error email prefix</value>
   </data>
   <data name="Error?" xml:space="preserve">
-    <value />
+    <value>Error?</value>
   </data>
   <data name="Every" xml:space="preserve">
-    <value />
+    <value>Every</value>
   </data>
   <data name="Every day" xml:space="preserve">
-    <value />
+    <value>Every day</value>
   </data>
   <data name="Every hour" xml:space="preserve">
-    <value />
+    <value>Every hour</value>
   </data>
   <data name="Every minute" xml:space="preserve">
-    <value />
+    <value>Every minute</value>
   </data>
   <data name="Every month" xml:space="preserve">
-    <value />
+    <value>Every month</value>
   </data>
   <data name="Every n hours" xml:space="preserve">
-    <value />
+    <value>Every n hours</value>
   </data>
   <data name="Every n minutes" xml:space="preserve">
-    <value />
+    <value>Every n minutes</value>
   </data>
   <data name="Every week" xml:space="preserve">
-    <value />
+    <value>Every week</value>
   </data>
   <data name="Excel data table name" xml:space="preserve">
-    <value />
+    <value>Excel data table name</value>
   </data>
   <data name="Excel tab name" xml:space="preserve">
-    <value />
+    <value>Excel tab name</value>
   </data>
   <data name="Excel Template" xml:space="preserve">
-    <value />
+    <value>Excel Template</value>
   </data>
   <data name="Export" xml:space="preserve">
-    <value />
+    <value>Export</value>
   </data>
   <data name="Export to excel" xml:space="preserve">
-    <value />
+    <value>Export to excel</value>
   </data>
   <data name="External logins" xml:space="preserve">
-    <value />
+    <value>External logins</value>
   </data>
   <data name="External queries" xml:space="preserve">
-    <value />
+    <value>External queries</value>
   </data>
   <data name="Extract descriptions" xml:space="preserve">
-    <value />
+    <value>Extract descriptions</value>
   </data>
   <data name="Feb" xml:space="preserve">
-    <value />
+    <value>Feb</value>
   </data>
   <data name="File deposit configuration" xml:space="preserve">
-    <value />
+    <value>File deposit configuration</value>
   </data>
   <data name="File deposit path" xml:space="preserve">
-    <value />
+    <value>File deposit path</value>
   </data>
   <data name="File deposit path1" xml:space="preserve">
-    <value />
+    <value>File deposit path1</value>
   </data>
   <data name="File desposit path" xml:space="preserve">
-    <value />
+    <value>File desposit path</value>
   </data>
   <data name="File name" xml:space="preserve">
-    <value />
+    <value>File name</value>
   </data>
   <data name="File name1" xml:space="preserve">
-    <value />
+    <value>File name1</value>
   </data>
   <data name="File path" xml:space="preserve">
-    <value />
+    <value>File path</value>
   </data>
   <data name="File size in MB" xml:space="preserve">
-    <value />
+    <value>File size in MB</value>
   </data>
   <data name="File type" xml:space="preserve">
-    <value />
+    <value>File type</value>
   </data>
   <data name="FileServer size" xml:space="preserve">
-    <value />
+    <value>FileServer size</value>
   </data>
   <data name="Filters" xml:space="preserve">
-    <value />
+    <value>Filters</value>
   </data>
   <data name="Firstname.Lastname" xml:space="preserve">
-    <value />
+    <value>Firstname.Lastname</value>
   </data>
   <data name="Fixed" xml:space="preserve">
-    <value />
+    <value>Fixed</value>
   </data>
   <data name="Flow dashboard" xml:space="preserve">
-    <value />
+    <value>Flow dashboard</value>
   </data>
   <data name="Fluid" xml:space="preserve">
-    <value />
+    <value>Fluid</value>
   </data>
   <data name="Forget this browser" xml:space="preserve">
-    <value />
+    <value>Forget this browser</value>
   </data>
   <data name="Forgot password confirmation" xml:space="preserve">
-    <value />
+    <value>Forgot password confirmation</value>
   </data>
   <data name="Forgot password?" xml:space="preserve">
-    <value />
+    <value>Forgot password?</value>
   </data>
   <data name="Forgot your password? Enter your email" xml:space="preserve">
-    <value />
+    <value>Forgot your password? Enter your email</value>
   </data>
   <data name="Fragmentation report" xml:space="preserve">
-    <value />
+    <value>Fragmentation report</value>
   </data>
   <data name="Friday" xml:space="preserve">
-    <value />
+    <value>Friday</value>
   </data>
   <data name="From email" xml:space="preserve">
-    <value />
+    <value>From email</value>
   </data>
   <data name="From full name" xml:space="preserve">
-    <value />
+    <value>From full name</value>
   </data>
   <data name="FullVersion" xml:space="preserve">
-    <value />
+    <value>FullVersion</value>
   </data>
   <data name="generate a new set of recovery codes" xml:space="preserve">
-    <value />
+    <value>generate a new set of recovery codes</value>
   </data>
   <data name="Generate if empty?" xml:space="preserve">
-    <value />
+    <value>Generate if empty?</value>
   </data>
   <data name="Generate Recovery Codes" xml:space="preserve">
-    <value />
+    <value>Generate Recovery Codes</value>
   </data>
   <data name="Generate two-factor authentication (2FA) recovery codes" xml:space="preserve">
-    <value />
+    <value>Generate two-factor authentication (2FA) recovery codes</value>
   </data>
   <data name="Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should" xml:space="preserve">
-    <value />
+    <value>Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should</value>
   </data>
   <data name="Get cron Data" xml:space="preserve">
-    <value />
+    <value>Get cron Data</value>
   </data>
   <data name="Get tables list" xml:space="preserve">
-    <value />
+    <value>Get tables list</value>
   </data>
   <data name="Global query parameters" xml:space="preserve">
-    <value />
+    <value>Global query parameters</value>
   </data>
   <data name="Go back to alerts list" xml:space="preserve">
-    <value />
+    <value>Go back to alerts list</value>
   </data>
   <data name="Go back to email report list" xml:space="preserve">
-    <value />
+    <value>Go back to email report list</value>
   </data>
   <data name="Go to first page" xml:space="preserve">
-    <value />
+    <value>Go to first page</value>
   </data>
   <data name="Go to last page" xml:space="preserve">
-    <value />
+    <value>Go to last page</value>
   </data>
   <data name="Go to next page" xml:space="preserve">
-    <value />
+    <value>Go to next page</value>
   </data>
   <data name="Go to previous page" xml:space="preserve">
-    <value />
+    <value>Go to previous page</value>
   </data>
   <data name="Google Authenticator for" xml:space="preserve">
-    <value />
+    <value>Google Authenticator for</value>
   </data>
   <data name="Greater than" xml:space="preserve">
-    <value />
+    <value>Greater than</value>
   </data>
   <data name="Greater than or equals" xml:space="preserve">
-    <value />
+    <value>Greater than or equals</value>
   </data>
   <data name="he password and confirmation password do not match." xml:space="preserve">
-    <value />
+    <value>he password and confirmation password do not match.</value>
   </data>
   <data name="Header" xml:space="preserve">
-    <value />
+    <value>Header</value>
   </data>
   <data name="Help" xml:space="preserve">
-    <value />
+    <value>Help</value>
   </data>
   <data name="Help step by step" xml:space="preserve">
-    <value />
+    <value>Help step by step</value>
   </data>
   <data name="Hide parameter" xml:space="preserve">
-    <value />
+    <value>Hide parameter</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value />
+    <value>Home</value>
   </data>
   <data name="Host" xml:space="preserve">
-    <value />
+    <value>Host</value>
   </data>
   <data name="Hour" xml:space="preserve">
-    <value />
+    <value>Hour</value>
   </data>
   <data name="hours" xml:space="preserve">
-    <value />
+    <value>hours</value>
   </data>
   <data name="I would like to" xml:space="preserve">
-    <value />
+    <value>I would like to</value>
   </data>
   <data name="If you lose your device and don't have the recovery codes you will lose access to your account." xml:space="preserve">
-    <value />
+    <value>If you lose your device and don't have the recovery codes you will lose access to your account.</value>
   </data>
   <data name="If you reset your authenticator key your authenticator app will not work until you reconfigure it." xml:space="preserve">
-    <value />
+    <value>If you reset your authenticator key your authenticator app will not work until you reconfigure it.</value>
   </data>
   <data name="In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences" xml:space="preserve">
-    <value />
+    <value>In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences</value>
   </data>
   <data name="Inbound" xml:space="preserve">
-    <value />
+    <value>Inbound</value>
   </data>
   <data name="Incorrect password" xml:space="preserve">
-    <value />
+    <value>Incorrect password</value>
   </data>
   <data name="Information sheet text" xml:space="preserve">
-    <value />
+    <value>Information sheet text</value>
   </data>
   <data name="Internal server error!" xml:space="preserve">
-    <value />
+    <value>Internal server error!</value>
   </data>
   <data name="into your two factor authenticator app. Spaces and casing do not matter." xml:space="preserve">
-    <value />
+    <value>into your two factor authenticator app. Spaces and casing do not matter.</value>
   </data>
   <data name="Inventory" xml:space="preserve">
-    <value />
+    <value>Inventory</value>
   </data>
   <data name="Is activated?" xml:space="preserve">
-    <value />
+    <value>Is activated?</value>
   </data>
   <data name="Is available?" xml:space="preserve">
-    <value />
+    <value>Is available?</value>
   </data>
   <data name="is diplayed" xml:space="preserve">
-    <value />
+    <value>is diplayed</value>
   </data>
   <data name="is not displayed" xml:space="preserve">
-    <value />
+    <value>is not displayed</value>
   </data>
   <data name="Is not null" xml:space="preserve">
-    <value />
+    <value>Is not null</value>
   </data>
   <data name="Is null" xml:space="preserve">
-    <value />
+    <value>Is null</value>
   </data>
   <data name="Is reachable" xml:space="preserve">
-    <value />
+    <value>Is reachable</value>
   </data>
   <data name="Is visible?" xml:space="preserve">
-    <value />
+    <value>Is visible?</value>
   </data>
   <data name="It looks like you are offline or need to log back in" xml:space="preserve">
-    <value />
+    <value>It looks like you are offline or need to log back in</value>
   </data>
   <data name="items" xml:space="preserve">
-    <value />
+    <value>items</value>
   </data>
   <data name="Jan" xml:space="preserve">
-    <value />
+    <value>Jan</value>
   </data>
   <data name="Job description" xml:space="preserve">
-    <value />
+    <value>Job description</value>
   </data>
   <data name="Job details" xml:space="preserve">
-    <value />
+    <value>Job details</value>
   </data>
   <data name="Job duration" xml:space="preserve">
-    <value />
+    <value>Job duration</value>
   </data>
   <data name="Job duration (in sec)" xml:space="preserve">
-    <value />
+    <value>Job duration (in sec)</value>
   </data>
   <data name="Job end date time" xml:space="preserve">
-    <value />
+    <value>Job end date time</value>
   </data>
   <data name="Job on going" xml:space="preserve">
-    <value />
+    <value>Job on going</value>
   </data>
   <data name="Job Start Date Time" xml:space="preserve">
-    <value />
+    <value>Job Start Date Time</value>
   </data>
   <data name="Job title" xml:space="preserve">
-    <value />
+    <value>Job title</value>
   </data>
   <data name="Jobs with the max avg time of exec per activity" xml:space="preserve">
-    <value />
+    <value>Jobs with the max avg time of exec per activity</value>
   </data>
   <data name="Jul" xml:space="preserve">
-    <value />
+    <value>Jul</value>
   </data>
   <data name="Jun" xml:space="preserve">
-    <value />
+    <value>Jun</value>
   </data>
   <data name="Language" xml:space="preserve">
-    <value />
+    <value>Language</value>
   </data>
   <data name="Last day of the month" xml:space="preserve">
-    <value />
+    <value>Last day of the month</value>
   </data>
   <data name="Last working day of the month" xml:space="preserve">
-    <value />
+    <value>Last working day of the month</value>
   </data>
   <data name="LastOpeningDay" xml:space="preserve">
-    <value />
+    <value>LastOpeningDay</value>
   </data>
   <data name="LastOpeningDay1" xml:space="preserve">
-    <value />
+    <value>LastOpeningDay1</value>
   </data>
   <data name="LastRun" xml:space="preserve">
-    <value />
+    <value>LastRun</value>
   </data>
   <data name="Ldap configuration" xml:space="preserve">
-    <value />
+    <value>Ldap configuration</value>
   </data>
   <data name="Left Sidebar Color" xml:space="preserve">
-    <value />
+    <value>Left Sidebar Color</value>
   </data>
   <data name="Left Sidebar Size" xml:space="preserve">
-    <value />
+    <value>Left Sidebar Size</value>
   </data>
   <data name="Less than" xml:space="preserve">
-    <value />
+    <value>Less than</value>
   </data>
   <data name="Less than or equals" xml:space="preserve">
-    <value />
+    <value>Less than or equals</value>
   </data>
   <data name="Level" xml:space="preserve">
-    <value />
+    <value>Level</value>
   </data>
   <data name="Light" xml:space="preserve">
-    <value />
+    <value>Light</value>
   </data>
   <data name="Light Mode" xml:space="preserve">
-    <value />
+    <value>Light Mode</value>
   </data>
   <data name="List of recipient" xml:space="preserve">
-    <value />
+    <value>List of recipient</value>
   </data>
   <data name="Load" xml:space="preserve">
-    <value />
+    <value>Load</value>
   </data>
   <data name="Loading time" xml:space="preserve">
-    <value />
+    <value>Loading time</value>
   </data>
   <data name="Local login" xml:space="preserve">
-    <value />
+    <value>Local login</value>
   </data>
   <data name="Localization configuration check" xml:space="preserve">
-    <value />
+    <value>Localization configuration check</value>
   </data>
   <data name="Lock end" xml:space="preserve">
-    <value />
+    <value>Lock end</value>
   </data>
   <data name="Locked out" xml:space="preserve">
-    <value />
+    <value>Locked out</value>
   </data>
   <data name="Log in" xml:space="preserve">
-    <value />
+    <value>Log in</value>
   </data>
   <data name="log in with a recovery code" xml:space="preserve">
-    <value />
+    <value>log in with a recovery code</value>
   </data>
   <data name="Log out" xml:space="preserve">
-    <value />
+    <value>Log out</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value />
+    <value>Login</value>
   </data>
   <data name="Logo" xml:space="preserve">
-    <value />
+    <value>Logo</value>
   </data>
   <data name="Logout" xml:space="preserve">
-    <value />
+    <value>Logout</value>
   </data>
   <data name="Logs" xml:space="preserve">
-    <value />
+    <value>Logs</value>
   </data>
   <data name="Logs: Archiving duration" xml:space="preserve">
-    <value />
+    <value>Logs: Archiving duration</value>
   </data>
   <data name="Manage account" xml:space="preserve">
-    <value />
+    <value>Manage account</value>
   </data>
   <data name="Manage alerts" xml:space="preserve">
-    <value />
+    <value>Manage alerts</value>
   </data>
   <data name="Manage by duration?" xml:space="preserve">
-    <value />
+    <value>Manage by duration?</value>
   </data>
   <data name="Manage data transfers" xml:space="preserve">
-    <value />
+    <value>Manage data transfers</value>
   </data>
   <data name="Manage email" xml:space="preserve">
-    <value />
+    <value>Manage email</value>
   </data>
   <data name="Manage email reports" xml:space="preserve">
-    <value />
+    <value>Manage email reports</value>
   </data>
   <data name="Manage parameters" xml:space="preserve">
-    <value />
+    <value>Manage parameters</value>
   </data>
   <data name="Manage Predictions" xml:space="preserve">
-    <value />
+    <value>Manage Predictions</value>
   </data>
   <data name="Manage recipients" xml:space="preserve">
-    <value />
+    <value>Manage recipients</value>
   </data>
   <data name="Manage reports" xml:space="preserve">
-    <value />
+    <value>Manage reports</value>
   </data>
   <data name="Manage users" xml:space="preserve">
-    <value />
+    <value>Manage users</value>
   </data>
   <data name="Manage your account" xml:space="preserve">
-    <value />
+    <value>Manage your account</value>
   </data>
   <data name="Manage your external logins" xml:space="preserve">
-    <value />
+    <value>Manage your external logins</value>
   </data>
   <data name="Mar" xml:space="preserve">
-    <value />
+    <value>Mar</value>
   </data>
   <data name="Max of rows fetched" xml:space="preserve">
-    <value />
+    <value>Max of rows fetched</value>
   </data>
   <data name="May" xml:space="preserve">
-    <value />
+    <value>May</value>
   </data>
   <data name="Menus (Leftsidebar and Topbar) Positon" xml:space="preserve">
-    <value />
+    <value>Menus (Leftsidebar and Topbar) Positon</value>
   </data>
   <data name="Message to put in the email body" xml:space="preserve">
-    <value />
+    <value>Message to put in the email body</value>
   </data>
   <data name="Minute" xml:space="preserve">
-    <value />
+    <value>Minute</value>
   </data>
   <data name="minutes" xml:space="preserve">
-    <value />
+    <value>minutes</value>
   </data>
   <data name="Modify tasks" xml:space="preserve">
-    <value />
+    <value>Modify tasks</value>
   </data>
   <data name="Monday" xml:space="preserve">
-    <value />
+    <value>Monday</value>
   </data>
   <data name="Month" xml:space="preserve">
-    <value />
+    <value>Month</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value />
+    <value>Name</value>
   </data>
   <data name="Name and Logo" xml:space="preserve">
-    <value />
+    <value>Name and Logo</value>
   </data>
   <data name="Navigate to &quot;Base parameters&quot; and &quot;Manage activities&quot; and check if your activity exists. If not ask to the application admin" xml:space="preserve">
-    <value />
+    <value>Navigate to "Base parameters" and "Manage activities" and check if your activity exists. If not ask to the application admin</value>
   </data>
   <data name="Navigate to &quot;Base parameters&quot; and &quot;Smtp configuration&quot; and check if one is active. If not ask to the application admin" xml:space="preserve">
-    <value />
+    <value>Navigate to "Base parameters" and "Smtp configuration" and check if one is active. If not ask to the application admin</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; and switch on the report. If something goes wrong you will get an error with the reason" xml:space="preserve">
-    <value />
+    <value>Navigate to "Modifity tasks" and "Alerts" and switch on the report. If something goes wrong you will get an error with the reason</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; then select create a new alert" xml:space="preserve">
-    <value />
+    <value>Navigate to "Modifity tasks" and "Alerts" then select create a new alert</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; and switch on the report and if needed the &quot;Send by email&quot; button. If something goes wrong you will get an error with the reason" xml:space="preserve">
-    <value />
+    <value>Navigate to "Modifity tasks" and "Reports" and switch on the report and if needed the "Send by email" button. If something goes wrong you will get an error with the reason</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; then select create a new report" xml:space="preserve">
-    <value />
+    <value>Navigate to "Modifity tasks" and "Reports" then select create a new report</value>
   </data>
   <data name="Nbr of active alerts" xml:space="preserve">
-    <value />
+    <value>Nbr of active alerts</value>
   </data>
   <data name="Nbr of active reports" xml:space="preserve">
-    <value />
+    <value>Nbr of active reports</value>
   </data>
   <data name="Nbr of activities" xml:space="preserve">
-    <value />
+    <value>Nbr of activities</value>
   </data>
   <data name="Nbr of alerts performed today" xml:space="preserve">
-    <value />
+    <value>Nbr of alerts performed today</value>
   </data>
   <data name="Nbr of details" xml:space="preserve">
-    <value />
+    <value>Nbr of details</value>
   </data>
   <data name="Nbr of emails sent today" xml:space="preserve">
-    <value />
+    <value>Nbr of emails sent today</value>
   </data>
   <data name="Nbr of errors" xml:space="preserve">
-    <value />
+    <value>Nbr of errors</value>
   </data>
   <data name="Nbr of files" xml:space="preserve">
-    <value />
+    <value>Nbr of files</value>
   </data>
   <data name="Nbr of files stored locally" xml:space="preserve">
-    <value />
+    <value>Nbr of files stored locally</value>
   </data>
   <data name="Nbr of jobs" xml:space="preserve">
-    <value />
+    <value>Nbr of jobs</value>
   </data>
   <data name="Nbr of lines inserted" xml:space="preserve">
-    <value />
+    <value>Nbr of lines inserted</value>
   </data>
   <data name="Nbr of minutes between occcurences" xml:space="preserve">
-    <value />
+    <value>Nbr of minutes between occcurences</value>
   </data>
   <data name="Nbr of occurences before to resubmit alert" xml:space="preserve">
-    <value />
+    <value>Nbr of occurences before to resubmit alert</value>
   </data>
   <data name="Nbr of queries" xml:space="preserve">
-    <value />
+    <value>Nbr of queries</value>
   </data>
   <data name="Nbr of reports performed today" xml:space="preserve">
-    <value />
+    <value>Nbr of reports performed today</value>
   </data>
   <data name="Nbr of rows" xml:space="preserve">
-    <value />
+    <value>Nbr of rows</value>
   </data>
   <data name="Nbr of rows fetched from databases" xml:space="preserve">
-    <value />
+    <value>Nbr of rows fetched from databases</value>
   </data>
   <data name="Nbr of rows returned" xml:space="preserve">
-    <value />
+    <value>Nbr of rows returned</value>
   </data>
   <data name="Nbr of tasks" xml:space="preserve">
-    <value />
+    <value>Nbr of tasks</value>
   </data>
   <data name="Nbr of tasks in error" xml:space="preserve">
-    <value />
+    <value>Nbr of tasks in error</value>
   </data>
   <data name="Nbr of tasks over the last 10 days" xml:space="preserve">
-    <value />
+    <value>Nbr of tasks over the last 10 days</value>
   </data>
   <data name="Nbr of tasks performed today" xml:space="preserve">
-    <value />
+    <value>Nbr of tasks performed today</value>
   </data>
   <data name="Nbr of users" xml:space="preserve">
-    <value />
+    <value>Nbr of users</value>
   </data>
   <data name="Nbr total of rows" xml:space="preserve">
-    <value />
+    <value>Nbr total of rows</value>
   </data>
   <data name="Need to connect locally?" xml:space="preserve">
-    <value />
+    <value>Need to connect locally?</value>
   </data>
   <data name="Network credentials" xml:space="preserve">
-    <value />
+    <value>Network credentials</value>
   </data>
   <data name="New email" xml:space="preserve">
-    <value />
+    <value>New email</value>
   </data>
   <data name="New password" xml:space="preserve">
-    <value />
+    <value>New password</value>
   </data>
   <data name="New values" xml:space="preserve">
-    <value />
+    <value>New values</value>
   </data>
   <data name="Not contains" xml:space="preserve">
-    <value />
+    <value>Not contains</value>
   </data>
   <data name="Not equals" xml:space="preserve">
-    <value />
+    <value>Not equals</value>
   </data>
   <data name="Nov" xml:space="preserve">
-    <value />
+    <value>Nov</value>
   </data>
   <data name="Now" xml:space="preserve">
-    <value />
+    <value>Now</value>
   </data>
   <data name="Object added" xml:space="preserve">
-    <value />
+    <value>Object added</value>
   </data>
   <data name="Object deleted" xml:space="preserve">
-    <value />
+    <value>Object deleted</value>
   </data>
   <data name="Object updated" xml:space="preserve">
-    <value />
+    <value>Object updated</value>
   </data>
   <data name="Oct" xml:space="preserve">
-    <value />
+    <value>Oct</value>
   </data>
   <data name="of" xml:space="preserve">
-    <value />
+    <value>of</value>
   </data>
   <data name="Off" xml:space="preserve">
-    <value />
+    <value>Off</value>
   </data>
   <data name="Old password" xml:space="preserve">
-    <value />
+    <value>Old password</value>
   </data>
   <data name="Old values" xml:space="preserve">
-    <value />
+    <value>Old values</value>
   </data>
   <data name="On" xml:space="preserve">
-    <value />
+    <value>On</value>
   </data>
   <data name="Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code.Enter the code in the confirmation box below." xml:space="preserve">
-    <value />
+    <value>Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code.Enter the code in the confirmation box below.</value>
   </data>
   <data name="Only when query does not require a separate file" xml:space="preserve">
-    <value />
+    <value>Only when query does not require a separate file</value>
   </data>
   <data name="Only when query is generated in separated file" xml:space="preserve">
-    <value />
+    <value>Only when query is generated in separated file</value>
   </data>
   <data name="Optional: Add email recipient" xml:space="preserve">
-    <value />
+    <value>Optional: Add email recipient</value>
   </data>
   <data name="or" xml:space="preserve">
-    <value />
+    <value>or</value>
   </data>
   <data name="Others" xml:space="preserve">
-    <value />
+    <value>Others</value>
   </data>
   <data name="Page" xml:space="preserve">
-    <value />
+    <value>Page</value>
   </data>
   <data name="Parameter identifier" xml:space="preserve">
-    <value />
+    <value>Parameter identifier</value>
   </data>
   <data name="Parameters" xml:space="preserve">
-    <value />
+    <value>Parameters</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value />
+    <value>Password</value>
   </data>
   <data name="Pasword must contains {0} characters, {1} digit, {2} uppercase, {3} lowercase, {4} non aphanumeric and {5} unique characters" xml:space="preserve">
-    <value />
+    <value>Pasword must contains {0} characters, {1} digit, {2} uppercase, {3} lowercase, {4} non aphanumeric and {5} unique characters</value>
   </data>
   <data name="Path" xml:space="preserve">
-    <value />
+    <value>Path</value>
   </data>
   <data name="Personal data" xml:space="preserve">
-    <value />
+    <value>Personal data</value>
   </data>
   <data name="Phone number" xml:space="preserve">
-    <value />
+    <value>Phone number</value>
   </data>
   <data name="Platform" xml:space="preserve">
-    <value />
+    <value>Platform</value>
   </data>
   <data name="Please check your email to confirm your account." xml:space="preserve">
-    <value />
+    <value>Please check your email to confirm your account.</value>
   </data>
   <data name="Please check your email to reset your password." xml:space="preserve">
-    <value />
+    <value>Please check your email to reset your password.</value>
   </data>
   <data name="Please enter an email address for this site below and click the Register button to finish logging in." xml:space="preserve">
-    <value />
+    <value>Please enter an email address for this site below and click the Register button to finish logging in.</value>
   </data>
   <data name="please enter your old paswword" xml:space="preserve">
-    <value />
+    <value>please enter your old paswword</value>
   </data>
   <data name="Please enter your windows account credentials" xml:space="preserve">
-    <value />
+    <value>Please enter your windows account credentials</value>
   </data>
   <data name="Please select a Db type" xml:space="preserve">
-    <value />
+    <value>Please select a Db type</value>
   </data>
   <data name="Predictions" xml:space="preserve">
-    <value />
+    <value>Predictions</value>
   </data>
   <data name="Predictions Reports" xml:space="preserve">
-    <value />
+    <value>Predictions Reports</value>
   </data>
   <data name="Primary key" xml:space="preserve">
-    <value />
+    <value>Primary key</value>
   </data>
   <data name="Primary key1" xml:space="preserve">
-    <value />
+    <value>Primary key1</value>
   </data>
   <data name="Processing" xml:space="preserve">
-    <value />
+    <value>Processing</value>
   </data>
   <data name="Profile" xml:space="preserve">
-    <value />
+    <value>Profile</value>
   </data>
   <data name="Put these codes in a safe place." xml:space="preserve">
-    <value />
+    <value>Put these codes in a safe place.</value>
   </data>
   <data name="Queries" xml:space="preserve">
-    <value />
+    <value>Queries</value>
   </data>
   <data name="Queries store" xml:space="preserve">
-    <value />
+    <value>Queries store</value>
   </data>
   <data name="Queries to seed DB" xml:space="preserve">
-    <value />
+    <value>Queries to seed DB</value>
   </data>
   <data name="Query" xml:space="preserve">
-    <value />
+    <value>Query</value>
   </data>
   <data name="Query editor" xml:space="preserve">
-    <value />
+    <value>Query editor</value>
   </data>
   <data name="Query execution logs" xml:space="preserve">
-    <value />
+    <value>Query execution logs</value>
   </data>
   <data name="Query name" xml:space="preserve">
-    <value />
+    <value>Query name</value>
   </data>
   <data name="Query parameters" xml:space="preserve">
-    <value />
+    <value>Query parameters</value>
   </data>
   <data name="Query sequence" xml:space="preserve">
-    <value />
+    <value>Query sequence</value>
   </data>
   <data name="Rebuild indexes" xml:space="preserve">
-    <value />
+    <value>Rebuild indexes</value>
   </data>
   <data name="Recipient Email" xml:space="preserve">
-    <value />
+    <value>Recipient Email</value>
   </data>
   <data name="Recipients" xml:space="preserve">
-    <value />
+    <value>Recipients</value>
   </data>
   <data name="Recovery code verification" xml:space="preserve">
-    <value />
+    <value>Recovery code verification</value>
   </data>
   <data name="Recovery codes" xml:space="preserve">
-    <value />
+    <value>Recovery codes</value>
   </data>
   <data name="recovery codes left." xml:space="preserve">
-    <value />
+    <value>recovery codes left.</value>
   </data>
   <data name="Recreate" xml:space="preserve">
-    <value />
+    <value>Recreate</value>
   </data>
   <data name="Reduce DB size" xml:space="preserve">
-    <value />
+    <value>Reduce DB size</value>
   </data>
   <data name="Refresh" xml:space="preserve">
-    <value />
+    <value>Refresh</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value />
+    <value>Register</value>
   </data>
   <data name="Register confirmation" xml:space="preserve">
-    <value />
+    <value>Register confirmation</value>
   </data>
   <data name="Registered Logins" xml:space="preserve">
-    <value />
+    <value>Registered Logins</value>
   </data>
   <data name="Reload" xml:space="preserve">
-    <value />
+    <value>Reload</value>
   </data>
   <data name="Remove" xml:space="preserve">
-    <value />
+    <value>Remove</value>
   </data>
   <data name="Remove a role" xml:space="preserve">
-    <value />
+    <value>Remove a role</value>
   </data>
   <data name="Remove filters" xml:space="preserve">
-    <value />
+    <value>Remove filters</value>
   </data>
   <data name="Remove Header" xml:space="preserve">
-    <value />
+    <value>Remove Header</value>
   </data>
   <data name="Remove logo" xml:space="preserve">
-    <value />
+    <value>Remove logo</value>
   </data>
   <data name="Remove role" xml:space="preserve">
-    <value />
+    <value>Remove role</value>
   </data>
   <data name="Report deposit path" xml:space="preserve">
-    <value />
+    <value>Report deposit path</value>
   </data>
   <data name="Report details" xml:space="preserve">
-    <value />
+    <value>Report details</value>
   </data>
   <data name="Report name" xml:space="preserve">
-    <value />
+    <value>Report name</value>
   </data>
   <data name="Report service" xml:space="preserve">
-    <value />
+    <value>Report service</value>
   </data>
   <data name="Report sub name" xml:space="preserve">
-    <value />
+    <value>Report sub name</value>
   </data>
   <data name="Report title" xml:space="preserve">
-    <value />
+    <value>Report title</value>
   </data>
   <data name="Report type" xml:space="preserve">
-    <value />
+    <value>Report type</value>
   </data>
   <data name="Reports" xml:space="preserve">
-    <value />
+    <value>Reports</value>
   </data>
   <data name="Reports execution plan" xml:space="preserve">
-    <value />
+    <value>Reports execution plan</value>
   </data>
   <data name="Reports Result" xml:space="preserve">
-    <value />
+    <value>Reports Result</value>
   </data>
   <data name="Reports result logs" xml:space="preserve">
-    <value />
+    <value>Reports result logs</value>
   </data>
   <data name="Reports1" xml:space="preserve">
-    <value />
+    <value>Reports1</value>
   </data>
   <data name="Required" xml:space="preserve">
-    <value />
+    <value>Required</value>
   </data>
   <data name="Reset" xml:space="preserve">
-    <value />
+    <value>Reset</value>
   </data>
   <data name="Reset authenticator app" xml:space="preserve">
-    <value />
+    <value>Reset authenticator app</value>
   </data>
   <data name="Reset authenticator key" xml:space="preserve">
-    <value />
+    <value>Reset authenticator key</value>
   </data>
   <data name="Reset password" xml:space="preserve">
-    <value />
+    <value>Reset password</value>
   </data>
   <data name="Reset password confirmation" xml:space="preserve">
-    <value />
+    <value>Reset password confirmation</value>
   </data>
   <data name="Reset recovery codes" xml:space="preserve">
-    <value />
+    <value>Reset recovery codes</value>
   </data>
   <data name="Reset to Default" xml:space="preserve">
-    <value />
+    <value>Reset to Default</value>
   </data>
   <data name="reset your authenticator keys." xml:space="preserve">
-    <value />
+    <value>reset your authenticator keys.</value>
   </data>
   <data name="reset1" xml:space="preserve">
-    <value />
+    <value>reset1</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value />
+    <value>Restore</value>
   </data>
   <data name="Result" xml:space="preserve">
-    <value />
+    <value>Result</value>
   </data>
   <data name="Retrieve reports" xml:space="preserve">
-    <value />
+    <value>Retrieve reports</value>
   </data>
   <data name="Return to report editor" xml:space="preserve">
-    <value />
+    <value>Return to report editor</value>
   </data>
   <data name="Role added" xml:space="preserve">
-    <value />
+    <value>Role added</value>
   </data>
   <data name="Role name" xml:space="preserve">
-    <value />
+    <value>Role name</value>
   </data>
   <data name="Role removed" xml:space="preserve">
-    <value />
+    <value>Role removed</value>
   </data>
   <data name="Role usage" xml:space="preserve">
-    <value />
+    <value>Role usage</value>
   </data>
   <data name="Roles" xml:space="preserve">
-    <value />
+    <value>Roles</value>
   </data>
   <data name="Roles :" xml:space="preserve">
-    <value />
+    <value>Roles :</value>
   </data>
   <data name="Roles assigned" xml:space="preserve">
-    <value />
+    <value>Roles assigned</value>
   </data>
   <data name="Roles assigned to" xml:space="preserve">
-    <value />
+    <value>Roles assigned to</value>
   </data>
   <data name="Roles available" xml:space="preserve">
-    <value />
+    <value>Roles available</value>
   </data>
   <data name="Roles list" xml:space="preserve">
-    <value />
+    <value>Roles list</value>
   </data>
   <data name="Rows per activity" xml:space="preserve">
-    <value />
+    <value>Rows per activity</value>
   </data>
   <data name="Rows per page" xml:space="preserve">
-    <value />
+    <value>Rows per page</value>
   </data>
   <data name="Run" xml:space="preserve">
-    <value />
+    <value>Run</value>
   </data>
   <data name="Run by" xml:space="preserve">
-    <value />
+    <value>Run by</value>
   </data>
   <data name="Run manually" xml:space="preserve">
-    <value />
+    <value>Run manually</value>
   </data>
   <data name="Run query" xml:space="preserve">
-    <value />
+    <value>Run query</value>
   </data>
   <data name="Run reports manually" xml:space="preserve">
-    <value />
+    <value>Run reports manually</value>
   </data>
   <data name="Run the query" xml:space="preserve">
-    <value />
+    <value>Run the query</value>
   </data>
   <data name="Saturday" xml:space="preserve">
-    <value />
+    <value>Saturday</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value />
+    <value>Save</value>
   </data>
   <data name="Save changes" xml:space="preserve">
-    <value />
+    <value>Save changes</value>
   </data>
   <data name="Save credentials" xml:space="preserve">
-    <value />
+    <value>Save credentials</value>
   </data>
   <data name="Scan the QR Code or enter this key" xml:space="preserve">
-    <value />
+    <value>Scan the QR Code or enter this key</value>
   </data>
   <data name="Scheduler" xml:space="preserve">
-    <value />
+    <value>Scheduler</value>
   </data>
   <data name="Scheduler simulation for next 60 days" xml:space="preserve">
-    <value />
+    <value>Scheduler simulation for next 60 days</value>
   </data>
   <data name="Scrollable" xml:space="preserve">
-    <value />
+    <value>Scrollable</value>
   </data>
   <data name="Seed DB from date" xml:space="preserve">
-    <value />
+    <value>Seed DB from date</value>
   </data>
   <data name="Select a branch" xml:space="preserve">
-    <value />
+    <value>Select a branch</value>
   </data>
   <data name="Select a business area" xml:space="preserve">
-    <value />
+    <value>Select a business area</value>
   </data>
   <data name="Select a Company" xml:space="preserve">
-    <value />
+    <value>Select a Company</value>
   </data>
   <data name="Select a data type" xml:space="preserve">
-    <value />
+    <value>Select a data type</value>
   </data>
   <data name="Select a date calculation" xml:space="preserve">
-    <value />
+    <value>Select a date calculation</value>
   </data>
   <data name="Select a file" xml:space="preserve">
-    <value />
+    <value>Select a file</value>
   </data>
   <data name="Select a log to display the message" xml:space="preserve">
-    <value />
+    <value>Select a log to display the message</value>
   </data>
   <data name="Select a log to display the values" xml:space="preserve">
-    <value />
+    <value>Select a log to display the values</value>
   </data>
   <data name="Select activity Logo" xml:space="preserve">
-    <value />
+    <value>Select activity Logo</value>
   </data>
   <data name="Select an activity" xml:space="preserve">
-    <value />
+    <value>Select an activity</value>
   </data>
   <data name="Select an excel template" xml:space="preserve">
-    <value />
+    <value>Select an excel template</value>
   </data>
   <data name="Select application Logo" xml:space="preserve">
-    <value />
+    <value>Select application Logo</value>
   </data>
   <data name="send by email" xml:space="preserve">
-    <value />
+    <value>send by email</value>
   </data>
   <data name="Send for all recipients" xml:space="preserve">
-    <value />
+    <value>Send for all recipients</value>
   </data>
   <data name="Send for me" xml:space="preserve">
-    <value />
+    <value>Send for me</value>
   </data>
   <data name="Send verification email" xml:space="preserve">
-    <value />
+    <value>Send verification email</value>
   </data>
   <data name="Sep" xml:space="preserve">
-    <value />
+    <value>Sep</value>
   </data>
   <data name="Separate query in on file?" xml:space="preserve">
-    <value />
+    <value>Separate query in on file?</value>
   </data>
   <data name="Separated excel file?" xml:space="preserve">
-    <value />
+    <value>Separated excel file?</value>
   </data>
   <data name="Service down" xml:space="preserve">
-    <value />
+    <value>Service down</value>
   </data>
   <data name="Service up" xml:space="preserve">
-    <value />
+    <value>Service up</value>
   </data>
   <data name="Services status" xml:space="preserve">
-    <value />
+    <value>Services status</value>
   </data>
   <data name="Set password" xml:space="preserve">
-    <value />
+    <value>Set password</value>
   </data>
   <data name="Set your password" xml:space="preserve">
-    <value />
+    <value>Set your password</value>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value />
+    <value>Settings</value>
   </data>
   <data name="Setup authenticator app" xml:space="preserve">
-    <value />
+    <value>Setup authenticator app</value>
   </data>
   <data name="Sftp configuration" xml:space="preserve">
-    <value />
+    <value>Sftp configuration</value>
   </data>
   <data name="Sftp host" xml:space="preserve">
-    <value />
+    <value>Sftp host</value>
   </data>
   <data name="Sftp password" xml:space="preserve">
-    <value />
+    <value>Sftp password</value>
   </data>
   <data name="Sftp port" xml:space="preserve">
-    <value />
+    <value>Sftp port</value>
   </data>
   <data name="Sftp username" xml:space="preserve">
-    <value />
+    <value>Sftp username</value>
   </data>
   <data name="Side menu" xml:space="preserve">
-    <value />
+    <value>Side menu</value>
   </data>
   <data name="Sign up" xml:space="preserve">
-    <value />
+    <value>Sign up</value>
   </data>
   <data name="Signup" xml:space="preserve">
-    <value />
+    <value>Signup</value>
   </data>
   <data name="Size of files stored locally" xml:space="preserve">
-    <value />
+    <value>Size of files stored locally</value>
   </data>
   <data name="Smtp configuration" xml:space="preserve">
-    <value />
+    <value>Smtp configuration</value>
   </data>
   <data name="Smtp host" xml:space="preserve">
-    <value />
+    <value>Smtp host</value>
   </data>
   <data name="Smtp password" xml:space="preserve">
-    <value />
+    <value>Smtp password</value>
   </data>
   <data name="Smtp port" xml:space="preserve">
-    <value />
+    <value>Smtp port</value>
   </data>
   <data name="Smtp username" xml:space="preserve">
-    <value />
+    <value>Smtp username</value>
   </data>
   <data name="Sorry, the page you visited does not exist." xml:space="preserve">
-    <value />
+    <value>Sorry, the page you visited does not exist.</value>
   </data>
   <data name="Sorry, you are not authorized to access this page." xml:space="preserve">
-    <value />
+    <value>Sorry, you are not authorized to access this page.</value>
   </data>
   <data name="SQL execution duration" xml:space="preserve">
-    <value />
+    <value>SQL execution duration</value>
   </data>
   <data name="SSL Activated?" xml:space="preserve">
-    <value />
+    <value>SSL Activated?</value>
   </data>
   <data name="Standard" xml:space="preserve">
-    <value />
+    <value>Standard</value>
   </data>
   <data name="Start date time" xml:space="preserve">
-    <value />
+    <value>Start date time</value>
   </data>
   <data name="StartOfLastMonth" xml:space="preserve">
-    <value />
+    <value>StartOfLastMonth</value>
   </data>
   <data name="StartOfLastWeek" xml:space="preserve">
-    <value />
+    <value>StartOfLastWeek</value>
   </data>
   <data name="StartOfThisMonth" xml:space="preserve">
-    <value />
+    <value>StartOfThisMonth</value>
   </data>
   <data name="StartOfThisQuarter" xml:space="preserve">
-    <value />
+    <value>StartOfThisQuarter</value>
   </data>
   <data name="StartOfThisWeek" xml:space="preserve">
-    <value />
+    <value>StartOfThisWeek</value>
   </data>
   <data name="StartOfThisYear" xml:space="preserve">
-    <value />
+    <value>StartOfThisYear</value>
   </data>
   <data name="Starts with" xml:space="preserve">
-    <value />
+    <value>Starts with</value>
   </data>
   <data name="Storage per report" xml:space="preserve">
-    <value />
+    <value>Storage per report</value>
   </data>
   <data name="Structure" xml:space="preserve">
-    <value />
+    <value>Structure</value>
   </data>
   <data name="Sunday" xml:space="preserve">
-    <value />
+    <value>Sunday</value>
   </data>
   <data name="Switch to Dark Theme" xml:space="preserve">
-    <value />
+    <value>Switch to Dark Theme</value>
   </data>
   <data name="Switch to Light Theme" xml:space="preserve">
-    <value />
+    <value>Switch to Light Theme</value>
   </data>
   <data name="System" xml:space="preserve">
-    <value />
+    <value>System</value>
   </data>
   <data name="System log message" xml:space="preserve">
-    <value />
+    <value>System log message</value>
   </data>
   <data name="System logs" xml:space="preserve">
-    <value />
+    <value>System logs</value>
   </data>
   <data name="System logs by level" xml:space="preserve">
-    <value />
+    <value>System logs by level</value>
   </data>
   <data name="Table name" xml:space="preserve">
-    <value />
+    <value>Table name</value>
   </data>
   <data name="Target table name" xml:space="preserve">
-    <value />
+    <value>Target table name</value>
   </data>
   <data name="Task scheduler" xml:space="preserve">
-    <value />
+    <value>Task scheduler</value>
   </data>
   <data name="Tasks in error" xml:space="preserve">
-    <value />
+    <value>Tasks in error</value>
   </data>
   <data name="Tasks overview" xml:space="preserve">
-    <value />
+    <value>Tasks overview</value>
   </data>
   <data name="Tasks per day" xml:space="preserve">
-    <value />
+    <value>Tasks per day</value>
   </data>
   <data name="Tasks per type" xml:space="preserve">
-    <value />
+    <value>Tasks per type</value>
   </data>
   <data name="Tasks today" xml:space="preserve">
-    <value />
+    <value>Tasks today</value>
   </data>
   <data name="Template for description file" xml:space="preserve">
-    <value />
+    <value>Template for description file</value>
   </data>
   <data name="Template tab name to use" xml:space="preserve">
-    <value />
+    <value>Template tab name to use</value>
   </data>
   <data name="Test Db connection" xml:space="preserve">
-    <value />
+    <value>Test Db connection</value>
   </data>
   <data name="Test Feedback:" xml:space="preserve">
-    <value />
+    <value>Test Feedback:</value>
   </data>
   <data name="Test query" xml:space="preserve">
-    <value />
+    <value>Test query</value>
   </data>
   <data name="Thank you for confirming your email." xml:space="preserve">
-    <value />
+    <value>Thank you for confirming your email.</value>
   </data>
   <data name="The email address is invalid" xml:space="preserve">
-    <value />
+    <value>The email address is invalid</value>
   </data>
   <data name="The password and confirmation password do not match" xml:space="preserve">
-    <value />
+    <value>The password and confirmation password do not match</value>
   </data>
   <data name="The passwords entered must be equal" xml:space="preserve">
-    <value />
+    <value>The passwords entered must be equal</value>
   </data>
   <data name="The purpose of this application is to easily create reports or alerts in selecting data from several types of database. Each task can be scheduled with a dedicated tool and results can be monitored via logs or the task manager." xml:space="preserve">
-    <value />
+    <value>The purpose of this application is to easily create reports or alerts in selecting data from several types of database. Each task can be scheduled with a dedicated tool and results can be monitored via logs or the task manager.</value>
   </data>
   <data name="The same date with" xml:space="preserve">
-    <value />
+    <value>The same date with</value>
   </data>
   <data name="There are changes pending" xml:space="preserve">
-    <value />
+    <value>There are changes pending</value>
   </data>
   <data name="This account has been locked out, please try again later." xml:space="preserve">
-    <value />
+    <value>This account has been locked out, please try again later.</value>
   </data>
   <data name="This action only disables 2FA" xml:space="preserve">
-    <value />
+    <value>This action only disables 2FA</value>
   </data>
   <data name="This activity is Visible?" xml:space="preserve">
-    <value />
+    <value>This activity is Visible?</value>
   </data>
   <data name="Thursday" xml:space="preserve">
-    <value />
+    <value>Thursday</value>
   </data>
   <data name="Timestamp" xml:space="preserve">
-    <value />
+    <value>Timestamp</value>
   </data>
   <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. If you want to define a specific deposit path, click on the corresponding button. When you have finished, validate the changes" xml:space="preserve">
-    <value />
+    <value>To manage the scheduler select "Configure scheduler" then choose. If you want to define a specific deposit path, click on the corresponding button. When you have finished, validate the changes</value>
   </data>
   <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. When you have finished, validate the changes" xml:space="preserve">
-    <value />
+    <value>To manage the scheduler select "Configure scheduler" then choose. When you have finished, validate the changes</value>
   </data>
   <data name="To use an authenticator app go through the following steps:" xml:space="preserve">
-    <value />
+    <value>To use an authenticator app go through the following steps:</value>
   </data>
   <data name="Today" xml:space="preserve">
-    <value />
+    <value>Today</value>
   </data>
   <data name="Tomorrow" xml:space="preserve">
-    <value />
+    <value>Tomorrow</value>
   </data>
   <data name="Topbar" xml:space="preserve">
-    <value />
+    <value>Topbar</value>
   </data>
   <data name="Total duration" xml:space="preserve">
-    <value />
+    <value>Total duration</value>
   </data>
   <data name="Total nbr of active queries" xml:space="preserve">
-    <value />
+    <value>Total nbr of active queries</value>
   </data>
   <data name="Total size in MB" xml:space="preserve">
-    <value />
+    <value>Total size in MB</value>
   </data>
   <data name="TOTAL Users" xml:space="preserve">
-    <value />
+    <value>TOTAL Users</value>
   </data>
   <data name="Try to create folder" xml:space="preserve">
-    <value />
+    <value>Try to create folder</value>
   </data>
   <data name="Try to create the target folder if not exists?" xml:space="preserve">
-    <value />
+    <value>Try to create the target folder if not exists?</value>
   </data>
   <data name="Tuesday" xml:space="preserve">
-    <value />
+    <value>Tuesday</value>
   </data>
   <data name="Two-factor authentication" xml:space="preserve">
-    <value />
+    <value>Two-factor authentication</value>
   </data>
   <data name="Two-factor authentication (2FA)" xml:space="preserve">
-    <value />
+    <value>Two-factor authentication (2FA)</value>
   </data>
   <data name="Type" xml:space="preserve">
-    <value />
+    <value>Type</value>
   </data>
   <data name="Type of change" xml:space="preserve">
-    <value />
+    <value>Type of change</value>
   </data>
   <data name="Type of Database" xml:space="preserve">
-    <value />
+    <value>Type of Database</value>
   </data>
   <data name="Type of file" xml:space="preserve">
-    <value />
+    <value>Type of file</value>
   </data>
   <data name="Type of job" xml:space="preserve">
-    <value />
+    <value>Type of job</value>
   </data>
   <data name="Type of report" xml:space="preserve">
-    <value />
+    <value>Type of report</value>
   </data>
   <data name="Type of synchronisation" xml:space="preserve">
-    <value />
+    <value>Type of synchronisation</value>
   </data>
   <data name="Type of tasks" xml:space="preserve">
-    <value />
+    <value>Type of tasks</value>
   </data>
   <data name="understand what is a report" xml:space="preserve">
-    <value />
+    <value>understand what is a report</value>
   </data>
   <data name="understand what is an activity" xml:space="preserve">
-    <value />
+    <value>understand what is an activity</value>
   </data>
   <data name="understand what is an alert" xml:space="preserve">
-    <value />
+    <value>understand what is an alert</value>
   </data>
   <data name="Unfortunately, you do not yet have any access" xml:space="preserve">
-    <value />
+    <value>Unfortunately, you do not yet have any access</value>
   </data>
   <data name="Until 200k lines" xml:space="preserve">
-    <value />
+    <value>Until 200k lines</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value />
+    <value>Update</value>
   </data>
   <data name="Update a deposit path" xml:space="preserve">
-    <value />
+    <value>Update a deposit path</value>
   </data>
   <data name="Update a new network credential" xml:space="preserve">
-    <value />
+    <value>Update a new network credential</value>
   </data>
   <data name="Update activity" xml:space="preserve">
-    <value />
+    <value>Update activity</value>
   </data>
   <data name="Update all tempory tables" xml:space="preserve">
-    <value />
+    <value>Update all tempory tables</value>
   </data>
   <data name="Update by" xml:space="preserve">
-    <value />
+    <value>Update by</value>
   </data>
   <data name="Update Db manually" xml:space="preserve">
-    <value />
+    <value>Update Db manually</value>
   </data>
   <data name="Update password" xml:space="preserve">
-    <value />
+    <value>Update password</value>
   </data>
   <data name="Update Smtp profil" xml:space="preserve">
-    <value />
+    <value>Update Smtp profil</value>
   </data>
   <data name="Updated at" xml:space="preserve">
-    <value />
+    <value>Updated at</value>
   </data>
   <data name="Updated by" xml:space="preserve">
-    <value />
+    <value>Updated by</value>
   </data>
   <data name="Upload a logo" xml:space="preserve">
-    <value />
+    <value>Upload a logo</value>
   </data>
   <data name="Upload the company's logo" xml:space="preserve">
-    <value />
+    <value>Upload the company's logo</value>
   </data>
   <data name="Use a DB schema?" xml:space="preserve">
-    <value />
+    <value>Use a DB schema?</value>
   </data>
   <data name="Use a specific file naming?" xml:space="preserve">
-    <value />
+    <value>Use a specific file naming?</value>
   </data>
   <data name="Use an excel data table?" xml:space="preserve">
-    <value />
+    <value>Use an excel data table?</value>
   </data>
   <data name="Use an excel template?" xml:space="preserve">
-    <value />
+    <value>Use an excel template?</value>
   </data>
   <data name="Use application user credential?" xml:space="preserve">
-    <value />
+    <value>Use application user credential?</value>
   </data>
   <data name="Use global query parameters?" xml:space="preserve">
-    <value />
+    <value>Use global query parameters?</value>
   </data>
   <data name="Use os credential" xml:space="preserve">
-    <value />
+    <value>Use os credential</value>
   </data>
   <data name="Use primary keys?" xml:space="preserve">
-    <value />
+    <value>Use primary keys?</value>
   </data>
   <data name="Use Sftp protocol" xml:space="preserve">
-    <value />
+    <value>Use Sftp protocol</value>
   </data>
   <data name="Use Sftp protocol?" xml:space="preserve">
-    <value />
+    <value>Use Sftp protocol?</value>
   </data>
   <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
-    <value />
+    <value>Use standard queries for Rhs WMS?</value>
   </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
-    <value />
+    <value>Use the default deposit path of the activity?</value>
   </data>
   <data name="Use the same tables descriptions than" xml:space="preserve">
-    <value />
+    <value>Use the same tables descriptions than</value>
   </data>
   <data name="User actions logs" xml:space="preserve">
-    <value />
+    <value>User actions logs</value>
   </data>
   <data name="User name" xml:space="preserve">
-    <value />
+    <value>User name</value>
   </data>
   <data name="User Settings" xml:space="preserve">
-    <value />
+    <value>User Settings</value>
   </data>
   <data name="Users" xml:space="preserve">
-    <value />
+    <value>Users</value>
   </data>
   <data name="Users and roles" xml:space="preserve">
-    <value />
+    <value>Users and roles</value>
   </data>
   <data name="Users list" xml:space="preserve">
-    <value />
+    <value>Users list</value>
   </data>
   <data name="Users management" xml:space="preserve">
-    <value />
+    <value>Users management</value>
   </data>
   <data name="Users per role" xml:space="preserve">
-    <value />
+    <value>Users per role</value>
   </data>
   <data name="Validate" xml:space="preserve">
-    <value />
+    <value>Validate</value>
   </data>
   <data name="Validate and add detail" xml:space="preserve">
-    <value />
+    <value>Validate and add detail</value>
   </data>
   <data name="Validate the new activity" xml:space="preserve">
-    <value />
+    <value>Validate the new activity</value>
   </data>
   <data name="Verification code" xml:space="preserve">
-    <value />
+    <value>Verification code</value>
   </data>
   <data name="Verify" xml:space="preserve">
-    <value />
+    <value>Verify</value>
   </data>
   <data name="Visual Cron Editor" xml:space="preserve">
-    <value />
+    <value>Visual Cron Editor</value>
   </data>
   <data name="Warning" xml:space="preserve">
-    <value />
+    <value>Warning</value>
   </data>
   <data name="Warning: keep the {0} tag inner the message to see the values ​​of the variable" xml:space="preserve">
-    <value />
+    <value>Warning: keep the {0} tag inner the message to see the values ​​of the variable</value>
   </data>
   <data name="Wednesday" xml:space="preserve">
-    <value />
+    <value>Wednesday</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value />
+    <value>Welcome</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Manage recipients&quot; tab. Enter an emsail adress then click on &quot;Add recipients&quot; button. You can also customize the message of the email with teh button &quot;Edit email message&quot;" xml:space="preserve">
-    <value />
+    <value>When you are editing the report, click on the "Manage recipients" tab. Enter an emsail adress then click on "Add recipients" button. You can also customize the message of the email with teh button "Edit email message"</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
-    <value />
+    <value>When you are editing the report, click on the "Report details" tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button</value>
   </data>
   <data name="Width" xml:space="preserve">
-    <value />
+    <value>Width</value>
   </data>
   <data name="Windows authentication" xml:space="preserve">
-    <value />
+    <value>Windows authentication</value>
   </data>
   <data name="Workers logs" xml:space="preserve">
-    <value />
+    <value>Workers logs</value>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value />
+    <value>Yes</value>
   </data>
   <data name="Yes, I understand and confirm" xml:space="preserve">
-    <value />
+    <value>Yes, I understand and confirm</value>
   </data>
   <data name="Yesterday" xml:space="preserve">
-    <value />
+    <value>Yesterday</value>
   </data>
   <data name="You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering" xml:space="preserve">
-    <value />
+    <value>You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering</value>
   </data>
   <data name="You can create, edit and delete reports." xml:space="preserve">
-    <value />
+    <value>You can create, edit and delete reports.</value>
   </data>
   <data name="You can download the reports already created and consult the plan of the next report executions." xml:space="preserve">
-    <value />
+    <value>You can download the reports already created and consult the plan of the next report executions.</value>
   </data>
   <data name="You can enter below a subject on which you would to get help" xml:space="preserve">
-    <value />
+    <value>You can enter below a subject on which you would to get help</value>
   </data>
   <data name="You do not have a local username/password for this site. Add a local account so you can log in without an external login." xml:space="preserve">
-    <value />
+    <value>You do not have a local username/password for this site. Add a local account so you can log in without an external login.</value>
   </data>
   <data name="You have" xml:space="preserve">
-    <value />
+    <value>You have</value>
   </data>
   <data name="You have 1 recovery code left." xml:space="preserve">
-    <value />
+    <value>You have 1 recovery code left.</value>
   </data>
   <data name="You have access to the activity" xml:space="preserve">
-    <value />
+    <value>You have access to the activity</value>
   </data>
   <data name="You have full access to the general settings." xml:space="preserve">
-    <value />
+    <value>You have full access to the general settings.</value>
   </data>
   <data name="You have no recovery codes left." xml:space="preserve">
-    <value />
+    <value>You have no recovery codes left.</value>
   </data>
   <data name="You have requested to log in with a recovery code. This login will not be remembered until you provid an authenticator app code at log in or disable 2FA and log in again." xml:space="preserve">
-    <value />
+    <value>You have requested to log in with a recovery code. This login will not be remembered until you provid an authenticator app code at log in or disable 2FA and log in again.</value>
   </data>
   <data name="You have successfully logged out of the application." xml:space="preserve">
-    <value />
+    <value>You have successfully logged out of the application.</value>
   </data>
   <data name="You have the role" xml:space="preserve">
-    <value />
+    <value>You have the role</value>
   </data>
   <data name="You must" xml:space="preserve">
-    <value />
+    <value>You must</value>
   </data>
   <data name="You should" xml:space="preserve">
-    <value />
+    <value>You should</value>
   </data>
   <data name="You've successfully authenticated with" xml:space="preserve">
-    <value />
+    <value>You've successfully authenticated with</value>
   </data>
   <data name="Your account contains personal data that you have given us. This page allows you to download or delete that data." xml:space="preserve">
-    <value />
+    <value>Your account contains personal data that you have given us. This page allows you to download or delete that data.</value>
   </data>
   <data name="Your account has been updated" xml:space="preserve">
-    <value />
+    <value>Your account has been updated</value>
   </data>
   <data name="Your login is protected with an authenticator app. Enter your authenticator code below." xml:space="preserve">
-    <value />
+    <value>Your login is protected with an authenticator app. Enter your authenticator code below.</value>
   </data>
   <data name="Your password cannot be empty" xml:space="preserve">
-    <value />
+    <value>Your password cannot be empty</value>
   </data>
   <data name="Your password has been reset." xml:space="preserve">
-    <value />
+    <value>Your password has been reset.</value>
   </data>
   <data name="Your password length must be at least 6" xml:space="preserve">
-    <value />
+    <value>Your password length must be at least 6</value>
   </data>
   <data name="Your password must contain at least one (!? *.)" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
   <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
-    <value />
+    <value>Your password must contain at least one lowercase letter</value>
   </data>
   <data name="Your password must contain at least one number" xml:space="preserve">
-    <value />
+    <value>Your password must contain at least one number</value>
   </data>
   <data name="Your password must contain at least one uppercase letter" xml:space="preserve">
-    <value />
+    <value>Your password must contain at least one uppercase letter</value>
   </data>
   <data name="Add recipients" xml:space="preserve">
-    <value />
+    <value>Add recipients</value>
   </data>
   <data name="Create a new report" xml:space="preserve">
-    <value />
+    <value>Create a new report</value>
   </data>
   <data name="Create an activity" xml:space="preserve">
-    <value />
+    <value>Create an activity</value>
   </data>
   <data name="Database name" xml:space="preserve">
-    <value />
+    <value>Database name</value>
   </data>
   <data name="Edit a query" xml:space="preserve">
-    <value />
+    <value>Edit a query</value>
   </data>
   <data name="Edit a report" xml:space="preserve">
-    <value />
+    <value>Edit a report</value>
   </data>
   <data name="Edit an activity" xml:space="preserve">
-    <value />
+    <value>Edit an activity</value>
   </data>
   <data name="Go back to reports list" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
@@ -2549,39 +2549,54 @@
     <value />
   </data>
   <data name="Indicate the database name?" xml:space="preserve">
-    <value />
+    <value>Indicate the database name?</value>
   </data>
   <data name="IP or Servername" xml:space="preserve">
-    <value />
+    <value>IP or Servername</value>
   </data>
   <data name="Not sent by email" xml:space="preserve">
-    <value />
+    <value>Not sent by email</value>
   </data>
   <data name="Send by email?" xml:space="preserve">
-    <value />
+    <value>Send by email?</value>
   </data>
   <data name="Sequence" xml:space="preserve">
-    <value />
+    <value>Sequence</value>
   </data>
   <data name="Tasks manager" xml:space="preserve">
-    <value />
+    <value>Tasks manager</value>
   </data>
   <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
   <data name="Use Windows authentication?" xml:space="preserve">
-    <value />
+    <value>Use Windows authentication?</value>
   </data>
   <data name="Demo connection" xml:space="preserve">
-    <value />
+    <value>Demo connection</value>
   </data>
   <data name="Connect to demo account" xml:space="preserve">
-    <value />
+    <value>Connect to demo account</value>
   </data>
   <data name="Open demo emails view" xml:space="preserve">
-    <value />
+    <value>Open demo emails view</value>
   </data>
   <data name="A Target database must be selected" xml:space="preserve">
-    <value />
+    <value>A Target database must be selected</value>
+  </data>
+  <data name="DB schema" xml:space="preserve">
+    <value>DB schema</value>
+  </data>
+  <data name="Your password must contain at least one (!? *.)" xml:space="preserve">
+    <value>Your password must contain at least one (!? *.)</value>
+  </data>
+  <data name="Go back to reports list" xml:space="preserve">
+    <value>Go back to reports list</value>
+  </data>
+  <data name="Go back to the activity list" xml:space="preserve">
+    <value>Go back to the activity list</value>
+  </data>
+  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
+    <value>This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account.</value>
   </data>
 </root>
