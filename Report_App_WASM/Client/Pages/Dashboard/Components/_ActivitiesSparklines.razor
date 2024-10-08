@@ -6,7 +6,7 @@
 }
 else
 {
-    <MudTable Items="_taskLogs!.Where(a => a.Date >= DateTime.Now.Date.AddDays(-10)).GroupBy(e => e.ActivityName).OrderByDescending(a => a.Sum(taksLogsValues => taksLogsValues.NbrTasks))" Height="460px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
+    <MudTable Items="GetFilteredTaskLogs()" Height="460px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
         <HeaderContent>
             <MudTh>@Localizer.Get("Activity")</MudTh>
             <MudTh>@Localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
@@ -56,43 +56,32 @@ else
 
     [Parameter] public List<TaksLogsValues>? _taskLogs { get; set; }
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", "api/Dashboard/");
-    //}
+    private IOrderedEnumerable<IGrouping<string?, TaksLogsValues>> GetFilteredTaskLogs()
+    {
+        return _taskLogs!
+            .Where(a => a.Date >= DateTime.Now.Date.AddDays(-10))
+            .GroupBy(e => e.ActivityName)
+            .OrderByDescending(a => a.Sum(taksLogsValues => taksLogsValues.NbrTasks));
+    }
 
     private ApexChartOptions<TaksLogsValues> GetPieOptions()
     {
-        var options = new ApexChartOptions<TaksLogsValues>
+        return new ApexChartOptions<TaksLogsValues>
         {
             Stroke = new Stroke { Width = 1 },
             Tooltip = new Tooltip { Fixed = new TooltipFixed { Enabled = false } },
             Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
             PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { ExpandOnClick = false } }
         };
-        return options;
     }
 
     private ApexChartOptions<TaksLogsValues> GetBarOptions()
     {
-        var options = new ApexChartOptions<TaksLogsValues>
+        return new ApexChartOptions<TaksLogsValues>
         {
             Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
             PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%" } },
             Tooltip = new Tooltip { X = new TooltipX { Format = @" dd \ MM \ yyyy" } }
         };
-
-        return options;
     }
-
-    //private ApexChartOptions<ApplicationLogTaskDTO> GetBarOptionsHour()
-    //{
-    //	var options = new ApexCharts.ApexChartOptions<ApplicationLogTaskDTO>();
-    //	options.Chart = new Chart { Sparkline = new ChartSparkline(),Animations= new Animations {Enabled=false} };
-    //	options.PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%", } };
-    //	options.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:MIN" } };
-
-    //	return options;
-    //}
-
 }

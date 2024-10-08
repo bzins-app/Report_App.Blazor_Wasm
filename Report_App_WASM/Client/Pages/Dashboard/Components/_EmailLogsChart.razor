@@ -1,6 +1,6 @@
 ﻿@using ApexCharts
 @using Color = MudBlazor.Color
-@if (_logs == null)
+@if ( _isLoading)
 {
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
 }
@@ -45,6 +45,7 @@ else
     private List<EmailsLogsValues>? _logs;
     private ApexChartOptions<EmailsLogsValues> _options = new();
     private ApexChart<EmailsLogsValues>? _chart;
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,6 +57,7 @@ else
         //Stacked 100% test
         //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
         _options.Chart.Toolbar = new Toolbar { Show = false };
+        _isLoading = false;
     }
 
 }
