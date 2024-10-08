@@ -97,28 +97,17 @@
             </MudItem>
             <MudItem xs="12" md="6">
                 <div>
-                    <MudLoadingButton @bind-Loading="_loadingTestQuery" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
-                        <LoadingContent>
-                            <MudText>@Localizer.Get("Processing")</MudText>
-                        </LoadingContent>
-                        <ChildContent>
-                            <MudText>@Localizer.Get("Test query")</MudText>
-                        </ChildContent>
-                    </MudLoadingButton>
-                    @if (_loadingTestQuery)
+                    <MudPaper Elevation="25">
+                        <MudToolBar Dense="true">
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loadingTestQuery" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loadingTestQuery" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                        </MudToolBar>
+                    </MudPaper>
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="_loadingTestQuery" />
+                    @if (_opt != null)
                     {
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
-                            <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
-                        </MudButton>
+                        <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" />
                     }
-                    @if (!string.IsNullOrEmpty(_queryTestResult))
-                    {
-                        <div class="form-group">
-                            <p style="color: red">@_queryTestResult</p>
-                        </div>
-                    }
-                    <Blazor.AceEditorJs.AceJsEditor @bind-Value="@QueryBuilder" Options="@_opt" Style="height: 35vh"/>
-
                     <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
                             @if (_values?.Any() == true)
@@ -172,6 +161,7 @@
 
     private string? QueryBuilder;
     private string? QueryRun;
+    private string _querySelectedCode = string.Empty;
     private CancellationTokenSource? _cts;
 
     private bool _isDarkMode;
@@ -291,13 +281,15 @@
     private async Task RunSql()
     {
         _loadingTestQuery = true;
+        var _queryTorun=string.Empty;
+        _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) && !string.IsNullOrEmpty(_querySelectedCode) ? _querySelectedCode : QueryBuilder;
         if (string.IsNullOrEmpty(QueryBuilder))
         {
             _queryTestResult = "query is not set";
         }
         else
         {
-            QueryRun = QueryBuilder;
+            QueryRun = _queryTorun;
             _table!.CurrentPage = 0;
             await _table.ReloadServerData();
         }
