@@ -22,20 +22,6 @@
                 <MudItem sm="12" md="4" lg="2" Style="padding-right: 10px">
                     <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required/>
                     <MudNumericField @bind-Value="Item.DetailSequence" Label="@Localizer.Get("Query sequence")"/>
-                    <div>
-                        <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OpenTestQuery" Variant="Variant.Filled" Color="Color.Primary">
-                            <LoadingContent>
-                                @Localizer.Get("Processing")
-                            </LoadingContent>
-                            <ChildContent>
-                                @Localizer.Get("Test query")
-                            </ChildContent>
-                        </MudLoadingButton>
-                        @if (_loading)
-                        {
-                            <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelTest">@Localizer.Get("Cancel")</MudButton>
-                        }
-                    </div>
                     @if (_taskType == TaskType.Report.ToString())
                     {
                         <br/>
@@ -143,16 +129,37 @@
                     {
                         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
                             <MudTabPanel Text="SQL">
-                                <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt"/>
+                                <MudPaper Elevation="25">
+                                    <MudToolBar Dense="true">
+                                        <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="OpenTestQuery"/>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelTest"/>
+                                    </MudToolBar>
+                                </MudPaper>
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="_loading" />
+                                @if (_opt != null)
+                                {
+                                    <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="Item.Query" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
+                                }
                             </MudTabPanel>
                             <MudTabPanel Text="@Localizer.Get("Query parameters")">
-                                <_QueryParameters Item="Item" Style="height: 75vh" @ref="_refQuery"/>
+                                <_QueryParameters Item="Item" Style="height: 80vh" @ref="_refQuery"/>
                             </MudTabPanel>
                         </MudTabs>
                     }
                     else
                     {
-                        <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="@Item.Query" Options="@_opt"/>
+                        <MudPaper Elevation="25">
+                            <MudToolBar Dense="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="OpenTestQuery"/>
+                                <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelTest"/>
+                            </MudToolBar>
+                        </MudPaper>
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="_loading" />
+
+                        @if (_opt != null)
+                        {
+                            <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="Item.Query" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
+                        }
                     }
                 </MudItem>
             </MudGrid>
@@ -196,6 +203,7 @@
     private List<Dictionary<string, object>>? _data;
     private string? _queryTestResult;
     private bool _testResult;
+    private string _querySelectedCode=string.Empty;
 
     private CancellationTokenSource? _cts;
 
@@ -211,6 +219,7 @@
     {
         PropertyNameCaseInsensitive = true
     };
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -303,7 +312,10 @@
                 }
             }
 
-            var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };
+            var _queryTorun=string.Empty;
+            _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) ? _querySelectedCode : Item.Query;
+
+            var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };
             var remoteDataPayload = new RemoteDataPayload { Values = run };
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
             var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
