@@ -27,7 +27,7 @@
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
                 <MudTd DataLabel="@Localizer.Get("Blind copy")">
-                    <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary" />
+                    <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
                 </MudTd>
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>

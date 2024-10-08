@@ -13,7 +13,7 @@
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -21,9 +21,9 @@
                 <SimpleGrid Items="@_elements!.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
                         <MudStack Row="true" Justify="Justify.Center">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
-                            <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" OnClick="() => OpenCreateDialog(context)" title="@Localizer.Get("Duplicate")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" OnClick="() => OpenCreateDialog(context)" title="@Localizer.Get("Duplicate")"/>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
@@ -140,11 +140,11 @@
     {
         var value = new TaskDetailDto
         {
-                Query = toDuplicate.Query,
-                QueryName = toDuplicate.QueryName+ " (Copy)",
-                QueryParameters = toDuplicate.QueryParameters,
-                DetailSequence = toDuplicate.DetailSequence,
-                TaskDetailParameters = toDuplicate.TaskDetailParameters
+            Query = toDuplicate.Query,
+            QueryName = toDuplicate.QueryName + " (Copy)",
+            QueryParameters = toDuplicate.QueryParameters,
+            DetailSequence = toDuplicate.DetailSequence,
+            TaskDetailParameters = toDuplicate.TaskDetailParameters
         };
         var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 

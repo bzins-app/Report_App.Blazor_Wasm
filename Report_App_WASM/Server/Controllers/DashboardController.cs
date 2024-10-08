@@ -38,9 +38,15 @@ public class DashboardController : ControllerBase, IDisposable
             NbrTasksInError = await tasksToday.Where(a => a.Error && !a.Result!.Contains("attempt")).CountAsync(),
             SizeFilesStoredLocally = await reportsToday.SumAsync(a => a.FileSizeInMb),
             NbrOfFilesStored = await reportsToday.CountAsync(),
-            NbrOfActiveReports = servicesStatus.ReportService ? await activeTask.Where(a => a.Type == TaskType.Report).CountAsync() : 0,
-            NbrOfActiveAlerts = servicesStatus.AlertService ? await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync() : 0,
-            NbrOfActiveDataTransfer = servicesStatus.DataTransferService ? await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync() : 0,
+            NbrOfActiveReports = servicesStatus.ReportService
+                ? await activeTask.Where(a => a.Type == TaskType.Report).CountAsync()
+                : 0,
+            NbrOfActiveAlerts = servicesStatus.AlertService
+                ? await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync()
+                : 0,
+            NbrOfActiveDataTransfer = servicesStatus.DataTransferService
+                ? await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync()
+                : 0,
             NbrOfActiveQueries = await _context.TaskDetail.CountAsync(a =>
                 a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated &&
                 ((a.TaskHeader.Type == TaskType.Report && servicesStatus.ReportService) ||
@@ -56,7 +62,8 @@ public class DashboardController : ControllerBase, IDisposable
     {
         var dateThreshold = DateTime.Today.AddDays(-20);
         return await _context.ApplicationLogTask.AsNoTracking()
-            .Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > dateThreshold && !a.Result.Contains("attempt"))
+            .Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > dateThreshold &&
+                        !a.Result.Contains("attempt"))
             .GroupBy(a => new { a.Type, a.ActivityName, a.EndDateTime.Date })
             .Select(a => new TaksLogsValues
             {
@@ -118,7 +125,8 @@ public class DashboardController : ControllerBase, IDisposable
         var dateThreshold = DateTime.Today.AddDays(-10);
         return await _context.ApplicationLogQueryExecution
             .Where(a => a.EndDateTime > dateThreshold)
-            .GroupBy(a => new DateTime(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour, a.EndDateTime.Minute, 0))
+            .GroupBy(a => new DateTime(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour,
+                a.EndDateTime.Minute, 0))
             .Select(a => new DbLinesQuery { Date = a.Key, NbrOfRows = a.Sum(b => b.NbrOfRows) })
             .ToListAsync();
     }

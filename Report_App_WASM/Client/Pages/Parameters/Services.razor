@@ -18,28 +18,28 @@
                        Label="@Localizer.Get("Report service")"
                        ThumbIcon="@(_status.ReportService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                        ThumbIconColor="@(_status.ReportService ? Color.Success : Color.Error)"
-                       Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateReportService(value)" />
+                       Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateReportService(value)"/>
             <MudSwitch Value="@_status.AlertService" Color="Color.Primary"
                        Label="@Localizer.Get("Alert service")"
                        ThumbIcon="@(_status.AlertService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                        ThumbIconColor="@(_status.AlertService ? Color.Success : Color.Error)"
-                       Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateAlertService(value)" />
+                       Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateAlertService(value)"/>
             <MudSwitch Value="@_status.DataTransferService" Color="Color.Primary"
                        Label="@Localizer.Get("Data transfer service")"
                        ThumbIcon="@(_status.DataTransferService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                        ThumbIconColor="@(_status.DataTransferService ? Color.Success : Color.Error)"
-                       Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateDataTransferService(value)" />
+                       Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateDataTransferService(value)"/>
         }
         <MudSwitch Value="@_status.EmailService"
                    Label="@Localizer.Get("Email service")" Color="Color.Primary"
                    ThumbIcon="@(_status.EmailService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                    ThumbIconColor="@(_status.EmailService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateEmailService(value)" />
+                   Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateEmailService(value)"/>
         <MudSwitch Value="@_status.CleanerService"
                    Label="@Localizer.Get("Cleaner service")" Color="Color.Primary"
                    ThumbIcon="@(_status.CleanerService ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                    ThumbIconColor="@(_status.CleanerService ? Color.Success : Color.Error)"
-                   Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateCleanerService(value)" />
+                   Disabled="_switchDisabled" ValueChanged="(bool value) => ActivateCleanerService(value)"/>
     </MudCardContent>
 </MudCard>
 

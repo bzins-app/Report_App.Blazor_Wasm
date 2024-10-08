@@ -175,19 +175,22 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "report";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
+                        RecurringJob.AddOrUpdate(jobId, queueName,
+                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
                     else if (taskHeader.Type == TaskType.Alert && services!.AlertService)
                     {
                         var queueName = "alert";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
+                        RecurringJob.AddOrUpdate(jobId, queueName,
+                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
                     else if (taskHeader.Type == TaskType.DataTransfer && services!.DataTransferService)
                     {
                         var queueName = "datatransfer";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
+                        RecurringJob.AddOrUpdate(jobId, queueName,
+                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
                 }
             }
@@ -208,7 +211,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
         if (db != null)
         {
-            using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper, _hostingEnvironment);
+            using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
+                _hostingEnvironment);
             await handler.HandleTask(parameters);
         }
     }
@@ -216,7 +220,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     public async Task DeleteLocalFilesAsync()
     {
         ApplicationLogTask logTask = new()
-        { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
+            { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
         try
         {
             var qry = _context.ApplicationLogReportResult.Where(a => a.IsAvailable == true).GroupJoin(
@@ -268,28 +272,36 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
         await _context.ApplicationLogSystem
             .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
         await _context.ApplicationLogTask
             .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
         await _context.ApplicationLogTaskDetails
             .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
         await _context.ApplicationLogEmailSender
             .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
         await _context.ApplicationAuditTrail
             .Where(a => a.DateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
         await _context.ApplicationLogReportResult
             .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-retentionDays) && !a.IsAvailable)
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
         await _context.ApplicationLogQueryExecution
             .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
         await _context.ApplicationLogAdHocQueries
             .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a)); await _context.SaveChangesAsync();
+            .ForEachAsync(a => _context.Remove(a));
+        await _context.SaveChangesAsync();
 
 
         logTask.Result = "Ok";
