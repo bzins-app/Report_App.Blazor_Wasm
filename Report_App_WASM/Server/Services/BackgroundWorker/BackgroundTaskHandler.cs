@@ -117,7 +117,8 @@ public class BackgroundTaskHandler : IDisposable
                     {
                         ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName,
                         StartDateTime = DateTime.Now, JobDescription = detail.QueryName,
-                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,Result = "Running"
+                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,
+                        Result = "Running"
                     };
 
                     await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
@@ -126,19 +127,20 @@ public class BackgroundTaskHandler : IDisposable
                     var _headerParameters =
                         JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
 
-                    int i=0;
+                    int i = 0;
                     foreach (var value in _fetchedData)
                     {
-                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId,i);
+                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId, i);
                         i++;
                     }
 
                     log.EndDateTime = DateTime.Now;
                     log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
-                    if (log.Result== "Running")
+                    if (log.Result == "Running")
                     {
                         log.Result = "No lines fetched";
                     }
+
                     _context.Update(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     _fetchedData.Clear();
@@ -343,7 +345,7 @@ public class BackgroundTaskHandler : IDisposable
                     else
                         queryCreate =
                             CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                                detailParam.DataTransferTargetTableName, loopNumber==0?true:false);
+                                detailParam.DataTransferTargetTableName, loopNumber == 0 ? true : false);
                 }
 
                 await _dbReader.CreateTable(queryCreate, activityIdTransfer);
