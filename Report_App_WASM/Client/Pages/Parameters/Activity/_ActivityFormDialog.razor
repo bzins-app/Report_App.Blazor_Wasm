@@ -35,7 +35,7 @@
                         <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port /Instance" Margin="Margin.Dense"/>
                         <MudGrid>
                             <MudItem md="6">
-                                <MudSwitch @bind-Value="DbCon.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="DbCon.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary"/>
                             </MudItem>
                             <MudItem md="6">
                                 <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("DB schema")" Disabled="!DbCon.UseDbSchema" Margin="Margin.Dense"/>
@@ -54,13 +54,13 @@
                         <MudTextField @bind-Value="DbCon.ConnectionPath" Label="@Localizer.Get("Connection path")" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense"/>
                         <MudGrid>
                             <MudItem md="6">
-                                <MudSwitch @bind-Value="DbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="DbCon.UseDbSchema" Label="@Localizer.Get("Indicate the database name?")" Color="Color.Primary"/>
                             </MudItem>
                             <MudItem md="6">
                                 <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Disabled="!DbCon.UseDbSchema" Margin="Margin.Dense"/>
                             </MudItem>
                             <MudItem md="6">
-                                <MudSwitch @bind-Value="DbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="DbCon.IntentReadOnly" Label="@Localizer.Get("Application intent read only?")" Color="Color.Primary"/>
                             </MudItem>
                             <MudItem md="6">
                                 <MudSwitch @bind-Value="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true"/>
@@ -202,7 +202,7 @@
                     </MudGrid>
                     <MudGrid>
                         <MudItem>
-                            <MudSwitch @bind-Value="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
+                            <MudSwitch @bind-Value="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true"/>
                         </MudItem>
                         <MudItem>
                             @if (DbCon.UseTablesDescriptions)

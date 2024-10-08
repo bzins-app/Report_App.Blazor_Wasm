@@ -2,7 +2,7 @@
 
 @if (_taskLogs == null)
 {
-    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7"/>
 }
 else
 {
@@ -28,7 +28,7 @@ else
                                      Name="@Localizer.Get("Type of tasks")"
                                      SeriesType="SeriesType.Pie"
                                      XValue="@(e => e.TypeTask)"
-                                     YAggregate="@(e => e.Sum(a => a.NbrTasks))" />
+                                     YAggregate="@(e => e.Sum(a => a.NbrTasks))"/>
 
                 </ApexChart>
             </MudTd>
@@ -45,12 +45,13 @@ else
                                      SeriesType="SeriesType.Bar"
                                      XValue="@(e => e.Date.ToLocalTime())"
                                      YAggregate="@(e => e.Count())"
-                                     OrderBy="e => e.X" />
+                                     OrderBy="e => e.X"/>
                 </ApexChart>
             </MudTd>
         </RowTemplate>
     </MudTable>
 }
+
 @code {
 
     [Parameter] public List<TaksLogsValues>? _taskLogs { get; set; }
@@ -63,23 +64,23 @@ else
     private ApexChartOptions<TaksLogsValues> GetPieOptions()
     {
         var options = new ApexChartOptions<TaksLogsValues>
-            {
-                Stroke = new Stroke { Width = 1 },
-                Tooltip = new Tooltip { Fixed = new TooltipFixed { Enabled = false } },
-                Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
-                PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { ExpandOnClick = false } }
-            };
+        {
+            Stroke = new Stroke { Width = 1 },
+            Tooltip = new Tooltip { Fixed = new TooltipFixed { Enabled = false } },
+            Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
+            PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { ExpandOnClick = false } }
+        };
         return options;
     }
 
     private ApexChartOptions<TaksLogsValues> GetBarOptions()
     {
         var options = new ApexChartOptions<TaksLogsValues>
-            {
-                Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
-                PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%" } },
-                Tooltip = new Tooltip { X = new TooltipX { Format = @" dd \ MM \ yyyy" } }
-            };
+        {
+            Chart = new Chart { Sparkline = new ChartSparkline(), Animations = new Animations { Enabled = false } },
+            PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { ColumnWidth = "85%" } },
+            Tooltip = new Tooltip { X = new TooltipX { Format = @" dd \ MM \ yyyy" } }
+        };
 
         return options;
     }

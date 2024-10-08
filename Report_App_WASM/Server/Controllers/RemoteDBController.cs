@@ -150,7 +150,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             }
 
             var result = new SubmitResultRemoteData
-            { Success = false, Message = e.Message, Value = new List<Dictionary<string, object>>() };
+                { Success = false, Message = e.Message, Value = new List<Dictionary<string, object>>() };
             return Ok(result);
         }
     }
@@ -275,9 +275,9 @@ public class RemoteDbController : ControllerBase, IDisposable
                             .Where(a => a.ActivityDbConnection.Id == description.ConnectId).AsNoTracking()
                             .Select(a => new { a.TableName, a.TableDescription }).Distinct().ToListAsync(ct);
                         listTables.Values = (from a in tables
-                                             join b in Prework on a equals b.TableName into c
-                                             from d in c.DefaultIfEmpty()
-                                             select new DescriptionValues { Name = a, Description = d?.TableDescription }).ToList();
+                            join b in Prework on a equals b.TableName into c
+                            from d in c.DefaultIfEmpty()
+                            select new DescriptionValues { Name = a, Description = d?.TableDescription }).ToList();
                         listTables.HasDescription = Prework.Any();
                     }
                     else
@@ -332,12 +332,14 @@ public class RemoteDbController : ControllerBase, IDisposable
                             var desc = await _context.DbTableDescriptions
                                 .Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
                                 .AsNoTracking().Select(a => new
-                                { Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty, a.IsSnippet })
+                                {
+                                    Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty, a.IsSnippet
+                                })
                                 .ToListAsync();
                             if (desc != null)
                             {
                                 listCols.Values.AddRange(desc.Where(a => a.IsSnippet).Select(a => new DescriptionValues
-                                { Name = a.Name!, Description = a.Desciption, IsSnippet = true }).ToList());
+                                    { Name = a.Name!, Description = a.Desciption, IsSnippet = true }).ToList());
                                 listCols.HasDescription = true;
                                 foreach (var col in cols.Distinct())
                                     listCols.Values.Add(new DescriptionValues

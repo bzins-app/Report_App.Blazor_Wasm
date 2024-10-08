@@ -54,7 +54,7 @@
                             }
                             @if (_typeDbTask != TypeDb.Db2)
                             {
-                                <MudSwitch @bind-Value="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary"/>
                             }
                         </MudForm>
                     </MudItem>
@@ -73,7 +73,7 @@
                                 <MudSwitch @bind-Value="_param.UseASpecificFileNaming" Label="@Localizer.Get("Use a specific file naming?")" Color="Color.Primary"/>
                                 @if (Item.TypeFile == FileType.Excel)
                                 {
-                                    <MudSwitch @bind-Value="_param.UseAnExcelTemplate" Label="@Localizer.Get("Use an excel template?")" Color="Color.Primary" />
+                                    <MudSwitch @bind-Value="_param.UseAnExcelTemplate" Label="@Localizer.Get("Use an excel template?")" Color="Color.Primary"/>
                                 }
 
                                 @if (Item.TypeFile == FileType.Csv)
@@ -92,7 +92,7 @@
                                     <MudTextField @bind-Value="_param.ExcelTemplatePath" Label="@Localizer.Get("Excel Template")" Required ReadOnly/>
                                     @if (!_loading)
                                     {
-                                                    <MudLink Class="d-flex pa-4" Href="@("/" + _param.ExcelTemplatePath)" Target="_blank" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
+                                        <MudLink Class="d-flex pa-4" Href="@("/" + _param.ExcelTemplatePath)" Target="_blank" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
                                         <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadTemplate" Accept=".xlsx">
                                             <ActivatorContent>
                                                 <MudFab HtmlTag="label" Class="pa-4"
@@ -124,7 +124,7 @@
                             }
                             @if (Item.Type == TaskType.Alert)
                             {
-                                <MudSwitch @bind-Value="_param.AlertOccurenceByTime" Label="@Localizer.Get("Manage by duration?")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_param.AlertOccurenceByTime" Label="@Localizer.Get("Manage by duration?")" Color="Color.Primary"/>
                                 <p>@Localizer.Get("In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences")</p>
                                 <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")"/>
                                 <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")"/>
@@ -311,12 +311,13 @@
         try
         {
             _errorMessage = "";
-            if (Item.Type == TaskType.DataTransfer&&_param.DataTransferId==0)
+            if (Item.Type == TaskType.DataTransfer && _param.DataTransferId == 0)
             {
                 Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
                 _errorMessage = Localizer.Get("A Target database must be selected");
                 return;
             }
+
             if (Item.IsActivated)
             {
                 await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);

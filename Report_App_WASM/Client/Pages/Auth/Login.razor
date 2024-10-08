@@ -45,7 +45,7 @@ else if (_ldap)
             <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password"/>
         </div>
         <ValidationMessage For="@(() => LoginParameters.Password)"/>
-@*         <div class="form-group text-left" style="padding-bottom: 10px">
+        @*         <div class="form-group text-left" style="padding-bottom: 10px">
             <div class="checkbox checkbox-fill d-inline">
                 <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe"/>
                 <label for="checkbox-fill-a1" class="cr">@Localizer.Get("Save credentials")</label>
@@ -75,7 +75,7 @@ else
             <InputText type="password" id="inputPassword" class="form-control" placeholder="@Localizer.Get("Password")" @bind-Value="LoginParameters.Password"/>
         </div>
         <ValidationMessage For="@(() => LoginParameters.Password)"/>
-@*         <div class="form-group text-left" style="padding-bottom: 10px">
+        @*         <div class="form-group text-left" style="padding-bottom: 10px">
             <div class="checkbox checkbox-fill d-inline">
                 <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginParameters.RememberMe"/>
                 <label for="checkbox-fill-a1" class="cr">@Localizer.Get("Save credentials")</label>

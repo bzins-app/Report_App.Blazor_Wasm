@@ -1,6 +1,6 @@
 ﻿@inject ISnackbar Snackbar
 
-<MudSwitch Style="justify-content: center" Value="@Item!.Display" Color="Color.Primary" ThumbIcon="@(Item.Display ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.Display ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)" />
+<MudSwitch Style="justify-content: center" Value="@Item!.Display" Color="Color.Primary" ThumbIcon="@(Item.Display ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.Display ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)"/>
 
 @code {
 
@@ -9,8 +9,8 @@
     private async Task ChangeStatusAsync(bool value)
     {
         Item!.Display = value;
-       var result= await DataService.PostValues(Item, "ActivityUpdate");
-        if(!result.Success)
+        var result = await DataService.PostValues(Item, "ActivityUpdate");
+        if (!result.Success)
         {
             Item.Display = !value;
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
