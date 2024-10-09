@@ -84,6 +84,7 @@ public class ApplicationService
             _constantsValuesCache = await _httpClient.GetFromJsonAsync<ApplicationConstantsValues>(
                 $"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
         }
+
         return _constantsValuesCache;
     }
 }

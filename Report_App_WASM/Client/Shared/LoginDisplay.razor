@@ -53,6 +53,7 @@
 </AuthorizeView>
 
 @code {
+
     private async Task BeginLogOut()
     {
         await AuthStateProvider.Logout();
@@ -69,4 +70,5 @@
             ? $"{names[0].First()}{names[1].First()}"
             : $"{names[0].First()}";
     }
+
 }

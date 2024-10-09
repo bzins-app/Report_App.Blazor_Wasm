@@ -34,28 +34,27 @@ public class AuthorizeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Login(LoginParameters parameters)
     {
-        var user = await _userManager.FindByNameAsync(parameters.UserName!);
+        var user = await _userManager.FindByNameAsync(parameters.UserName!)
+                   ?? await _userManager.FindByEmailAsync(parameters.UserName!);
         if (user == null)
-        {
-            user = await _userManager.FindByEmailAsync(parameters.UserName!);
-            if (user == null)
-                return BadRequest("User does not exist");
-        }
+            return BadRequest("User does not exist");
 
-        var singInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password!, false);
-        if (!singInResult.Succeeded) return BadRequest("Invalid password");
+        var signInResult = await _signInManager.CheckPasswordSignInAsync(user, parameters.Password!, false);
+        if (!signInResult.Succeeded) return BadRequest("Invalid password");
 
         await _signInManager.SignInAsync(user, parameters.RememberMe);
-        _logger.LogInformation("User logged in:" + parameters.UserName);
+        _logger.LogInformation("User logged in: {UserName}", parameters.UserName);
         return Ok();
     }
-
 
     [HttpPost]
     public async Task<IActionResult> LdapLogin(LoginParameters parameters)
     {
-        var domain = await _context.LdapConfiguration.Where(a => a.IsActivated).Select(a => a.Domain)
+        var domain = await _context.LdapConfiguration
+            .Where(a => a.IsActivated)
+            .Select(a => a.Domain)
             .FirstOrDefaultAsync();
+
         try
         {
             var rememberMe = true;
@@ -63,49 +62,51 @@ public class AuthorizeController : ControllerBase
                 new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
             var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);
             var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);
+
             if (userMail != null)
             {
                 await _signInManager.SignInAsync(userMail, rememberMe);
-                _logger.LogInformation("User logged in:" + parameters.UserName);
+                _logger.LogInformation("User logged in: {UserName}", parameters.UserName);
                 return Ok();
             }
-
 
             var user = await _userManager.FindByNameAsync(parameters.UserName!);
             if (user != null)
             {
                 await _signInManager.SignInAsync(user, rememberMe);
-                _logger.LogInformation("User logged in:" + parameters.UserName);
+                _logger.LogInformation("User logged in: {UserName}", parameters.UserName);
                 return Ok();
             }
 
-            List<string> errors = new();
             var userNew = new ApplicationUser
             {
-                UserName = parameters.UserName, Email = userAd.EmailAddress, CreateUser = "AD screen",
-                ModDateTime = DateTime.Now, ModificationUser = "Register screen",
-                Culture = CultureInfo.CurrentCulture.Name, EmailConfirmed = true
+                UserName = parameters.UserName,
+                Email = userAd.EmailAddress,
+                CreateUser = "AD screen",
+                ModDateTime = DateTime.Now,
+                ModificationUser = "Register screen",
+                Culture = CultureInfo.CurrentCulture.Name,
+                EmailConfirmed = true
             };
-            var result = await _userManager.CreateAsync(userNew).ConfigureAwait(true);
+
+            var result = await _userManager.CreateAsync(userNew);
+
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(userNew, rememberMe);
-                _logger.LogInformation("User logged in:" + parameters.UserName);
+                _logger.LogInformation("User logged in: {UserName}", parameters.UserName);
                 return Ok();
             }
 
-            foreach (var error in result.Errors) errors.Add(error.Description);
-            if (!result.Succeeded) return BadRequest(string.Join(',', errors));
+            var errors = result.Errors.Select(e => e.Description).ToList();
+            return BadRequest(string.Join(',', errors));
         }
         catch (Exception ex)
         {
-            _logger.LogInformation("Invalid login attempt during AD auth " + parameters.UserName + " Error:" +
-                                   ex.Message);
-            ModelState.AddModelError(string.Empty, ex.Message);
+            _logger.LogInformation("Invalid login attempt during AD auth {UserName} Error: {ErrorMessage}",
+                parameters.UserName, ex.Message);
             return BadRequest(ex.Message);
         }
-
-        return Ok();
     }
 
     [HttpPost]
@@ -179,6 +180,7 @@ public class AuthorizeController : ControllerBase
         {
             UserName = parameters.UserName
         };
+
         if (parameters.Password != null)
         {
             var result = await _userManager.CreateAsync(user, parameters.Password);
@@ -203,14 +205,14 @@ public class AuthorizeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> ResetPassword(ApiCrudPayload<UserPayload> item)
     {
+        if (item == null) return BadRequest("Invalid request");
+
         try
         {
-            if (item != null)
-            {
-                var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!);
-                await _userManager.ResetPasswordAsync(user!, item.EntityValue.UserName!, item.EntityValue.Password!);
-            }
+            var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!);
+            if (user == null) return BadRequest("User not found");
 
+            await _userManager.ResetPasswordAsync(user, item.EntityValue.UserName!, item.EntityValue.Password!);
             return Ok(new SubmitResult { Success = true, Message = "Ok" });
         }
         catch (Exception e)
@@ -219,39 +221,26 @@ public class AuthorizeController : ControllerBase
         }
     }
 
-
     [HttpPost]
     public async Task<IActionResult> SendResetPasswordEmail(ApiCrudPayload<UserPayload> item)
     {
+        if (item == null) return BadRequest("Invalid request");
+
         try
         {
-            if (item != null)
-            {
-                var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!).ConfigureAwait(true);
-                if (user == null || !await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(true))
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+            var user = await _userManager.FindByEmailAsync(item.EntityValue.UserMail!);
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
+                return RedirectToPage("./ForgotPasswordConfirmation");
 
-                // For more information on how to enable account confirmation and password reset please 
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(true);
-                var callbackUrl = Url.Page(
-                    "/ResetPassword",
-                    null,
-                    new { code },
-                    Request.Scheme);
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Page("/ResetPassword", null, new { code }, Request.Scheme);
 
-                List<EmailRecipient> ListEmail = new()
-                {
-                    new EmailRecipient { Email = item.EntityValue.UserMail }
-                };
-                var Title = "Reset Password";
-                var Body =
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
+            var emailRecipients = new List<EmailRecipient> { new EmailRecipient { Email = item.EntityValue.UserMail } };
+            var title = "Reset Password";
+            var body =
+                $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
 
-                _emailSender.SendEmail(ListEmail, Title, Body);
-            }
-
+            _emailSender.SendEmail(emailRecipients, title, body);
             return Ok(new SubmitResult { Success = true, Message = "Ok" });
         }
         catch (Exception e)
@@ -264,11 +253,11 @@ public class AuthorizeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> ConfirmEmail(ApiCrudPayload<ConfirmEmailValues> value)
     {
-        var user = await _userManager.FindByIdAsync(value.EntityValue.UserId!).ConfigureAwait(true);
+        var user = await _userManager.FindByIdAsync(value.EntityValue.UserId!);
         if (user == null) return NotFound($"Unable to load user with ID '{value.EntityValue.UserId!}'.");
 
         var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(value.EntityValue.Code!));
-        var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(true);
+        var result = await _userManager.ConfirmEmailAsync(user, code);
         return Ok(new SubmitResult
         {
             Success = result.Succeeded,
@@ -279,35 +268,27 @@ public class AuthorizeController : ControllerBase
     [HttpGet]
     public async Task<UserInfo> UserInfoAsync()
     {
-        //var user = await _userManager.GetUserAsync(HttpContext.User);
         return await BuildUserInfoAsync();
     }
 
     [HttpGet]
     public IdentityDefaultOptions GetIdentityOptionsAsync()
     {
-        //var user = await _userManager.GetUserAsync(HttpContext.User);
-        var identityDefaultOptions = new IdentityDefaultOptions();
         var options = _userManager.Options;
-
-        identityDefaultOptions.PasswordRequireDigit = options.Password.RequireDigit;
-        identityDefaultOptions.PasswordRequiredLength = options.Password.RequiredLength;
-        identityDefaultOptions.PasswordRequireNonAlphanumeric = options.Password.RequireNonAlphanumeric;
-        identityDefaultOptions.PasswordRequireUppercase = options.Password.RequireUppercase;
-        identityDefaultOptions.PasswordRequireLowercase = options.Password.RequireLowercase;
-        identityDefaultOptions.PasswordRequiredUniqueChars = options.Password.RequiredUniqueChars;
-
-        // Lockout settings
-        identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes = options.Lockout.DefaultLockoutTimeSpan.Minutes;
-        identityDefaultOptions.LockoutMaxFailedAccessAttempts = options.Lockout.MaxFailedAccessAttempts;
-        identityDefaultOptions.LockoutAllowedForNewUsers = options.Lockout.AllowedForNewUsers;
-
-        // User settings
-        identityDefaultOptions.UserRequireUniqueEmail = options.User.RequireUniqueEmail;
-
-        // email confirmation require
-        identityDefaultOptions.SignInRequireConfirmedEmail = options.SignIn.RequireConfirmedEmail;
-        return identityDefaultOptions;
+        return new IdentityDefaultOptions
+        {
+            PasswordRequireDigit = options.Password.RequireDigit,
+            PasswordRequiredLength = options.Password.RequiredLength,
+            PasswordRequireNonAlphanumeric = options.Password.RequireNonAlphanumeric,
+            PasswordRequireUppercase = options.Password.RequireUppercase,
+            PasswordRequireLowercase = options.Password.RequireLowercase,
+            PasswordRequiredUniqueChars = options.Password.RequiredUniqueChars,
+            LockoutDefaultLockoutTimeSpanInMinutes = options.Lockout.DefaultLockoutTimeSpan.Minutes,
+            LockoutMaxFailedAccessAttempts = options.Lockout.MaxFailedAccessAttempts,
+            LockoutAllowedForNewUsers = options.Lockout.AllowedForNewUsers,
+            UserRequireUniqueEmail = options.User.RequireUniqueEmail,
+            SignInRequireConfirmedEmail = options.SignIn.RequireConfirmedEmail
+        };
     }
 
     private async Task<UserInfo> BuildUserInfoAsync()
@@ -321,8 +302,6 @@ public class AuthorizeController : ControllerBase
             AppTheme = userData?.ApplicationTheme ?? "Light",
             Culture = userData?.Culture ?? "en",
             ExposedClaims = User.Claims
-                //Optionally: filter the claims you want to expose to the client
-                //.Where(c => c.Type == "role")
                 .Select(c => new ClaimsValue { Type = c.Type, Value = c.Value }).ToList()
         };
     }

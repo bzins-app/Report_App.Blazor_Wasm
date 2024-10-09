@@ -68,6 +68,8 @@
             JsRuntime.InvokeVoidAsync("CKEditorInterop.destroy", _id);
             _objRef.Dispose();
         }
+
         GC.SuppressFinalize(this);
     }
+
 }

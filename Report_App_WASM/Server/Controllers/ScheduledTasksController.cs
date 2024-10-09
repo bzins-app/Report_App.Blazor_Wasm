@@ -23,67 +23,43 @@ public class ScheduledTasksController : ControllerBase
     [HttpGet]
     public async Task<List<TasksInfo>> GetAlertTasksListAsync(string? activityName)
     {
-        var info = new List<TasksInfo>();
-        var query = _context.TaskHeader.Where(a => a.Type == TaskType.Alert).AsQueryable();
-        if (!string.IsNullOrEmpty(activityName))
-            query = query.Where(a => a.Activity.ActivityName == activityName).AsQueryable();
-
-        var feedback = await query.Select(a => new TasksInfo
-        {
-            TaksId = a.TaskHeaderId, ActivityName = a.Activity.ActivityName, LastRunDateTime = a.LastRunDateTime,
-            IsActivated = a.IsActivated, TaskName = a.TaskName, TaskType = a.Type.ToString(),
-            QueriesName = a.TaskDetails.Select(a => a.QueryName).ToList()
-        }).ToListAsync();
-        if (feedback != null) info = feedback;
-
-        return info;
+        return await GetTasksListAsync(activityName, TaskType.Alert);
     }
 
     [HttpGet]
     public async Task<List<TasksInfo>> GetDataTransferTasksListAsync(string? activityName)
     {
-        var info = new List<TasksInfo>();
-        var query = _context.TaskHeader.Where(a => a.Type == TaskType.DataTransfer).AsQueryable();
-        if (!string.IsNullOrEmpty(activityName))
-            query = query.Where(a => a.Activity.ActivityName == activityName).AsQueryable();
-
-        var feedback = await query.Select(a => new TasksInfo
-        {
-            TaksId = a.TaskHeaderId,
-            ActivityName = a.Activity.ActivityName,
-            LastRunDateTime = a.LastRunDateTime,
-            IsActivated = a.IsActivated,
-            TaskName = a.TaskName,
-            TaskType = a.Type.ToString(),
-            QueriesName = a.TaskDetails.Select(a => a.QueryName).ToList()
-        }).ToListAsync();
-        if (feedback != null) info = feedback;
-
-        return info;
+        return await GetTasksListAsync(activityName, TaskType.DataTransfer);
     }
 
     [HttpGet]
     public async Task<List<TasksInfo>> GetReportsTasksListAsync(string? activityName)
     {
-        var info = new List<TasksInfo>();
-        var query = _context.TaskHeader.Where(a => a.Type == TaskType.Report).AsQueryable();
-        if (!string.IsNullOrEmpty(activityName))
-            query = query.Where(a => a.Activity.ActivityName == activityName).AsQueryable();
+        return await GetTasksListAsync(activityName, TaskType.Report, true);
+    }
 
-        var feedback = await query.Select(a => new TasksInfo
+    private async Task<List<TasksInfo>> GetTasksListAsync(string? activityName, TaskType taskType,
+        bool includeFileDetails = false)
+    {
+        var query = _context.TaskHeader.Where(a => a.Type == taskType);
+
+        if (!string.IsNullOrEmpty(activityName))
+        {
+            query = query.Where(a => a.Activity.ActivityName == activityName);
+        }
+
+        return await query.Select(a => new TasksInfo
         {
             TaksId = a.TaskHeaderId,
             ActivityName = a.Activity.ActivityName,
             LastRunDateTime = a.LastRunDateTime,
-            HasADepositPath = a.FileDepositPathConfigurationId != 0,
             IsActivated = a.IsActivated,
             TaskName = a.TaskName,
             TaskType = a.Type.ToString(),
-            QueriesName = a.TaskDetails.Select(a => a.QueryName).ToList(), TypeOfGeneratedFile = a.TypeFileName
+            QueriesName = a.TaskDetails.Select(td => td.QueryName).ToList(),
+            HasADepositPath = includeFileDetails && a.FileDepositPathConfigurationId != 0,
+            TypeOfGeneratedFile = includeFileDetails ? a.TypeFileName : null
         }).ToListAsync();
-        if (feedback != null) info = feedback;
-
-        return info;
     }
 
     [HttpPost]
@@ -91,25 +67,27 @@ public class ScheduledTasksController : ControllerBase
     public async Task<IActionResult> EnqueueTask(ApiRunTask payload)
     {
         if (payload == null) return BadRequest("Payload null");
-        List<EmailRecipient> recipients = new();
-        List<QueryCommandParameter> parameters = new();
-        var _th = await _context.TaskHeader.Include(a => a.TaskEmailRecipients)
+
+        var taskHeader = await _context.TaskHeader.Include(a => a.TaskEmailRecipients)
             .FirstOrDefaultAsync(a => a.TaskHeaderId == payload.TaksId);
-        if (_th == null) return BadRequest("Task id not found");
+
+        if (taskHeader == null) return BadRequest("Task id not found");
+
+        var recipients = new List<EmailRecipient>();
         if (payload.SendEmail)
         {
-            var _mailSerialized = _th.TaskEmailRecipients.FirstOrDefault().Email;
-            if (!string.IsNullOrEmpty(_mailSerialized))
+            var emailSerialized = taskHeader.TaskEmailRecipients.FirstOrDefault()?.Email;
+            if (!string.IsNullOrEmpty(emailSerialized))
             {
-                recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(_mailSerialized)!;
-                if (recipients == null) recipients = new List<EmailRecipient>();
+                recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(emailSerialized) ??
+                             new List<EmailRecipient>();
             }
         }
 
-        if (!string.IsNullOrEmpty(_th.QueryParameters))
-            parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_th.QueryParameters)! ??
-                         new List<QueryCommandParameter>();
-
+        var parameters = !string.IsNullOrEmpty(taskHeader.QueryParameters)
+            ? JsonSerializer.Deserialize<List<QueryCommandParameter>>(taskHeader.QueryParameters) ??
+              new List<QueryCommandParameter>()
+            : new List<QueryCommandParameter>();
 
         _backgroundWorkers.RunManuallyTask(payload.TaksId, User?.Identity?.Name, recipients, parameters,
             payload.GenerateFileToFolder);
