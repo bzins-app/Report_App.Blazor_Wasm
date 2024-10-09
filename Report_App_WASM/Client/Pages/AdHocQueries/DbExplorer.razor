@@ -99,14 +99,14 @@
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loadingTestQuery" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loadingTestQuery" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loadingTestQuery" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loadingTestQuery" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                         </MudToolBar>
                     </MudPaper>
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="_loadingTestQuery" />
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="_loadingTestQuery"/>
                     @if (_opt != null)
                     {
-                        <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" />
+                        <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
                     }
                     <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
@@ -281,7 +281,7 @@
     private async Task RunSql()
     {
         _loadingTestQuery = true;
-        var _queryTorun=string.Empty;
+        var _queryTorun = string.Empty;
         _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) && !string.IsNullOrEmpty(_querySelectedCode) ? _querySelectedCode : QueryBuilder;
         if (string.IsNullOrEmpty(QueryBuilder))
         {
