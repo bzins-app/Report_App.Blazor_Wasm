@@ -94,11 +94,11 @@
                             <MudTabPanel Text="SQL">
                                 <MudPaper Elevation="25">
                                     <MudToolBar Dense="true">
-                                        <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
-                                        <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                                     </MudToolBar>
                                 </MudPaper>
-                                <MudProgressLinear Color="Color.Primary" Indeterminate="_loading" />
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="_loading"/>
                                 @if (_opt != null)
                                 {
                                     <Blazor.AceEditorJs.AceJsEditor Style="height: 55vh" @bind-Value="@Item.Query" @bind-SelectedValue="@_querySelectedCode" Options="@_opt"/>
@@ -106,7 +106,7 @@
                             </MudTabPanel>
                             <MudTabPanel Text="@Localizer.Get("Query parameters")">
                                 <CascadingValue Value="_changesToSave">
-                                    <_AdHocQueryParameters Style="height: 65vh" Item="Item" @ref="_refQuery" ValueChanged="ParametersChange" />
+                                    <_AdHocQueryParameters Style="height: 65vh" Item="Item" @ref="_refQuery" ValueChanged="ParametersChange"/>
                                 </CascadingValue>
                             </MudTabPanel>
                         </MudTabs>
@@ -115,11 +115,11 @@
                     {
                         <MudPaper Elevation="25">
                             <MudToolBar Dense="true">
-                                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
-                                <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
+                                <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                             </MudToolBar>
                         </MudPaper>
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="_loading" />
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="_loading"/>
                         @if (_opt != null)
                         {
                             <Blazor.AceEditorJs.AceJsEditor Style="height: 65vh" @bind-Value="Item.Query" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>

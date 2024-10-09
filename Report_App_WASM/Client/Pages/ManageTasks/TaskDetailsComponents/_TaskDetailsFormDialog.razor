@@ -135,7 +135,7 @@
                                         <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelTest"/>
                                     </MudToolBar>
                                 </MudPaper>
-                                <MudProgressLinear Color="Color.Primary" Indeterminate="_loading" />
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="_loading"/>
                                 @if (_opt != null)
                                 {
                                     <Blazor.AceEditorJs.AceJsEditor Style="height: 75vh" @bind-Value="Item.Query" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
@@ -154,7 +154,7 @@
                                 <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelTest"/>
                             </MudToolBar>
                         </MudPaper>
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="_loading" />
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="_loading"/>
 
                         @if (_opt != null)
                         {
@@ -203,7 +203,7 @@
     private List<Dictionary<string, object>>? _data;
     private string? _queryTestResult;
     private bool _testResult;
-    private string _querySelectedCode=string.Empty;
+    private string _querySelectedCode = string.Empty;
 
     private CancellationTokenSource? _cts;
 
@@ -312,7 +312,7 @@
                 }
             }
 
-            var _queryTorun=string.Empty;
+            var _queryTorun = string.Empty;
             _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) ? _querySelectedCode : Item.Query;
 
             var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };

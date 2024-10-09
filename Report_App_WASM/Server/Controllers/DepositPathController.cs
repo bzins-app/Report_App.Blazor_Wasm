@@ -57,7 +57,8 @@ public class DepositPathController : ControllerBase, IDisposable
         }
         else
         {
-            var result = await _fileService.TestDirectory(value.EntityValue.FilePath!, value.EntityValue.TryToCreateFolder);
+            var result =
+                await _fileService.TestDirectory(value.EntityValue.FilePath!, value.EntityValue.TryToCreateFolder);
             return Ok(result);
         }
     }

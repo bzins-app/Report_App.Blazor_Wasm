@@ -38,7 +38,8 @@ public class ScheduledTasksController : ControllerBase
         return await GetTasksListAsync(activityName, TaskType.Report, true);
     }
 
-    private async Task<List<TasksInfo>> GetTasksListAsync(string? activityName, TaskType taskType, bool includeFileDetails = false)
+    private async Task<List<TasksInfo>> GetTasksListAsync(string? activityName, TaskType taskType,
+        bool includeFileDetails = false)
     {
         var query = _context.TaskHeader.Where(a => a.Type == taskType);
 
@@ -78,15 +79,18 @@ public class ScheduledTasksController : ControllerBase
             var emailSerialized = taskHeader.TaskEmailRecipients.FirstOrDefault()?.Email;
             if (!string.IsNullOrEmpty(emailSerialized))
             {
-                recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(emailSerialized) ?? new List<EmailRecipient>();
+                recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(emailSerialized) ??
+                             new List<EmailRecipient>();
             }
         }
 
         var parameters = !string.IsNullOrEmpty(taskHeader.QueryParameters)
-            ? JsonSerializer.Deserialize<List<QueryCommandParameter>>(taskHeader.QueryParameters) ?? new List<QueryCommandParameter>()
+            ? JsonSerializer.Deserialize<List<QueryCommandParameter>>(taskHeader.QueryParameters) ??
+              new List<QueryCommandParameter>()
             : new List<QueryCommandParameter>();
 
-        _backgroundWorkers.RunManuallyTask(payload.TaksId, User?.Identity?.Name, recipients, parameters, payload.GenerateFileToFolder);
+        _backgroundWorkers.RunManuallyTask(payload.TaksId, User?.Identity?.Name, recipients, parameters,
+            payload.GenerateFileToFolder);
 
         return Ok("Task enqueued successfully");
     }

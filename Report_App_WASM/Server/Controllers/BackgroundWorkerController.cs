@@ -73,7 +73,8 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
         return await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ?? new ServicesStatus();
     }
 
-    private async Task<IActionResult> ActivateServiceAsync(ApiCrudPayload<ApiBackgroundWorkerPayload> value, BackgroundTaskType type, Action<ServicesStatus, bool> updateServiceStatus)
+    private async Task<IActionResult> ActivateServiceAsync(ApiCrudPayload<ApiBackgroundWorkerPayload> value,
+        BackgroundTaskType type, Action<ServicesStatus, bool> updateServiceStatus)
     {
         var item = await GetServiceStatusAsync();
         updateServiceStatus(item, value.EntityValue!.Activate);
@@ -85,7 +86,8 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     [HttpPost]
     public Task<IActionResult> ActivateReportService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
-        return ActivateServiceAsync(value, BackgroundTaskType.Report, (item, activate) => item.ReportService = activate);
+        return ActivateServiceAsync(value, BackgroundTaskType.Report,
+            (item, activate) => item.ReportService = activate);
     }
 
     [HttpPost]
@@ -97,19 +99,22 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     [HttpPost]
     public Task<IActionResult> ActivateDataTransferService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
-        return ActivateServiceAsync(value, BackgroundTaskType.DataTransfer, (item, activate) => item.DataTransferService = activate);
+        return ActivateServiceAsync(value, BackgroundTaskType.DataTransfer,
+            (item, activate) => item.DataTransferService = activate);
     }
 
     [HttpPost]
     public Task<IActionResult> ActivateCleanerService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
-        return ActivateServiceAsync(value, BackgroundTaskType.Cleaner, (item, activate) => item.CleanerService = activate);
+        return ActivateServiceAsync(value, BackgroundTaskType.Cleaner,
+            (item, activate) => item.CleanerService = activate);
     }
 
     [HttpPost]
     public async Task<IActionResult> ActivatePerActivity(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
-        await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue!.Value, value.EntityValue.Activate);
+        await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue!.Value,
+            value.EntityValue.Activate);
         return Ok(new SubmitResult { Success = true });
     }
 

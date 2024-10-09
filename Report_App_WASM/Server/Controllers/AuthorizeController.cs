@@ -55,7 +55,8 @@ public class AuthorizeController : ControllerBase
         try
         {
             var rememberMe = true;
-            using var context = new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
+            using var context =
+                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);
             var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);
             var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);
 
@@ -86,7 +87,7 @@ public class AuthorizeController : ControllerBase
             };
 
             var result = await _userManager.CreateAsync(userNew);
-        
+
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(userNew, rememberMe);
@@ -99,7 +100,8 @@ public class AuthorizeController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogInformation("Invalid login attempt during AD auth {UserName} Error: {ErrorMessage}", parameters.UserName, ex.Message);
+            _logger.LogInformation("Invalid login attempt during AD auth {UserName} Error: {ErrorMessage}",
+                parameters.UserName, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -169,7 +171,8 @@ public class AuthorizeController : ControllerBase
 
             var emailRecipients = new List<EmailRecipient> { new EmailRecipient { Email = item.EntityValue.UserMail } };
             var title = "Reset Password";
-            var body = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
+            var body =
+                $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";
 
             _emailSender.SendEmail(emailRecipients, title, body);
             return Ok(new SubmitResult { Success = true, Message = "Ok" });

@@ -14,7 +14,8 @@ public class RemoteDbController : ControllerBase, IDisposable
     private readonly ILogger<RemoteDbController> _logger;
     private readonly IRemoteDbConnection _remoteDb;
 
-    public RemoteDbController(IRemoteDbConnection remoteDb, ILogger<RemoteDbController> logger, ApplicationDbContext context)
+    public RemoteDbController(IRemoteDbConnection remoteDb, ILogger<RemoteDbController> logger,
+        ApplicationDbContext context)
     {
         _remoteDb = remoteDb;
         _logger = logger;
@@ -89,7 +90,8 @@ public class RemoteDbController : ControllerBase, IDisposable
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ", payload.Values.FileName);
+                _logger.LogWarning($"Error get total: {payload.Values.FileName} {ex.Message} ",
+                    payload.Values.FileName);
                 total = payload.Values.MaxSize + 1;
             }
         }
@@ -185,7 +187,8 @@ public class RemoteDbController : ControllerBase, IDisposable
             var file = CreateFile.ExcelFromDatable(fileName,
                 new ExcelCreationDatatable(payload.Values.FileName, new ExcelTemplate(),
                     items.AsEnumerable().Take(queriesMaxSizeExtract).CopyToDataTable()));
-            _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines", $"{fileName} {items.Rows.Count} lines");
+            _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines",
+                $"{fileName} {items.Rows.Count} lines");
             log.EndDateTime = DateTime.Now;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
             await _context.AddAsync(log);
@@ -235,7 +238,8 @@ public class RemoteDbController : ControllerBase, IDisposable
             var script = await _remoteDb.GetAllTablesScript(activityId);
             if (!string.IsNullOrEmpty(script))
             {
-                var parameters = new RemoteDbCommandParameters { ActivityId = activityId, QueryToRun = script, Test = true };
+                var parameters = new RemoteDbCommandParameters
+                    { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
                     .Where(a => a.Activity.ActivityId == activityId)
@@ -260,14 +264,15 @@ public class RemoteDbController : ControllerBase, IDisposable
                             .Distinct()
                             .ToListAsync(ct);
                         listTables.Values = (from a in tables
-                                             join b in prework on a equals b.TableName into c
-                                             from d in c.DefaultIfEmpty()
-                                             select new DescriptionValues { Name = a, Description = d?.TableDescription }).ToList();
+                            join b in prework on a equals b.TableName into c
+                            from d in c.DefaultIfEmpty()
+                            select new DescriptionValues { Name = a, Description = d?.TableDescription }).ToList();
                         listTables.HasDescription = prework.Any();
                     }
                     else
                     {
-                        listTables.Values.AddRange(tables.Distinct().Select(table => new DescriptionValues { Name = table! }));
+                        listTables.Values.AddRange(tables.Distinct()
+                            .Select(table => new DescriptionValues { Name = table! }));
                     }
                 }
             }
@@ -289,7 +294,8 @@ public class RemoteDbController : ControllerBase, IDisposable
             var script = await _remoteDb.GetTableColumnInfoScript(activityId, table);
             if (!string.IsNullOrEmpty(script))
             {
-                var parameters = new RemoteDbCommandParameters { ActivityId = activityId, QueryToRun = script, Test = true };
+                var parameters = new RemoteDbCommandParameters
+                    { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
                     .Where(a => a.Activity.ActivityId == activityId)
@@ -329,18 +335,22 @@ public class RemoteDbController : ControllerBase, IDisposable
                                 listCols.Values.AddRange(cols.Distinct().Select(col => new DescriptionValues
                                 {
                                     Name = col!,
-                                    Description = desc.FirstOrDefault(a => a.ColumnName == col && !a.IsSnippet)?.ColumnDescription ?? string.Empty
+                                    Description =
+                                        desc.FirstOrDefault(a => a.ColumnName == col && !a.IsSnippet)
+                                            ?.ColumnDescription ?? string.Empty
                                 }));
                             }
                             else
                             {
-                                listCols.Values.AddRange(cols.Distinct().Select(col => new DescriptionValues { Name = col! }));
+                                listCols.Values.AddRange(cols.Distinct()
+                                    .Select(col => new DescriptionValues { Name = col! }));
                                 listCols.HasDescription = false;
                             }
                         }
                         else
                         {
-                            listCols.Values.AddRange(cols.Distinct().Select(col => new DescriptionValues { Name = col! }));
+                            listCols.Values.AddRange(cols.Distinct()
+                                .Select(col => new DescriptionValues { Name = col! }));
                         }
                     }
                 }
