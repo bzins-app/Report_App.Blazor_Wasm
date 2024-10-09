@@ -320,7 +320,7 @@
 
             if (Item.IsActivated)
             {
-                await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             }
 
             if (!Item.TaskEmailRecipients.Any())
@@ -351,7 +351,7 @@
 
             if (Item.IsActivated)
             {
-                await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = true, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = true, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             }
 
             await UpdateValues();

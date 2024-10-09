@@ -67,7 +67,7 @@
     private async Task ActivateReportService(bool value)
     {
         _status.ReportService = value;
-        var payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var payload = new ApiBackgroundWorkerPayload { Activate = value };
         var result = await DataService.PostValues(payload, "ActivateReportService", ApiControllers.BackgroudWorkerApi);
         Snackbar.Add(result.Success ? Localizer.Get("Report service") + " " + Localizer.Get("Service up") : Localizer.Get("Report service") + " " + Localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
     }
@@ -75,7 +75,7 @@
     private async Task ActivateAlertService(bool value)
     {
         _status.AlertService = value;
-        var payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var payload = new ApiBackgroundWorkerPayload { Activate = value };
         var result = await DataService.PostValues(payload, "ActivateAlertService", ApiControllers.BackgroudWorkerApi);
         Snackbar.Add(result.Success ? Localizer.Get("Alert service") + " " + Localizer.Get("Service up") : Localizer.Get("Alert service") + " " + Localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
     }
@@ -83,7 +83,7 @@
     private async Task ActivateDataTransferService(bool value)
     {
         _status.DataTransferService = value;
-        var payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var payload = new ApiBackgroundWorkerPayload { Activate = value };
         var result = await DataService.PostValues(payload, "ActivateDataTransferService", ApiControllers.BackgroudWorkerApi);
         Snackbar.Add(result.Success ? Localizer.Get("Data transfer service") + " " + Localizer.Get("Service up") : Localizer.Get("Data transfer service") + " " + Localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
     }
@@ -91,7 +91,7 @@
     private async Task ActivateCleanerService(bool value)
     {
         _status.CleanerService = value;
-        var payload = new ApiBackgrounWorkerdPayload { Activate = value };
+        var payload = new ApiBackgroundWorkerPayload { Activate = value };
         var result = await DataService.PostValues(payload, "ActivateCleanerService", ApiControllers.BackgroudWorkerApi);
         Snackbar.Add(result.Success ? Localizer.Get("Cleaner service") + " " + Localizer.Get("Service up") : Localizer.Get("Cleaner service") + " " + Localizer.Get("Service down"), result.Success ? Severity.Success : Severity.Warning);
     }

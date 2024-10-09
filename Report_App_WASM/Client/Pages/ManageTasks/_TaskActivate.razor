@@ -53,7 +53,7 @@
             }
         }
 
-        var result = await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+        var result = await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
         if (!result.Success)
         {
             Item.IsActivated = !value;

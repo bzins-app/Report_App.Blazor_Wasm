@@ -12,8 +12,3 @@ public class RemoteDataPayload
     public int PivotTableNbrColumns { get; init; }
 }
 
-public class DeleteTablePayload
-{
-    public string TableName { get; set; } = string.Empty;
-    public int IdDataTransfer { get; set; }
-}
