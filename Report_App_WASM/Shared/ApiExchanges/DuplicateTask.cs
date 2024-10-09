@@ -5,10 +5,3 @@ public class DuplicateTask
     public int TaskHeaderId { get; init; }
     public string? Name { get; init; }
 }
-
-public class DuplicateQueryStore
-{
-    public int QueryId { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public int ActivityId { get; init; }
-}

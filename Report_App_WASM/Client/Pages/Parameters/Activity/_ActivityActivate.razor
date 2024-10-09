@@ -10,7 +10,7 @@
     private async Task ChangeStatusAsync(bool value)
     {
         Item!.IsActivated = value;
-        var result = await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = Item.IsActivated, Value = Item.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/");
+        var result = await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = Item.IsActivated, Value = Item.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/");
         if (!result.Success)
         {
             Item.IsActivated = !value;
