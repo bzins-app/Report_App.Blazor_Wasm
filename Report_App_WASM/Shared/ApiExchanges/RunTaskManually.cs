@@ -7,9 +7,3 @@ public class RunTaskManually
     public List<QueryCommandParameter>? CustomQueryParameters { get; init; }
     public bool GenerateFiles { get; init; } = false;
 }
-
-public class TaskActivatePayload
-{
-    public bool Activate { get; init; }
-    public int TaskHeaderId { get; init; }
-}

@@ -19,19 +19,6 @@ public struct ExcelCreationDatatable : IDisposable
     }
 }
 
-public class ExcelCreationData : IDisposable
-{
-    public string? FileName { get; init; }
-    public bool ValidationSheet { get; init; }
-    public string? ValidationText { get; init; }
-    public IList<ExcelCreationDatatable>? Data { get; init; }
-
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-    }
-}
-
 //public class ExcelTemplate : IDisposable
 //{
 //    public string ExcelTabName { get; set; }

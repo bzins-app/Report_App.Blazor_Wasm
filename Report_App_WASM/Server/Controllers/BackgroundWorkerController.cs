@@ -69,7 +69,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivateReportService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public async Task<IActionResult> ActivateReportService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         var item = await GetServiceStatusAsync();
         item.ReportService = value.EntityValue!.Activate;
@@ -80,7 +80,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
 
 
     [HttpPost]
-    public async Task<IActionResult> ActivateAlertService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public async Task<IActionResult> ActivateAlertService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         var item = await GetServiceStatusAsync();
         item.AlertService = value.EntityValue!.Activate;
@@ -91,7 +91,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
 
 
     [HttpPost]
-    public async Task<IActionResult> ActivateDataTransferService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public async Task<IActionResult> ActivateDataTransferService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         var item = await GetServiceStatusAsync();
         item.DataTransferService = value.EntityValue!.Activate;
@@ -101,7 +101,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivateCleanerService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public async Task<IActionResult> ActivateCleanerService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         var item = await GetServiceStatusAsync();
 
@@ -113,7 +113,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivatePerActivity(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public async Task<IActionResult> ActivatePerActivity(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue!.Value,
             value.EntityValue.Activate);
@@ -121,7 +121,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivatePerTask(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public async Task<IActionResult> ActivatePerTask(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         await _backgroundWorkers.SwitchBackgroundTaskAsync(value.EntityValue!.Value, value.EntityValue.Activate);
         return Ok(new SubmitResult { Success = true });
