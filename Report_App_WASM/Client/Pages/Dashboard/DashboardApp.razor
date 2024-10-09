@@ -72,7 +72,7 @@
             <MudGrid Spacing="2">
                 <MudItem xs="12" sm="12" md="6" lg="6">
                     <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
-                        @if (_taskLogs == null)
+                        @if (_isLoading)
                         {
                             <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                         }
@@ -84,7 +84,7 @@
                 </MudItem>
                 <MudItem xs="12" sm="12" md="6" lg="6">
                     <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
-                        @if (_taskLogs == null)
+                        @if (_isLoading)
                         {
                             <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                         }
@@ -103,7 +103,7 @@
         </MudItem>
         <MudItem xs="12" sm="12" md="12" lg="6">
             <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 484px; min-height: 200px;">
-                @if (_taskLogs == null)
+                @if (_isLoading)
                 {
                     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                 }
@@ -144,11 +144,19 @@
 @code {
     AppMetrics _metrics = new();
     private List<TaksLogsValues>? _taskLogs;
+    private bool _isLoading = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
+        await base.OnParametersSetAsync();
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
-        _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
+        _isLoading = false;
     }
 
     public void Dispose()
