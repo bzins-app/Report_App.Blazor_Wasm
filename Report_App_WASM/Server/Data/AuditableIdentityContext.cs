@@ -72,7 +72,7 @@ public abstract class AuditableIdentityContext : IdentityDbContext<ApplicationUs
                         break;
                     case EntityState.Modified:
                         property.OriginalValue = oldProperties?[propertyName];
-                        if (property.IsModified && property.OriginalValue != null
+                        if (property is { IsModified: true, OriginalValue: not null }
                                 ? !property.OriginalValue.Equals(property.CurrentValue)
                                 : property.CurrentValue != property.OriginalValue)
                         {

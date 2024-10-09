@@ -78,22 +78,22 @@ public class DataInteractionService
         }
     }
 
-    public Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi,
+    public async Task<SubmitResult> PostValues<T>(T value, string controllerAction, string controller = CrudApi,
         CancellationToken ct = default) where T : class?
     {
         var uri = $"{controller}{controllerAction}";
-        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = GetUserIdAsync().Result };
-        return PostDataAsync(uri, payload, _httpClient, ct);
+        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = await GetUserIdAsync() };
+        return await PostDataAsync(uri, payload, _httpClient, ct);
     }
 
-    public Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi,
+    public async Task<SubmitResult> PostValuesLogJob<T>(T value, string controllerAction, string controller = CrudApi,
         CancellationToken ct = default) where T : class?
     {
         var uri = $"{controller}{controllerAction}";
-        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = GetUserIdAsync().Result };
-        var httpClientLong = new HttpClient
-            { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
-        return PostDataAsync(uri, payload, httpClientLong, ct);
+        var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = await GetUserIdAsync() };
+        using var httpClientLong = new HttpClient
+        { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        return await PostDataAsync(uri, payload, httpClientLong, ct);
     }
 
     private async Task HandleDownloadResponse(HttpResponseMessage response, string fileName)
@@ -110,8 +110,8 @@ public class DataInteractionService
     public async Task ExtractGridLogs(ODataExtractPayload values)
     {
         var url = "odata/ExtractLogs";
-        var httpClientLong = new HttpClient
-            { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        using var httpClientLong = new HttpClient
+        { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
         var response = await httpClientLong.PostAsJsonAsync(url, values);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable
             or HttpStatusCode.RequestTimeout)
@@ -122,8 +122,8 @@ public class DataInteractionService
     public async Task ExtractAdHocQuery(RemoteDataPayload payload, CancellationToken ct)
     {
         var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
-        var httpClientLong = new HttpClient
-            { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        using var httpClientLong = new HttpClient
+        { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
         var response = await httpClientLong.PostAsJsonAsync(url, payload, ct);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable
             or HttpStatusCode.RequestTimeout)

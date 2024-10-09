@@ -294,7 +294,7 @@
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (feedback is { Canceled: false })
         {
             _errorMessage = string.Empty;
             // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
@@ -332,7 +332,7 @@
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "TaskHeaderInsert");

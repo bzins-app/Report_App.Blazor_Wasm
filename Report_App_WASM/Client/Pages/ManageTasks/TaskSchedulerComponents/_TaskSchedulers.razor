@@ -89,7 +89,7 @@
         var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             if (_crons != null)
             {
@@ -134,7 +134,7 @@
         var dialog = await DialogService.ShowAsync<_cronEditorDialog>(Localizer.Get("Configure the scheduler"), parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _crons?.Add(new CronParameters { CronValue = feedback.Data.ToString() });
             ChangePending = true;

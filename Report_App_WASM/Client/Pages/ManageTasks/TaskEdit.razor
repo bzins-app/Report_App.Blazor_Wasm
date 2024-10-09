@@ -430,7 +430,7 @@
 
     private void RemoveTag(MudChip<string> mudChip)
     {
-        _tags.Remove(mudChip.Text);
+        if (mudChip.Text != null) _tags.Remove(mudChip.Text);
         _changesToSave = true;
     }
 

@@ -14,20 +14,14 @@ public class AuthorizeApi : IAuthorizeApi
 
     public async Task Login(LoginParameters loginParameters)
     {
-        //var stringContent = new StringContent(JsonSerializer.Serialize(loginParameters), Encoding.UTF8, "application/json");
         var result = await _httpClient.PostAsJsonAsync("api/Authorize/Login", loginParameters);
-        if (result.StatusCode == HttpStatusCode.BadRequest)
-            throw new Exception(await result.Content.ReadAsStringAsync());
-        result.EnsureSuccessStatusCode();
+        await HandleResponse(result);
     }
 
     public async Task LoginLdap(LoginParameters loginParameters)
     {
-        //var stringContent = new StringContent(JsonSerializer.Serialize(loginParameters), Encoding.UTF8, "application/json");
         var result = await _httpClient.PostAsJsonAsync("api/Authorize/LdapLogin", loginParameters);
-        if (result.StatusCode == HttpStatusCode.BadRequest)
-            throw new Exception(await result.Content.ReadAsStringAsync());
-        result.EnsureSuccessStatusCode();
+        await HandleResponse(result);
     }
 
     public async Task LoginDemo(LoginParameters loginParameters)
@@ -47,16 +41,19 @@ public class AuthorizeApi : IAuthorizeApi
 
     public async Task Register(RegisterParameters registerParameters)
     {
-        //var stringContent = new StringContent(JsonSerializer.Serialize(registerParameters), Encoding.UTF8, "application/json");
         var result = await _httpClient.PostAsJsonAsync("api/Authorize/Register", registerParameters);
-        if (result.StatusCode == HttpStatusCode.BadRequest)
-            throw new Exception(await result.Content.ReadAsStringAsync());
-        result.EnsureSuccessStatusCode();
+        await HandleResponse(result);
     }
 
     public async Task<UserInfo?> GetUserInfo()
     {
-        var result = await _httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");
-        return result;
+        return await _httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");
+    }
+
+    private static async Task HandleResponse(HttpResponseMessage result)
+    {
+        if (result.StatusCode == HttpStatusCode.BadRequest)
+            throw new Exception(await result.Content.ReadAsStringAsync());
+        result.EnsureSuccessStatusCode();
     }
 }
