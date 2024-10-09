@@ -51,6 +51,9 @@
                         <MudStack Row="true" Justify="Justify.Center">
                             <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" title="@Localizer.Get("Edit")"/>
                             <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
+                            <CascadingValue Value="@_grid">
+                                <_TaskDuplicateForm Item="context"/>
+                            </CascadingValue>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskHeaderId)" Title="Task Id" Sortable="true"/>
@@ -83,11 +86,6 @@
                         </Blazor.SimpleGrid.TemplateColumn>
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true"/>
                     }
-                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Duplicate")">
-                        <CascadingValue Value="@_grid">
-                            <_TaskDuplicateForm Item="context"/>
-                        </CascadingValue>
-                    </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -296,7 +294,7 @@
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (feedback is { Canceled: false })
         {
             _errorMessage = string.Empty;
             // await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
@@ -334,7 +332,7 @@
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "TaskHeaderInsert");

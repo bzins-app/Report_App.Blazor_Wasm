@@ -54,9 +54,12 @@
                     @if (_UserIsSupervisor)
                     {
                         <Blazor.SimpleGrid.TemplateColumn>
-                            <MudStack Row=true>
+                            <MudStack Row="true" Justify="Justify.Center">
                                 <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" title="@Localizer.Get("Edit")"/>
                                 <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
+                                <CascadingValue Value="@_grid">
+                                    <_QueryStoreDuplicateForm Item="context"/>
+                                </CascadingValue>
                             </MudStack>
                         </Blazor.SimpleGrid.TemplateColumn>
                     }
@@ -69,14 +72,6 @@
                         <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" title="@Localizer.Get("Run query")"/>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-                    @if (_UserIsSupervisor)
-                    {
-                        <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Duplicate")">
-                            <CascadingValue Value="@_grid">
-                                <_QueryStoreDuplicateForm Item="context"/>
-                            </CascadingValue>
-                        </Blazor.SimpleGrid.TemplateColumn>
-                    }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -302,7 +297,7 @@
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "QueryStoreDelete");
@@ -349,7 +344,7 @@
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "QueryStoreInsert");

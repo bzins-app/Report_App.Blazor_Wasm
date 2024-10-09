@@ -121,7 +121,7 @@
         var dialog = await DialogService.ShowAsync<_UserDialogForm>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };
@@ -147,7 +147,7 @@
         var dialog = await DialogService.ShowAsync<_UserDialogForm>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };

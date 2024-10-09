@@ -154,7 +154,7 @@
         var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
@@ -212,7 +212,7 @@
         var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "SmtpInsert");

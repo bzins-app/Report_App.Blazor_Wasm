@@ -1,5 +1,4 @@
-﻿@using Microsoft.Extensions.Options
-@inject NavigationManager NavigationManager
+﻿@inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
 
 <MudTooltip Text="@Localizer.Get("Language")">
@@ -7,14 +6,9 @@
              Dense="true">
         @foreach (var culture in _supportedCultures)
         {
-            if (culture.Name == _language)
-            {
-                <MudMenuItem style="background: var(--mud-palette-primary); color: white">@culture.DisplayName</MudMenuItem>
-            }
-            else
-            {
-                <MudMenuItem OnClick="() => SetLanguage(culture)">@culture.DisplayName</MudMenuItem>
-            }
+            <MudMenuItem Style="@(culture.Name == _language ? "background: var(--mud-palette-primary); color: white" : "")" OnClick="@(culture.Name == _language ? null : () => SetLanguage(culture))">
+                @culture.DisplayName
+            </MudMenuItem>
         }
     </MudMenu>
 </MudTooltip>
@@ -22,7 +16,7 @@
 @code {
     private string? _language;
 
-    private CultureInfo[] _supportedCultures =
+    private readonly CultureInfo[] _supportedCultures =
     {
         new("fr"),
         new("en"),
@@ -54,5 +48,4 @@
             }
         }
     }
-
 }

@@ -41,12 +41,12 @@
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Small, FullWidth = true };
         var dialog = await DialogService.ShowAsync<_ManualRun>(Localizer.Get("Confirm manual job"), parameters, dialogOptions);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (!(result is { Canceled: true }))
         {
             List<EmailRecipient> emails = new();
             var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data;
-            var resultValidation = feedback.Item1;
-            queryParameters = feedback.Item2;
+            var resultValidation = feedback != null && feedback.Item1;
+            if (feedback != null) queryParameters = feedback.Item2;
             if (resultValidation)
             {
                 var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Email!);

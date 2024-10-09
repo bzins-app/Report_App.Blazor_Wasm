@@ -149,7 +149,7 @@
         var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Edit", parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             value.ActivityName = item.ActivityName;
@@ -179,7 +179,7 @@
         var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Delete", parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             await DataService.PostValues(new ApiBackgrounWorkerdPayload { Activate = false, Value = value.ActivityId }, "ActivatePerActivity", ApiControllers.BackgroudWorkerApi);
@@ -205,7 +205,7 @@
         var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Create", parameters, _dialogOptions);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "ActivityInsert");

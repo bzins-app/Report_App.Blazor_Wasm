@@ -55,29 +55,20 @@ public class ApplicationService
 
     public async Task<Tuple<string, string>?> GetFilePath(string fileNameToUrl, bool unique = true)
     {
-        var fileName = fileNameToUrl;
-        if (unique) fileName = GetUniqueName(fileNameToUrl);
+        var fileName = unique ? GetUniqueName(fileNameToUrl) : fileNameToUrl;
         var uri = $"{ApiControllers.ApplicationParametersApi}GetUploadedFilePath?fileName={fileName}";
         return await _httpClient.GetFromJsonAsync<Tuple<string, string>>(uri);
     }
 
     private async Task<string?> GetUserNameAsync()
     {
-        return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity
-            ?.Name; // FindFirst(ClaimTypes.NameIdentifier).Value;
+        return (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.Identity?.Name;
     }
 
     public async Task<bool> GetUserTheme()
     {
         var user = await _authenticationStateProvider.GetUserInfo();
-        if (user == null)
-        {
-            if (user?.AppTheme == "Dark")
-                return true;
-            return false;
-        }
-
-        return false;
+        return user?.AppTheme == "Dark";
     }
 
     public async Task<IdentityDefaultOptions?> GetIdentityOptionsAsync()
@@ -89,10 +80,10 @@ public class ApplicationService
     public async Task<ApplicationConstantsValues?> GetApplicationConstantsValues()
     {
         if (_constantsValuesCache == null)
-            return (_constantsValuesCache =
-                await _httpClient.GetFromJsonAsync<ApplicationConstantsValues>(
-                    $"{ApiControllers.ApplicationParametersApi}ApplicationConstants"))!;
-
+        {
+            _constantsValuesCache = await _httpClient.GetFromJsonAsync<ApplicationConstantsValues>(
+                $"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
+        }
         return _constantsValuesCache;
     }
 }

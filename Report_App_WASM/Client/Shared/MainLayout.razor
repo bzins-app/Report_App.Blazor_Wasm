@@ -27,7 +27,7 @@
     </MudAppBar>
     <AuthorizeView>
         <Authorized>
-            <MudDrawer @bind-Open="DrawerOpen" Elevation="25" ClipMode="DrawerClipMode.Never">
+            <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Never">
                 <NavMenu IsDarkMode="_isDarkMode"/>
             </MudDrawer>
         </Authorized>
@@ -46,11 +46,10 @@
     </MudPopup>
 </MudLayout>
 
-@code{
-    readonly MudTheme _appTheme = ApplicationTheme.ApplicationMudTheme();
-
+@code {
+    private readonly MudTheme _appTheme = ApplicationTheme.ApplicationMudTheme();
     private bool _isDarkMode;
-    public bool DrawerOpen = true;
+    private bool _drawerOpen = true;
     private ApplicationConstantsValues? _appConst;
     private bool _notConnnectedStatus;
 
@@ -61,25 +60,17 @@
         DataService.NotifyNotConnected += ChangeConnectionStatus;
     }
 
-    void DrawerToggle()
+    private void DrawerToggle()
     {
-        DrawerOpen = !DrawerOpen;
+        _drawerOpen = !_drawerOpen;
     }
 
     private async Task DarkModeChange(bool dark)
     {
         _isDarkMode = dark;
         UserAppTheme.DarkTheme = dark;
-        if (!dark)
-        {
-            await JsInterop.InvokeVoidAsync("AppTheme.set", "Light");
-        }
-        else
-        {
-            await JsInterop.InvokeVoidAsync("AppTheme.set", "Dark");
-        }
+        await JsInterop.InvokeVoidAsync("AppTheme.set", dark ? "Dark" : "Light");
     }
-
 
     private void ChangeConnectionStatus(bool value)
     {
@@ -91,5 +82,4 @@
     {
         DataService.NotifyNotConnected -= ChangeConnectionStatus;
     }
-
 }

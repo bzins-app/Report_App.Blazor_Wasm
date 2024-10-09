@@ -144,7 +144,7 @@
         var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
@@ -174,7 +174,7 @@
         var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "DepositPathDelete");
@@ -199,7 +199,7 @@
         var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "DepositPathInsert");
