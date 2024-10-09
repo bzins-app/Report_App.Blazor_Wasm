@@ -32,20 +32,24 @@ public class DashboardController : ControllerBase, IDisposable
         var servicesStatus = await _context.ServicesStatus.FirstOrDefaultAsync();
         var activeTask = _context.TaskHeader.Where(a => a.IsActivated && a.Activity.IsActivated);
 
+        var tasksTodayList = await tasksToday.ToListAsync();
+        var reportsTodayList = await reportsToday.ToListAsync();
+        var activeTaskList = await activeTask.ToListAsync();
+
         var metrics = new AppMetrics
         {
-            NbrOfTasksExcecutedToday = await tasksToday.CountAsync(),
-            NbrTasksInError = await tasksToday.Where(a => a.Error && !a.Result!.Contains("attempt")).CountAsync(),
-            SizeFilesStoredLocally = await reportsToday.SumAsync(a => a.FileSizeInMb),
-            NbrOfFilesStored = await reportsToday.CountAsync(),
+            NbrOfTasksExcecutedToday = tasksTodayList.Count,
+            NbrTasksInError = tasksTodayList.Count(a => a.Error && !a.Result!.Contains("attempt")),
+            SizeFilesStoredLocally = reportsTodayList.Sum(a => a.FileSizeInMb),
+            NbrOfFilesStored = reportsTodayList.Count,
             NbrOfActiveReports = servicesStatus.ReportService
-                ? await activeTask.Where(a => a.Type == TaskType.Report).CountAsync()
+                ? activeTaskList.Count(a => a.Type == TaskType.Report)
                 : 0,
             NbrOfActiveAlerts = servicesStatus.AlertService
-                ? await activeTask.Where(a => a.Type == TaskType.Alert).CountAsync()
+                ? activeTaskList.Count(a => a.Type == TaskType.Alert)
                 : 0,
             NbrOfActiveDataTransfer = servicesStatus.DataTransferService
-                ? await activeTask.Where(a => a.Type == TaskType.DataTransfer).CountAsync()
+                ? activeTaskList.Count(a => a.Type == TaskType.DataTransfer)
                 : 0,
             NbrOfActiveQueries = await _context.TaskDetail.CountAsync(a =>
                 a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated &&

@@ -28,13 +28,19 @@ public class DepositPathController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value)
     {
-        if (value.EntityValue!.UseSftpProtocol && value.EntityValue.SftpConfigurationId > 0)
+        if (value.EntityValue == null)
         {
-            var config = await _context.SftpConfiguration
-                .Where(a => a.SftpConfigurationId == value.EntityValue.SftpConfigurationId)
-                .Select(a => a.UseFtpProtocol).FirstOrDefaultAsync();
+            return BadRequest("EntityValue cannot be null.");
+        }
 
-            if (config)
+        if (value.EntityValue.UseSftpProtocol && value.EntityValue.SftpConfigurationId > 0)
+        {
+            var useFtpProtocol = await _context.SftpConfiguration
+                .Where(a => a.SftpConfigurationId == value.EntityValue.SftpConfigurationId)
+                .Select(a => a.UseFtpProtocol)
+                .FirstOrDefaultAsync();
+
+            if (useFtpProtocol)
             {
                 using var deposit = new FtpService(_context);
                 var result = await deposit.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
@@ -49,10 +55,9 @@ public class DepositPathController : ControllerBase, IDisposable
                 return Ok(result);
             }
         }
-
+        else
         {
-            var result =
-                await _fileService.TestDirectory(value.EntityValue.FilePath!, value.EntityValue.TryToCreateFolder);
+            var result = await _fileService.TestDirectory(value.EntityValue.FilePath!, value.EntityValue.TryToCreateFolder);
             return Ok(result);
         }
     }
