@@ -28,7 +28,7 @@
         {
             Item.SendByEmail = !value;
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-            Snackbar.Add(result.Message, Severity.Error);
+            if (result.Message != null) Snackbar.Add(result.Message, Severity.Error);
             return;
         }
 

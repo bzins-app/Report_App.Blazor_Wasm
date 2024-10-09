@@ -133,7 +133,7 @@
                     <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
                         <MudForm @ref="_validateParam">
                             <MudGrid>
-                                @foreach (var t in param!.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
+                                @foreach (var t in param.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
                                 {
                                     <MudItem>
                                         @if (t.ValueType == QueryCommandParameterValueType.Date)

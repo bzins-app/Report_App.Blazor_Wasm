@@ -297,7 +297,7 @@
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "QueryStoreDelete");
@@ -344,7 +344,7 @@
         var dialog = await DialogService.ShowAsync<_QueryStoreFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "QueryStoreInsert");

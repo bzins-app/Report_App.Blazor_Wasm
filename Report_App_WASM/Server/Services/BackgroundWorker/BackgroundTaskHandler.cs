@@ -253,7 +253,7 @@ public class BackgroundTaskHandler : IDisposable
             SubmitResult resultDeposit;
             var config = await _context.FileDepositPathConfiguration.Include(a => a.SftpConfiguration).AsNoTracking()
                 .FirstAsync(a => a.FileDepositPathConfigurationId == _header.FileDepositPathConfigurationId);
-            if (config.SftpConfiguration != null && config.UseSftpProtocol)
+            if (config is { SftpConfiguration: not null, UseSftpProtocol: true })
             {
                 var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
                 var localfilePath = Path.Combine(storagePath, fName);

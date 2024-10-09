@@ -32,7 +32,7 @@ public static class DataTableExtensions
     {
         StringBuilder tableStr = new();
 
-        if (dtInfo.Rows != null && dtInfo.Rows.Count > 0)
+        if (dtInfo.Rows is { Count: > 0 })
         {
             var columnsQty = dtInfo.Columns.Count;
             var rowsQty = dtInfo.Rows.Count;

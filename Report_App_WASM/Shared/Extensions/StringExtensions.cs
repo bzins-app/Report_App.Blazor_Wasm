@@ -7,7 +7,7 @@ public static class StringExtensions
         StringBuilder sb = new();
 
         foreach (var c in str)
-            if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' ||
+            if (c is >= '0' and <= '9' || c is >= 'A' and <= 'Z' || c is >= 'a' and <= 'z' || c == '.' || c == '_' ||
                 c == 'é' || c == 'è' || c == 'à' || c == 'ù')
                 sb.Append(c);
 
@@ -19,7 +19,7 @@ public static class StringExtensions
         StringBuilder sb = new();
 
         foreach (var c in str)
-            if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' ||
+            if (c is >= '0' and <= '9' || c is >= 'A' and <= 'Z' || c is >= 'a' and <= 'z' || c == '.' || c == '_' ||
                 c == 'é' || c == 'è' || c == 'à' || c == 'ù' || c == ' ' || c == '-')
                 sb.Append(c);
 
@@ -30,7 +30,7 @@ public static class StringExtensions
     {
         StringBuilder sb = new();
         foreach (var c in str)
-            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_')
+            if (c is >= 'A' and <= 'Z' || c is >= 'a' and <= 'z' || c == '.' || c == '_')
                 sb.Append(c);
         return sb.ToString();
     }

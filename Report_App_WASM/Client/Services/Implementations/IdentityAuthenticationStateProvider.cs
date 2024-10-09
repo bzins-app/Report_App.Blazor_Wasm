@@ -39,7 +39,7 @@ public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
 
     public async Task<UserInfo?> GetUserInfo()
     {
-        if (_userInfoCache != null && _userInfoCache.IsAuthenticated) return _userInfoCache;
+        if (_userInfoCache is { IsAuthenticated: true }) return _userInfoCache;
         _userInfoCache = await _authorizeApi.GetUserInfo();
         return _userInfoCache;
     }
@@ -60,7 +60,7 @@ public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine("Request failed:" + ex);
+            Console.WriteLine(@"Request failed:" + ex);
         }
 
         return new AuthenticationState(new ClaimsPrincipal(identity));
