@@ -1,10 +1,5 @@
 ﻿namespace Report_App_WASM.Client.Utils;
 
-public static class UserAppTheme
-{
-    public static bool DarkTheme { get; set; } = false;
-}
-
 public static class ApiControllers
 {
     public const string CrudDataApi = "api/DataCrud/";
@@ -16,10 +11,4 @@ public static class ApiControllers
     public const string FilesApi = "api/Files/";
     public const string DepositPathApi = "api/DepositPath/";
     public const string AuthorizeApi = "api/Authorize/";
-}
-
-public static class ApplicationInfo
-{
-    public const string ApplicationVersion = "202410beta";
-    public const int VersionYear = 2024;
 }
