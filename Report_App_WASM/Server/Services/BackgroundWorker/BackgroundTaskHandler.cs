@@ -617,23 +617,13 @@ public class BackgroundTaskHandler : IDisposable
                     var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
                     var message = "";
                     List<Attachment> listAttach = new();
-                    var counter = 0;
                     foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
                         if (table.Value.Rows.Count < 101)
                         {
                             var valueMessage = table.Key.QueryName + ":" + Environment.NewLine;
                             valueMessage += table.Value.ToHtml();
-                            if (counter == 0)
-                            {
-                                message = string.Format(
-                                    _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!, valueMessage);
-                                counter++;
-                            }
-                            else
-                            {
-                                message += "{0}";
-                                message = string.Format(message, valueMessage);
-                            }
+                            message += "{0}";
+                            message = string.Format(message, valueMessage);
                         }
                         else
                         {
@@ -645,6 +635,8 @@ public class BackgroundTaskHandler : IDisposable
                             listAttach.Add(new Attachment(new MemoryStream(fileResult.Content), fName,
                                 fileResult.ContentType));
                         }
+
+                    message= string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!, message);
 
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
