@@ -3,6 +3,7 @@
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
+@inject IJSRuntime JSRuntime
 @inject NavigationManager UriHelper
 @inject HttpClient Http
 @attribute [Authorize]
@@ -87,9 +88,13 @@
             <HeaderContent>
                 @if (_values?.Any() == true)
                 {
-                    @foreach (var key in _values?.FirstOrDefault()?.Keys!)
+                    var keys = _values.FirstOrDefault()?.Keys;
+                    if (keys != null)
                     {
-                        <MudTh>@key</MudTh>
+                        @foreach (var key in keys)
+                        {
+                            <MudTh>@key</MudTh>
+                        }
                     }
                 }
             </HeaderContent>
@@ -98,14 +103,7 @@
                 {
                     @foreach (var t in context)
                     {
-                        @if (t.ToString() == "{}")
-                        {
-                            <MudTd></MudTd>
-                        }
-                        else
-                        {
-                            <MudTd>@t</MudTd>
-                        }
+                        <MudTd>@(t.ToString() == "{}" ? string.Empty : t)</MudTd>
                     }
                 }
             </RowTemplate>
@@ -288,10 +286,9 @@
         _cts?.Cancel();
     }
 
-    private void Back()
+    private async Task  Back()
     {
-        var uri = $"/QueryStore/{Item!.IdActivity}/{Item.Activity!.ActivityName}";
-        UriHelper.NavigateTo(uri);
+        await JSRuntime.InvokeVoidAsync("history.back");
     }
 
     public void Dispose()
