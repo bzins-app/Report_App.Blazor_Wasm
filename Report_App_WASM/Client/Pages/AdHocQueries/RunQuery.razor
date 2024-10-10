@@ -5,6 +5,7 @@
 @using Blazor.PivotTable
 @using System.Reflection.Metadata
 @implements IDisposable
+@inject IJSRuntime JSRuntime
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
@@ -413,10 +414,9 @@
         _cts?.Cancel();
     }
 
-    private void Back()
+    private async Task  Back()
     {
-        var uri = $"/QueryStore/{Item!.IdActivity}/{Item.Activity!.ActivityName}";
-        UriHelper.NavigateTo(uri);
+        await JSRuntime.InvokeVoidAsync("history.back");
     }
 
     public void Dispose()

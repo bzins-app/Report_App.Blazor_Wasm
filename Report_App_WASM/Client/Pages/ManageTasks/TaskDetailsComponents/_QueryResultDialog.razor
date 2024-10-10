@@ -14,26 +14,16 @@
                 <HeaderContent>
                     @if (Data?.Any() == true)
                     {
-                        @foreach (var key in Data?.FirstOrDefault()?.Keys!)
+                        @foreach (var key in Data.First().Keys)
                         {
                             <MudTh>@key</MudTh>
                         }
                     }
                 </HeaderContent>
                 <RowTemplate>
-                    @if (Data?.Any() == true)
+                    @foreach (var t in context)
                     {
-                        @foreach (var t in context)
-                        {
-                            @if (t.ToString() == "{}")
-                            {
-                                <MudTd></MudTd>
-                            }
-                            else
-                            {
-                                <MudTd>@t</MudTd>
-                            }
-                        }
+                        <MudTd>@(t.ToString() == "{}" ? string.Empty : t)</MudTd>
                     }
                 </RowTemplate>
                 <PagerContent>
@@ -49,7 +39,6 @@
 </MudDialog>
 
 @code {
-
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
     [Parameter] public List<Dictionary<string, object>>? Data { get; set; }
@@ -62,5 +51,4 @@
     {
         MudDialog?.Cancel();
     }
-
 }

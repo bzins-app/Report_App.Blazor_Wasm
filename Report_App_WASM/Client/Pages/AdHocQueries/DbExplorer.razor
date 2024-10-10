@@ -112,9 +112,13 @@
                         <HeaderContent>
                             @if (_values?.Any() == true)
                             {
-                                @foreach (var key in _values?.FirstOrDefault()?.Keys!)
+                                var keys = _values.FirstOrDefault()?.Keys;
+                                if (keys != null)
                                 {
-                                    <MudTh Style="padding-top: 10px">@key</MudTh>
+                                    @foreach (var key in keys)
+                                    {
+                                        <MudTh>@key</MudTh>
+                                    }
                                 }
                             }
                         </HeaderContent>
@@ -123,14 +127,7 @@
                             {
                                 @foreach (var t in context)
                                 {
-                                    @if (t.ToString() == "{}")
-                                    {
-                                        <MudTd></MudTd>
-                                    }
-                                    else
-                                    {
-                                        <MudTd>@t</MudTd>
-                                    }
+                                    <MudTd>@(t.ToString() == "{}" ? string.Empty : t)</MudTd>
                                 }
                             }
                         </RowTemplate>
