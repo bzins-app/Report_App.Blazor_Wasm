@@ -32,7 +32,7 @@ public class EmailSender : IEmailSender
         List<Attachment>? attachment = null!)
 
     {
-        var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).FirstOrDefaultAsync();
+        var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking().FirstOrDefaultAsync();
         var emailservice = await Context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
 
         var result = new SubmitResult();
@@ -92,7 +92,7 @@ public class EmailSender : IEmailSender
         else
         {
             result.Success = false;
-            result.Message = "Smtp not configured or is not activated";
+            result.Message = "Smtp not configured or is not activated ";
         }
 
         return result;
