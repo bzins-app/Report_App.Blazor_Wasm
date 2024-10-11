@@ -13,7 +13,7 @@ public class EmailSender : IEmailSender
 
     private ApplicationDbContext Context { get; }
 
-    public async Task GenerateErrorEmailAsync(string? errorMessage, string subjectSuffix)
+    public async Task GenerateErrorEmailAsync(string errorMessage, string subjectSuffix)
     {
         var emailInfos = await Context.ApplicationParameters
             .Select(a => new { a.ErrorEmailPrefix, a.ErrorEMailMessage, a.AdminEmails }).FirstOrDefaultAsync();
@@ -27,8 +27,8 @@ public class EmailSender : IEmailSender
         }
     }
 
-    public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient>? email, string? subject, string message,
-        List<Attachment>? attachment = null!)
+    public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient> email, string subject, string message,
+        List<Attachment> attachment = null!)
     {
         var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking().FirstOrDefaultAsync();
         var emailservice = await Context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
