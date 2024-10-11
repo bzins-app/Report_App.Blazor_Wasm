@@ -14,7 +14,7 @@ public class BackgroundTaskHandler : IDisposable
     private readonly LocalFilesService _fileDeposit;
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly IMapper _mapper;
-    private List<EmailRecipient>? _emails = new();
+    private List<EmailRecipient> _emails = new();
 
     private Dictionary<TaskDetail, DataTable> _fetchedData = new();
     private List<MemoryFileContainer> _fileResults = new();
