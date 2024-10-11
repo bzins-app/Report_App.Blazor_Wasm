@@ -27,50 +27,51 @@ public class EmailSender : IEmailSender
         }
     }
 
-
     public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient>? email, string? subject, string message,
         List<Attachment>? attachment = null!)
-
     {
         var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking().FirstOrDefaultAsync();
         var emailservice = await Context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
 
         var result = new SubmitResult();
-        //Smtp is become default
 
         if (email != null && smtp != null && email.Any() && emailservice)
         {
             ApplicationLogEmailSender log = new()
             {
-                EmailTitle = subject, StartDateTime = DateTime.Now, NbrOfRecipients = email.Count,
+                EmailTitle = subject,
+                StartDateTime = DateTime.Now,
+                NbrOfRecipients = email.Count,
                 RecipientList = JsonSerializer.Serialize(email)
             };
             try
             {
                 double size = 0;
                 if (attachment != null)
+                {
                     foreach (var attach in attachment)
-                        size = +BytesConverter.ConvertBytesToMegabytes(attach.ContentStream.Length);
+                    {
+                        size += BytesConverter.ConvertBytesToMegabytes(attach.ContentStream.Length);
+                    }
+                }
                 if (size > 20)
                 {
                     attachment = null;
-                    message = message + Environment.NewLine +
-                              $"The size of the attachment is too high: {Math.Round(size, 2)}MB. Maximum is {20} ";
+                    message += Environment.NewLine +
+                               $"The size of the attachment is too high: {Math.Round(size, 2)}MB. Maximum is {20} ";
                 }
 
-                ProcessEmailAsync(smtp.FromEmail!,
+                await ProcessEmailAsync(smtp.FromEmail!,
                         smtp.FromFullName!,
                         subject,
                         message,
-                        email,
                         email,
                         smtp.SmtpUserName!,
                         EncryptDecrypt.DecryptString(smtp.SmtpPassword),
                         smtp.SmtpHost,
                         smtp.SmtpPort,
                         smtp.SmtpSsl,
-                        attachment!)
-                    .Wait();
+                        attachment);
 
                 log.Result = "Ok";
                 log.Error = false;
@@ -92,44 +93,52 @@ public class EmailSender : IEmailSender
         else
         {
             result.Success = false;
-            result.Message = "Smtp not configured or is not activated ";
+            result.Message = "Smtp not configured or is not activated";
         }
 
         return result;
     }
 
-
     private async Task ProcessEmailAsync(string fromEmail, string fromFullName, string? subject, string messageBody,
-        List<EmailRecipient>? toEmail, List<EmailRecipient>? toFullName, string smtpUser, string? smtpPassword,
+        List<EmailRecipient>? toEmail, string smtpUser, string? smtpPassword,
         string? smtpHost, int smtpPort, bool smtpSsl, List<Attachment>? attachment = null)
-
     {
-        var message = new MailMessage();
-        foreach (var t in toEmail!.Where(a => a.Bcc == false)) message.To.Add(new MailAddress(t.Email!, t.Email));
+        var message = new MailMessage
+        {
+            From = new MailAddress(fromEmail, fromFullName),
+            Subject = subject,
+            Body = messageBody,
+            IsBodyHtml = true
+        };
 
-        foreach (var t in toEmail!.Where(a => a.Bcc)) message.Bcc.Add(new MailAddress(t.Email!, t.Email));
-        message.From = new MailAddress(fromEmail, fromFullName);
-        message.Subject = subject;
-        message.Body = messageBody;
+        foreach (var recipient in toEmail!)
+        {
+            if (recipient.Bcc)
+            {
+                message.Bcc.Add(new MailAddress(recipient.Email!, recipient.Email));
+            }
+            else
+            {
+                message.To.Add(new MailAddress(recipient.Email!, recipient.Email));
+            }
+        }
 
         if (attachment != null && attachment.Any())
-            foreach (var item in attachment)
-                message.Attachments.Add(item);
-
-        message.IsBodyHtml = true;
-
-        using var smtp = new SmtpClient();
-        var credential = new NetworkCredential
         {
-            UserName = smtpUser,
-            Password = smtpPassword
+            foreach (var item in attachment)
+            {
+                message.Attachments.Add(item);
+            }
+        }
+
+        using var smtp = new SmtpClient
+        {
+            Credentials = new NetworkCredential(smtpUser, smtpPassword),
+            Host = smtpHost!,
+            Port = smtpPort,
+            EnableSsl = smtpSsl
         };
-        smtp.Credentials = credential;
 
-        smtp.Host = smtpHost!;
-
-        smtp.Port = smtpPort;
-        smtp.EnableSsl = smtpSsl;
-        await smtp.SendMailAsync(message).ConfigureAwait(true);
+        await smtp.SendMailAsync(message).ConfigureAwait(false);
     }
 }
