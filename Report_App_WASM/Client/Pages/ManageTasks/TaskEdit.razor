@@ -323,6 +323,11 @@
                 await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             }
 
+            if (Item.Type == TaskType.Alert && Item.SendByEmail==false)
+            {
+                Item.SendByEmail= true;
+            }
+
             if (!Item.TaskEmailRecipients.Any())
             {
                 var recipients = new TaskEmailRecipientDto { TaskHeader = Item, Email = "[]", Message = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
