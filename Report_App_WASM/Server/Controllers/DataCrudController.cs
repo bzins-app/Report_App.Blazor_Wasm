@@ -446,7 +446,7 @@ public class DataCrudController : ControllerBase, IDisposable
             if (dbItem == null) return NotFound(new SubmitResult { Success = false, Message = "Item not found" });
             dbItem.TaskName = values.EntityValue!.Name;
             dbItem.IsActivated = false;
-            dbItem.SendByEmail = false;
+            dbItem.SendByEmail = dbItem.Type == TaskType.Alert;
             dbItem.FileDepositPathConfigurationId = 0;
             dbItem.TaskHeaderId = 0;
 

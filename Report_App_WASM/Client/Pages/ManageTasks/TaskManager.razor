@@ -297,7 +297,11 @@
         if (feedback is { Canceled: false })
         {
             _errorMessage = string.Empty;
-            // await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+            if (value.IsActivated)
+            {
+                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+            }
+
             var result = await DataService.PostValues(value, "TaskHeaderDelete");
             if (result.Success)
             {
