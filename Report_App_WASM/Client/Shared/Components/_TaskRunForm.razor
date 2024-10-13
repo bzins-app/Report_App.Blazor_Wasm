@@ -27,7 +27,7 @@
             if (!string.IsNullOrEmpty(recipients.Email))
             {
                 var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
-                recipientsEmails.AddRange(emails!.Where(a => a.Bcc == false).Select(a => a.Email).ToList()!);
+                recipientsEmails.AddRange(emails!.Where(a => a.Bcc == false).Select(a => a.Email).ToList());
             }
         }
 

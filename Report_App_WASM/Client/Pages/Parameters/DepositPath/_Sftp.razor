@@ -144,7 +144,7 @@
         var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
@@ -176,7 +176,7 @@
         var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "SftpDelete");
@@ -201,7 +201,7 @@
         var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "SftpInsert");
