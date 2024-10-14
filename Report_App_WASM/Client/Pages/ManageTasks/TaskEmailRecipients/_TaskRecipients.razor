@@ -99,6 +99,7 @@
         var bccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
         bccupdate!.Bcc = value;
         _recipients.Email = JsonSerializer.Serialize(_emails);
+        ChangePending = true;
         PopulateEmailItems();
     }
 
@@ -107,6 +108,7 @@
         var Ccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
         Ccupdate!.Cc = value;
         _recipients.Email = JsonSerializer.Serialize(_emails);
+        ChangePending = true;
         PopulateEmailItems();
     }
 
