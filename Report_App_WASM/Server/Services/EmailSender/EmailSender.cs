@@ -117,6 +117,10 @@ public class EmailSender : IEmailSender
             {
                 message.Bcc.Add(new MailAddress(recipient.Email, recipient.Email));
             }
+            else if(recipient.Cc)
+            {
+                message.CC.Add(new MailAddress(recipient.Email, recipient.Email));
+            }
             else
             {
                 message.To.Add(new MailAddress(recipient.Email, recipient.Email));
