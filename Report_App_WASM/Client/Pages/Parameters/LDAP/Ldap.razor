@@ -146,7 +146,7 @@
         var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
@@ -175,7 +175,7 @@
         var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "LdapDelete");
@@ -200,7 +200,7 @@
         var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var result = await DataService.PostValues(value, "LdapInsert");

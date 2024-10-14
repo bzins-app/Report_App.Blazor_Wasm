@@ -84,10 +84,10 @@
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Edit", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             var result = (TaskDetailDto)feedback.Data;
-            var toUpdate = Item.TaskDetails.Where(a => a.TaskDetailId == value.TaskDetailId).First();
+            var toUpdate = Item.TaskDetails.First(a => a.TaskDetailId == value.TaskDetailId);
             toUpdate.Query = result.Query;
             toUpdate.QueryName = result.QueryName;
             toUpdate.QueryParameters = result.QueryParameters;
@@ -127,7 +127,7 @@
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             Item.TaskDetails.Add((TaskDetailDto)feedback.Data);
             ChangePending = true;
