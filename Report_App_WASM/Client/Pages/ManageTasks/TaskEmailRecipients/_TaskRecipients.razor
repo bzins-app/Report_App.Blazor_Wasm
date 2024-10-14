@@ -69,7 +69,7 @@
             Item.TaskEmailRecipients = new List<TaskEmailRecipientDto> { _recipients };
         }
 
-        _activityEmails = (await DataService.GetValues<EmailRecipient>($"GetEmailsPerActivity?activityId={Item!.IdActivity}")).Select(a => a.Email).ToList()!;
+        _activityEmails = (await DataService.GetValues<EmailRecipient>($"GetEmailsPerActivity?activityId={Item!.IdActivity}")).Select(a => a.Email).ToList();
     }
 
     private void PopulateEmailItems()

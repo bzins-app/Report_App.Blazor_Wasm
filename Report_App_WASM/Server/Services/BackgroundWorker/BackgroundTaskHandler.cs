@@ -666,7 +666,7 @@ public class BackgroundTaskHandler : IDisposable
 
     private async Task GenerateEmail()
     {
-        if (_emails!.Any() && _fileResults.Any())
+        if (_emails.Any() && _fileResults.Any())
         {
             var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
             var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;

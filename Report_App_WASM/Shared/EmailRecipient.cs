@@ -4,4 +4,5 @@ public class EmailRecipient
 {
     public string Email { get; set; }
     public bool Bcc { get; set; } = false;
+    public bool Cc { get; set; } = false;
 }
