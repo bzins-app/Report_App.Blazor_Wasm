@@ -94,22 +94,24 @@
         await ChangePendingChanged.InvokeAsync(ChangePending);
     }
 
-    private void ChangeBccValue(EmailRecipient id, bool value)
+    private async Task ChangeBccValue(EmailRecipient id, bool value)
     {
         var bccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
         bccupdate!.Bcc = value;
         _recipients.Email = JsonSerializer.Serialize(_emails);
-        ChangePending = true;
         PopulateEmailItems();
+        ChangePending = true;
+        await ChangePendingChanged.InvokeAsync(ChangePending);
     }
 
-    private void ChangeCcValue(EmailRecipient id, bool value)
+    private async Task ChangeCcValue(EmailRecipient id, bool value)
     {
         var Ccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
         Ccupdate!.Cc = value;
         _recipients.Email = JsonSerializer.Serialize(_emails);
-        ChangePending = true;
         PopulateEmailItems();
+        ChangePending = true;
+        await ChangePendingChanged.InvokeAsync(ChangePending);
     }
 
     private async Task Add()
