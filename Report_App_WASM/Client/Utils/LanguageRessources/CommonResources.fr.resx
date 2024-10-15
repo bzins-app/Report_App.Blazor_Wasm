@@ -442,7 +442,7 @@
     <value>Annuler</value>
   </data>
   <data name="cannot be enabled because no email recipients have been entered" xml:space="preserve">
-    <value>ne peut pas être activé parce qu'aucun destinataire n'a été saisi.</value>
+    <value>ne peut pas être activé parce qu'aucun destinataire n'a été saisi</value>
   </data>
   <data name="cannot be enabled because no query is attached to this job" xml:space="preserve">
     <value>ne peut pas être activé car aucune requête n'est attachée à ce travail</value>
@@ -1267,7 +1267,7 @@
     <value>Est visible?</value>
   </data>
   <data name="It looks like you are offline or need to log back in" xml:space="preserve">
-    <value>Il semble que vous soyez hors ligne ou que vous deviez vous reconnecter.</value>
+    <value>Il semble que vous soyez hors ligne ou que vous deviez vous reconnecter</value>
   </data>
   <data name="items" xml:space="preserve">
     <value>éléments</value>
@@ -1885,7 +1885,7 @@
     <value>Rôles assignés</value>
   </data>
   <data name="Roles assigned to" xml:space="preserve">
-    <value>Rôles affecter à </value>
+    <value>Rôles affecter à</value>
   </data>
   <data name="Roles available" xml:space="preserve">
     <value>Rôles disponibles</value>
@@ -2361,9 +2361,6 @@
   <data name="Use Sftp protocol?" xml:space="preserve">
     <value>Utiliser le protocole Sftp ?</value>
   </data>
-  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
-    <value>Utilier les requêtes standards pour le WMS Rhs?</value>
-  </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Utiliser le chemin de dépose de l'activité ?</value>
   </data>
@@ -2509,7 +2506,7 @@
     <value>Votre mot de passe ne peut pas être vide</value>
   </data>
   <data name="Your password has been reset." xml:space="preserve">
-    <value>Votre mot de passe a été réinitialisé</value>
+    <value>Votre mot de passe a été réinitialisé.</value>
   </data>
   <data name="Your password length must be at least 6" xml:space="preserve">
     <value>La longueur de votre mot de passe doit être d'au moins 6</value>
@@ -2518,13 +2515,13 @@
     <value>Votre mot de passe doit contenir au moins un ( !? *.)</value>
   </data>
   <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
-    <value>Votre mot de passe doit contenir au moins une lettre minuscule.</value>
+    <value>Votre mot de passe doit contenir au moins une lettre minuscule</value>
   </data>
   <data name="Your password must contain at least one number" xml:space="preserve">
     <value>Votre mot de passe doit contenir au moins un chiffre</value>
   </data>
   <data name="Your password must contain at least one uppercase letter" xml:space="preserve">
-    <value>Votre mot de passe doit contenir au moins une lettre majuscule.</value>
+    <value>Votre mot de passe doit contenir au moins une lettre majuscule</value>
   </data>
   <data name="Add recipients" xml:space="preserve">
     <value>Ajouter des destinataires</value>

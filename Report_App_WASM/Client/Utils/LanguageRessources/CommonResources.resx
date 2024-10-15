@@ -746,7 +746,7 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="DB schema" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>DB schema</value>
   </data>
   <data name="Db tables" xml:space="preserve">
     <value>Db tables</value>
@@ -1687,9 +1687,6 @@
   <data name="Primary key" xml:space="preserve">
     <value>Primary key</value>
   </data>
-  <data name="Primary key1" xml:space="preserve">
-    <value>Primary key1</value>
-  </data>
   <data name="Processing" xml:space="preserve">
     <value>Processing</value>
   </data>
@@ -2356,9 +2353,6 @@
   <data name="Use Sftp protocol?" xml:space="preserve">
     <value>Use Sftp protocol?</value>
   </data>
-  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
-    <value>Use standard queries for Rhs WMS?</value>
-  </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Use the default deposit path of the activity?</value>
   </data>
@@ -2510,7 +2504,7 @@
     <value>Your password length must be at least 6</value>
   </data>
   <data name="Your password must contain at least one (!? *.)" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Your password must contain at least one (!? *.)</value>
   </data>
   <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
     <value>Your password must contain at least one lowercase letter</value>
@@ -2543,10 +2537,10 @@
     <value>Edit an activity</value>
   </data>
   <data name="Go back to reports list" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Go back to reports list</value>
   </data>
   <data name="Go back to the activity list" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Go back to the activity list</value>
   </data>
   <data name="Indicate the database name?" xml:space="preserve">
     <value>Indicate the database name?</value>
@@ -2567,7 +2561,7 @@
     <value>Tasks manager</value>
   </data>
   <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account.</value>
   </data>
   <data name="Use Windows authentication?" xml:space="preserve">
     <value>Use Windows authentication?</value>

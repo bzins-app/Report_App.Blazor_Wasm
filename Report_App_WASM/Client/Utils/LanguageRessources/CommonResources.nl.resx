@@ -205,7 +205,7 @@
     <value>Voeg een rapport toe</value>
   </data>
   <data name="Add another service to log in." xml:space="preserve">
-    <value>Voeg een andere dienst toe om in te loggen</value>
+    <value>Voeg een andere dienst toe om in te loggen.</value>
   </data>
   <data name="Add authenticator app" xml:space="preserve">
     <value>Voeg authenticator app toe</value>
@@ -1692,9 +1692,6 @@
   <data name="Primary key" xml:space="preserve">
     <value>Primaire sleutel</value>
   </data>
-  <data name="Primary key1" xml:space="preserve">
-    <value>Primaire sleutel1</value>
-  </data>
   <data name="Processing" xml:space="preserve">
     <value>Verwerking</value>
   </data>
@@ -2363,9 +2360,6 @@
   </data>
   <data name="Use Sftp protocol?" xml:space="preserve">
     <value>Sftp-protocol gebruiken?</value>
-  </data>
-  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
-    <value>Standaard query's gebruiken voor Rhs WMS?</value>
   </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Het standaard depotpad van de activiteit gebruiken?</value>

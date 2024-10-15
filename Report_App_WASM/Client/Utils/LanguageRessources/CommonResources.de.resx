@@ -265,7 +265,7 @@
     <value>Warnmeldungen</value>
   </data>
   <data name="All related data and sudata will be totally removed" xml:space="preserve">
-    <value>Alle zugehörigen Daten und Sudaten werden vollständig entfernt.</value>
+    <value>Alle zugehörigen Daten und Sudaten werden vollständig entfernt</value>
   </data>
   <data name="Allready have an account?" xml:space="preserve">
     <value>Haben Sie bereits ein Konto?</value>
@@ -1692,9 +1692,6 @@
   <data name="Primary key" xml:space="preserve">
     <value>Primärschlüssel</value>
   </data>
-  <data name="Primary key1" xml:space="preserve">
-    <value>Primärschlüssel</value>
-  </data>
   <data name="Processing" xml:space="preserve">
     <value>wird bearbeitet</value>
   </data>
@@ -2363,9 +2360,6 @@
   </data>
   <data name="Use Sftp protocol?" xml:space="preserve">
     <value>Sftp-Protokoll verwenden?</value>
-  </data>
-  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
-    <value>Standardabfragen für Rhs WMS verwenden?</value>
   </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Den Standard-Einzahlungspfad der Aktivität verwenden?</value>
