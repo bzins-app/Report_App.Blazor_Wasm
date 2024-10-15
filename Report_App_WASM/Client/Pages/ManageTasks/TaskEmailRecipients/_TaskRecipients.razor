@@ -28,7 +28,7 @@
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
                 <MudTd DataLabel="@Localizer.Get("Cc")">
-                    <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary"/>
+                    <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary" />
                 </MudTd>
                 <MudTd DataLabel="@Localizer.Get("Blind copy")">
                     <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
@@ -97,21 +97,27 @@
     private async Task ChangeBccValue(EmailRecipient id, bool value)
     {
         var bccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
-        bccupdate!.Bcc = value;
-        _recipients.Email = JsonSerializer.Serialize(_emails);
-        PopulateEmailItems();
-        ChangePending = true;
-        await ChangePendingChanged.InvokeAsync(ChangePending);
+        if (value != bccupdate!.Bcc)
+        {
+            bccupdate!.Bcc = value;
+            _recipients.Email = JsonSerializer.Serialize(_emails);
+            PopulateEmailItems();
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
+        }
     }
 
     private async Task ChangeCcValue(EmailRecipient id, bool value)
     {
         var Ccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
-        Ccupdate!.Cc = value;
-        _recipients.Email = JsonSerializer.Serialize(_emails);
-        PopulateEmailItems();
-        ChangePending = true;
-        await ChangePendingChanged.InvokeAsync(ChangePending);
+        if (value != Ccupdate!.Cc)
+        {
+            Ccupdate!.Cc = value;
+            _recipients.Email = JsonSerializer.Serialize(_emails);
+            PopulateEmailItems();
+            ChangePending = true;
+            await ChangePendingChanged.InvokeAsync(ChangePending);
+        }
     }
 
     private async Task Add()
