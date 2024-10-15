@@ -12,7 +12,7 @@
                                  Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" CoerceText="false" CoerceValue="true" SearchFunc="@SearchEmail" />
                 <div class="d-flex align-center justify-space-between">
                     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
-                               OnClick="Add">
+                               OnClick="AddRecipient">
                         @Localizer.Get("Add recipient")
                     </MudButton>
                 </div>
@@ -34,7 +34,7 @@
                     <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
                 </MudTd>
                 <MudTd>
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteRecipient(context)"></MudIconButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -49,8 +49,8 @@
 
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
-    private List<EmailRecipient>? _emails = new();
-    List<EmailRecipient> _emailItems = new();
+    private List<EmailRecipient> _emails = new();
+    private List<EmailRecipient> _emailItems = new();
     private TaskEmailRecipientDto _recipients = new();
     private MudForm _form = default!;
     private string _email = "";
@@ -58,19 +58,17 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        _recipients = Item?.TaskEmailRecipients.FirstOrDefault()!;
-        if (_recipients != null)
+        _recipients = Item?.TaskEmailRecipients.FirstOrDefault() ?? new TaskEmailRecipientDto
         {
-            if (!string.IsNullOrEmpty(_recipients.Email))
-            {
-                _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_recipients.Email);
-                PopulateEmailItems();
-            }
-        }
-        else
+            TaskHeader = Item,
+            Email = "[]",
+            Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>"
+        };
+
+        if (!string.IsNullOrEmpty(_recipients.Email))
         {
-            _recipients = new TaskEmailRecipientDto { TaskHeader = Item, Email = "[]", Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
-            Item.TaskEmailRecipients = new List<TaskEmailRecipientDto> { _recipients };
+            _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_recipients.Email) ?? new List<EmailRecipient>();
+            PopulateEmailItems();
         }
 
         _activityEmails = (await DataService.GetValues<EmailRecipient>($"GetEmailsPerActivity?activityId={Item!.IdActivity}")).Select(a => a.Email).ToList();
@@ -78,99 +76,85 @@
 
     private void PopulateEmailItems()
     {
-        _emailItems.Clear();
-        foreach (var t in _emails!)
+        _emailItems = new List<EmailRecipient>(_emails);
+    }
+
+    private async Task DeleteRecipient(EmailRecipient recipient)
+    {
+        _emails.Remove(recipient);
+        UpdateRecipientsEmail();
+        await NotifyChangePending();
+    }
+
+    private async Task ChangeBccValue(EmailRecipient recipient, bool value)
+    {
+        var bccUpdate = _emails.FirstOrDefault(a => a.Email == recipient.Email);
+        if (bccUpdate != null && bccUpdate.Bcc != value)
         {
-            _emailItems.Add(t);
+            bccUpdate.Bcc = value;
+            UpdateRecipientsEmail();
+            await NotifyChangePending();
         }
     }
 
-    private async Task Delete(EmailRecipient id)
+    private async Task ChangeCcValue(EmailRecipient recipient, bool value)
     {
-        _emails?.Remove(id);
-        _recipients.Email = JsonSerializer.Serialize(_emails);
-        PopulateEmailItems();
-        ChangePending = true;
-        await ChangePendingChanged.InvokeAsync(ChangePending);
-    }
-
-    private async Task ChangeBccValue(EmailRecipient id, bool value)
-    {
-        var bccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
-        if (value != bccupdate!.Bcc)
+        var ccUpdate = _emails.FirstOrDefault(a => a.Email == recipient.Email);
+        if (ccUpdate != null && ccUpdate.Cc != value)
         {
-            bccupdate!.Bcc = value;
-            _recipients.Email = JsonSerializer.Serialize(_emails);
-            PopulateEmailItems();
-            ChangePending = true;
-            await ChangePendingChanged.InvokeAsync(ChangePending);
+            ccUpdate.Cc = value;
+            UpdateRecipientsEmail();
+            await NotifyChangePending();
         }
     }
 
-    private async Task ChangeCcValue(EmailRecipient id, bool value)
-    {
-        var Ccupdate = _emails!.FirstOrDefault(a => a.Email == id.Email);
-        if (value != Ccupdate!.Cc)
-        {
-            Ccupdate!.Cc = value;
-            _recipients.Email = JsonSerializer.Serialize(_emails);
-            PopulateEmailItems();
-            ChangePending = true;
-            await ChangePendingChanged.InvokeAsync(ChangePending);
-        }
-    }
-
-    private async Task Add()
+    private async Task AddRecipient()
     {
         await _form.Validate();
-        if (_form.IsValid)
+        if (_form.IsValid && !_emails.Any(a => a.Email == _email))
         {
-            if (!_emails!.Select(a => a.Email).Contains(_email))
-            {
-                _emails?.Add(new EmailRecipient { Email = _email });
-                _recipients.Email = JsonSerializer.Serialize(_emails);
-                PopulateEmailItems();
-                ChangePending = true;
-                await ChangePendingChanged.InvokeAsync(ChangePending);
-            }
+            _emails.Add(new EmailRecipient { Email = _email });
+            UpdateRecipientsEmail();
+            await NotifyChangePending();
         }
 
         _email = "";
     }
 
+    private void UpdateRecipientsEmail()
+    {
+        _recipients.Email = JsonSerializer.Serialize(_emails);
+        PopulateEmailItems();
+    }
+
+    private async Task NotifyChangePending()
+    {
+        ChangePending = true;
+        await ChangePendingChanged.InvokeAsync(ChangePending);
+    }
 
     private string? _htmlText;
     private bool _displayTagMessage = false;
 
     private async Task OpenTextEditorComponent()
     {
-        var typeReport = Item!.Type;
-        if (typeReport == TaskType.Alert)
-        {
-            _displayTagMessage = true;
-        }
-
+        _displayTagMessage = Item!.Type == TaskType.Alert;
         _htmlText = _recipients.Message;
-        var maxWidth = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
-        var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
 
-        var dialog = await DialogService.ShowAsync<_TextEditor>(Localizer.Get("Edit email message"), parameters, maxWidth);
+        var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
+        var dialog = await DialogService.ShowAsync<_TextEditor>(Localizer.Get("Edit email message"), parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
         var result = await dialog.Result;
-        if (!(result is { Canceled: true }))
+
+        if (result?.Canceled != true)
         {
             _recipients.Message = result?.Data?.ToString();
-            ChangePending = true;
-            await ChangePendingChanged.InvokeAsync(ChangePending);
+            await NotifyChangePending();
         }
     }
-
 
     private async Task<IEnumerable<string>> SearchEmail(string value, CancellationToken token)
     {
-        await Task.Delay(1);
-        if (string.IsNullOrEmpty(value))
-            return Array.Empty<string>();
-        return _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        await Task.Delay(1, token);
+        return string.IsNullOrEmpty(value) ? Array.Empty<string>() : _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
-
 }
