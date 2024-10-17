@@ -15,8 +15,10 @@ public class PostgreSqlRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script = dbInfo.UseDbSchema
-                ? $"SELECT table_name FROM information_schema.tables where table_catalog='{dbInfo.DbSchema}' and table_schema='public' order by 1"
-                : "SELECT table_name FROM information_schema.tables where table_schema='public' order by 1";
+                ? $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
+				FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' and TABLE_SCHEMA='public' order by 1,2"
+                : $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
+				FROM information_schema.tables where TABLE_SCHEMA='public' order by 1,2";
         return script;
     }
 
@@ -39,14 +41,16 @@ public class PostgreSqlRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = @$"select 
-                    c.column_name 
-                    from information_schema.tables t
-                    inner join information_schema.columns c on c.table_name = t.table_name 
-                                                    and c.table_schema = t.table_schema
-                    where t.table_catalog='{dbInfo.DbSchema}' and t.table_name='{tableName}' and t.table_schema='public'
-                          and t.table_type = 'BASE TABLE'
-                    order by 1";
+            script = @$"                select
+				'Col' as Valuetype,
+				c.COLUMN_NAME,
+				c.DATA_TYPE,
+				c.ORDINAL_POSITION as ColOrder
+				from INFORMATION_SCHEMA.COLUMNS c
+                join information_schema.tables t  on t.TABLE_NAME=c.TABLE_NAME
+				where c.TABLE_NAME ='{tableName}'
+                and t.TABLE_CATALOG='{dbInfo.DbSchema}' 
+				order by ColOrder";
         return script;
     }
 
