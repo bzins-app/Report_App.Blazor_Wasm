@@ -1,4 +1,4 @@
-﻿@page "/DbExplorer/{ActivityId:int}/{ActivityName}"
+﻿@page "/DbExplorer2/{ActivityId:int}/{ActivityName}"
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Report_App_WASM.Shared.Extensions
@@ -19,83 +19,34 @@
     </MudCardHeader>
     <MudCardContent>
         <MudGrid>
-            <MudItem xs="12" md="6">
+            <MudItem xs="6" md="3">
                 @if (!string.IsNullOrEmpty(_queryTestResult))
                 {
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
                 }
-                <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="GetTablesList" Variant="Variant.Filled" Color="Color.Primary">
-                    <LoadingContent>
-                        <MudText>@Localizer.Get("Processing")</MudText>
-                    </LoadingContent>
-                    <ChildContent>
-                        <MudText>@Localizer.Get("Get tables list")</MudText>
-                    </ChildContent>
-                </MudLoadingButton>
-                @if (_loading)
-                {
-                    <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
-                        <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
-                    </MudButton>
-                }
-                <MudGrid>
-                    <MudItem lg="7">
-                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
-                            <ToolBarContent>
-                                <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                            </ToolBarContent>
-                            <HeaderContent>
-                                <MudTh></MudTh>
-                                <MudTh>@Localizer.Get("Db tables")</MudTh>
-                                @if (_hasDesc)
-                                {
-                                    <MudTh>@Localizer.Get("Description")</MudTh>
-                                }
-                            </HeaderContent>
-                            <RowTemplate>
-                                <MudTd>
-                                    <MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" title="@Localizer.Get("Display table values")" Size="Size.Small"/>
-                                </MudTd>
-                                <MudTd @ondblclick="() => GetColumnsList(context.Name)">@context.Name</MudTd>
-                                @if (_hasDesc)
-                                {
-                                    <MudTh>@context.Description</MudTh>
-                                }
-                            </RowTemplate>
-                        </MudTable>
-                    </MudItem>
-                    <MudItem lg="5">
-                        <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
-                            <ToolBarContent>
-                                <MudTextField T="string" ValueChanged="@(OnSearchCols)" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                            </ToolBarContent>
-                            <HeaderContent>
-                                <MudTh>@Localizer.Get("Columns"): @_SelectedTable</MudTh>
-                                @if (_hasDescCol)
-                                {
-                                    <MudTh>@Localizer.Get("Description")</MudTh>
-                                }
-                            </HeaderContent>
-                            <RowTemplate>
-                                @if (context.IsSnippet)
-                                {
-                                    <MudTd Style="Color: crimson">@context.Name</MudTd>
-                                }
-                                else
-                                {
-                                    <MudTd>@context.Name</MudTd>
-                                }
 
-                                @if (_hasDescCol)
-                                {
-                                    <MudTh>@context.Description</MudTh>
-                                }
-                            </RowTemplate>
-                        </MudTable>
-                    </MudItem>
-                </MudGrid>
+                <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="70vh" ReadOnly="true" Dense="true">
+                    <ItemTemplate >
+                        
+                            @if (context.Value.TypeValue == "Table" || context.Value.TypeValue == "View")
+                            {
+                                <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
+                                <BodyContent Context="item">
+                                        <MudText>@item.Value.Name</MudText>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
+                                    </BodyContent>
+                                </MudTreeViewItem>
+                            }
+                            else
+                            {
+                                <MudTreeViewItem Text="@context.Value.Name" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
+                            }
+
+                        
+                    </ItemTemplate>
+                </MudTreeView>
             </MudItem>
-            <MudItem xs="12" md="6">
+            <MudItem xs="6" md="9">
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
@@ -170,6 +121,7 @@
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
+    private List<TreeItemData<TablesColsInfo>> InitialTreeItems { get; set; } = new();
 
 
     protected override async Task OnParametersSetAsync()
@@ -208,8 +160,81 @@
             },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
+
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
+
         StateHasChanged();
     }
+
+
+public async Task<IReadOnlyCollection<TreeItemData<TablesColsInfo>>> LoadServerData(TablesColsInfo parentValue)
+{
+    var _typeTableHead = parentValue.TypeValue switch
+    {
+        "Table" => "Tables",
+        "View" => "Views",
+        _ => parentValue.Name
+    };
+
+    var _typeTable = parentValue.Name switch
+    {
+        "Tables" => "Table",
+        "Views" => "View",
+        _ => parentValue.TypeValue
+    };
+
+    _cts?.Cancel();
+    _cts = new CancellationTokenSource();
+
+    if (parentValue.TypeValue == "Head")
+    {
+        var item = InitialTreeItems.FirstOrDefault(a => a.Value == parentValue);
+        if (item != null)
+        {
+            var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
+            if (data != null)
+            {
+                item.Children = data.Values
+                    .Where(a => a.TypeValue == _typeTable)
+                    .Take(_typeTable == "View" ? 200 : 600)
+                    .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = Icons.Material.Filled.Label })
+                    .ToList();
+                return item.Children;
+            }
+        }
+    }
+    else
+    {
+        var item = InitialTreeItems.FirstOrDefault(a => a.Value.Name == _typeTableHead);
+        if (item != null)
+        {
+            var childItem = item.Children.FirstOrDefault(a => a.Value.Name == parentValue.Name);
+            if (childItem != null)
+            {
+                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={parentValue.Name}", _cts.Token);
+                if (data != null)
+                {
+                    childItem.Children = data.Values.Select(a => new TreeItemData<TablesColsInfo>
+                    {
+                        Value = a,
+                        Icon = a.ColType.ToLower() switch
+                        {
+                            var colType when colType.Contains("date") || colType.Contains("time") => Icons.Material.Filled.DateRange,
+                            var colType when colType.Contains("char") || colType.Contains("string") || colType.Contains("text") => Icons.Material.Filled.TextSnippet,
+                            var colType when colType.Contains("number") || colType.Contains("int") => Icons.Material.Filled._123,
+                            _ => Icons.Material.Filled.Label
+                        },
+                        Expandable = false
+                    }).ToList();
+                    return childItem.Children;
+                }
+            }
+        }
+    }
+
+    return Array.Empty<TreeItemData<TablesColsInfo>>();
+}
 
     private async Task GetTablesList()
     {
@@ -298,48 +323,71 @@
     {
         var currentPage = state.Page;
         var pageSize = state.PageSize;
+
         if (string.IsNullOrEmpty(QueryRun))
         {
-            _values = new List<Dictionary<string, object>>();
-        }
-        else
-        {
-            try
+            return new TableData<Dictionary<string, object>.ValueCollection>
             {
-                _cts = new CancellationTokenSource();
+                TotalItems = 0,
+                Items = new List<Dictionary<string, object>.ValueCollection>()
+            };
+        }
 
-                var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = QueryRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = new List<QueryCommandParameter>() };
-                var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
-                var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
-                var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
-                if (response.IsSuccessStatusCode)
+        try
+        {
+            _cts?.Cancel();
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+
+            var run = new RemoteDbCommandParameters
+            {
+                ActivityId = ActivityId,
+                QueryToRun = QueryRun,
+                Test = true,
+                PaginatedResult = true,
+                StartRecord = currentPage * pageSize,
+                MaxSize = pageSize + 1,
+                LastRunDateTime = DateTime.Now,
+                QueryCommandParameters = new List<QueryCommandParameter>()
+            };
+
+            var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
+            var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
+            var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                if (result?.Success == true)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
-                    if (result!.Success)
-                    {
-                        _values = result.Value;
-                        _queryTestResult = null!;
-                    }
-                    else
-                    {
-                        _queryTestResult = result.Message;
-                        _values = new List<Dictionary<string, object>>();
-                    }
+                    _values = result.Value;
+                    _queryTestResult = null;
                 }
                 else
                 {
+                    _queryTestResult = result?.Message ?? "Unknown error";
                     _values = new List<Dictionary<string, object>>();
-                    _queryTestResult = response.Content.ToString();
                 }
             }
-            catch (Exception ex)
+            else
             {
+                _queryTestResult = response.ReasonPhrase;
                 _values = new List<Dictionary<string, object>>();
-                _queryTestResult = ex.Message;
             }
         }
+        catch (Exception ex)
+        {
+            _queryTestResult = ex.Message;
+            _values = new List<Dictionary<string, object>>();
+        }
 
-        return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+        var items = _values?.Select(a => a.Values).ToList() ?? new List<Dictionary<string, object>.ValueCollection>();
+        var totalItems = _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1;
+
+        return new TableData<Dictionary<string, object>.ValueCollection>
+        {
+            TotalItems = totalItems,
+            Items = items
+        };
     }
 
 }
