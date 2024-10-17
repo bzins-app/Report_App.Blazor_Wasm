@@ -1,4 +1,4 @@
-﻿@page "/DbExplorer/{ActivityId:int}/{ActivityName}"
+﻿@page "/DbExplorer2/{ActivityId:int}/{ActivityName}"
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Report_App_WASM.Shared.Extensions
@@ -40,29 +40,11 @@
                 }
                 <MudGrid>
                     <MudItem lg="7">
-                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
-                            <ToolBarContent>
-                                <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                            </ToolBarContent>
-                            <HeaderContent>
-                                <MudTh></MudTh>
-                                <MudTh>@Localizer.Get("Db tables")</MudTh>
-                                @if (_hasDesc)
-                                {
-                                    <MudTh>@Localizer.Get("Description")</MudTh>
-                                }
-                            </HeaderContent>
-                            <RowTemplate>
-                                <MudTd>
-                                    <MudIconButton Icon="@Icons.Material.Outlined.BlurLinear" OnClick="() => DisplayTableValues(context.Name)" title="@Localizer.Get("Display table values")" Size="Size.Small"/>
-                                </MudTd>
-                                <MudTd @ondblclick="() => GetColumnsList(context.Name)">@context.Name</MudTd>
-                                @if (_hasDesc)
-                                {
-                                    <MudTh>@context.Description</MudTh>
-                                }
-                            </RowTemplate>
-                        </MudTable>
+                        <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="70vh" ReadOnly="true" Dense="true">
+                            <ItemTemplate>
+                                <MudTreeViewItem Text="@context.Value.Name"  Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable" />
+                            </ItemTemplate>
+                        </MudTreeView>
                     </MudItem>
                     <MudItem lg="5">
                         <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
@@ -170,6 +152,7 @@
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
+    private List<TreeItemData<TablesColsInfo>> InitialTreeItems { get; set; } = new();
 
 
     protected override async Task OnParametersSetAsync()
@@ -208,8 +191,73 @@
             },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
+
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
+
         StateHasChanged();
     }
+
+
+public async Task<IReadOnlyCollection<TreeItemData<TablesColsInfo>>> LoadServerData(TablesColsInfo parentValue)
+{
+    var _typeTableHead = parentValue.TypeValue switch
+    {
+        "Table" => "Tables",
+        "View" => "Views",
+        _ => parentValue.Name
+    };
+
+    var _typeTable = parentValue.Name switch
+    {
+        "Tables" => "Table",
+        "Views" => "View",
+        _ => parentValue.TypeValue
+    };
+
+    _cts = new CancellationTokenSource();
+
+    if (parentValue.TypeValue == "Head")
+    {
+        var item = InitialTreeItems.FirstOrDefault(a => a.Value == parentValue);
+        if (item != null)
+        {
+            var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
+            item.Children = data.Values
+                .Where(a => a.TypeValue == _typeTable)
+                .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = Icons.Material.Filled.Label })
+                .ToList();
+            return item.Children;
+        }
+    }
+    else
+    {
+        var item = InitialTreeItems.FirstOrDefault(a => a.Value.Name == _typeTableHead);
+        if (item != null)
+        {
+            var childItem = item.Children.FirstOrDefault(a => a.Value.Name == parentValue.Name);
+            if (childItem != null)
+            {
+                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={parentValue.Name}", _cts.Token);
+                childItem.Children = data.Values.Select(a => new TreeItemData<TablesColsInfo>
+                {
+                    Value = a,
+                    Icon = a.ColType.ToLower() switch
+                    {
+                        var colType when colType.Contains("date") || colType.Contains("time") => Icons.Material.Filled.DateRange,
+                        var colType when colType.Contains("char") || colType.Contains("string") || colType.Contains("text") => Icons.Material.Filled.TextSnippet,
+                        var colType when colType.Contains("number") || colType.Contains("int") => Icons.Material.Filled._123,
+                        _ => Icons.Material.Filled.Label
+                    },
+                    Expandable = false
+                }).ToList();
+                return childItem.Children;
+            }
+        }
+    }
+
+    return Array.Empty<TreeItemData<TablesColsInfo>>();
+}
 
     private async Task GetTablesList()
     {
