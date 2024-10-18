@@ -9,7 +9,7 @@
             </div>
             <MudForm Model="@_email" @ref="_form" Style="width: 500px">
                 <MudAutocomplete T="string" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email"
-                                 Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" CoerceText="false" CoerceValue="true" SearchFunc="@SearchEmail" />
+                                 Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" CoerceText="false" CoerceValue="true" SearchFunc="@SearchEmail"/>
                 <div class="d-flex align-center justify-space-between">
                     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
                                OnClick="AddRecipient">
@@ -28,7 +28,7 @@
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
                 <MudTd DataLabel="@Localizer.Get("Cc")">
-                    <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary" />
+                    <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary"/>
                 </MudTd>
                 <MudTd DataLabel="@Localizer.Get("Blind copy")">
                     <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
@@ -157,4 +157,5 @@
         await Task.Delay(1, token);
         return string.IsNullOrEmpty(value) ? Array.Empty<string>() : _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
+
 }
