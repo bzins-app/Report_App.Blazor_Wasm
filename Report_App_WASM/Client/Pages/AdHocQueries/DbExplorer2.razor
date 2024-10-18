@@ -19,7 +19,7 @@
     </MudCardHeader>
     <MudCardContent>
         <MudGrid>
-            <MudItem xs="6" md="3">
+            <MudItem xs="2" md="3">
                 @if (!string.IsNullOrEmpty(_queryTestResult))
                 {
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
@@ -43,7 +43,7 @@
                     </ItemTemplate>
                 </MudTreeView>
             </MudItem>
-            <MudItem xs="6" md="9">
+            <MudItem xs="10" md="9">
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
@@ -208,7 +208,7 @@
                     item.Children = data.Values
                         .Where(a => a.TypeValue == _typeTable)
                         .Take(_typeTable == "View" ? 200 : 600)
-                        .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = Icons.Material.Filled.Label })
+                        .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = _typeTable == "Table" ? Icons.Material.Filled.TableChart : _typeTable == "View" ? Icons.Material.Filled.Dataset : Icons.Material.Filled.Label })
                         .ToList();
                     return item.Children;
                 }
