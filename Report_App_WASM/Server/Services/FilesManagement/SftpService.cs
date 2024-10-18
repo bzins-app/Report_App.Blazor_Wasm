@@ -135,7 +135,6 @@ public class SftpService : IDisposable
         try
         {
             client.Connect();
-            client.DeleteDirectory(remoteFilePath);
             if (!client.Exists(remoteFilePath))
                 return new SubmitResult { Success = true, Message = "Ok" };
 
