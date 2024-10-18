@@ -2593,4 +2593,7 @@
   <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
     <value>This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account.</value>
   </data>
+  <data name="Query output" xml:space="preserve">
+    <value>Query output</value>
+  </data>
 </root>
