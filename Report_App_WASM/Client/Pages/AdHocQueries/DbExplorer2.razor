@@ -25,24 +25,21 @@
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
                 }
 
-                <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="70vh" ReadOnly="true" Dense="true">
-                    <ItemTemplate >
-                        
-                            @if (context.Value.TypeValue == "Table" || context.Value.TypeValue == "View")
-                            {
-                                <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
+                <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="80vh" ReadOnly="true" Dense="true" @ref="_ref">
+                    <ItemTemplate Context="context">
+                        @if (context.Value?.TypeValue == "Table" || context.Value?.TypeValue == "View")
+                        {
+                            <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
                                 <BodyContent Context="item">
-                                        <MudText>@item.Value.Name</MudText>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
-                                    </BodyContent>
-                                </MudTreeViewItem>
-                            }
-                            else
-                            {
-                                <MudTreeViewItem Text="@context.Value.Name" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
-                            }
-
-                        
+                                    <MudText>@item.Value?.Name</MudText>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value?.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
+                                </BodyContent>
+                            </MudTreeViewItem>
+                        }
+                        else
+                        {
+                            <MudTreeViewItem Text="@context.Value?.Name" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
+                        }
                     </ItemTemplate>
                 </MudTreeView>
             </MudItem>
@@ -54,7 +51,7 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loadingTestQuery" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                         </MudToolBar>
                     </MudPaper>
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="_loadingTestQuery"/>
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
                     @if (_opt != null)
                     {
                         <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
@@ -73,7 +70,7 @@
                                 }
                             }
                         </HeaderContent>
-                        <RowTemplate>
+                        <RowTemplate Context="context">
                             @if (_values?.Any() == true)
                             {
                                 @foreach (var t in context)
@@ -111,17 +108,16 @@
     private string? QueryRun;
     private string _querySelectedCode = string.Empty;
     private CancellationTokenSource? _cts;
-
     private bool _isDarkMode;
     private AceEditorOptions? _opt;
     private TypeDb _typeDbTask;
-
-    MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
-    private List<Dictionary<string, object>>? _values = new();
+    MudTable<Dictionary<string, object>.ValueCollection>? _table;
+    private List<Dictionary<string, object>>? _values;
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
-    private List<TreeItemData<TablesColsInfo>> InitialTreeItems { get; set; } = new();
+    private List<TreeItemData<TablesColsInfo>> InitialTreeItems;
+    MudTreeView<TablesColsInfo> _ref;
 
 
     protected override async Task OnParametersSetAsync()
@@ -131,7 +127,23 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+        // Clear and reinitialize the tree view items
 
+        InitialTreeItems = new List<TreeItemData<TablesColsInfo>>();
+
+        if (_ref != null)
+        {
+            await _ref.CollapseAllAsync();
+            if (_ref.Items != null && _ref.Items.Any())
+                _ref = new MudTreeView<TablesColsInfo>();
+        }
+
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
+
+
+        _table = new();
+        _values = new();
         TableNames = new List<TablesColsInfo>();
         ColNames = new List<TablesColsInfo>();
         QueryRun = "";
@@ -161,80 +173,78 @@
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
 
-        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
-        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
 
         StateHasChanged();
     }
 
 
-public async Task<IReadOnlyCollection<TreeItemData<TablesColsInfo>>> LoadServerData(TablesColsInfo parentValue)
-{
-    var _typeTableHead = parentValue.TypeValue switch
+    public async Task<IReadOnlyCollection<TreeItemData<TablesColsInfo>>> LoadServerData(TablesColsInfo parentValue)
     {
-        "Table" => "Tables",
-        "View" => "Views",
-        _ => parentValue.Name
-    };
-
-    var _typeTable = parentValue.Name switch
-    {
-        "Tables" => "Table",
-        "Views" => "View",
-        _ => parentValue.TypeValue
-    };
-
-    _cts?.Cancel();
-    _cts = new CancellationTokenSource();
-
-    if (parentValue.TypeValue == "Head")
-    {
-        var item = InitialTreeItems.FirstOrDefault(a => a.Value == parentValue);
-        if (item != null)
+        var _typeTableHead = parentValue.TypeValue switch
         {
-            var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
-            if (data != null)
-            {
-                item.Children = data.Values
-                    .Where(a => a.TypeValue == _typeTable)
-                    .Take(_typeTable == "View" ? 200 : 600)
-                    .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = Icons.Material.Filled.Label })
-                    .ToList();
-                return item.Children;
-            }
-        }
-    }
-    else
-    {
-        var item = InitialTreeItems.FirstOrDefault(a => a.Value.Name == _typeTableHead);
-        if (item != null)
+            "Table" => "Tables",
+            "View" => "Views",
+            _ => parentValue.Name
+        };
+
+        var _typeTable = parentValue.Name switch
         {
-            var childItem = item.Children.FirstOrDefault(a => a.Value.Name == parentValue.Name);
-            if (childItem != null)
+            "Tables" => "Table",
+            "Views" => "View",
+            _ => parentValue.TypeValue
+        };
+
+        _cts?.Cancel();
+        _cts = new CancellationTokenSource();
+
+        if (parentValue.TypeValue == "Head")
+        {
+            var item = InitialTreeItems.FirstOrDefault(a => a.Value == parentValue);
+            if (item != null)
             {
-                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={parentValue.Name}", _cts.Token);
+                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
                 if (data != null)
                 {
-                    childItem.Children = data.Values.Select(a => new TreeItemData<TablesColsInfo>
-                    {
-                        Value = a,
-                        Icon = a.ColType.ToLower() switch
-                        {
-                            var colType when colType.Contains("date") || colType.Contains("time") => Icons.Material.Filled.DateRange,
-                            var colType when colType.Contains("char") || colType.Contains("string") || colType.Contains("text") => Icons.Material.Filled.TextSnippet,
-                            var colType when colType.Contains("number") || colType.Contains("int") => Icons.Material.Filled._123,
-                            _ => Icons.Material.Filled.Label
-                        },
-                        Expandable = false
-                    }).ToList();
-                    return childItem.Children;
+                    item.Children = data.Values
+                        .Where(a => a.TypeValue == _typeTable)
+                        .Take(_typeTable == "View" ? 200 : 600)
+                        .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = Icons.Material.Filled.Label })
+                        .ToList();
+                    return item.Children;
                 }
             }
         }
-    }
+        else
+        {
+            var item = InitialTreeItems.FirstOrDefault(a => a.Value.Name == _typeTableHead);
+            if (item != null)
+            {
+                var childItem = item.Children.FirstOrDefault(a => a.Value.Name == parentValue.Name);
+                if (childItem != null)
+                {
+                    var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={parentValue.Name}", _cts.Token);
+                    if (data != null)
+                    {
+                        childItem.Children = data.Values.Select(a => new TreeItemData<TablesColsInfo>
+                        {
+                            Value = a,
+                            Icon = a.ColType.ToLower() switch
+                            {
+                                var colType when colType.Contains("date") || colType.Contains("time") => Icons.Material.Filled.DateRange,
+                                var colType when colType.Contains("char") || colType.Contains("string") || colType.Contains("text") => Icons.Material.Filled.TextSnippet,
+                                var colType when colType.Contains("number") || colType.Contains("int") => Icons.Material.Filled._123,
+                                _ => Icons.Material.Filled.Label
+                            },
+                            Expandable = false
+                        }).ToList();
+                        return childItem.Children;
+                    }
+                }
+            }
+        }
 
-    return Array.Empty<TreeItemData<TablesColsInfo>>();
-}
+        return Array.Empty<TreeItemData<TablesColsInfo>>();
+    }
 
     private async Task GetTablesList()
     {
@@ -303,8 +313,9 @@ public async Task<IReadOnlyCollection<TreeItemData<TablesColsInfo>>> LoadServerD
     private async Task RunSql()
     {
         _loadingTestQuery = true;
-        var _queryTorun = string.Empty;
-        _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) && !string.IsNullOrEmpty(_querySelectedCode) ? _querySelectedCode : QueryBuilder;
+
+        var _queryTorun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
+
         if (string.IsNullOrEmpty(QueryBuilder))
         {
             _queryTestResult = "query is not set";
