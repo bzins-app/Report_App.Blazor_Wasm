@@ -127,7 +127,7 @@ public class SftpService : IDisposable
 
 
 
-    public async Task<SubmitResult> DeleteDirectoryAsync(int sftpconfigurationId, string remoteFilePath)
+    public async Task<SubmitResult> DeleteDirectoryFilesAsync(int sftpconfigurationId, string remoteFilePath)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
         using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
@@ -136,6 +136,16 @@ public class SftpService : IDisposable
         {
             client.Connect();
             client.DeleteDirectory(remoteFilePath);
+            if (!client.Exists(remoteFilePath))
+                return new SubmitResult { Success = true, Message = "Ok" };
+
+            foreach (var file in client.ListDirectory(remoteFilePath))
+            {
+                if (file.Name.Equals(".") || file.Name.Equals(".."))
+                    continue;
+
+                    client.DeleteFile(file.FullName);
+            }
             //   _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
         catch (Exception exception)

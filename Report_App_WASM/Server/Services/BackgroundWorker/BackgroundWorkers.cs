@@ -272,7 +272,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             using var sftp = new SftpService(_context);
             foreach (var v in data)
             {
-                var deleteTasks = await  sftp.DeleteDirectoryAsync(v.SftpConfId, v.Path);
+                var deleteTasks = await  sftp.DeleteDirectoryFilesAsync(v.SftpConfId, v.Path);
                 if (deleteTasks.Success == false)
                 {
                     Console.WriteLine($@"An error occurred: {deleteTasks.Message}");
