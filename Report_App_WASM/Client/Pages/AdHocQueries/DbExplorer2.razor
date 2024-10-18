@@ -172,7 +172,7 @@
                         <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
                             <BodyContent Context="item">
                                 <MudText>@item.Value?.Name</MudText>
-                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value?.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
+                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
                             </BodyContent>
                         </MudTreeViewItem>
                     }
