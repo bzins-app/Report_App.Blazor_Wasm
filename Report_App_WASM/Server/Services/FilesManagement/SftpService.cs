@@ -135,7 +135,7 @@ public class SftpService : IDisposable
         try
         {
             client.Connect();
-            client.DeleteDirectory(remoteFilePath);
+            client.Delete(remoteFilePath);
             //   _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
         catch (Exception exception)

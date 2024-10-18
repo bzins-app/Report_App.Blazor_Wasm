@@ -262,7 +262,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     private async Task DeleteDemoSFTPDirectory()
     {
-        var data = await _context.FileDepositPathConfiguration.Where(a=>a.SftpConfiguration!=null &&a.SftpConfiguration.SftpConfigurationId>0)
+        var data = await _context.FileDepositPathConfiguration.Where(a=>a.SftpConfiguration!=null)
             .Select(a => new { SftpConfId = a.SftpConfiguration.SftpConfigurationId, Path = a.FilePath })
             .Distinct()
             .ToListAsync();
@@ -270,16 +270,16 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         if (data.Any())
         {
             using var sftp = new SftpService(_context);
-            var deleteTasks = data.Select(v => sftp.DeleteDirectoryAsync(v.SftpConfId, v.Path));
-            try
+            foreach (var v in data)
             {
-                await Task.WhenAll(deleteTasks);
+                var deleteTasks = await  sftp.DeleteDirectoryAsync(v.SftpConfId, v.Path);
+                if (deleteTasks.Success == false)
+                {
+                    Console.WriteLine($@"An error occurred: {deleteTasks.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                // Handle the exception (e.g., log it)
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
+
+
         }
     }
 
