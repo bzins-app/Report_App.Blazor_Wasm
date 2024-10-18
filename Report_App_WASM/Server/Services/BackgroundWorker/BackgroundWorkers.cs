@@ -1,7 +1,9 @@
-﻿using System.Net.Mail;
+﻿using System.Formats.Asn1;
+using System.Net.Mail;
 using System.Text.Json;
 using Hangfire;
 using Hangfire.Storage;
+using Report_App_WASM.Client.Pages.Parameters.DepositPath;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
@@ -17,10 +19,11 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly SftpService _Sftp;
 
     public BackgroundWorkers(
         ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader,
-        LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment,
+        LocalFilesService fileDeposit, SftpService sftp, IMapper mapper, IWebHostEnvironment hostingEnvironment,
         IServiceScopeFactory scopeFactory)
     {
         _context = context;
@@ -30,6 +33,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         _mapper = mapper;
         _hostingEnvironment = hostingEnvironment;
         _scopeFactory = scopeFactory;
+        _Sftp= sftp;
     }
 
 
@@ -252,8 +256,32 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             await _emailSender.GenerateErrorEmailAsync(ex.Message, "File deletion: ");
         }
 
+        await DeleteDemoSFTPDirectory();
         await _context.AddAsync(logTask);
         await _context.SaveChangesAsync();
+    }
+
+
+    private async Task DeleteDemoSFTPDirectory()
+    {
+        var data = await _context.FileDepositPathConfiguration
+            .Select(a => new { SftpConfId = a.SftpConfiguration.SftpConfigurationId, Path = a.FilePath })
+            .Distinct()
+            .ToListAsync();
+
+        if (data.Any())
+        {
+            var deleteTasks = data.Select(v => _Sftp.DeleteDirectoryAsync(v.SftpConfId, v.Path));
+            try
+            {
+                await Task.WhenAll(deleteTasks);
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception (e.g., log it)
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
     }
 
     public async Task DeleteLogsAsync()
