@@ -19,11 +19,10 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly SftpService _Sftp;
 
     public BackgroundWorkers(
         ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader,
-        LocalFilesService fileDeposit, SftpService sftp, IMapper mapper, IWebHostEnvironment hostingEnvironment,
+        LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment,
         IServiceScopeFactory scopeFactory)
     {
         _context = context;
@@ -33,7 +32,6 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         _mapper = mapper;
         _hostingEnvironment = hostingEnvironment;
         _scopeFactory = scopeFactory;
-        _Sftp= sftp;
     }
 
 
@@ -264,14 +262,15 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     private async Task DeleteDemoSFTPDirectory()
     {
-        var data = await _context.FileDepositPathConfiguration
+        var data = await _context.FileDepositPathConfiguration.Where(a=>a.SftpConfiguration!=null &&a.SftpConfiguration.SftpConfigurationId>0)
             .Select(a => new { SftpConfId = a.SftpConfiguration.SftpConfigurationId, Path = a.FilePath })
             .Distinct()
             .ToListAsync();
 
         if (data.Any())
         {
-            var deleteTasks = data.Select(v => _Sftp.DeleteDirectoryAsync(v.SftpConfId, v.Path));
+            using var sftp = new SftpService(_context);
+            var deleteTasks = data.Select(v => sftp.DeleteDirectoryAsync(v.SftpConfId, v.Path));
             try
             {
                 await Task.WhenAll(deleteTasks);
