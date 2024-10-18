@@ -2577,4 +2577,7 @@
   <data name="A Target database must be selected" xml:space="preserve">
     <value>Une base de données cible doit être sélectionnée</value>
   </data>
+  <data name="Query output" xml:space="preserve">
+    <value>Resultat de la requête</value>
+  </data>
 </root>

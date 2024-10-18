@@ -2574,4 +2574,10 @@
   <data name="A Target database must be selected" xml:space="preserve">
     <value>Eine Zieldatenbank muss ausgewählt werden</value>
   </data>
+  <data name="Query output" xml:space="preserve">
+    <value>Query output</value>
+  </data>
+  <data name="Use Windows authentication?" xml:space="preserve">
+    <value>Use Windows authentication?</value>
+  </data>
 </root>
