@@ -208,7 +208,7 @@
                     item.Children = data.Values
                         .Where(a => a.TypeValue == _typeTable)
                         .Take(_typeTable == "View" ? 200 : 600)
-                        .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = Icons.Material.Filled.Label })
+                        .Select(a => new TreeItemData<TablesColsInfo> { Value = a, Icon = _typeTable == "Table" ? Icons.Material.Filled.TableChart : _typeTable == "View" ? Icons.Material.Filled.Dataset : Icons.Material.Filled.Label })
                         .ToList();
                     return item.Children;
                 }
