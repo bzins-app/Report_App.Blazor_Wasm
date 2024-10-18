@@ -19,7 +19,7 @@
     </MudCardHeader>
     <MudCardContent>
         <MudGrid>
-            <MudItem xs="6" md="3">
+            <MudItem xs="2" md="3">
                 @if (!string.IsNullOrEmpty(_queryTestResult))
                 {
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
@@ -43,7 +43,7 @@
                     </ItemTemplate>
                 </MudTreeView>
             </MudItem>
-            <MudItem xs="6" md="9">
+            <MudItem xs="10" md="9">
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
