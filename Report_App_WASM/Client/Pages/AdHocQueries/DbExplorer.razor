@@ -20,10 +20,6 @@
     <MudCardContent>
         <MudGrid>
             <MudItem xs="12" md="6">
-                @if (!string.IsNullOrEmpty(_queryTestResult))
-                {
-                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
-                }
                 <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="GetTablesList" Variant="Variant.Filled" Color="Color.Primary">
                     <LoadingContent>
                         <MudText>@Localizer.Get("Processing")</MudText>
@@ -40,7 +36,7 @@
                 }
                 <MudGrid>
                     <MudItem lg="7">
-                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
+                        <MudTable Items="@TableNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="25">
                             <ToolBarContent>
                                 <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                             </ToolBarContent>
@@ -65,7 +61,7 @@
                         </MudTable>
                     </MudItem>
                     <MudItem lg="5">
-                        <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="4">
+                        <MudTable Items="@ColNames" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="25">
                             <ToolBarContent>
                                 <MudTextField T="string" ValueChanged="@(OnSearchCols)" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                             </ToolBarContent>
@@ -96,6 +92,10 @@
                 </MudGrid>
             </MudItem>
             <MudItem xs="12" md="6">
+                @if (!string.IsNullOrEmpty(_queryTestResult))
+                {
+                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
+                }
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
@@ -103,12 +103,12 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loadingTestQuery" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                         </MudToolBar>
                     </MudPaper>
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="_loadingTestQuery"/>
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
                     @if (_opt != null)
                     {
                         <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
                     }
-                    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="25">
                         <HeaderContent>
                             @if (_values?.Any() == true)
                             {

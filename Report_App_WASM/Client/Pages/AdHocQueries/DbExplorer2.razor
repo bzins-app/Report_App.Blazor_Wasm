@@ -19,18 +19,19 @@
     </MudCardHeader>
     <MudCardContent>
         <MudGrid>
-            <MudItem xs="2" md="3">
-                @if (!string.IsNullOrEmpty(_queryTestResult))
-                {
-                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
-                }
-
+            <MudItem md="5" lg="3">
+                <MudPaper>
                 @if (_tree != null)
                 {
                     @_tree
                 }
+                </MudPaper>
             </MudItem>
-            <MudItem xs="10" md="9">
+            <MudItem md="7" lg="9">
+                @if (!string.IsNullOrEmpty(_queryTestResult))
+                {
+                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
+                }
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
@@ -43,7 +44,11 @@
                     {
                         @_editor
                     }
-                    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
+                    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="33vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="25">
+                        <ToolBarContent>
+                            <MudText>@_tableHeader</MudText>
+                            <MudSpacer />
+                        </ToolBarContent>
                         <HeaderContent>
                             @if (_values?.Any() == true)
                             {
@@ -106,6 +111,7 @@
     private List<TreeItemData<TablesColsInfo>> InitialTreeItems;
     public RenderFragment? _editor { get; set; }
     public RenderFragment? _tree { get; set; }
+    public string _tableHeader;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -125,7 +131,7 @@
         InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
         InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
 
-
+        _tableHeader = Localizer.Get("Query output");
         _table = new();
         _values = new();
         TableNames = new List<TablesColsInfo>();
@@ -160,12 +166,12 @@
 
         _editor  = (__builder) =>
         {
-            <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" />
+            <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
         };
 
         _tree = (__builder) =>
         {
-            <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="80vh" ReadOnly="false" Dense="true" >
+            <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="82vh" ReadOnly="false" Dense="true" Class="overflow-x-auto" Ripple="false">
                 <ItemTemplate Context="context">
                     @if (context.Value?.TypeValue == "Table" || context.Value?.TypeValue == "View")
                     {
@@ -314,6 +320,7 @@
         _loading = true;
         var query = $"select  * from {tableName}";
         QueryRun = query;
+        _tableHeader=tableName;
         _table!.CurrentPage = 0;
         await _table.ReloadServerData();
         _loading = false;
@@ -322,7 +329,7 @@
     private async Task RunSql()
     {
         _loadingTestQuery = true;
-
+        _tableHeader = Localizer.Get("Query output");
         var _queryTorun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
 
         if (string.IsNullOrEmpty(QueryBuilder))
@@ -346,10 +353,15 @@
 
         if (string.IsNullOrEmpty(QueryRun))
         {
+            var placeholderData = new List<Dictionary<string, object>>
+            {
+                new() { { "Result", "Please enter SQL code" } }
+            };
+
             return new TableData<Dictionary<string, object>.ValueCollection>
             {
                 TotalItems = 0,
-                Items = new List<Dictionary<string, object>.ValueCollection>()
+                Items = placeholderData.Select(d => d.Values).ToList()
             };
         }
 
