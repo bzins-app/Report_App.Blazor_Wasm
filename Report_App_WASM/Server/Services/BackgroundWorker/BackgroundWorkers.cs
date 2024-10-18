@@ -236,7 +236,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
             var filesToDelete = await qry
                 .Where(a => a.reportResult.CreatedAt.Date <
-                            DateTime.Now.AddDays(-(a.taskHeader == null ? 90 : a.taskHeader.ReportsRetentionInDays)))
+                            DateTime.Now.AddDays(-(a.taskHeader == null ? 15 : a.taskHeader.ReportsRetentionInDays)))
                 .Select(a => a.reportResult).ToListAsync();
 
             if (filesToDelete.Any()) await _fileDeposit.RemoveLocalFilesAsync(filesToDelete);
