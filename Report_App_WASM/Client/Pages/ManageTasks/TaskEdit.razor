@@ -323,9 +323,9 @@
                 await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             }
 
-            if (Item.Type == TaskType.Alert && Item.SendByEmail==false)
+            if (Item.Type == TaskType.Alert && Item.SendByEmail == false)
             {
-                Item.SendByEmail= true;
+                Item.SendByEmail = true;
             }
 
             if (!Item.TaskEmailRecipients.Any())

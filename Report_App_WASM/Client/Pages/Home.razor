@@ -11,7 +11,7 @@
     <MudCardContent>
         @if (_activities.Any())
         {
-            foreach (var t in _activities.Where(a=>a.IsVisible))
+            foreach (var t in _activities.Where(a => a.IsVisible))
             {
                 <AuthorizeView Roles=@t.ActivityName>
                     <div>
