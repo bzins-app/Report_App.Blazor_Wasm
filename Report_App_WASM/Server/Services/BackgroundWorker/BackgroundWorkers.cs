@@ -262,7 +262,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     private async Task DeleteDemoSFTPDirectory()
     {
-        var data = await _context.FileDepositPathConfiguration.Where(a=>a.SftpConfiguration!=null)
+        var data = await _context.FileDepositPathConfiguration.Where(a=>a.UseSftpProtocol)
             .Select(a => new { SftpConfId = a.SftpConfiguration.SftpConfigurationId, Path = a.FilePath })
             .Distinct()
             .ToListAsync();
