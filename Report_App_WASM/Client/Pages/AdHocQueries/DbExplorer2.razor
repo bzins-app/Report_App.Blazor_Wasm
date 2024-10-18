@@ -25,23 +25,10 @@
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
                 }
 
-                <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="80vh" ReadOnly="true" Dense="true" @ref="_ref">
-                    <ItemTemplate Context="context">
-                        @if (context.Value?.TypeValue == "Table" || context.Value?.TypeValue == "View")
-                        {
-                            <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
-                                <BodyContent Context="item">
-                                    <MudText>@item.Value?.Name</MudText>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value?.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
-                                </BodyContent>
-                            </MudTreeViewItem>
-                        }
-                        else
-                        {
-                            <MudTreeViewItem Text="@context.Value?.Name" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
-                        }
-                    </ItemTemplate>
-                </MudTreeView>
+                @if (_tree != null)
+                {
+                    @_tree
+                }
             </MudItem>
             <MudItem xs="10" md="9">
                 <div>
@@ -52,9 +39,9 @@
                         </MudToolBar>
                     </MudPaper>
                     <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
-                    @if (_opt != null)
+                    @if (_opt != null && _editor != null)
                     {
-                        <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
+                        @_editor
                     }
                     <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="35vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
                         <HeaderContent>
@@ -117,8 +104,8 @@
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
     private List<TreeItemData<TablesColsInfo>> InitialTreeItems;
-    MudTreeView<TablesColsInfo> _ref;
-
+    public RenderFragment? _editor { get; set; }
+    public RenderFragment? _tree { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -128,15 +115,12 @@
             NavigationManager.NavigateTo("/403");
         }
         // Clear and reinitialize the tree view items
+        _editor=null;
+        _tree=null;
+        StateHasChanged();
 
         InitialTreeItems = new List<TreeItemData<TablesColsInfo>>();
-
-        if (_ref != null)
-        {
-            await _ref.CollapseAllAsync();
-            if (_ref.Items != null && _ref.Items.Any())
-                _ref = new MudTreeView<TablesColsInfo>();
-        }
+        InitialTreeItems.Clear();
 
         InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
         InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
@@ -174,6 +158,31 @@
         };
 
 
+        _editor  = (__builder) =>
+        {
+            <Blazor.AceEditorJs.AceJsEditor Style="height: 40vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" />
+        };
+
+        _tree = (__builder) =>
+        {
+            <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="80vh" ReadOnly="false" Dense="true" >
+                <ItemTemplate Context="context">
+                    @if (context.Value?.TypeValue == "Table" || context.Value?.TypeValue == "View")
+                    {
+                        <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
+                            <BodyContent Context="item">
+                                <MudText>@item.Value?.Name</MudText>
+                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value?.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
+                            </BodyContent>
+                        </MudTreeViewItem>
+                    }
+                    else
+                    {
+                        <MudTreeViewItem Text="@context.Value?.Name" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
+                    }
+                </ItemTemplate>
+            </MudTreeView>
+        };
         StateHasChanged();
     }
 
