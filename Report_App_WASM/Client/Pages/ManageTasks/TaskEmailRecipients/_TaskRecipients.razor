@@ -1,45 +1,39 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @inject IDialogService DialogService
 
-<MudCard>
-    <MudCardContent>
-        <div class="d-flex justify-space-between flex-grow-1 gap-4">
-            <div style="width: 300px">
-                <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none;" Size="Size.Small">@Localizer.Get("Edit email message")</MudButton>
-            </div>
-            <MudForm Model="@_email" @ref="_form" Style="width: 500px">
-                <MudAutocomplete T="string" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email"
-                                 Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" CoerceText="false" CoerceValue="true" SearchFunc="@SearchEmail"/>
-                <div class="d-flex align-center justify-space-between">
-                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
-                               OnClick="AddRecipient">
-                        @Localizer.Get("Add recipient")
-                    </MudButton>
-                </div>
-            </MudForm>
-        </div>
-        <MudTable Items="@_emailItems" Hover="true" Dense="true">
-            <HeaderContent>
-                <MudTh>@Localizer.Get("Email")</MudTh>
-                <MudTh>@Localizer.Get("Cc")</MudTh>
-                <MudTh>@Localizer.Get("Blind copy")</MudTh>
-                <MudTh>@Localizer.Get("Action")</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
-                <MudTd DataLabel="@Localizer.Get("Cc")">
-                    <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary"/>
-                </MudTd>
-                <MudTd DataLabel="@Localizer.Get("Blind copy")">
-                    <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
-                </MudTd>
-                <MudTd>
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteRecipient(context)"></MudIconButton>
-                </MudTd>
-            </RowTemplate>
-        </MudTable>
-    </MudCardContent>
-</MudCard>
+<MudTable Items="@_emailItems" Hover="true" Dense="true" Virtualize="true" Elevation="25">
+    <ToolBarContent>
+        <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Tertiary" Style="text-transform: none;" Size="Size.Small">@Localizer.Get("Edit email message")</MudButton>
+        <MudSpacer />
+        <MudForm Model="@_email" @ref="_form">
+            <MudAutocomplete T="string" InputMode="InputMode.email" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email" OpenIcon="@Icons.Material.Filled.Email" IconSize="Size.Medium" Class="mt-0"
+                             Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" CoerceText="false" CoerceValue="true" SearchFunc="@SearchEmail" />
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small" Disabled="@(!_form.IsValid)"
+                       OnClick="AddRecipient">
+                @Localizer.Get("Add recipient")
+            </MudButton>
+        </MudForm>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>@Localizer.Get("Email")</MudTh>
+        <MudTh>@Localizer.Get("Cc")</MudTh>
+        <MudTh>@Localizer.Get("Blind copy")</MudTh>
+        <MudTh>@Localizer.Get("Action")</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
+        <MudTd DataLabel="@Localizer.Get("Cc")">
+            <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary" />
+        </MudTd>
+        <MudTd DataLabel="@Localizer.Get("Blind copy")">
+            <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary" />
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteRecipient(context)"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
 
 @code {
 
@@ -59,11 +53,11 @@
     protected override async Task OnParametersSetAsync()
     {
         _recipients = Item?.TaskEmailRecipients.FirstOrDefault() ?? new TaskEmailRecipientDto
-        {
-            TaskHeader = Item,
-            Email = "[]",
-            Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>"
-        };
+            {
+                TaskHeader = Item,
+                Email = "[]",
+                Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>"
+            };
 
         if (!string.IsNullOrEmpty(_recipients.Email))
         {

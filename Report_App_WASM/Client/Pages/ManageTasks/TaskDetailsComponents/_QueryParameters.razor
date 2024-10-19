@@ -42,11 +42,11 @@
                                 }
                                 @if (element.ValueType == QueryCommandParameterValueType.String)
                                 {
-                                    <MudTextField Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters"/>
+                                    <MudTextField InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" />
                                 }
                                 @if (element.ValueType == QueryCommandParameterValueType.Number)
                                 {
-                                    <MudNumericField Label="@Localizer.Get("Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters"/>
+                                    <MudTextField InputType="InputType.Number" Label="@Localizer.Get("Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" />
                                 }
                                 <MudSwitch @bind-Value="element.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" @onclick="UpdateParameters"/>
                             </MudCardContent>
