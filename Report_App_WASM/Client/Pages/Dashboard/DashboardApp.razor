@@ -13,7 +13,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of tasks")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfTasksExcecutedToday</MudText>
+                    <MudText Typo="Typo.h5">@_metrics.NbrOfTasksExcecutedToday.ToString("N0")</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
                 </div>
             </MudPaper>
@@ -23,7 +23,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.Wysiwyg" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Reports")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveReports</MudText>
+                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveReports.ToString("N0")</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
                 </div>
             </MudPaper>
@@ -33,7 +33,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.Report" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Alerts")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveAlerts</MudText>
+                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveAlerts.ToString("N0")</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
                 </div>
             </MudPaper>
@@ -43,7 +43,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.Inbox" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data transfer")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveDataTransfer</MudText>
+                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveDataTransfer.ToString("N0")</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
                 </div>
             </MudPaper>
@@ -53,7 +53,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.QueryStats" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of queries")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveQueries</MudText>
+                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveQueries.ToString("N0")</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
                 </div>
             </MudPaper>
@@ -63,7 +63,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Tasks in error")</MudText>
-                    <MudText Typo="Typo.h5" Color="Color.Error">@_metrics.NbrTasksInError</MudText>
+                    <MudText Typo="Typo.h5" Color="Color.Error">@_metrics.NbrTasksInError.ToString("N0")</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
                 </div>
             </MudPaper>
@@ -122,9 +122,9 @@
             <MudPaper Elevation="2" Class="d-flex flex-row pa-2">
                 <div>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
-                    <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored</MudText>
+                    <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored.ToString("N0")</MudText>
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
-                    <MudText Typo="Typo.h6">@($"{_metrics.SizeFilesStoredLocally:0.00}") MB</MudText>
+                    <MudText Typo="Typo.h6">@_metrics.SizeFilesStoredLocally.ToString("N2") MB</MudText>
                 </div>
             </MudPaper>
         </MudItem>
