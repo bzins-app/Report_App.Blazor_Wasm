@@ -49,7 +49,7 @@
                         <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
                         @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
-                            <MudNavLink Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get(" Manage queries")</MudNavLink>
+                            <MudNavLink Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage queries")</MudNavLink>
                             <MudNavLink Href=@($"DbExplorer2/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
                         }
                     </MudNavGroup>
@@ -90,7 +90,7 @@
             <MudNavLink Href="Services" Icon="@Icons.Material.Outlined.DesignServices">@Localizer.Get("Services status")</MudNavLink>
             <MudNavGroup Title="@Localizer.Get("Base parameters")" Icon="@Icons.Material.Outlined.SettingsApplications">
                 <MudNavLink Href="ApplicationParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
-                <MudNavLink Href="Activities" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Activities manager")</MudNavLink>
+                <MudNavLink Href="ConnectionsManager" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Connections manager")</MudNavLink>
                 <MudNavLink Href="Smtp" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Smtp configuration")</MudNavLink>
                 @if (_appConst.WindowsEnv)
                 {
@@ -98,7 +98,6 @@
                 }
                 @if (_appConst.ActivateTaskSchedulerModule)
                 {
-                    <MudNavLink Href="DataTransfers" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Data transfer parameters")</MudNavLink>
                     <MudNavLink Href="DepositPath" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Deposit path")</MudNavLink>
                     <MudNavLink Href="/swagger" Target="_blank" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Swagger")</MudNavLink>
                 }
