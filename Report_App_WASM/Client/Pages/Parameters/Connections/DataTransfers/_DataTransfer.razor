@@ -36,7 +36,7 @@
             <div style="overflow: auto">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
-                        <MudStack Row="true">
+                        <MudStack Row="true" Justify="Justify.Center">
                             <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")"/>
                             <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
                         </MudStack>
