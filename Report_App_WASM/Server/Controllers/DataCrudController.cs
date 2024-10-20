@@ -118,6 +118,15 @@ public class DataCrudController : ControllerBase, IDisposable
             .FirstOrDefaultAsync(a => a.Id == queryId);
     }
 
+    [HttpGet]
+    public async Task<List<QueryStore>?> GetQueryStoreByActivityAsync(int activityId)
+    {
+        return await _context.QueryStore
+            .AsNoTracking()
+            .Where(a => a.IdActivity == activityId)
+            .ToListAsync();
+    }
+
     [HttpPost]
     public async Task<IActionResult> DuplicateQueryStore(ApiCrudPayload<DuplicateQueryStore> values)
     {

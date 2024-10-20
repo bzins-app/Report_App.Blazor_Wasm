@@ -1,0 +1,467 @@
+﻿@using Blazor.PivotTable
+@using Report_App_WASM.Shared.Extensions
+@using Report_App_WASM.Shared.RemoteQueryParameters
+@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
+}
+
+<MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
+    @if (param.Count > 0)
+    {
+        <MudForm @ref="_validateParam">
+            <MudText>@Localizer.Get("Filters")</MudText>
+            <MudGrid>
+                @foreach (var t in param.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
+                {
+                    <MudItem>
+                        @if (t.ValueType == QueryCommandParameterValueType.Date)
+                        {
+                            <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                        }
+                        @if (t.ValueType == QueryCommandParameterValueType.DateTime)
+                        {
+                            <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                        }
+                        @if (t.ValueType == QueryCommandParameterValueType.Number)
+                        {
+                            <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        }
+                        @if (t.ValueType == QueryCommandParameterValueType.String)
+                        {
+                            <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        }
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudForm>
+    }
+    <div class="d-flex align-center justify-space-between">
+        <div>
+            <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary">
+                <LoadingContent>
+                    <MudText>@Localizer.Get("Processing")</MudText>
+                </LoadingContent>
+                <ChildContent>
+                    <MudText>@Localizer.Get("Run the query")</MudText>
+                </ChildContent>
+            </MudLoadingButton>
+            @if (_loading)
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
+                    <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
+                </MudButton>
+            }
+        </div>
+                <div>
+                    <MudGrid>
+                        @if (parameters.UsePivotTable)
+                        {
+                            <MudItem>
+                                <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
+                                    <MudSelectItem Value="@("Grid")"/>
+                                    <MudSelectItem Value="@("pivot")"/>
+                                </MudSelect>
+                            </MudItem>
+                        }
+                        <MudItem>
+                            <MudIconButton Variant="Variant.Outlined"
+                                           OnClick="@(SaveConfiguration)"
+                                           Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudMenu Variant="Variant.Outlined"
+                                     Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
+                                     Dense="true">
+                                <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
+                                    @foreach (var config in _userConfigs)
+                                    {
+                                        <MudListItem Text="@config.SaveName" Dense="true">
+                                            <NestedList>
+                                                <MudListItem OnClick="() => LoadPivotConfig(config.SavedValues)">
+                                                    @Localizer.Get("Load")
+                                                </MudListItem>
+                                                <MudListItem OnClick="() => DeleteConfig(config.Id)">
+                                                    @Localizer.Get("Delete")
+                                                </MudListItem>
+                                            </NestedList>
+                                        </MudListItem>
+                                    }
+                                </MudList>
+                            </MudMenu>
+                        </MudItem>
+                        <MudItem>
+                            <MudIconButton Variant="Variant.Outlined"
+                                           OnClick="@(ExtractElements)"
+                                           Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                        </MudItem>
+                    </MudGrid>
+                </div>
+    </div>
+</MudPaper>
+@if (_extracting)
+{
+    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
+}
+@if (!_pivotTable)
+{
+    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="57vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+        <HeaderContent>
+            @if (_values?.Any() == true)
+            {
+                @foreach (var key in _values?.FirstOrDefault()?.Keys!)
+                {
+                    <MudTh>@key</MudTh>
+                }
+            }
+        </HeaderContent>
+        <RowTemplate>
+            @if (_values?.Any() == true)
+            {
+                @foreach (var t in context)
+                {
+                    @if (t.ToString() == "{}")
+                    {
+                        <MudTd></MudTd>
+                    }
+                    else
+                    {
+                        <MudTd>@t</MudTd>
+                    }
+                }
+            }
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
+        </PagerContent>
+    </MudTable>
+}
+else
+{
+    <PivotTable @ref="_pvt" Value="_values" Style="height: 65vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name"/>
+}
+
+@code {
+
+    [Parameter] public int QueryId { get; set; }
+
+    private QueryStoreDto? Item;
+    private List<QueryCommandParameter> param = new();
+    private MudForm? _validateParam;
+    bool _formParamValidated = true;
+    private CancellationTokenSource? _cts;
+    private bool _loading;
+    private List<Dictionary<string, object>>? _values = new();
+    MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
+    int[] _pageSizeOptions = { 10, 20, 50, 100 };
+    private string? _errorMessage;
+    private bool _extracting;
+    private bool _hasTotal;
+    private int _total;
+    AdHocQueriesParameters parameters = new();
+    string? _userName = string.Empty;
+    private bool _pivotTable;
+    private string _typeReport = "Grid";
+    PivotTable<Dictionary<string, object>>? _pvt;
+    List<UserConfigurations> _userConfigs = new();
+    MudMenu _menu;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await AuthenticationStateProvider.GetUserInfo();
+        _userName = user?.UserName;
+
+        var uriAction = $"GetQueryStore?queryId={QueryId}";
+        Item = await DataService.GetUniqueValue(Item, uriAction);
+
+        if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        {
+            var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
+            foreach (var value in desParam!)
+            {
+                if (param!.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
+                {
+                    param?.Add(value);
+                }
+            }
+
+            foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
+            {
+                if (t.ValueType == QueryCommandParameterValueType.Date)
+                {
+                    t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
+                }
+
+                if (t.ValueType == QueryCommandParameterValueType.DateTime)
+                {
+                    t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
+                }
+            }
+        }
+
+        if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
+        {
+            parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
+        }
+    }
+
+    private async Task GetUserSavedConfigs()
+    {
+        var uricontroller = $"UserConfigurationGet?IdIntConfiguration={QueryId}&UserName={_userName}";
+        _userConfigs = await DataService.GetValues<UserConfigurations>(uricontroller);
+    }
+
+    private async Task SaveConfiguration()
+    {
+        var dialog = await DialogService.ShowAsync<_SaveConfigurationDialog>("Create");
+        var feedback = await dialog.Result;
+
+        if (!feedback.Canceled)
+        {
+            _errorMessage = string.Empty;
+            var SaveName = feedback.Data.ToString();
+            var config = await _pvt?.GetConfig()!;
+            var payload = new UserConfigurationSave { SaveName = SaveName, IdIntConfiguration = QueryId, TypeConfiguration = TypeConfiguration.PitvotReport, SavedValues = config };
+            var result = await DataService.PostValues(payload, "UserConfigurationSave");
+            if (result.Success)
+            {
+                Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
+                await GetUserSavedConfigs();
+            }
+            else
+            {
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task DeleteConfig(int id)
+    {
+        await _menu.CloseMenuAsync();
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
+        var feedback = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
+
+        if (feedback != null)
+        {
+            var payload = new UserConfigurationDelete { Id = id };
+            var result = await DataService.PostValues(payload, "UserConfigurationDelete");
+            if (result.Success)
+            {
+                Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
+                await GetUserSavedConfigs();
+            }
+            else
+            {
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task LoadPivotTable()
+    {
+        _loading = true;
+        if (Item == null)
+        {
+            _values = new List<Dictionary<string, object>>();
+        }
+        else if (string.IsNullOrEmpty(Item.Query))
+        {
+            _values = new List<Dictionary<string, object>>();
+        }
+        else if (!_formParamValidated)
+        {
+            _values = new List<Dictionary<string, object>>();
+        }
+        else
+        {
+            try
+            {
+                _cts = new CancellationTokenSource();
+
+                using var _httpClientLong = new HttpClient();
+                _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+                _httpClientLong.BaseAddress = Http.BaseAddress;
+                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true, QueryId = QueryId, ActivityName = Item.ActivityName, PivotTableNbrColumns = parameters.PivotTableNbrOfColumnsMax, QueryName = Item.QueryName };
+                var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
+                var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                    if (result!.Success)
+                    {
+                        _values = result.Value;
+                        StateHasChanged();
+                        if (_pvt != null)
+                        {
+                            var config = await _pvt.GetConfig();
+                            await _pvt.LoadConfig(config);
+                        }
+                    }
+                    else
+                    {
+                        _values = new List<Dictionary<string, object>>();
+                    }
+                }
+                else
+                {
+                    _values = new List<Dictionary<string, object>>();
+                    response.Content.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                _values = new List<Dictionary<string, object>>();
+            }
+        }
+        _loading = false;
+    }
+
+    private async Task OnchangeReportType(string typeReport)
+    {
+        _typeReport = typeReport;
+        if (typeReport == "Grid")
+        {
+            _pivotTable = false;
+        }
+        else
+        {
+            _pivotTable = true;
+            await LoadPivotTable();
+        }
+    }
+
+    private async Task LoadPivotConfig(string config)
+    {
+        await _menu.CloseMenuAsync();
+        await _pvt?.LoadConfig(config)!;
+    }
+
+    private async Task ConfirmText()
+    {
+        _hasTotal = false;
+        if (param.Count > 0)
+        {
+            await _validateParam?.Validate()!;
+            _formParamValidated = _validateParam.IsValid;
+        }
+        if (!_pivotTable)
+        {
+            _table!.CurrentPage = 0;
+            await _table.ReloadServerData();
+        }
+        else
+        {
+            await LoadPivotTable();
+        }
+    }
+
+
+    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
+    {
+        _loading = true;
+        var currentPage = state.Page;
+        var pageSize = state.PageSize;
+        var getTotalElements = false;
+        if (!_hasTotal && parameters.CalculateTotalItems)
+        {
+            getTotalElements = true;
+            _total = 0;
+        }
+
+        if (Item == null)
+        {
+            _values = new List<Dictionary<string, object>>();
+        }
+        else if (string.IsNullOrEmpty(Item.Query))
+        {
+            _values = new List<Dictionary<string, object>>();
+        }
+        else if (!_formParamValidated)
+        {
+            _values = new List<Dictionary<string, object>>();
+        }
+        else
+        {
+            try
+            {
+                _cts = new CancellationTokenSource();
+
+                using var _httpClientLong = new HttpClient();
+                _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+                _httpClientLong.BaseAddress = Http.BaseAddress;
+                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, ActivityName = Item.ActivityName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements };
+                var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
+                var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                    if (result!.Success)
+                    {
+                        _values = result.Value;
+                        _errorMessage = string.Empty;
+                        if (!_hasTotal && parameters.CalculateTotalItems)
+                        {
+                            _total = result.TotalElements;
+                            _hasTotal = true;
+                        }
+                    }
+                    else
+                    {
+                        _hasTotal = false;
+                        _values = new List<Dictionary<string, object>>();
+                        _errorMessage = result.Message;
+                    }
+                }
+                else
+                {
+                    _hasTotal = false;
+                    _values = new List<Dictionary<string, object>>();
+                    _errorMessage = response.Content.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                _hasTotal = false;
+                _values = new List<Dictionary<string, object>>();
+            }
+        }
+
+        _loading = false;
+        return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _hasTotal ? _total : _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
+    }
+
+
+    private async Task ExtractElements()
+    {
+        if (!string.IsNullOrEmpty(Item?.Query) && _formParamValidated)
+        {
+            _extracting = true;
+            _cts = new CancellationTokenSource();
+            var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+            var remoteDataPayload = new RemoteDataPayload { Values = run, ActivityName = Item.ActivityName, QueryId = QueryId, QueryName = Item.QueryName };
+            await DataService.ExtractAdHocQuery(remoteDataPayload, _cts.Token);
+            _extracting = false;
+        }
+    }
+
+    void CancelQuery()
+    {
+        _cts?.Cancel();
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+    }
+
+}
