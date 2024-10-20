@@ -49,7 +49,7 @@
                         <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
                         @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
-                            <MudNavLink Href=@($"ManageQueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get(" Manage queries")</MudNavLink>
+                            <MudNavLink Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get(" Manage queries")</MudNavLink>
                             <MudNavLink Href=@($"DbExplorer2/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
                         }
                     </MudNavGroup>
@@ -69,7 +69,7 @@
             }
             @if (_appConst.ActivateAdHocQueriesModule)
             {
-                <MudNavLink Href="ManageQueryStoreGlobal" Icon="@Icons.Material.Outlined.AddChart">@Localizer.Get("Adhoc queries overview")</MudNavLink>
+                <MudNavLink Href="ManageQueriesGlobal" Icon="@Icons.Material.Outlined.AddChart">@Localizer.Get("Adhoc queries overview")</MudNavLink>
             }
             <MudDivider DividerType="DividerType.Inset"/>
             <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
