@@ -2395,7 +2395,7 @@
     <value>Bienvenue</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Manage recipients&quot; tab. Enter an emsail adress then click on &quot;Add recipients&quot; button. You can also customize the message of the email with teh button &quot;Edit email message&quot;" xml:space="preserve">
-    <value>Lorsque vous éditez le rapport, cliquez sur l'onglet "Gérer les destinataires". Saisissez une adresse électronique puis cliquez sur le bouton "Ajouter des destinataires". Vous pouvez également personnaliser le message de l'e-mail avec le bouton "Modifier le message de l'e-mail".</value>
+    <value>Lorsque vous éditez le rapport, cliquez sur l'onglet "Gérer les destinataires". Saisissez une adresse électronique puis cliquez sur le bouton "Ajouter des destinataires". Vous pouvez également personnaliser le message de l'e-mail avec le bouton "Modifier le message de l'e-mail"</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
     <value>Lorsque vous éditez le rapport, cliquez sur l'onglet "Détails du rapport". Ajoutez un détail puis choisissez le nom de la requête et saisissez la requête. Vous pouvez tester le résultat. Enfin, cliquez sur le bouton de validation</value>
