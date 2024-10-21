@@ -36,7 +36,7 @@
                         @if (context.User.IsInRole("Supervisor"))
                         {
                             <MudNavLink Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage reports")</MudNavLink>
-                            <MudNavLink Href="@("RetrieveReports/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve reports")</MudNavLink>
+                            <MudNavLink Href="@("RetrieveFiles/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve files")</MudNavLink>
                         }
                     }
                     @if (_appConst.ActivateAdHocQueriesModule)

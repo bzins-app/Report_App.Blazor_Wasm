@@ -9,10 +9,10 @@
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
                  ApplyEffectsToContainer="true" Class="mt-8">
             <MudTabPanel Text="@(Localizer.Get("Run reports manually") +": "+ ActivityName)">
-                <_Reports ActivityId="ActivityId" ActivityName="ActivityName" />
+                <_Reports ActivityId="@ActivityId" ActivityName="@ActivityName" />
             </MudTabPanel>
             <MudTabPanel Text="@(Localizer.Get("Retrieve files") +": "+ ActivityName)">
-                <_RetrieveFiles ActivityId="ActivityId" ActivityName="ActivityName" />
+                <_RetrieveFiles ActivityId="@ActivityId" ActivityName="@ActivityName" />
             </MudTabPanel>
         </MudTabs>
     </ChildContent>
@@ -21,7 +21,7 @@
 {
     [Parameter] public int ActivityId { get; set; }
 
-    [Parameter] public string ActivityName { get; set; }
+    [Parameter] public string? ActivityName { get; set; }
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 

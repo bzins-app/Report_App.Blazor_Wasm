@@ -37,10 +37,10 @@
                                 @if (context.User.IsInRole("Supervisor"))
                                 {
                                     <MudItem sm="3" md="3">
-                                        <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId">
+                                        <a class="nav-link" href="/RetrieveFiles/@t.ActivityName/@t.ActivityId">
                                             <span class="pcoded-micon">
                                                 <i class="fa fa-arrow-right"></i>
-                                            </span><span class="pcoded-mtext">@Localizer.Get("Retrieve reports")</span>
+                                            </span><span class="pcoded-mtext">@Localizer.Get("Retrieve files")</span>
                                         </a>
                                     </MudItem>
                                     <MudItem sm="3" md="3">
@@ -64,7 +64,7 @@
                                 @if (context.User.IsInRole("Supervisor"))
                                 {
                                     <MudItem sm="3" md="3">
-                                        <a class="nav-link" href="/DbExplorer/@t.ActivityId/@t.ActivityName">
+                                        <a class="nav-link" href="/DbExplorer2/@t.ActivityId/@t.ActivityName">
                                             <span class="pcoded-micon">
                                                 <i class="fa fa-arrow-right"></i>
                                             </span><span class="pcoded-mtext">@Localizer.Get("DB explorer")</span>

@@ -567,9 +567,6 @@
   <data name="Configure the scheduler and deposit path" xml:space="preserve">
     <value>Configureer de planner en het stortpad</value>
   </data>
-  <data name="Configure the scheduler and deposit path1" xml:space="preserve">
-    <value>Configureer de planner en het stortpad1</value>
-  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Bevestig</value>
   </data>
@@ -629,9 +626,6 @@
   </data>
   <data name="Create a new deposit path" xml:space="preserve">
     <value>Een nieuw stortingstraject aanmaken</value>
-  </data>
-  <data name="Create a new deposit path1" xml:space="preserve">
-    <value>Maak een nieuw storting pad1</value>
   </data>
   <data name="Create a new email report" xml:space="preserve">
     <value>Maak een nieuw e-mail rapport</value>
@@ -819,9 +813,6 @@
   <data name="Domain" xml:space="preserve">
     <value>Domein</value>
   </data>
-  <data name="Domain1" xml:space="preserve">
-    <value>Domein1</value>
-  </data>
   <data name="Don't have access to your authenticator device? You can" xml:space="preserve">
     <value>Heeft u geen toegang tot uw authenticator apparaat? U kunt</value>
   </data>
@@ -869,9 +860,6 @@
   </data>
   <data name="Each selected day" xml:space="preserve">
     <value>Elke geselecteerde dag</value>
-  </data>
-  <data name="Each selected day1" xml:space="preserve">
-    <value>Elke geselecteerde dag1</value>
   </data>
   <data name="Each selected hour" xml:space="preserve">
     <value>Elk geselecteerd uur</value>
@@ -1068,17 +1056,11 @@
   <data name="File deposit path" xml:space="preserve">
     <value>Bestand depot pad</value>
   </data>
-  <data name="File deposit path1" xml:space="preserve">
-    <value>Bestand depot pad1</value>
-  </data>
   <data name="File desposit path" xml:space="preserve">
     <value>Bestand desposit pad</value>
   </data>
   <data name="File name" xml:space="preserve">
     <value>Bestandsnaam</value>
-  </data>
-  <data name="File name1" xml:space="preserve">
-    <value>Bestandsnaam1</value>
   </data>
   <data name="File path" xml:space="preserve">
     <value>Bestandspad</value>
@@ -1318,9 +1300,6 @@
     <value>laatste werkdag van de maand</value>
   </data>
   <data name="LastOpeningDay" xml:space="preserve">
-    <value>Laatste openingsdag</value>
-  </data>
-  <data name="LastOpeningDay1" xml:space="preserve">
     <value>Laatste openingsdag</value>
   </data>
   <data name="LastRun" xml:space="preserve">
@@ -1818,9 +1797,6 @@
   <data name="Reports result logs" xml:space="preserve">
     <value>Rapporten resultaat logs</value>
   </data>
-  <data name="Reports1" xml:space="preserve">
-    <value>Rapporten1</value>
-  </data>
   <data name="Required" xml:space="preserve">
     <value>Vereist</value>
   </data>
@@ -1847,9 +1823,6 @@
   </data>
   <data name="reset your authenticator keys." xml:space="preserve">
     <value>Uw authenticatorsleutels opnieuw instellen.</value>
-  </data>
-  <data name="reset1" xml:space="preserve">
-    <value>reset</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Herstel</value>
@@ -2588,5 +2561,29 @@
   </data>
   <data name="Query output" xml:space="preserve">
     <value>Query output</value>
+  </data>
+  <data name="Manage queries" xml:space="preserve">
+    <value>Query's beheren</value>
+  </data>
+  <data name="Connections manager" xml:space="preserve">
+    <value>Beheer verbindingen</value>
+  </data>
+  <data name="Tasks logs" xml:space="preserve">
+    <value>Logboeken van taken</value>
+  </data>
+  <data name="File creation" xml:space="preserve">
+    <value>Bestanden maken</value>
+  </data>
+  <data name="Per Connection" xml:space="preserve">
+    <value>Per verbinding</value>
+  </data>
+  <data name="Retrieve files" xml:space="preserve">
+    <value>Bestanden ophalen</value>
+  </data>
+  <data name="Background tasks" xml:space="preserve">
+    <value>Achtergrond taken</value>
+  </data>
+  <data name="Email sender" xml:space="preserve">
+    <value>E-mail afzender</value>
   </data>
 </root>
