@@ -1,4 +1,4 @@
-﻿@page "/RetrieveReports/{ActivityName}/{ActivityId:int}"
+﻿@page "/RetrieveFiles/{ActivityName}/{ActivityId:int}"
 @implements IAsyncDisposable
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
@@ -75,7 +75,7 @@
             NavigationManager.NavigateTo("/403");
         }
 
-        _title = Localizer.Get("Retrieve reports") + ": " + ActivityName;
+        _title = Localizer.Get("Retrieve files") + ": " + ActivityName;
     }
 
     protected override void OnInitialized()

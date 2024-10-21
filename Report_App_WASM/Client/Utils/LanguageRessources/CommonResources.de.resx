@@ -567,9 +567,6 @@
   <data name="Configure the scheduler and deposit path" xml:space="preserve">
     <value>Konfigurieren Sie den Zeitplaner und den Ablagepfad</value>
   </data>
-  <data name="Configure the scheduler and deposit path1" xml:space="preserve">
-    <value>Konfigurieren Sie den Zeitplaner und den Einzahlungspfad</value>
-  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Bestätigen</value>
   </data>
@@ -629,9 +626,6 @@
   </data>
   <data name="Create a new deposit path" xml:space="preserve">
     <value>Einen neuen Pfandpfad erstellen</value>
-  </data>
-  <data name="Create a new deposit path1" xml:space="preserve">
-    <value>Einen neuen Einzahlungspfad erstellen</value>
   </data>
   <data name="Create a new email report" xml:space="preserve">
     <value>Einen neuen E-Mail-Bericht erstellen</value>
@@ -819,9 +813,6 @@
   <data name="Domain" xml:space="preserve">
     <value>Domäne</value>
   </data>
-  <data name="Domain1" xml:space="preserve">
-    <value>Domain</value>
-  </data>
   <data name="Don't have access to your authenticator device? You can" xml:space="preserve">
     <value>Sie haben keinen Zugang zu Ihrem Authentifizierungsgerät? Sie können</value>
   </data>
@@ -868,9 +859,6 @@
     <value>Jeder Monat</value>
   </data>
   <data name="Each selected day" xml:space="preserve">
-    <value>Jeden ausgewählten Tag</value>
-  </data>
-  <data name="Each selected day1" xml:space="preserve">
     <value>Jeden ausgewählten Tag</value>
   </data>
   <data name="Each selected hour" xml:space="preserve">
@@ -1068,17 +1056,11 @@
   <data name="File deposit path" xml:space="preserve">
     <value>Pfad der Dateiablage</value>
   </data>
-  <data name="File deposit path1" xml:space="preserve">
-    <value>Pfad zur Dateiablage</value>
-  </data>
   <data name="File desposit path" xml:space="preserve">
     <value>Dateiablagepfad</value>
   </data>
   <data name="File name" xml:space="preserve">
     <value>Name der Datei</value>
-  </data>
-  <data name="File name1" xml:space="preserve">
-    <value>Dateiname</value>
   </data>
   <data name="File path" xml:space="preserve">
     <value>Dateipfad</value>
@@ -1318,9 +1300,6 @@
     <value>Letzter Arbeitstag des Monats</value>
   </data>
   <data name="LastOpeningDay" xml:space="preserve">
-    <value>Letzter Öffnungstag</value>
-  </data>
-  <data name="LastOpeningDay1" xml:space="preserve">
     <value>Letzter Öffnungstag</value>
   </data>
   <data name="LastRun" xml:space="preserve">
@@ -1818,9 +1797,6 @@
   <data name="Reports result logs" xml:space="preserve">
     <value>Berichte Ergebnisprotokolle</value>
   </data>
-  <data name="Reports1" xml:space="preserve">
-    <value>Berichte</value>
-  </data>
   <data name="Required" xml:space="preserve">
     <value>Erforderlich</value>
   </data>
@@ -1847,9 +1823,6 @@
   </data>
   <data name="reset your authenticator keys." xml:space="preserve">
     <value>setzen Sie Ihre Authentifizierungsschlüssel zurück.</value>
-  </data>
-  <data name="reset1" xml:space="preserve">
-    <value>zurücksetzen</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>wiederherstellen</value>
@@ -2588,5 +2561,29 @@
   </data>
   <data name="Use Windows authentication?" xml:space="preserve">
     <value>Use Windows authentication?</value>
+  </data>
+  <data name="Manage queries" xml:space="preserve">
+    <value>Verwalten von Abfragen</value>
+  </data>
+  <data name="Connections manager" xml:space="preserve">
+    <value>Manager der Verbindungen</value>
+  </data>
+  <data name="Tasks logs" xml:space="preserve">
+    <value>Aufgabenprotokolle</value>
+  </data>
+  <data name="File creation" xml:space="preserve">
+    <value>Erstellung von Dateien</value>
+  </data>
+  <data name="Per Connection" xml:space="preserve">
+    <value>Pro Verbindung</value>
+  </data>
+  <data name="Retrieve files" xml:space="preserve">
+    <value>Abrufen von Dateien</value>
+  </data>
+  <data name="Background tasks" xml:space="preserve">
+    <value>Hintergrundaufgaben</value>
+  </data>
+  <data name="Email sender" xml:space="preserve">
+    <value>E-Mail-Absender</value>
   </data>
 </root>
