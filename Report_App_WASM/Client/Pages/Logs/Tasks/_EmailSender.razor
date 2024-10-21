@@ -1,8 +1,5 @@
-﻿@page "/EmailSenderLogs"
-@implements IAsyncDisposable
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+﻿@implements IAsyncDisposable
 
-<PageTitle>@Localizer.Get("Email sender logs")</PageTitle>
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>

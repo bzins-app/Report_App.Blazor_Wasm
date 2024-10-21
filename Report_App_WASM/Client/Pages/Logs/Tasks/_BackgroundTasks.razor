@@ -1,9 +1,5 @@
-﻿@page "/BackgroundTasksLogs"
-@implements IAsyncDisposable
+﻿@implements IAsyncDisposable
 @inject IDialogService DialogService
-@attribute [Authorize(Roles = "Admin, Supervisor")]
-
-<PageTitle>@Localizer.Get("Background tasks logs")</PageTitle>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
