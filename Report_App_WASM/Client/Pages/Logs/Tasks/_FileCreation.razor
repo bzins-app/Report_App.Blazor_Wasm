@@ -1,13 +1,9 @@
-﻿@page "/ReportsResultLogs"
-@implements IAsyncDisposable
-@attribute [Authorize(Roles = "Admin, Supervisor")]
-
-<PageTitle>@Localizer.Get("Reports result logs")</PageTitle>
+﻿@implements IAsyncDisposable
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Reports result logs")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("File creation logs")</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"

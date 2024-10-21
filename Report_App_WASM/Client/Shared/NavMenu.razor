@@ -76,15 +76,13 @@
                 <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
                 @if (_appConst.ActivateTaskSchedulerModule)
                 {
-                    <MudNavLink Href="BackgroundTasksLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Background Tasks")</MudNavLink>
-                    <MudNavLink Href="QueryExecutionLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Query execution logs")</MudNavLink>
-                    <MudNavLink Href="ReportsResultLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Reports Result")</MudNavLink>
+                    <MudNavLink Href="TaskLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Background Tasks")</MudNavLink>
                 }
+                <MudNavLink Href="QueryExecutionLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Query execution logs")</MudNavLink>
                 @if (_appConst.ActivateAdHocQueriesModule)
                 {
                     <MudNavLink Href="AdhocQueriesLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Adhoc queries logs")</MudNavLink>
                 }
-                <MudNavLink Href="EmailSenderLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Email Sender")</MudNavLink>
                 <MudNavLink Href="SystemLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("System")</MudNavLink>
             </MudNavGroup>
             <MudNavLink Href="Services" Icon="@Icons.Material.Outlined.DesignServices">@Localizer.Get("Services status")</MudNavLink>
