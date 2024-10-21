@@ -206,18 +206,18 @@
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true"
                  ApplyEffectsToContainer="true" Class="mt-8">
             <MudTabPanel Text="@Localizer.Get("Queries")">
-                <Report_App_WASM.Client.Pages.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" ItemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave"/>
+                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" ItemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave"/>
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Global query parameters")" Disabled="@(!Item.UseGlobalQueryParameters)">
-                <Report_App_WASM.Client.Pages.ManageTasks.GlobalQueryParameters._GlobalQueryParameters Item="@Item" @bind-changePending="@_changesToSave"/>
+                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.GlobalQueryParameters._GlobalQueryParameters Item="@Item" @bind-changePending="@_changesToSave" />
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Scheduler")">
-                <Report_App_WASM.Client.Pages.ManageTasks.TaskSchedulerComponents._TaskSchedulers Item="@Item" @bind-changePending="@_changesToSave"/>
+                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskSchedulerComponents._TaskSchedulers Item="@Item" @bind-changePending="@_changesToSave" />
             </MudTabPanel>
             @if (Item.Type != TaskType.DataTransfer)
             {
                 <MudTabPanel Text="@Localizer.Get("Manage recipients")">
-                    <Report_App_WASM.Client.Pages.ManageTasks.TaskEmailRecipients._TaskRecipients Item="@Item" @bind-changePending="@_changesToSave"/>
+                    <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskEmailRecipients._TaskRecipients Item="@Item" @bind-changePending="@_changesToSave" />
                 </MudTabPanel>
             }
         </MudTabs>
