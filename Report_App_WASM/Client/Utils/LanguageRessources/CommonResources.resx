@@ -2387,7 +2387,7 @@
     <value>Welcome</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Manage recipients&quot; tab. Enter an emsail adress then click on &quot;Add recipients&quot; button. You can also customize the message of the email with teh button &quot;Edit email message&quot;" xml:space="preserve">
-    <value>When you are editing the report, click on the "Manage recipients" tab. Enter an emsail adress then click on "Add recipients" button. You can also customize the message of the email with teh button "Edit email message"</value>
+    <value>When you are editing the report, click on the "Manage recipients" tab. Enter an email adress then click on "Add recipients" button. You can also customize the message of the email with teh button "Edit email message"</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
     <value>When you are editing the report, click on the "Report details" tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button</value>
