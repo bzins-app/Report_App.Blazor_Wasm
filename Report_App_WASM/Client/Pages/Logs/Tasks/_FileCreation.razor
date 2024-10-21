@@ -1,14 +1,10 @@
-﻿@page "/BackgroundTasksLogs"
-@implements IAsyncDisposable
-@inject IDialogService DialogService
-@attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
+﻿@implements IAsyncDisposable
 
-<PageTitle>@Localizer.Get("Background tasks logs")</PageTitle>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Background tasks logs")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("File creation logs")</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -27,19 +23,18 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow: auto">
-                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
-                    <Blazor.SimpleGrid.TemplateColumn >
-                        <MudIconButton Style="padding: 0px !important" Icon="@Icons.Material.Outlined.Article" OnClick="() => OpenDetails(context.Id)" title="@Localizer.Get("Display details")" Disabled="context.TaskId == 0"/>
-                    </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
+                <SimpleGrid BuildInFilter="true" FieldsContent="@_translations" ItemsProvider="@_itemsProvider" Pagination="@_pagination" @ref="_grid">
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of job")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.JobDescription)" Title="@Localizer.Get("Job description")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RunBy)" Title="@Localizer.Get("Run by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreatedAt)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportName)" Title="@Localizer.Get("Report name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.SubName)" Title="@Localizer.Get("Report sub name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileType)" Title="@Localizer.Get("File type")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileName)" Title="@Localizer.Get("File name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportPath)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.IsAvailable)" Title="@Localizer.Get("Is available?")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileSizeInMb)" Title="@Localizer.Get("File size in MB")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)
@@ -51,12 +46,13 @@
     </MudCard>
 </ErrorBoundary>
 
+
 @code
 {
-    GridItemsProvider<ApplicationLogTaskDto>? _itemsProvider;
+    GridItemsProvider<ApplicationLogReportResultDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 20 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationLogTaskDto> _grid = default!;
+    SimpleGrid<ApplicationLogReportResultDto>? _grid;
     private bool _rendering;
 
 
@@ -68,21 +64,20 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogTaskDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
-
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogTaskDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogTaskDto> req)
+    private async Task<ApiResponse<ApplicationLogReportResultDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        var url = "odata/TaskLogs?";
+        var url = "odata/ReportResultLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += "$count=true&$top=10";
@@ -94,7 +89,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationLogTaskDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<ApplicationLogReportResultDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -106,14 +101,14 @@
     private async Task OnRefresh()
     {
         _rendering = true;
-        await _grid.RefreshDataAsync();
+        if (_grid != null) await _grid.RefreshDataAsync();
         _rendering = false;
     }
 
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "TaskLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Background tasks logs" };
+        var values = new ODataExtractPayload { FunctionName = "ReportResultLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Reports result logs" };
         await DataService.ExtractGridLogs(values);
         _rendering = false;
     }
@@ -121,20 +116,13 @@
     private async Task RemoveFilters()
     {
         _rendering = true;
-        await _grid.RemoveFilters();
+        if (_grid != null) await _grid.RemoveFilters();
         _rendering = false;
-    }
-
-    private void OpenDetails(int taksId)
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var parameters = new DialogParameters { ["taskId"] = taksId };
-        DialogService.Show<_TaskDetails>(Localizer.Get("Job details"), parameters, options);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _grid.DisposeAsync();
+        if (_grid != null) await _grid.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }
