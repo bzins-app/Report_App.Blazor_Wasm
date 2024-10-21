@@ -8,4 +8,7 @@ public class RemoteDataPayload
     public int QueryId { get; init; }
     public string? QueryName { get; init; }
     public string? ActivityName { get; init; }
+    public bool PivotTable { get; init; }
+    public int PivotTableNbrColumns { get; init; }
 }
+

@@ -58,6 +58,14 @@ public class DataInteractionService
     private async Task<SubmitResult> PostDataAsync<T>(string uri, T payload, HttpClient client,
         CancellationToken ct = default)
     {
+        if (!uri.Contains("RunManually") || !uri.Contains("TestConnection"))
+        {
+            var role = (await _authenticationStateProvider.GetAuthenticationStateAsync())?.User?.IsInRole("Demo");
+            if (role.HasValue && role.Value)
+            {
+                return new SubmitResult { Success = false, Message = "Demo mode" };
+            }
+        }
         try
         {
             var response = await client.PostAsJsonAsync(uri, payload,

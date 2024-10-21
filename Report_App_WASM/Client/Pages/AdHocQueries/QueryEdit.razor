@@ -9,7 +9,7 @@
 @using Blazor.AceEditorJs
 @using MudBlazor.Utilities
 @implements IDisposable
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+@attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <PageTitle>@Localizer.Get("Query editor")</PageTitle>
 
@@ -56,6 +56,15 @@
                             </MudItem>
                             <MudItem>
                                 <MudSwitch @bind-Value="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary" />
+                            </MudItem>
+                            <MudItem>
+                                <MudSwitch @bind-Value="parameters.UsePivotTable" Label="@Localizer.Get("Use pivot table component?")" Color="Color.Primary" />
+                            </MudItem>
+                            <MudItem>
+                                <MudNumericField @bind-Value="parameters.PivotTableNbrOfColumnsMax" Label="@Localizer.Get("Pivot Table: nbr max of columns")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
+                            </MudItem>
+                            <MudItem>
+                                <MudNumericField @bind-Value="parameters.PivotTableMaxRowsFetched" Label="@Localizer.Get("Pivot Table: nbr max of rows")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
                         </MudGrid>
                     </MudItem>

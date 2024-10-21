@@ -16,20 +16,17 @@ public class DataCrudController : ControllerBase, IDisposable
     private readonly ILogger<DataCrudController> _logger;
     private readonly IMapper _mapper;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public DataCrudController(ILogger<DataCrudController> logger,
         ApplicationDbContext context, IMapper mapper,
-        RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager)
     {
         _logger = logger;
         _context = context;
         _mapper = mapper;
         _roleManager = roleManager;
         _userManager = userManager;
-        _signInManager = signInManager;
     }
 
     public void Dispose()
@@ -345,6 +342,14 @@ public class DataCrudController : ControllerBase, IDisposable
                     var users = await _userManager.GetUsersInRoleAsync("Admin");
 
                     foreach (var user in users)
+                        if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
+                            await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
+                    //await _signInManager.RefreshSignInAsync(user);
+
+                    //demo
+                    var usersDemo = await _userManager.GetUsersInRoleAsync("Demo");
+
+                    foreach (var user in usersDemo)
                         if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
                             await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
                 }

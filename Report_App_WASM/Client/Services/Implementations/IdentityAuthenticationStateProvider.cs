@@ -24,6 +24,12 @@ public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(Task.FromResult(await GetAuthenticationStateAsync()));
     }
 
+    public async Task LoginDemo(LoginParameters loginParameters)
+    {
+        await _authorizeApi.LoginDemo(loginParameters);
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    }
+
     public async Task Register(RegisterParameters registerParameters)
     {
         await _authorizeApi.Register(registerParameters);

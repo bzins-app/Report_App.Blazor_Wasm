@@ -99,22 +99,44 @@ public class RemoteDbController : ControllerBase, IDisposable
         try
         {
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
-            var result = new SubmitResultRemoteData
+            if (payload.PivotTable)
             {
-                Success = true,
-                Value = data.ToDictionnary(),
-                TotalElements = total
-            };
-            log.EndDateTime = DateTime.Now;
-            log.NbrOfRows = data.Rows.Count;
-            log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
-            if (payload.LogPayload)
-            {
-                await _context.AddAsync(log);
-                await _context.SaveChangesAsync();
-            }
+                var selectColumns = data.Columns.Cast<DataColumn>().Take(10);
+                var nbrCols = data.Columns.Count;
+                var maxCols = payload.PivotTableNbrColumns;
+                if (nbrCols > maxCols)
+                    for (var x = maxCols; x < nbrCols; x++)
+                        if (data.Columns.Count > maxCols)
+                            data.Columns.RemoveAt(maxCols);
 
-            return Ok(result);
+                log.Type = "Pivot table";
+                log.NbrOfRows = data.Rows.Count;
+                log.EndDateTime = DateTime.Now;
+                log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+                if (payload.LogPayload)
+                {
+                    await _context.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                }
+
+                var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
+                return Ok(result);
+            }
+            else
+            {
+                log.EndDateTime = DateTime.Now;
+                log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+                log.NbrOfRows = data.Rows.Count;
+                if (payload.LogPayload)
+                {
+                    await _context.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                }
+
+                var result = new SubmitResultRemoteData
+                    { Success = true, Value = data.ToDictionnary(), TotalElements = total };
+                return Ok(result);
+            }
         }
         catch (Exception e)
         {
