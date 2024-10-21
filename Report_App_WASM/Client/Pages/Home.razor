@@ -24,15 +24,25 @@
                         <MudGrid>
                             @if (_appConst.ActivateTaskSchedulerModule)
                             {
-                                <MudItem sm="3" md="3">
-                                    <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId">
-                                        <span class="pcoded-micon">
-                                            <i class="fa fa-arrow-right"></i>
-                                        </span><span class="pcoded-mtext">@Localizer.Get("Retrieve reports")</span>
-                                    </a>
-                                </MudItem>
+                                @if (!context.User.IsInRole("Supervisor"))
+                                {
+                                    <MudItem sm="3" md="3">
+                                        <a class="nav-link" href="/TasksView/@t.ActivityName/@t.ActivityId">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </span><span class="pcoded-mtext">@Localizer.Get("Base view")</span>
+                                        </a>
+                                    </MudItem>
+                                }
                                 @if (context.User.IsInRole("Supervisor"))
                                 {
+                                    <MudItem sm="3" md="3">
+                                        <a class="nav-link" href="/RetrieveReports/@t.ActivityName/@t.ActivityId">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </span><span class="pcoded-mtext">@Localizer.Get("Retrieve reports")</span>
+                                        </a>
+                                    </MudItem>
                                     <MudItem sm="3" md="3">
                                         <a class="nav-link" href="TasksPerActivity/Report/@t.ActivityId/@t.ActivityName">
                                             <span class="pcoded-micon">

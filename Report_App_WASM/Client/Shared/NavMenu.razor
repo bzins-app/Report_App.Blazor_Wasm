@@ -15,48 +15,43 @@
             </div>
         </a>
     </MudText>
-    <MudDivider/>
+    <MudDivider />
     <MudNavLink Href="Home" Style="padding-top: 15px" Icon="@Icons.Material.Outlined.Home">@Localizer.Get("Home")</MudNavLink>
     @if (_appConst.ActivateTaskSchedulerModule)
     {
         <MudNavLink Href="DashboardApp" Icon="@Icons.Material.Outlined.AreaChart">@Localizer.Get("Dashboard")</MudNavLink>
-        <MudNavGroup Title="@Localizer.Get("Reports")" Icon="@Icons.Material.Outlined.ManageSearch">
-            @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
-            {
-                <AuthorizeView Roles=@(t.ActivityName)>
-                    <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
+    }
+    <MudNavGroup Title="@Localizer.Get("Per Connection")" Icon="@Icons.Material.Outlined.Analytics">
+        @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
+        {
+            <AuthorizeView Roles=@(t.ActivityName)>
+                <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
+                    @if (_appConst.ActivateTaskSchedulerModule)
+                    {
                         @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
-                            <MudNavLink Href="@("ReportsPerActivity/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Run reports manually")</MudNavLink>
+                            <MudNavLink Href="@("TasksView/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Base view")</MudNavLink>
                         }
+
                         @if (context.User.IsInRole("Supervisor"))
                         {
                             <MudNavLink Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage reports")</MudNavLink>
+                            <MudNavLink Href="@("RetrieveReports/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve reports")</MudNavLink>
                         }
-                        <MudNavLink Href="@("RetrieveReports/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve reports")</MudNavLink>
-                    </MudNavGroup>
-                </AuthorizeView>
-            }
-        </MudNavGroup>
-    }
-    @if (_appConst.ActivateAdHocQueriesModule)
-    {
-        <MudNavGroup Title="@Localizer.Get("Ad hoc queries")" Icon="@Icons.Material.Outlined.Analytics">
-            @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
-            {
-                <AuthorizeView Roles=@(t.ActivityName)>
-                    <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
+                    }
+                    @if (_appConst.ActivateAdHocQueriesModule)
+                    {
                         <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
                         @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
                             <MudNavLink Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage queries")</MudNavLink>
                             <MudNavLink Href=@($"DbExplorer2/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
                         }
-                    </MudNavGroup>
-                </AuthorizeView>
-            }
-        </MudNavGroup>
-    }
+                    }
+                </MudNavGroup>
+            </AuthorizeView>
+        }
+    </MudNavGroup>
     <AuthorizeView Roles="Admin, Supervisor,Demo">
         <Authorized>
             @if (_appConst.ActivateTaskSchedulerModule)
@@ -71,7 +66,7 @@
             {
                 <MudNavLink Href="ManageQueriesGlobal" Icon="@Icons.Material.Outlined.AddChart">@Localizer.Get("Adhoc queries overview")</MudNavLink>
             }
-            <MudDivider DividerType="DividerType.Inset"/>
+            <MudDivider DividerType="DividerType.Inset" />
             <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
                 <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
                 @if (_appConst.ActivateTaskSchedulerModule)
@@ -112,7 +107,7 @@
                     <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
                 }
             }
-            <MudDivider DividerType="DividerType.Inset"/>
+            <MudDivider DividerType="DividerType.Inset" />
         </Authorized>
     </AuthorizeView>
     <MudNavLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm/wiki" Target="_blank" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>
