@@ -626,9 +626,9 @@ public class BackgroundTaskHandler : IDisposable
                     foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
                         if (table.Value.Rows.Count < 101)
                         {
-                            var valueMessage = table.Key.QueryName + ":" + Environment.NewLine;
+                            var valueMessage = Environment.NewLine + table.Key.QueryName + ":" + Environment.NewLine;
                             valueMessage += table.Value.ToHtml();
-                            message += "" + Environment.NewLine + "{0}";
+                            message += "{0}";
                             message = string.Format(message, valueMessage);
                         }
                         else
