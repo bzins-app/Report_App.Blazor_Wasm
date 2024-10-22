@@ -20,7 +20,7 @@
                 <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Tertiary" Style="text-transform: none;" Size="Size.Small">@Localizer.Get("Administrator email for error notifications")</MudButton>
                 <MudSpacer />
                 <MudForm Model="@_email" @ref="_form">
-                    <MudTextField  InputMode="InputMode.email" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="_email" AdornmentIcon="@Icons.Material.Filled.Email" IconSize="Size.Medium" Class="mt-0"
+                    <MudTextField InputMode="InputMode.email" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="_email" AdornmentIcon="@Icons.Material.Filled.Email" IconSize="Size.Medium" Style="width: 300px;"
                                      Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")"  />
                     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
                                OnClick="AddRecipient">
@@ -138,9 +138,12 @@
         {
             _emails.Add(new EmailRecipient { Email = _email });
             UpdateRecipientsEmail();
+            _email = "";
         }
-
-        _email = "";
+        else if (_emails.Any(a => a.Email == _email))
+        {
+            _email = "";
+        }
     }
 
     private void UpdateRecipientsEmail()
