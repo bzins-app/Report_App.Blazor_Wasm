@@ -80,15 +80,9 @@
                 }
                 <MudNavLink Href="SystemLogs" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("System")</MudNavLink>
             </MudNavGroup>
-            <MudNavLink Href="Services" Icon="@Icons.Material.Outlined.DesignServices">@Localizer.Get("Services status")</MudNavLink>
             <MudNavGroup Title="@Localizer.Get("Base parameters")" Icon="@Icons.Material.Outlined.SettingsApplications">
-                <MudNavLink Href="ApplicationParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
+                <MudNavLink Href="BaseParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
                 <MudNavLink Href="ConnectionsManager" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Connections manager")</MudNavLink>
-                <MudNavLink Href="Smtp" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Smtp configuration")</MudNavLink>
-                @if (_appConst.WindowsEnv)
-                {
-                    <MudNavLink Href="Ldap" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Ldap configuration")</MudNavLink>
-                }
                 @if (_appConst.ActivateTaskSchedulerModule)
                 {
                     <MudNavLink Href="DepositPath" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Deposit path")</MudNavLink>

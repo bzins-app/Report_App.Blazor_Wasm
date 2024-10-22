@@ -1,0 +1,41 @@
+﻿@page "/BaseParameters"
+@using Report_App_WASM.Client.Pages.Parameters.SMTP
+@using Report_App_WASM.Client.Pages.Parameters.LDAP
+@inject NavigationManager UriHelper
+@inject IDialogService DialogService
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<PageTitle>@Localizer.Get("Application parameters")</PageTitle>
+
+<MudTabs Outlined="true" Rounded="true" Border="true"
+         ApplyEffectsToContainer="true">
+         
+    <MudTabPanel Text="@Localizer.Get("Services status")" Icon="@Icons.Material.Outlined.DesignServices">
+        <_Services />
+    </MudTabPanel>
+    <MudTabPanel Text="@Localizer.Get("Application name & logo")">
+        <_AppNameLogo />
+    </MudTabPanel>
+    <MudTabPanel Text="@Localizer.Get("Modules")">
+        <_Modules />
+    </MudTabPanel>
+    <MudTabPanel Text="@Localizer.Get("Smtp configuration")">
+        <_Smtp />
+    </MudTabPanel>
+    @if (_appConst.WindowsEnv)
+    {
+        <MudTabPanel Text="@Localizer.Get("Ldap configuration")">
+            <_Ldap />
+        </MudTabPanel>
+    }
+</MudTabs>
+
+
+@code
+{
+    private ApplicationConstantsValues _appConst = new();
+    protected override async Task OnInitializedAsync()
+    {
+        _appConst = (await AppService.GetApplicationConstantsValues())!;
+    }
+}

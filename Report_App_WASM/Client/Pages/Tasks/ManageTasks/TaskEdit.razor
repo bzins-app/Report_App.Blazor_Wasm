@@ -204,7 +204,7 @@
         </MudGrid>
 
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true"
-                 ApplyEffectsToContainer="true" Class="mt-8">
+                 ApplyEffectsToContainer="true" >
             <MudTabPanel Text="@Localizer.Get("Queries")">
                 <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" ItemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave"/>
             </MudTabPanel>
