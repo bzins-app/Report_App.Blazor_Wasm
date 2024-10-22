@@ -628,7 +628,7 @@ public class BackgroundTaskHandler : IDisposable
                         {
                             var valueMessage = table.Key.QueryName + ":" + Environment.NewLine;
                             valueMessage += table.Value.ToHtml();
-                            message += Environment.NewLine + "{0}";
+                            message += "" + Environment.NewLine + "{0}";
                             message = string.Format(message, valueMessage);
                         }
                         else
