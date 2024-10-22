@@ -1,0 +1,102 @@
+﻿@inject NavigationManager UriHelper
+
+
+<MudCard Elevation="6">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@Localizer.Get("Application name & logo")</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudForm Model="@_param" @ref="_form" @bind-IsValid="@_success">
+            <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required />
+            <MudText Typo="Typo.h6" Class="pa-4">@Localizer.Get("Logo")</MudText>
+            <div style="padding-bottom: 5px">
+                @if (!string.IsNullOrEmpty(_param.ApplicationLogo))
+                {
+                    <MudImage Src="@_param.ApplicationLogo" style="max-height: 200px; max-width: 150px;" Alt="@_param.ApplicationName" Elevation="2" />
+                }
+            </div>
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" Accept=".jpg, .jpeg, .png, .gif">
+                <ActivatorContent>
+                    <MudFab HtmlTag="label" Class="pa-4"
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.Image"
+                            Label="@Localizer.Get("Select application Logo")"
+                            Size="Size.Small"
+                            Style="text-transform: none" />
+                </ActivatorContent>
+            </MudFileUpload>
+        </MudForm>
+    </MudCardContent>
+    <MudCardActions>
+        <MudItem Class="pa-4 mt-4">
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" @onclick="OnClickCancel" Disabled="@(!_success)">@Localizer.Get("Cancel")</MudButton>
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" @onclick="UpdateApplication" Disabled="@(!_success)">@Localizer.Get("Validate")</MudButton>
+                </Authorized>
+            </AuthorizeView>
+        </MudItem>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    private ApplicationParametersDto _param = new();
+    bool _success;
+    MudForm? _form;
+    private string? _completeLogoPath;
+    private readonly List<string?> _filesToDelete = new();
+    private string? _initialAppName;
+    private string? _initialAppLogo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _param = await DataService.GetUniqueValue(_param, "GetApplicationParameters", ApiControllers.ApplicationParametersApi);
+        _initialAppName = _param.ApplicationName;
+        _initialAppLogo = _param.ApplicationLogo;
+    }
+
+    private async Task UploadFiles(IBrowserFile file)
+    {
+        var result = await DataService.PostFile(file);
+        if (result.Success)
+        {
+            _param.ApplicationLogo = "/" + result.Message;
+            _success = true;
+        }
+    }
+
+
+    private async Task UpdateApplication()
+    {
+        if (_filesToDelete.Any())
+        {
+            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+        }
+
+        await DataService.PostValues(_param, "ApplicationParametersUpdate");
+        StateHasChanged();
+        if (_initialAppLogo != _param.ApplicationLogo || _initialAppName != _param.ApplicationLogo)
+        {
+            UriHelper.NavigateTo("/", true);
+        }
+        else
+        {
+            UriHelper.NavigateTo("/");
+        }
+    }
+
+    private void OnClickCancel()
+    {
+        _param.ApplicationLogo = "";
+        if (!string.IsNullOrEmpty(_completeLogoPath))
+        {
+            _filesToDelete.Add(_completeLogoPath);
+            //  filesToDelete.ForEach(a => _backGW.DeleteFile(a));
+        }
+
+        UriHelper.NavigateTo("/");
+    }
+
+}

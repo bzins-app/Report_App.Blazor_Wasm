@@ -1,10 +1,7 @@
-﻿@page "/Smtp"
-@implements IAsyncDisposable
+﻿@implements IAsyncDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
-
-<PageTitle>@Localizer.Get("Smtp configuration")</PageTitle>
 
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
@@ -15,7 +12,7 @@
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Smtp configuration")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Ldap configuration")</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -25,7 +22,7 @@
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="_rendering"/>
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
@@ -43,13 +40,9 @@
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Is activated?")">
-                        <_SmtpActivate Item="context"/>
+                        <_LdapActivate Item="context"/>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.SmtpHost)" Title="@Localizer.Get("Smtp host")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.SmtpPort)" Title="@Localizer.Get("Smtp port")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FromEmail)" Title="@Localizer.Get("From email")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FromFullName)" Title="@Localizer.Get("From full name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.SmtpSsl)" Title="@Localizer.Get("SSL Activated?")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Domain)" Title="@Localizer.Get("Domain")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -67,10 +60,10 @@
 
 @code
 {
-    GridItemsProvider<SmtpConfigurationDto>? _itemsProvider;
+    GridItemsProvider<LdapConfigurationDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<SmtpConfigurationDto> _grid = default!;
+    SimpleGrid<LdapConfigurationDto> _grid = default!;
     private string? _errorMessage;
     private bool _rendering;
 
@@ -82,7 +75,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<SmtpConfigurationDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<LdapConfigurationDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -90,12 +83,12 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<SmtpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SmtpConfigurationDto> req)
+    private async Task<ApiResponse<LdapConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<LdapConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
-        var url = "odata/Smtp?";
+        var url = "odata/Ldap?";
         if (string.IsNullOrEmpty(odataQuery))
         {
             url += "$count=true&$top=10";
@@ -107,7 +100,7 @@
 
         try
         {
-            return await DataService.GetODataValues<SmtpConfigurationDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<LdapConfigurationDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -136,37 +129,29 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(SmtpConfigurationDto value)
+    private async Task OpenEditDialog(LdapConfigurationDto value)
     {
-        var item = new SmtpConfigurationDto
+        var item = new LdapConfigurationDto
         {
             ConfigurationName = value.ConfigurationName,
-            SmtpHost = value.SmtpHost,
-            SmtpPort = value.SmtpPort,
-            SmtpSsl = value.SmtpSsl,
-            SmtpUserName = value.SmtpUserName,
-            SmtpPassword = value.SmtpPassword,
-            FromEmail = value.FromEmail,
-            FromFullName = value.FromFullName
+            Domain = value.Domain,
+            UserName = value.UserName,
+            Password = value.Password
         };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             value.ConfigurationName = item.ConfigurationName;
-            value.SmtpHost = item.SmtpHost;
-            value.SmtpPort = item.SmtpPort;
-            value.SmtpSsl = item.SmtpSsl;
-            value.SmtpUserName = item.SmtpUserName;
-            value.SmtpPassword = item.SmtpPassword;
-            value.FromEmail = item.FromEmail;
-            value.FromFullName = item.FromFullName;
+            value.Domain = item.Domain;
+            value.UserName = item.UserName;
+            value.Password = item.Password;
 
-            var result = await DataService.PostValues(value, "SmtpUpdate");
+            var result = await DataService.PostValues(value, "LdapUpdate");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
@@ -175,22 +160,22 @@
             else
             {
                 Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-                _errorMessage = result.Message!;
+                _errorMessage = result.Message;
             }
         }
     }
 
-    private async Task OpenDeleteDialog(SmtpConfigurationDto value)
+    private async Task OpenDeleteDialog(LdapConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
-            var result = await DataService.PostValues(value, "SmtpDelete");
+            var result = await DataService.PostValues(value, "LdapDelete");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
@@ -206,16 +191,16 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new SmtpConfigurationDto();
+        var value = new LdapConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = await DialogService.ShowAsync<_SmtpFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
-            var result = await DataService.PostValues(value, "SmtpInsert");
+            var result = await DataService.PostValues(value, "LdapInsert");
             if (result.Success)
             {
                 Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
