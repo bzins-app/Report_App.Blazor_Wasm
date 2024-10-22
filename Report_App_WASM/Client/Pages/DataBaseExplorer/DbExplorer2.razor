@@ -35,8 +35,8 @@
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loadingTestQuery" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loadingTestQuery" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
                         </MudToolBar>
                     </MudPaper>
                     <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
@@ -92,7 +92,6 @@
     private List<TablesColsInfo> ColNames = new();
     private List<TablesColsInfo> ColNamesStored = new();
     private bool _loading;
-    private bool _loadingTestQuery;
     private bool _hasDesc;
     private bool _hasDescCol;
 
@@ -132,7 +131,6 @@
         InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
 
         _tableHeader = Localizer.Get("Query output");
-        _table = new();
         _values = new();
         TableNames = new List<TablesColsInfo>();
         ColNames = new List<TablesColsInfo>();
@@ -140,7 +138,6 @@
         QueryBuilder = "";
         TableNamesStored = new List<TablesColsInfo>();
         ColNamesStored = new List<TablesColsInfo>();
-        _table = new MudTable<Dictionary<string, object>.ValueCollection>();
         var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
         var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
         if (response.Any())
@@ -328,7 +325,7 @@
 
     private async Task RunSql()
     {
-        _loadingTestQuery = true;
+        _loading = true;
         _tableHeader = Localizer.Get("Query output");
         var _queryTorun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
 
@@ -343,7 +340,7 @@
             await _table.ReloadServerData();
         }
 
-        _loadingTestQuery = false;
+        _loading = false;
     }
 
     private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
