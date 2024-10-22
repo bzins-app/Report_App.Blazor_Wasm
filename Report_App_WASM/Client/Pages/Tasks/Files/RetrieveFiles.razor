@@ -74,12 +74,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
-
         _title = Localizer.Get("Retrieve files") + ": " + ActivityName;
-    }
-
-    protected override void OnInitialized()
-    {
         _itemsProvider = async req =>
         {
             var response = await GetRemoteData(req);
