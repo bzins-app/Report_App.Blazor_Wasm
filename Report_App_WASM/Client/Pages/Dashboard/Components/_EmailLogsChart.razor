@@ -60,4 +60,9 @@ else
         _isLoading = false;
     }
 
+    public async Task Refresh()
+    {
+        _logs = await DataService.GetValues<EmailsLogsValues>("EmailLogs", ApiControllers.DashboardApi);
+    }
+
 }
