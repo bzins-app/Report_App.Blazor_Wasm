@@ -1,12 +1,7 @@
 ﻿@using ApexCharts
 
-@if (_taskLogs == null)
-{
-    <MudProgressLinear Color="MudBlazor.Color.Primary" Indeterminate="true" Class="my-7"/>
-}
-else
-{
-    <MudTable Items="GetFilteredTaskLogs()" Height="450px" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
+
+    <MudTable Items="GetFilteredTaskLogs()" Height="450px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
         <HeaderContent>
             <MudTh>@Localizer.Get("Activity")</MudTh>
             <MudTh>@Localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
@@ -50,7 +45,6 @@ else
             </MudTd>
         </RowTemplate>
     </MudTable>
-}
 
 @code {
 
