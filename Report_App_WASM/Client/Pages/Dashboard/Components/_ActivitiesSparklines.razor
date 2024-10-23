@@ -6,7 +6,7 @@
 }
 else
 {
-    <MudTable Items="GetFilteredTaskLogs()"  Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
+    <MudTable Items="GetFilteredTaskLogs()" Height="450px" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
         <HeaderContent>
             <MudTh>@Localizer.Get("Activity")</MudTh>
             <MudTh>@Localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
