@@ -2,14 +2,15 @@
 @inherits ComponentBase
 @using Report_App_WASM.Client.Pages.Dashboard.Components
 @using Report_App_WASM.Shared.Dashboard
+@using Align = MudBlazor.Align
 @implements IDisposable
 @attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
 <MudStack Row="true">
     <MudSpacer />
-    <MudText>@Localizer.Get("Latest update") @DateTime.Now</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" />
+    <MudText Style="align-content:center">@Localizer.Get("Latest update") @DateTime.Now</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")" />
 </MudStack>
 
 <MudGrid Spacing="2">
@@ -107,7 +108,7 @@
         </MudGrid>
     </MudItem>
     <MudItem xs="12" sm="12" md="12" lg="6">
-        <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 484px; min-height: 200px;">
+        <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
             @if (_isLoading)
             {
                 <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
