@@ -13,18 +13,18 @@
     <MudTabPanel Text="@Localizer.Get("Services status")" Icon="@Icons.Material.Outlined.DesignServices">
         <_Services />
     </MudTabPanel>
-    <MudTabPanel Text="@Localizer.Get("Application name & logo")">
+    <MudTabPanel Text="@Localizer.Get("Application name & logo")" Icon="@Icons.Material.Filled.TextFields">
         <_AppNameLogo />
     </MudTabPanel>
-    <MudTabPanel Text="@Localizer.Get("Modules")">
+    <MudTabPanel Text="@Localizer.Get("Parameters")" Icon="@Icons.Material.Filled.Settings">
         <_Modules />
     </MudTabPanel>
-    <MudTabPanel Text="@Localizer.Get("Smtp configuration")">
+    <MudTabPanel Text="@Localizer.Get("Smtp configuration")" Icon="@Icons.Material.Filled.SendAndArchive">
         <_Smtp />
     </MudTabPanel>
     @if (_appConst.WindowsEnv)
     {
-        <MudTabPanel Text="@Localizer.Get("Ldap configuration")">
+        <MudTabPanel Text="@Localizer.Get("Ldap configuration")" Icon="@Icons.Material.Filled.DomainAdd">
             <_Ldap />
         </MudTabPanel>
     }
