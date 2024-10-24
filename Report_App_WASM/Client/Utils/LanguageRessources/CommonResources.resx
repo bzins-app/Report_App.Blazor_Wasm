@@ -391,7 +391,7 @@
     <value>Background taks</value>
   </data>
   <data name="Background Tasks" xml:space="preserve">
-    <value>Background Tasks</value>
+    <value>Background tasks</value>
   </data>
   <data name="Background tasks logs" xml:space="preserve">
     <value>Background tasks logs</value>
@@ -738,8 +738,7 @@
   <data name="DB explorer" xml:space="preserve">
     <value>DB explorer</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="DB schema" type="System.Resources.ResXNullRef, System.Windows.Forms">
+  <data name="DB schema" xml:space="preserve">
     <value>DB schema</value>
   </data>
   <data name="Db tables" xml:space="preserve">
@@ -917,7 +916,7 @@
     <value>Email prefix</value>
   </data>
   <data name="Email Sender" xml:space="preserve">
-    <value>Email Sender</value>
+    <value>Email sender</value>
   </data>
   <data name="Email sender Is Activated?" xml:space="preserve">
     <value>Email sender Is Activated?</value>
@@ -2476,7 +2475,7 @@
   <data name="Your password length must be at least 6" xml:space="preserve">
     <value>Your password length must be at least 6</value>
   </data>
-  <data name="Your password must contain at least one (!? *.)" type="System.Resources.ResXNullRef, System.Windows.Forms">
+  <data name="Your password must contain at least one (!? *.)" xml:space="preserve">
     <value>Your password must contain at least one (!? *.)</value>
   </data>
   <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
@@ -2509,10 +2508,10 @@
   <data name="Edit an activity" xml:space="preserve">
     <value>Edit an activity</value>
   </data>
-  <data name="Go back to reports list" type="System.Resources.ResXNullRef, System.Windows.Forms">
+  <data name="Go back to reports list" xml:space="preserve">
     <value>Go back to reports list</value>
   </data>
-  <data name="Go back to the activity list" type="System.Resources.ResXNullRef, System.Windows.Forms">
+  <data name="Go back to the activity list" xml:space="preserve">
     <value>Go back to the activity list</value>
   </data>
   <data name="Indicate the database name?" xml:space="preserve">
@@ -2533,7 +2532,7 @@
   <data name="Tasks manager" xml:space="preserve">
     <value>Tasks manager</value>
   </data>
-  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." type="System.Resources.ResXNullRef, System.Windows.Forms">
+  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
     <value>This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account.</value>
   </data>
   <data name="Use Windows authentication?" xml:space="preserve">
@@ -2550,21 +2549,6 @@
   </data>
   <data name="A Target database must be selected" xml:space="preserve">
     <value>A Target database must be selected</value>
-  </data>
-  <data name="DB schema" xml:space="preserve">
-    <value>DB schema</value>
-  </data>
-  <data name="Your password must contain at least one (!? *.)" xml:space="preserve">
-    <value>Your password must contain at least one (!? *.)</value>
-  </data>
-  <data name="Go back to reports list" xml:space="preserve">
-    <value>Go back to reports list</value>
-  </data>
-  <data name="Go back to the activity list" xml:space="preserve">
-    <value>Go back to the activity list</value>
-  </data>
-  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
-    <value>This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account.</value>
   </data>
   <data name="Query output" xml:space="preserve">
     <value>Query output</value>
@@ -2587,10 +2571,13 @@
   <data name="Retrieve files" xml:space="preserve">
     <value>Retrieve files</value>
   </data>
-  <data name="Background tasks" xml:space="preserve">
-    <value>Background tasks</value>
+  <data name="Latest update" xml:space="preserve">
+    <value>Latest update</value>
   </data>
-  <data name="Email sender" xml:space="preserve">
-    <value>Email sender</value>
+  <data name="Application parameters updated" xml:space="preserve">
+    <value>Application parameters updated</value>
+  </data>
+  <data name="Application name &amp; logo" xml:space="preserve">
+    <value>Application name &amp; logo</value>
   </data>
 </root>

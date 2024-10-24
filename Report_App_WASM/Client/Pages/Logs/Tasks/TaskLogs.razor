@@ -7,13 +7,13 @@
     <ChildContent>
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
                  ApplyEffectsToContainer="true" >
-            <MudTabPanel Text="@Localizer.Get("Background Tasks")">
+            <MudTabPanel Text="@Localizer.Get("Background Tasks")" Icon="@Icons.Material.Filled.SyncAlt">
                 <_BackgroundTasks />
             </MudTabPanel>
-            <MudTabPanel Text="@Localizer.Get("File creation")">
+            <MudTabPanel Text="@Localizer.Get("File creation")" Icon="@Icons.Material.Filled.SnippetFolder">
                 <_FileCreation />
             </MudTabPanel>
-            <MudTabPanel Text="@Localizer.Get("Email Sender")">
+            <MudTabPanel Text="@Localizer.Get("Email Sender")" Icon="@Icons.Material.Filled.ScheduleSend">
                 <_EmailSender />
             </MudTabPanel>
         </MudTabs>
