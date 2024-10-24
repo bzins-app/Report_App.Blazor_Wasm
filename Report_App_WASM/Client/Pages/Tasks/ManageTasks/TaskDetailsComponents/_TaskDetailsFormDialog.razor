@@ -125,6 +125,10 @@
                     }
                 </MudItem>
                 <MudItem sm="12" md="8" lg="10">
+                    @if (!string.IsNullOrEmpty(_queryTestResult))
+                    {
+                        <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
+                    }
                     @if (_typeDbActivity != TypeDb.Db2)
                     {
                         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
@@ -353,12 +357,16 @@
 
     private async Task OpenTestQuery()
     {
+        _queryTestResult=string.Empty;
         _loading = true;
         await Task.Run(RunSqlTest);
         _loading = false;
-        var parameters = new DialogParameters { ["data"] = _data, ["queryTestResult"] = _queryTestResult, ["testResult"] = _testResult };
+        if (_testResult)
+        {
+            var parameters = new DialogParameters { ["data"] = _data, ["queryTestResult"] = _queryTestResult, ["testResult"] = _testResult };
+            await DialogService.ShowAsync<_QueryResultDialog>("Create", parameters, _dialogOptions);
+        }
 
-        await DialogService.ShowAsync<_QueryResultDialog>("Create", parameters, _dialogOptions);
     }
 
     void CancelTest()

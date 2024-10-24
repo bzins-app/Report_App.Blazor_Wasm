@@ -326,6 +326,7 @@
     private async Task RunSql()
     {
         _loading = true;
+        _queryTestResult=String.Empty;
         _tableHeader = Localizer.Get("Query output");
         var _queryTorun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
 
