@@ -391,7 +391,7 @@
     <value>Hintergrundtakes</value>
   </data>
   <data name="Background Tasks" xml:space="preserve">
-    <value>Hintergrund-Aufgaben</value>
+    <value>Hintergrundaufgaben</value>
   </data>
   <data name="Background tasks logs" xml:space="preserve">
     <value>Protokolle der Hintergrundaufgaben</value>
@@ -916,7 +916,7 @@
     <value>E-Mail-Präfix</value>
   </data>
   <data name="Email Sender" xml:space="preserve">
-    <value>E-Mail Absender</value>
+    <value>E-Mail-Absender</value>
   </data>
   <data name="Email sender Is Activated?" xml:space="preserve">
     <value>E-Mail-Absender ist aktiviert?</value>
@@ -2535,6 +2535,9 @@
   <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
     <value>Dieser Prozess deaktiviert 2FA, bis Sie Ihre Authentifizierer-Anwendung verifiziert haben.  Wenn Sie die Konfiguration Ihrer Authentifizierungsanwendung nicht abschließen, können Sie den Zugriff auf Ihr Konto verlieren.</value>
   </data>
+  <data name="Use Windows authentication?" xml:space="preserve">
+    <value>Use Windows authentication?</value>
+  </data>
   <data name="Demo connection" xml:space="preserve">
     <value>Verbindung zum Demo-Konto</value>
   </data>
@@ -2549,9 +2552,6 @@
   </data>
   <data name="Query output" xml:space="preserve">
     <value>Query output</value>
-  </data>
-  <data name="Use Windows authentication?" xml:space="preserve">
-    <value>Use Windows authentication?</value>
   </data>
   <data name="Manage queries" xml:space="preserve">
     <value>Verwalten von Abfragen</value>
@@ -2571,10 +2571,13 @@
   <data name="Retrieve files" xml:space="preserve">
     <value>Abrufen von Dateien</value>
   </data>
-  <data name="Background tasks" xml:space="preserve">
-    <value>Hintergrundaufgaben</value>
+  <data name="Latest update" xml:space="preserve">
+    <value>Letztes Update</value>
   </data>
-  <data name="Email sender" xml:space="preserve">
-    <value>E-Mail-Absender</value>
+  <data name="Application parameters updated" xml:space="preserve">
+    <value>Anwendungsparameter aktualisiert</value>
+  </data>
+  <data name="Application name &amp; logo" xml:space="preserve">
+    <value>Name und Logo der Anwendung</value>
   </data>
 </root>

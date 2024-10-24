@@ -2257,7 +2257,7 @@
     <value>Jusqu'à 200K lignes</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value>Mettre à jour</value>
+    <value>Actualiser</value>
   </data>
   <data name="Update a deposit path" xml:space="preserve">
     <value>Mise à jour d'un chemin de dépose</value>
@@ -2571,10 +2571,13 @@
   <data name="Retrieve files" xml:space="preserve">
     <value>Récupération de fichiers</value>
   </data>
-  <data name="Background tasks" xml:space="preserve">
-    <value>Tâches d'arrière-plan</value>
+  <data name="Latest update" xml:space="preserve">
+    <value>Dernière actualisation</value>
   </data>
-  <data name="Email sender" xml:space="preserve">
-    <value>Emails</value>
+  <data name="Application parameters updated" xml:space="preserve">
+    <value>Paramètres mis à jour</value>
+  </data>
+  <data name="Application name &amp; logo" xml:space="preserve">
+    <value>Nom et logo de l'application</value>
   </data>
 </root>

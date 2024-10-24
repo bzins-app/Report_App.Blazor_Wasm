@@ -916,7 +916,7 @@
     <value>Email voorvoegsel</value>
   </data>
   <data name="Email Sender" xml:space="preserve">
-    <value>Email afzender</value>
+    <value>E-mail afzender</value>
   </data>
   <data name="Email sender Is Activated?" xml:space="preserve">
     <value>Email afzender is geactiveerd?</value>
@@ -2571,10 +2571,13 @@
   <data name="Retrieve files" xml:space="preserve">
     <value>Bestanden ophalen</value>
   </data>
-  <data name="Background tasks" xml:space="preserve">
-    <value>Achtergrond taken</value>
+  <data name="Latest update" xml:space="preserve">
+    <value>Laatste update</value>
   </data>
-  <data name="Email sender" xml:space="preserve">
-    <value>E-mail afzender</value>
+  <data name="Application parameters updated" xml:space="preserve">
+    <value>Toepassingsparameters bijgewerkt</value>
+  </data>
+  <data name="Application name &amp; logo" xml:space="preserve">
+    <value>Naam en logo van toepassing</value>
   </data>
 </root>
