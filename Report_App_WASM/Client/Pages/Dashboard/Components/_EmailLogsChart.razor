@@ -63,6 +63,7 @@ else
     public async Task Refresh()
     {
         _logs = await DataService.GetValues<EmailsLogsValues>("EmailLogs", ApiControllers.DashboardApi);
+        StateHasChanged();
     }
 
 }

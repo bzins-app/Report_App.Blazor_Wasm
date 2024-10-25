@@ -151,10 +151,10 @@
     AppMetrics _metrics = new();
     private List<TaksLogsValues>? _taskLogs;
     private bool _isLoading = true;
-    private _EmailLogsChart? _emailLogs;
-    private _SystemLogsChart? _systemLogs;
-    private _StorageChart? _storage;
-    private _DblinesFetchedChart? _dbFetch;
+    private _EmailLogsChart _emailLogs;
+    private _SystemLogsChart _systemLogs;
+    private _StorageChart _storage;
+    private _DblinesFetchedChart _dbFetch;
     PeriodicTimer minuteTimer;
     private bool _timerOn;
 
@@ -172,10 +172,10 @@
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
 
-        await _emailLogs?.Refresh();
-        await _systemLogs?.Refresh();
-        await _storage?.Refresh();
-        await _dbFetch?.Refresh();
+        await _emailLogs.Refresh();
+        await _systemLogs.Refresh();
+        await _storage.Refresh();
+        await _dbFetch.Refresh();
         StateHasChanged();
     }
 
