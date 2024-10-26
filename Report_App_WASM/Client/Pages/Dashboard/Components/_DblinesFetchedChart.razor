@@ -42,6 +42,6 @@ else
     public async Task Refresh()
     {
         _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", ApiControllers.DashboardApi);
-        StateHasChanged();
+        await _chart.UpdateSeriesAsync(false);
     }
 }

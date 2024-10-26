@@ -61,6 +61,6 @@ else
     public async Task Refresh()
     {
         _logs = await DataService.GetValues<TaksSystemValues>("SystemLogs", ApiControllers.DashboardApi);
-        StateHasChanged();
+        await _chart.UpdateSeriesAsync(false);
     }
 }
