@@ -39,7 +39,7 @@ else
     public async Task Refresh()
     {
         _logs = await DataService.GetValues<StorageData>("StorageInfo", ApiControllers.DashboardApi);
-        StateHasChanged();
+        await _chart.UpdateSeriesAsync(false);
     }
 
 }

@@ -84,7 +84,7 @@
                     }
                     else
                     {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" />
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart" />
                     }
                 </MudPaper>
             </MudItem>
@@ -96,7 +96,7 @@
                     }
                     else
                     {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" />
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart" />
                     }
                 </MudPaper>
             </MudItem>
@@ -155,6 +155,8 @@
     private _SystemLogsChart _systemLogs;
     private _StorageChart _storage;
     private _DblinesFetchedChart _dbFetch;
+    private _TasksLogsChart _tasksLogsChart;
+    private _TasksTypeLogsChart _tasksTypeLogsChart;
     PeriodicTimer minuteTimer;
     private bool _timerOn;
 
@@ -176,6 +178,8 @@
         await _systemLogs.Refresh();
         await _storage.Refresh();
         await _dbFetch.Refresh();
+        await _tasksLogsChart.Refresh();
+        await _tasksTypeLogsChart.Refresh();
         StateHasChanged();
     }
 
