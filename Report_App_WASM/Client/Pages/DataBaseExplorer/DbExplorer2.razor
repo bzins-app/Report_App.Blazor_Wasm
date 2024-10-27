@@ -30,7 +30,7 @@
             <MudItem md="7" lg="9">
                 @if (!string.IsNullOrEmpty(_queryTestResult))
                 {
-                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_queryTestResult</MudText>
                 }
                 <div>
                     <MudPaper Elevation="25">
