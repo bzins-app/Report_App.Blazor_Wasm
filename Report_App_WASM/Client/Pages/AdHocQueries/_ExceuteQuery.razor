@@ -9,7 +9,7 @@
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
-    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
+    <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_errorMessage</MudText>
 }
 
 <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">

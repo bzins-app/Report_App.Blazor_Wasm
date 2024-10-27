@@ -1,7 +1,7 @@
 ﻿@using ApexCharts
 
 
-    <MudTable Items="GetFilteredTaskLogs()" Height="450px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true">
+    <MudTable Items="GetFilteredTaskLogs()" Height="450px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true" Elevation="0">
         <HeaderContent>
             <MudTh>@Localizer.Get("Activity")</MudTh>
             <MudTh>@Localizer.Get("Nbr of tasks over the last 10 days")</MudTh>
