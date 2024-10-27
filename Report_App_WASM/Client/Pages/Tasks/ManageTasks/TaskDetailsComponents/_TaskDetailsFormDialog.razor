@@ -127,7 +127,7 @@
                 <MudItem sm="12" md="8" lg="10">
                     @if (!string.IsNullOrEmpty(_queryTestResult))
                     {
-                        <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
+                        <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_queryTestResult</MudText>
                     }
                     @if (_typeDbActivity != TypeDb.Db2)
                     {
