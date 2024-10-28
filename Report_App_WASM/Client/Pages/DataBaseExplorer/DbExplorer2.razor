@@ -18,13 +18,13 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudGrid Spacing="1" >
+        <MudGrid Spacing="1">
             <MudItem md="5" lg="3">
                 <MudPaper>
-                @if (_tree != null)
-                {
-                    @_tree
-                }
+                    @if (_tree != null)
+                    {
+                        @_tree
+                    }
                 </MudPaper>
             </MudItem>
             <MudItem md="7" lg="9">
@@ -35,8 +35,8 @@
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                         </MudToolBar>
                     </MudPaper>
                     <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
@@ -47,7 +47,7 @@
                     <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="32vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="25">
                         <ToolBarContent>
                             <MudText>@_tableHeader</MudText>
-                            <MudSpacer />
+                            <MudSpacer/>
                         </ToolBarContent>
                         <HeaderContent>
                             @if (_values?.Any() == true)
@@ -119,15 +119,16 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+
         // Clear and reinitialize the tree view items
-        _editor=null;
-        _tree=null;
+        _editor = null;
+        _tree = null;
         StateHasChanged();
 
         InitialTreeItems = new List<TreeItemData<TablesColsInfo>>();
         InitialTreeItems.Clear();
 
-        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head", Description = "(Max 600)"}, Icon = Icons.Material.Filled.Label, });
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head", Description = "(Max 600)" }, Icon = Icons.Material.Filled.Label, });
         InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head", Description = "(Max 200)" }, Icon = Icons.Material.Filled.Label, });
 
         _tableHeader = Localizer.Get("Query output");
@@ -161,7 +162,7 @@
         };
 
 
-        _editor  = (__builder) =>
+        _editor = (__builder) =>
         {
             <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
         };
@@ -181,7 +182,7 @@
                     }
                     else
                     {
-                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable" />
+                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
                     }
                 </ItemTemplate>
             </MudTreeView>
@@ -317,7 +318,7 @@
         _loading = true;
         var query = $"select  * from {tableName}";
         QueryRun = query;
-        _tableHeader=tableName;
+        _tableHeader = tableName;
         _table!.CurrentPage = 0;
         await _table.ReloadServerData();
         _loading = false;
@@ -326,7 +327,7 @@
     private async Task RunSql()
     {
         _loading = true;
-        _queryTestResult=String.Empty;
+        _queryTestResult = String.Empty;
         _tableHeader = Localizer.Get("Query output");
         var _queryTorun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
 

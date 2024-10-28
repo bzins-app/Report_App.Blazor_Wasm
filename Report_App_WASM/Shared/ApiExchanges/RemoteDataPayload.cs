@@ -11,4 +11,3 @@ public class RemoteDataPayload
     public bool PivotTable { get; init; }
     public int PivotTableNbrColumns { get; init; }
 }
-

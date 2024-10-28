@@ -357,7 +357,7 @@
 
     private async Task OpenTestQuery()
     {
-        _queryTestResult=string.Empty;
+        _queryTestResult = string.Empty;
         _loading = true;
         await Task.Run(RunSqlTest);
         _loading = false;
@@ -366,7 +366,6 @@
             var parameters = new DialogParameters { ["data"] = _data, ["queryTestResult"] = _queryTestResult, ["testResult"] = _testResult };
             await DialogService.ShowAsync<_QueryResultDialog>("Create", parameters, _dialogOptions);
         }
-
     }
 
     void CancelTest()

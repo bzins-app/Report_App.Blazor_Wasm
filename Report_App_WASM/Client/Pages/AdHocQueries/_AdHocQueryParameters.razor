@@ -7,7 +7,7 @@
     </MudCardContent>
     <MudCardContent>
         <MudGrid Spacing="1">
-            @foreach (var element in _parameters.OrderBy(a => a.DisplaySequence))
+            @foreach (var element in _parameters!.OrderBy(a => a.DisplaySequence))
             {
                 <MudItem xs="6" md="6" lg="6" xl="4" xxl="3">
                     <MudCard Elevation="4" Style="height: 475px">
@@ -43,11 +43,11 @@
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.String)
                             {
-                                <MudTextField InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" Text="@element.Value" />
+                                <MudTextField InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" Text="@element.Value"/>
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.Number)
                             {
-                                <MudTextField InputType="InputType.Number" Label="@Localizer.Get(" Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value" />
+                                <MudTextField InputType="InputType.Number" Label="@Localizer.Get(" Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value"/>
                             }
                             <MudGrid>
                                 <MudItem md="6">

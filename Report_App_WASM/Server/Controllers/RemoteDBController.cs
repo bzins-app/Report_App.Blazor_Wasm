@@ -274,7 +274,8 @@ public class RemoteDbController : ControllerBase, IDisposable
                     })
                     .FirstOrDefaultAsync(ct);
 
-                var tables = data.AsEnumerable().Select(selector: r => new TablesColsInfo { TypeValue = r.Field<string>(0), Name = r.Field<string>(1) }).ToList();
+                var tables = data.AsEnumerable().Select(selector: r => new TablesColsInfo
+                    { TypeValue = r.Field<string>(0), Name = r.Field<string>(1) }).ToList();
                 if (tables != null)
                 {
                     if (description.tableDesc || description.UseDescriptionsFromAnotherActivity)
@@ -288,12 +289,13 @@ public class RemoteDbController : ControllerBase, IDisposable
                         listTables.Values = (from a in tables
                             join b in prework on a.Name equals b.TableName into c
                             from d in c.DefaultIfEmpty()
-                            select new TablesColsInfo { Name = a.Name, Description = d?.TableDescription, TypeValue = a.TypeValue}).ToList();
+                            select new TablesColsInfo
+                                { Name = a.Name, Description = d?.TableDescription, TypeValue = a.TypeValue }).ToList();
                         listTables.HasDescription = prework.Any();
                     }
                     else
                     {
-                        listTables.Values= tables;
+                        listTables.Values = tables;
                     }
                 }
             }
@@ -332,10 +334,11 @@ public class RemoteDbController : ControllerBase, IDisposable
 
                 if (data.Rows.Count > 0)
                 {
-                    var cols = data.AsEnumerable().Select(selector: r => new TablesColsInfo { TypeValue = r.Field<string>(0), Name = r.Field<string>(1), ColType = r.Field<string>(2) }).ToList();
+                    var cols = data.AsEnumerable().Select(selector: r => new TablesColsInfo
+                            { TypeValue = r.Field<string>(0), Name = r.Field<string>(1), ColType = r.Field<string>(2) })
+                        .ToList();
                     if (cols != null)
                     {
-
                         if ((description.tableDesc || description.UseDescriptionsFromAnotherActivity) && await _context
                                 .DbTableDescriptions
                                 .Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
@@ -344,7 +347,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                             var desc = await _context.DbTableDescriptions
                                 .Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
                                 .AsNoTracking()
-                                .Select(a => new { a.ColumnName, a.ColumnDescription, a.IsSnippet})
+                                .Select(a => new { a.ColumnName, a.ColumnDescription, a.IsSnippet })
                                 .ToListAsync();
                             if (desc != null)
                             {
@@ -368,7 +371,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                             }
                             else
                             {
-                               listCols.Values.AddRange(cols);
+                                listCols.Values.AddRange(cols);
                             }
                         }
                         else
