@@ -159,6 +159,7 @@
     private _TasksTypeLogsChart _tasksTypeLogsChart;
     PeriodicTimer minuteTimer;
     private bool _timerOn;
+    private CancellationTokenSource? _cts;
 
     protected override async Task OnInitializedAsync()
     {
@@ -185,9 +186,10 @@
 
     private async Task SetTimer()
     {
+        _cts = new CancellationTokenSource();
         minuteTimer = new PeriodicTimer(new TimeSpan(0, 1, 0));
 
-        while (await minuteTimer.WaitForNextTickAsync())
+        while (await minuteTimer.WaitForNextTickAsync(_cts.Token))
         {
             await RefreshData();
         }
@@ -195,6 +197,7 @@
 
     private void StartTimer()
     {
+        _timerOn = true;
         _ = Task.Run(async () =>
         {
             await SetTimer();
@@ -203,7 +206,8 @@
 
     public void Dispose()
     {
-        minuteTimer.Dispose();
+        _cts?.Cancel();
+        minuteTimer?.Dispose();
         GC.SuppressFinalize(this);
     }
 
