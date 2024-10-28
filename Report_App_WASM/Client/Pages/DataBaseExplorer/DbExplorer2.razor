@@ -127,8 +127,8 @@
         InitialTreeItems = new List<TreeItemData<TablesColsInfo>>();
         InitialTreeItems.Clear();
 
-        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
-        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head" }, Icon = Icons.Material.Filled.Label, });
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Tables", TypeValue = "Head", Description = "(Max 600)"}, Icon = Icons.Material.Filled.Label, });
+        InitialTreeItems.Add(new TreeItemData<TablesColsInfo> { Value = new TablesColsInfo { Name = "Views", TypeValue = "Head", Description = "(Max 200)" }, Icon = Icons.Material.Filled.Label, });
 
         _tableHeader = Localizer.Get("Query output");
         _values = new();
@@ -174,14 +174,14 @@
                     {
                         <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
                             <BodyContent Context="item">
-                                <MudText>@item.Value?.Name</MudText>
+                                <MudText>@(string.IsNullOrEmpty(item.Value.Description) ? item.Value?.Name : item.Value?.Name + " " + item.Value.Description)</MudText>
                                 <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
                             </BodyContent>
                         </MudTreeViewItem>
                     }
                     else
                     {
-                        <MudTreeViewItem Text="@context.Value?.Name" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
+                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable" />
                     }
                 </ItemTemplate>
             </MudTreeView>
