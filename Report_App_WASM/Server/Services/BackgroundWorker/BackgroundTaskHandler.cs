@@ -167,7 +167,7 @@ public class BackgroundTaskHandler : IDisposable
             logTask.Error = true;
             logTask.EndDateTime = DateTime.Now;
             logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
-            logTask.Result = ex.Message.Length>440? ex.Message.Substring(0,440): ex.Message;
+            logTask.Result = ex.Message.Length > 440 ? ex.Message.Substring(0, 440) : ex.Message;
             await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ActivityName + ": " + _header.TaskName);
             await _context.AddAsync(new ApplicationLogTaskDetails
                 { TaskId = _taskId, Step = "Error", Info = logTask.Result });
@@ -235,7 +235,7 @@ public class BackgroundTaskHandler : IDisposable
             CreatedBy = "Report Service",
             TaskHeaderId = _header.TaskHeaderId,
             ReportName = _header.TaskName,
-            SubName = subName is null? "": subName!= fName? fName:"TaskId:"+_taskId,
+            SubName = subName is null ? "" : subName != fName ? fName : "TaskId:" + _taskId,
             FileType = _header.TypeFile.ToString(),
             ReportPath = "/docsstorage/" + fName,
             FileName = fName,
@@ -292,7 +292,7 @@ public class BackgroundTaskHandler : IDisposable
                 await _context.AddAsync(new ApplicationLogTaskDetails
                     { TaskId = _taskId, Step = "Error", Info = resultDeposit.Message });
             }
-               
+
 
             ApplicationLogReportResult filecreationRemote = new()
             {
@@ -302,7 +302,7 @@ public class BackgroundTaskHandler : IDisposable
                 CreatedBy = "Report Service",
                 TaskHeaderId = _header.TaskHeaderId,
                 ReportName = _header.TaskName,
-                SubName =    "TaskId:" + _taskId,
+                SubName = "TaskId:" + _taskId,
                 FileType = _header.TypeFile.ToString(),
                 ReportPath = completePath,
                 FileName = fName,
@@ -642,7 +642,8 @@ public class BackgroundTaskHandler : IDisposable
                                 fileResult.ContentType));
                         }
 
-                    message= string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!, message);
+                    message = string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!,
+                        message);
 
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)

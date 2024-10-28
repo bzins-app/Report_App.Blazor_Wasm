@@ -91,8 +91,9 @@ public class DataInteractionService
     {
         var uri = $"{controller}{controllerAction}";
         var payload = new ApiCrudPayload<T> { EntityValue = value, UserName = await GetUserIdAsync() };
-        using var httpClientLong = new HttpClient
-            { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        using var httpClientLong = new HttpClient();
+        httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+        httpClientLong.BaseAddress = _httpClient.BaseAddress;
         return await PostDataAsync(uri, payload, httpClientLong, ct);
     }
 
@@ -110,8 +111,9 @@ public class DataInteractionService
     public async Task ExtractGridLogs(ODataExtractPayload values)
     {
         var url = "odata/ExtractLogs";
-        using var httpClientLong = new HttpClient
-            { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        using var httpClientLong = new HttpClient();
+        httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+        httpClientLong.BaseAddress = _httpClient.BaseAddress;
         var response = await httpClientLong.PostAsJsonAsync(url, values);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable
             or HttpStatusCode.RequestTimeout)
@@ -122,8 +124,9 @@ public class DataInteractionService
     public async Task ExtractAdHocQuery(RemoteDataPayload payload, CancellationToken ct)
     {
         var url = $"{ApiControllers.RemoteDbApi}RemoteDbExtractValues";
-        using var httpClientLong = new HttpClient
-            { Timeout = TimeSpan.FromMinutes(10), BaseAddress = _httpClient.BaseAddress };
+        using var httpClientLong = new HttpClient();
+        httpClientLong.Timeout = TimeSpan.FromMinutes(10);
+        httpClientLong.BaseAddress = _httpClient.BaseAddress;
         var response = await httpClientLong.PostAsJsonAsync(url, payload, ct);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable
             or HttpStatusCode.RequestTimeout)

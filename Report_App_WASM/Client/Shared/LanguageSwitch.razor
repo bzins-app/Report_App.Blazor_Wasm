@@ -6,7 +6,7 @@
              Dense="true">
         @foreach (var culture in _supportedCultures)
         {
-            <MudMenuItem Style="@(culture.Name == _language ? "background: var(--mud-palette-primary); color: white" : "")" OnClick="@(culture.Name == _language ? null : () => SetLanguage(culture))">
+            <MudMenuItem Style="@(culture.Name == _language ? "background: var(--mud-palette-primary); color: white" : "")" OnClick="@((culture.Name == _language ? null : () => SetLanguage(culture))!)">
                 @culture.DisplayName
             </MudMenuItem>
         }

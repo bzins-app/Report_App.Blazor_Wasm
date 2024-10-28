@@ -30,7 +30,8 @@ public class EmailSender : IEmailSender
     public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient> email, string subject, string message,
         List<Attachment> attachment = null!)
     {
-        var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking().FirstOrDefaultAsync();
+        var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking()
+            .FirstOrDefaultAsync();
         var emailservice = await Context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
 
         var result = new SubmitResult();
@@ -54,6 +55,7 @@ public class EmailSender : IEmailSender
                         size += BytesConverter.ConvertBytesToMegabytes(attach.ContentStream.Length);
                     }
                 }
+
                 if (size > 20)
                 {
                     attachment = null;
@@ -62,16 +64,16 @@ public class EmailSender : IEmailSender
                 }
 
                 await ProcessEmailAsync(smtp.FromEmail!,
-                        smtp.FromFullName!,
-                        subject,
-                        message,
-                        email,
-                        smtp.SmtpUserName!,
-                        EncryptDecrypt.DecryptString(smtp.SmtpPassword),
-                        smtp.SmtpHost,
-                        smtp.SmtpPort,
-                        smtp.SmtpSsl,
-                        attachment);
+                    smtp.FromFullName!,
+                    subject,
+                    message,
+                    email,
+                    smtp.SmtpUserName!,
+                    EncryptDecrypt.DecryptString(smtp.SmtpPassword),
+                    smtp.SmtpHost,
+                    smtp.SmtpPort,
+                    smtp.SmtpSsl,
+                    attachment);
 
                 log.Result = "Ok";
                 log.Error = false;
@@ -117,7 +119,7 @@ public class EmailSender : IEmailSender
             {
                 message.Bcc.Add(new MailAddress(recipient.Email, recipient.Email));
             }
-            else if(recipient.Cc)
+            else if (recipient.Cc)
             {
                 message.CC.Add(new MailAddress(recipient.Email, recipient.Email));
             }

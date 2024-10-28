@@ -44,4 +44,5 @@ else
         _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", ApiControllers.DashboardApi);
         await _chart.UpdateSeriesAsync(false);
     }
+
 }

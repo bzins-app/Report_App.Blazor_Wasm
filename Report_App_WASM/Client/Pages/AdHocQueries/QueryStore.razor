@@ -28,11 +28,11 @@
                     </MudPaper>
                 </MudItem>
             }
-            <MudItem md="@(_open == true ? 9 : 12)" lg="@(_open == true ? 10 : 12)">
+            <MudItem md="@(_open ? 9 : 12)" lg="@(_open ? 10 : 12)">
                 @if (_queryRender != null)
                 {
                     <MudStack Row="true">
-                        <MudIconButton Icon="@(_open == true ?Icons.Material.Filled.KeyboardDoubleArrowLeft:Icons.Material.Filled.KeyboardDoubleArrowRight)" Size="Size.Small" OnClick="@ToggleTree" title="@(_open == true ? Localizer.Get("Close") : Localizer.Get("Open"))" />
+                        <MudIconButton Icon="@(_open ? Icons.Material.Filled.KeyboardDoubleArrowLeft : Icons.Material.Filled.KeyboardDoubleArrowRight)" Size="Size.Small" OnClick="@ToggleTree" title="@(_open ? Localizer.Get("Close") : Localizer.Get("Open"))"/>
                         <MudText Typo="Typo.h6">
                             @_queryName
                         </MudText>
@@ -58,6 +58,7 @@
         public string QueryName { get; set; }
         public int QueryId { get; set; } = 0;
     }
+
     private List<TreeItemData<QueryTree>> InitialTreeItems;
     public RenderFragment? _tree { get; set; }
     public RenderFragment? _queryRender { get; set; }
@@ -92,20 +93,20 @@
             {
                 NavigationManager.NavigateTo("/403");
             }
-
         }
+
         var _serializedTags = new List<string>();
-        _serializedTags   = _queries.Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags)).Select(a => a.Tags).ToList();
+        _serializedTags = _queries.Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags)).Select(a => a.Tags).ToList();
         var _tags = new List<string>();
-         _tags = _serializedTags
+        _tags = _serializedTags
             .SelectMany(value => JsonSerializer.Deserialize<List<string>>(value)!)
             .Distinct().ToList();
 
         InitialTreeItems = new List<TreeItemData<QueryTree>>();
         InitialTreeItems.Clear();
 
-        if(_queries.Where(a=>a.Tags=="[]").Any())
-            InitialTreeItems.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = "Uncategorized", }, Icon = Icons.Material.Filled.Label, Expandable = true});
+        if (_queries.Where(a => a.Tags == "[]").Any())
+            InitialTreeItems.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = "Uncategorized", }, Icon = Icons.Material.Filled.Label, Expandable = true });
 
         foreach (var tag in _tags)
         {
@@ -116,14 +117,15 @@
         {
             if (q.Tags == "[]")
             {
-                var item = InitialTreeItems.FirstOrDefault(a => a.Value.QueryName == "Uncategorized");
+                var item = InitialTreeItems.FirstOrDefault(a => a.Value?.QueryName == "Uncategorized");
                 if (item != null)
                 {
                     if (!item.HasChildren)
                     {
-                        item.Children=new List<TreeItemData<QueryTree>>();
+                        item.Children = new List<TreeItemData<QueryTree>>();
                     }
-                    item.Children.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = q.QueryName, QueryId = q.Id }, Icon = Icons.Material.Filled.QueryStats, Expandable = false });
+
+                    item.Children!.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = q.QueryName!, QueryId = q.Id }, Icon = Icons.Material.Filled.QueryStats, Expandable = false });
                 }
             }
             else
@@ -132,13 +134,15 @@
                 {
                     if (q.Tags.Contains(tag))
                     {
-                        var item = InitialTreeItems.FirstOrDefault(a => a.Value.QueryName == tag);
+                        var item = InitialTreeItems.FirstOrDefault(a => a.Value!.QueryName == tag);
                         if (item != null)
-                        {                    if (!item.HasChildren)
+                        {
+                            if (!item.HasChildren)
                             {
-                                item.Children=new List<TreeItemData<QueryTree>>();
+                                item.Children = new List<TreeItemData<QueryTree>>();
                             }
-                            item.Children.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = q.QueryName, QueryId = q.Id }, Icon = Icons.Material.Filled.QueryStats, Expandable = false });
+
+                            item.Children!.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = q.QueryName!, QueryId = q.Id }, Icon = Icons.Material.Filled.QueryStats, Expandable = false });
                         }
                     }
                 }
@@ -151,22 +155,22 @@
                 <ItemTemplate >
                     @if (context.HasChildren)
                     {
-                    <MudTreeViewItem Text="@context.Value?.QueryName" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" Items="@context.Children" Expanded="true"/>
+                        <MudTreeViewItem Text="@context.Value?.QueryName" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" Items="@context.Children" Expanded="true"/>
                     }
-                    else if(context.Value.QueryId>0)
+                    else if (context.Value!.QueryId > 0)
                     {
-                    <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="false" >
-                        <BodyContent Context="item">
-                            <MudText>@item.Value?.QueryName</MudText>
-                            <MudIconButton Icon="@Icons.Material.Filled.Launch" Size="Size.Small" Class="ms-2" title="@Localizer.Get("Run query")"  OnClick="@(e => ExecuteQuery(item.Value.QueryId))"/>
-                        </BodyContent>
-                    </MudTreeViewItem>
+                        <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="false">
+                            <BodyContent Context="item">
+                                <MudText>@item.Value?.QueryName</MudText>
+                                <MudIconButton Icon="@Icons.Material.Filled.Launch" Size="Size.Small" Class="ms-2" title="@Localizer.Get("Run query")" OnClick="@(_ => ExecuteQuery(item.Value!.QueryId))"/>
+                            </BodyContent>
+                        </MudTreeViewItem>
                     }
                 </ItemTemplate>
             </MudTreeView>
         };
         _queryRender = null;
-        _queryName=string.Empty;
+        _queryName = string.Empty;
         StateHasChanged();
     }
 
@@ -174,10 +178,10 @@
     {
         _queryName = _queries.FirstOrDefault(a => a.Id == queryId)?.QueryName ?? string.Empty;
         _queryRender = null;
-     await   Task.Delay(10);
+        await Task.Delay(10);
         _queryRender = (__builder) =>
         {
-            <_ExceuteQuery QueryId="@queryId" />
+            <_ExceuteQuery QueryId="@queryId"/>
         };
         StateHasChanged();
     }
@@ -191,4 +195,5 @@
     {
         _open = !_open;
     }
+
 }

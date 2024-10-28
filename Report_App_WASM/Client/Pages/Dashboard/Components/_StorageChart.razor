@@ -36,6 +36,7 @@ else
         _logs = await DataService.GetValues<StorageData>("StorageInfo", ApiControllers.DashboardApi);
         _isLoading = false;
     }
+
     public async Task Refresh()
     {
         _logs = await DataService.GetValues<StorageData>("StorageInfo", ApiControllers.DashboardApi);

@@ -23,19 +23,19 @@
                     <MudItem>
                         @if (t.ValueType == QueryCommandParameterValueType.Date)
                         {
-                            <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                            <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.DateTime)
                         {
-                            <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                            <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.Number)
                         {
-                            <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.String)
                         {
-                            <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                         }
                     </MudItem>
                 }
@@ -59,55 +59,55 @@
                 </MudButton>
             }
         </div>
-                <div>
-                    <MudGrid>
-                        @if (parameters.UsePivotTable)
-                        {
-                            <MudItem>
-                                <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
-                                    <MudSelectItem Value="@("Grid")"/>
-                                    <MudSelectItem Value="@("pivot")"/>
-                                </MudSelect>
-                            </MudItem>
-                        }
-                        <MudItem>
-                            <MudIconButton Variant="Variant.Outlined"
-                                           OnClick="@(SaveConfiguration)"
-                                           Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
-                        </MudItem>
-                        <MudItem>
-                            <MudMenu Variant="Variant.Outlined"
-                                     Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
-                                     Dense="true">
-                                <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
-                                    @foreach (var config in _userConfigs)
-                                    {
-                                        <MudListItem Text="@config.SaveName" Dense="true">
-                                            <NestedList>
-                                                <MudListItem OnClick="() => LoadPivotConfig(config.SavedValues)">
-                                                    @Localizer.Get("Load")
-                                                </MudListItem>
-                                                <MudListItem OnClick="() => DeleteConfig(config.Id)">
-                                                    @Localizer.Get("Delete")
-                                                </MudListItem>
-                                            </NestedList>
+        <div>
+            <MudGrid>
+                @if (parameters.UsePivotTable)
+                {
+                    <MudItem>
+                        <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
+                            <MudSelectItem Value="@("Grid")"/>
+                            <MudSelectItem Value="@("pivot")"/>
+                        </MudSelect>
+                    </MudItem>
+                }
+                <MudItem>
+                    <MudIconButton Variant="Variant.Outlined"
+                                   OnClick="@(SaveConfiguration)"
+                                   Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                </MudItem>
+                <MudItem>
+                    <MudMenu Variant="Variant.Outlined"
+                             Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
+                             Dense="true">
+                        <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
+                            @foreach (var config in _userConfigs)
+                            {
+                                <MudListItem Text="@config.SaveName" Dense="true">
+                                    <NestedList>
+                                        <MudListItem OnClick="() => LoadPivotConfig(config.SavedValues)">
+                                            @Localizer.Get("Load")
                                         </MudListItem>
-                                    }
-                                </MudList>
-                            </MudMenu>
-                        </MudItem>
-                        <MudItem>
-                            <MudIconButton Variant="Variant.Outlined"
-                                           OnClick="@(ExtractElements)"
-                                           Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
-                        </MudItem>
-                    </MudGrid>
-                </div>
+                                        <MudListItem OnClick="() => DeleteConfig(config.Id)">
+                                            @Localizer.Get("Delete")
+                                        </MudListItem>
+                                    </NestedList>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    </MudMenu>
+                </MudItem>
+                <MudItem>
+                    <MudIconButton Variant="Variant.Outlined"
+                                   OnClick="@(ExtractElements)"
+                                   Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                </MudItem>
+            </MudGrid>
+        </div>
     </div>
 </MudPaper>
 @if (_extracting)
 {
-    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
+    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
 }
 @if (!_pivotTable)
 {
@@ -322,6 +322,7 @@ else
                 _values = new List<Dictionary<string, object>>();
             }
         }
+
         _loading = false;
     }
 
@@ -353,6 +354,7 @@ else
             await _validateParam?.Validate()!;
             _formParamValidated = _validateParam.IsValid;
         }
+
         if (!_pivotTable)
         {
             _table!.CurrentPage = 0;

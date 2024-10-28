@@ -9,19 +9,19 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-            <MudSwitch @bind-Value="_param.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary" />
-            <MudSwitch @bind-Value="_param.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary" />
-            <MudNumericField @bind-Value="_param.LogsRetentionInDays" Label="@Localizer.Get("Logs: Archiving duration")" />
-            <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required />
-            <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required />
-            <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required />
+        <MudSwitch @bind-Value="_param.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary"/>
+        <MudSwitch @bind-Value="_param.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary"/>
+        <MudNumericField @bind-Value="_param.LogsRetentionInDays" Label="@Localizer.Get("Logs: Archiving duration")"/>
+        <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required/>
+        <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required/>
+        <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required/>
         <MudTable Items="@_emailItems" Hover="true" Dense="true" Virtualize="true" Elevation="25">
             <ToolBarContent>
                 <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Tertiary" Style="text-transform: none;" Size="Size.Small">@Localizer.Get("Administrator email for error notifications")</MudButton>
-                <MudSpacer />
+                <MudSpacer/>
                 <MudForm Model="@_email" @ref="_form">
                     <MudTextField InputMode="InputMode.email" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="_email" AdornmentIcon="@Icons.Material.Filled.Email" IconSize="Size.Medium" Style="width: 300px;"
-                                     Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")"  />
+                                  Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")"/>
                     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
                                OnClick="AddRecipient">
                         @Localizer.Get("Add recipient")
@@ -37,10 +37,10 @@
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
                 <MudTd DataLabel="@Localizer.Get("Cc")">
-                    <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary" />
+                    <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary"/>
                 </MudTd>
                 <MudTd DataLabel="@Localizer.Get("Blind copy")">
-                    <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary" />
+                    <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
                 </MudTd>
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteRecipient(context)"></MudIconButton>
@@ -81,7 +81,7 @@
 
     private async Task UpdateApplication()
     {
-        var result =  await DataService.PostValues(_param, "ApplicationParametersUpdate");
+        var result = await DataService.PostValues(_param, "ApplicationParametersUpdate");
 
         if (result.Success)
         {
@@ -91,9 +91,9 @@
         {
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
         }
+
         StateHasChanged();
     }
-
 
 
     private void PopulateEmailItems()
@@ -107,13 +107,13 @@
 
     private async Task DeleteRecipient(EmailRecipient recipient)
     {
-        _emails.Remove(recipient);
+        _emails?.Remove(recipient);
         UpdateRecipientsEmail();
     }
 
     private async Task ChangeBccValue(EmailRecipient recipient, bool value)
     {
-        var bccUpdate = _emails.FirstOrDefault(a => a.Email == recipient.Email);
+        var bccUpdate = _emails?.FirstOrDefault(a => a.Email == recipient.Email);
         if (bccUpdate != null && bccUpdate.Bcc != value)
         {
             bccUpdate.Bcc = value;
@@ -123,7 +123,7 @@
 
     private async Task ChangeCcValue(EmailRecipient recipient, bool value)
     {
-        var ccUpdate = _emails.FirstOrDefault(a => a.Email == recipient.Email);
+        var ccUpdate = _emails?.FirstOrDefault(a => a.Email == recipient.Email);
         if (ccUpdate != null && ccUpdate.Cc != value)
         {
             ccUpdate.Cc = value;
@@ -140,7 +140,7 @@
             UpdateRecipientsEmail();
             _email = "";
         }
-        else if (_emails.Any(a => a.Email == _email))
+        else if (_emails != null && _emails.Any(a => a.Email == _email))
         {
             _email = "";
         }
@@ -168,4 +168,5 @@
             _param.ErrorEMailMessage = result?.Data?.ToString();
         }
     }
+
 }

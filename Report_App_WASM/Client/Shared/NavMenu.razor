@@ -15,7 +15,7 @@
             </div>
         </a>
     </MudText>
-    <MudDivider />
+    <MudDivider/>
     <MudNavLink Href="Home" Style="padding-top: 15px" Icon="@Icons.Material.Outlined.Home">@Localizer.Get("Home")</MudNavLink>
     @if (_appConst.ActivateTaskSchedulerModule)
     {
@@ -66,7 +66,7 @@
             {
                 <MudNavLink Href="ManageQueriesGlobal" Icon="@Icons.Material.Outlined.AddChart">@Localizer.Get("Adhoc queries overview")</MudNavLink>
             }
-            <MudDivider DividerType="DividerType.Inset" />
+            <MudDivider DividerType="DividerType.Inset"/>
             <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
                 <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
                 @if (_appConst.ActivateTaskSchedulerModule)
@@ -101,7 +101,7 @@
                     <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
                 }
             }
-            <MudDivider DividerType="DividerType.Inset" />
+            <MudDivider DividerType="DividerType.Inset"/>
         </Authorized>
     </AuthorizeView>
     <MudNavLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm/wiki" Target="_blank" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>

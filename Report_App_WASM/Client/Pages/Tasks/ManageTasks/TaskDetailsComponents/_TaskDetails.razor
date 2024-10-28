@@ -151,9 +151,9 @@
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (feedback is { Canceled: false })
         {
-            Item.TaskDetails.Add((TaskDetailDto)feedback.Data);
+            Item.TaskDetails.Add(((TaskDetailDto)feedback.Data!)!);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();

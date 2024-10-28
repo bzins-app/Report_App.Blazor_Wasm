@@ -3,12 +3,10 @@
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @using Blazor.PivotTable
-@using System.Reflection.Metadata
 @implements IDisposable
 @inject IJSRuntime JSRuntime
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager UriHelper
 @inject HttpClient Http
 @attribute [Authorize]
 
@@ -206,6 +204,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+
         _userName = user?.UserName;
         var uriAction = $"GetQueryStore?queryId={QueryId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
@@ -309,6 +308,7 @@
             await _validateParam?.Validate()!;
             _formParamValidated = _validateParam.IsValid;
         }
+
         if (!_pivotTable)
         {
             _table!.CurrentPage = 0;
@@ -481,6 +481,7 @@
                 _values = new List<Dictionary<string, object>>();
             }
         }
+
         _loading = false;
     }
 

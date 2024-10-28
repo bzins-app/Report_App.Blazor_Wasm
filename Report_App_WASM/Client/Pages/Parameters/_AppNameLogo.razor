@@ -9,12 +9,12 @@
     </MudCardHeader>
     <MudCardContent>
         <MudForm Model="@_param" @ref="_form" @bind-IsValid="@_success">
-            <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required />
+            <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required/>
             <MudText Typo="Typo.h6" Class="pa-4">@Localizer.Get("Logo")</MudText>
             <div style="padding-bottom: 5px">
                 @if (!string.IsNullOrEmpty(_param.ApplicationLogo))
                 {
-                    <MudImage Src="@_param.ApplicationLogo" style="max-height: 200px; max-width: 150px;" Alt="@_param.ApplicationName" Elevation="2" />
+                    <MudImage Src="@_param.ApplicationLogo" style="max-height: 200px; max-width: 150px;" Alt="@_param.ApplicationName" Elevation="2"/>
                 }
             </div>
             <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" Accept=".jpg, .jpeg, .png, .gif">
@@ -24,7 +24,7 @@
                             StartIcon="@Icons.Material.Filled.Image"
                             Label="@Localizer.Get("Select application Logo")"
                             Size="Size.Small"
-                            Style="text-transform: none" />
+                            Style="text-transform: none"/>
                 </ActivatorContent>
             </MudFileUpload>
         </MudForm>

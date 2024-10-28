@@ -84,6 +84,7 @@ public abstract class AuditableIdentityContext : IdentityDbContext<ApplicationUs
                             auditEntry.OldValues[propertyName] = oldProperties?[propertyName];
                             auditEntry.NewValues[propertyName] = property.CurrentValue;
                         }
+
                         break;
                 }
             }
