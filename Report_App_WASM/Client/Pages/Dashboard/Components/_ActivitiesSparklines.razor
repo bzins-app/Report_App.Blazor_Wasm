@@ -11,7 +11,7 @@
 
         <RowTemplate>
             <MudTd>@context.Key</MudTd>
-            <MudTd>@context.Sum(a => a.NbrTasks)</MudTd>
+            <MudTd>@context.Sum(a => a.NbrTasks).ToString("N0")</MudTd>
             <MudTd>
                 <ApexChart TItem="TaksLogsValues"
                            Width="30"
