@@ -329,6 +329,7 @@
         _loading = true;
         _queryTestResult = String.Empty;
         _tableHeader = Localizer.Get("Query output");
+        StateHasChanged();
         var _queryTorun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
 
         if (string.IsNullOrEmpty(QueryBuilder))
