@@ -202,7 +202,10 @@
 
     public async ValueTask DisposeAsync()
     {
-        await _cts?.CancelAsync()!;
+        if (_cts != null)
+        {
+            await _cts.CancelAsync();
+        }
         minuteTimer?.Dispose();
         GC.SuppressFinalize(this);
     }
