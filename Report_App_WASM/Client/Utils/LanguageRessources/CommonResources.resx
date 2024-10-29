@@ -2580,4 +2580,19 @@
   <data name="Application name &amp; logo" xml:space="preserve">
     <value>Application name &amp; logo</value>
   </data>
+  <data name="Pivot Table: nbr max of columns" xml:space="preserve">
+    <value>Pivot Table: nbr max of columns</value>
+  </data>
+  <data name="Pivot Table: nbr max of rows" xml:space="preserve">
+    <value>Pivot Table: nbr max of rows</value>
+  </data>
+  <data name="Use pivot table component?" xml:space="preserve">
+    <value>Use pivot table component?</value>
+  </data>
+  <data name="Set as default" xml:space="preserve">
+    <value>Set as default</value>
+  </data>
+  <data name="Use pivot table as default view?" xml:space="preserve">
+    <value>Use pivot table as default view?</value>
+  </data>
 </root>

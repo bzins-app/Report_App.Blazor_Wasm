@@ -1635,12 +1635,6 @@
   <data name="Phone number" xml:space="preserve">
     <value>Telefonnummer</value>
   </data>
-  <data name="Pivot Table: nbr max of columns" xml:space="preserve">
-    <value>Pivot-Tabelle: nbr max von Spalten</value>
-  </data>
-  <data name="Pivot Table: nbr max of rows" xml:space="preserve">
-    <value>Pivot-Tabelle: nbr max. der Zeilen</value>
-  </data>
   <data name="Platform" xml:space="preserve">
     <value>Plattform</value>
   </data>
@@ -2322,9 +2316,6 @@
   <data name="Use os credential" xml:space="preserve">
     <value>Betriebssystem-Zugangsdaten verwenden</value>
   </data>
-  <data name="Use pivot table component?" xml:space="preserve">
-    <value>Pivot-Tabellen-Komponente verwenden?</value>
-  </data>
   <data name="Use primary keys?" xml:space="preserve">
     <value>Primärschlüssel verwenden?</value>
   </data>
@@ -2588,5 +2579,20 @@
   </data>
   <data name="Application name &amp; logo" xml:space="preserve">
     <value>Name und Logo der Anwendung</value>
+  </data>
+  <data name="Pivot Table: nbr max of columns" xml:space="preserve">
+    <value>Pivot-Tabelle: nbr max von Spalten</value>
+  </data>
+  <data name="Pivot Table: nbr max of rows" xml:space="preserve">
+    <value>Pivot-Tabelle: nbr max. der Zeilen</value>
+  </data>
+  <data name="Use pivot table component?" xml:space="preserve">
+    <value>Pivot-Tabellen-Komponente verwenden?</value>
+  </data>
+  <data name="Set as default" xml:space="preserve">
+    <value>Als Standard setzen</value>
+  </data>
+  <data name="Use pivot table as default view?" xml:space="preserve">
+    <value>Pivot-Tabelle als Standardansicht verwenden?</value>
   </data>
 </root>
