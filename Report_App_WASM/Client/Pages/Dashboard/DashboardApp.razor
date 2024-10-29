@@ -2,7 +2,7 @@
 @inherits ComponentBase
 @using Report_App_WASM.Client.Pages.Dashboard.Components
 @using Report_App_WASM.Shared.Dashboard
-@implements IDisposable
+@implements IAsyncDisposable
 @attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
@@ -200,9 +200,9 @@
         _ = Task.Run(async () => { await SetTimer(); });
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _cts?.Cancel();
+        await _cts?.CancelAsync()!;
         minuteTimer?.Dispose();
         GC.SuppressFinalize(this);
     }
