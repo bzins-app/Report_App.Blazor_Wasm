@@ -95,14 +95,14 @@
             </MudForm>
         }
         <MudGrid>
-            <MudItem sm="12" md="12" lg="6" xl="6">
+            <MudItem sm="12" md="12" lg="12" xl="6">
                 @if (Item != null)
                 {
                     @if (_typeDbTask != TypeDb.Db2)
                     {
                         @if (!string.IsNullOrEmpty(_queryTestResult))
                         {
-                            <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
+                            <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_queryTestResult</MudText>
                         }
 
                         <MudTabs Elevation="25" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
@@ -113,7 +113,7 @@
                                         <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                                     </MudToolBar>
                                 </MudPaper>
-                                <MudProgressLinear Color="Color.Primary" Indeterminate="_loading"/>
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
                                 @if (_opt != null)
                                 {
                                     <Blazor.AceEditorJs.AceJsEditor Style="height: 55vh" @bind-Value="@Item.Query" @bind-SelectedValue="@_querySelectedCode" Options="@_opt"/>
@@ -142,7 +142,7 @@
                     }
                 }
             </MudItem>
-            <MudItem sm="12" md="12" lg="6" xl="6">
+            <MudItem sm="12" md="12" lg="12" xl="6">
                 @if (param.Count > 0)
                 {
                     <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
