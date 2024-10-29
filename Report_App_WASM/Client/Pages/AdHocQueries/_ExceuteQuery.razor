@@ -23,19 +23,19 @@
                     <MudItem>
                         @if (t.ValueType == QueryCommandParameterValueType.Date)
                         {
-                            <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
+                            <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.DateTime)
                         {
-                            <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
+                            <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.Number)
                         {
-                            <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                            <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.String)
                         {
-                            <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                            <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         }
                     </MudItem>
                 }
@@ -65,15 +65,15 @@
                 {
                     <MudItem>
                         <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
-                            <MudSelectItem Value="@("Grid")"/>
-                            <MudSelectItem Value="@("pivot")"/>
+                            <MudSelectItem Value="@("Grid")" />
+                            <MudSelectItem Value="@("pivot")" />
                         </MudSelect>
                     </MudItem>
                 }
                 <MudItem>
                     <MudIconButton Variant="Variant.Outlined"
                                    OnClick="@(SaveConfiguration)"
-                                   Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                                   Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable" />
                 </MudItem>
                 <MudItem>
                     <MudMenu Variant="Variant.Outlined"
@@ -84,12 +84,19 @@
                             {
                                 <MudListItem Text="@config.SaveName" Dense="true">
                                     <NestedList>
-                                        <MudListItem OnClick="() => LoadPivotConfig(config.SavedValues)">
+                                        <MudListItem OnClick="() => LoadPivotConfig(config.SavedValues!)">
                                             @Localizer.Get("Load")
                                         </MudListItem>
                                         <MudListItem OnClick="() => DeleteConfig(config.Id)">
                                             @Localizer.Get("Delete")
                                         </MudListItem>
+                                        <AuthorizeView Roles="Admin, Supervisor">
+                                            <Authorized>
+                                                <MudListItem OnClick="() => SetAsDefaultPivotTableConfig(config.SavedValues!)">
+                                                    @Localizer.Get("Set as default")
+                                                </MudListItem>
+                                            </Authorized>
+                                        </AuthorizeView>
                                     </NestedList>
                                 </MudListItem>
                             }
@@ -99,7 +106,7 @@
                 <MudItem>
                     <MudIconButton Variant="Variant.Outlined"
                                    OnClick="@(ExtractElements)"
-                                   Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                                   Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting" />
                 </MudItem>
             </MudGrid>
         </div>
@@ -107,7 +114,7 @@
 </MudPaper>
 @if (_extracting)
 {
-    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
+    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
 }
 @if (!_pivotTable)
 {
@@ -138,13 +145,13 @@
             }
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
+            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
         </PagerContent>
     </MudTable>
 }
 else
 {
-    <PivotTable @ref="_pvt" Value="_values" Style="height: 65vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name"/>
+    <PivotTable @ref="_pvt" Value="_values" Style="height: 65vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name" />
 }
 
 @code {
@@ -167,6 +174,7 @@ else
     AdHocQueriesParameters parameters = new();
     string? _userName = string.Empty;
     private bool _pivotTable;
+    private bool _pivotTableConfig;
     private string _typeReport = "Grid";
     PivotTable<Dictionary<string, object>>? _pvt;
     List<UserConfigurations> _userConfigs = new();
@@ -209,7 +217,16 @@ else
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
+
+        if (parameters.PivotTableAsDefaultView && parameters.UsePivotTable)
+        {
+            _pivotTable = true;
+            _typeReport = "Pivot";
+        }
+
+        await GetUserSavedConfigs();
     }
+
 
     private async Task GetUserSavedConfigs()
     {
@@ -302,8 +319,18 @@ else
                         StateHasChanged();
                         if (_pvt != null)
                         {
-                            var config = await _pvt.GetConfig();
-                            await _pvt.LoadConfig(config);
+                            if (!_pivotTableConfig && !string.IsNullOrEmpty(parameters.PivotTableDefaultConfig))
+                            {
+                                await _pvt.LoadConfig(parameters.PivotTableDefaultConfig);
+                                _pivotTableConfig = true;
+                            }
+                            else
+                            {
+                                var config = await _pvt.GetConfig();
+                                await _pvt.LoadConfig(config);
+                                _pivotTableConfig = true;
+                            }
+
                         }
                     }
                     else
@@ -332,6 +359,7 @@ else
         if (typeReport == "Grid")
         {
             _pivotTable = false;
+            _pivotTableConfig = false;
         }
         else
         {
@@ -453,6 +481,34 @@ else
             var remoteDataPayload = new RemoteDataPayload { Values = run, ActivityName = Item.ActivityName, QueryId = QueryId, QueryName = Item.QueryName };
             await DataService.ExtractAdHocQuery(remoteDataPayload, _cts.Token);
             _extracting = false;
+        }
+    }
+
+
+    private async Task SetAsDefaultPivotTableConfig(string config)
+    {
+        try
+        {
+            if (Item != null && !string.IsNullOrEmpty(config))
+            {
+                parameters.PivotTableDefaultConfig = config;
+                Item.Parameters = JsonSerializer.Serialize(parameters);
+                var result = await DataService.PostValues(Item, "QueryStoreUpdate");
+                if (result.Success)
+                {
+                    Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                    _errorMessage = result.Message;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            _errorMessage = e.Message;
         }
     }
 
