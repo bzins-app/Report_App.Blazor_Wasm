@@ -30,22 +30,22 @@
                     {
                         @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
-                            <MudNavLink Href="@("TasksView/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Base view")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href="@("TasksView/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Base view")</MudNavLink>
                         }
 
                         @if (context.User.IsInRole("Supervisor"))
                         {
-                            <MudNavLink Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage reports")</MudNavLink>
-                            <MudNavLink Href="@("RetrieveFiles/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve files")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage reports")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href="@("RetrieveFiles/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve files")</MudNavLink>
                         }
                     }
                     @if (_appConst.ActivateAdHocQueriesModule)
                     {
-                        <MudNavLink Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
+                        <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
                         @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
-                            <MudNavLink Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage queries")</MudNavLink>
-                            <MudNavLink Href=@($"DbExplorer2/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage queries")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"DbExplorer2/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
                         }
                     }
                 </MudNavGroup>
