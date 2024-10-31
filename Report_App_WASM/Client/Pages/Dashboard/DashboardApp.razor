@@ -156,8 +156,7 @@
     private _DblinesFetchedChart _dbFetch = null!;
     private _TasksLogsChart _tasksLogsChart = null!;
     private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
-    private readonly PeriodicTimer minuteTimer = new PeriodicTimer(new TimeSpan(0, 1, 0));
-    private CancellationTokenSource? _cts;
+    private System.Timers.Timer? _timer;
 
     protected override async Task OnInitializedAsync()
     {
@@ -165,7 +164,11 @@
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
         _isLoading = false;
-        SetTimer();
+
+        _timer = new System.Timers.Timer(1000*60*2); 
+        _timer.Elapsed += async (sender, e) => await RefreshData();
+        _timer.AutoReset = true;
+        _timer.Enabled = true;
     }
 
     private async Task RefreshData()
@@ -182,25 +185,13 @@
         StateHasChanged();
     }
 
-    private async void SetTimer()
-    {
-        _cts = new CancellationTokenSource();
-
-        while (await minuteTimer.WaitForNextTickAsync(_cts.Token))
-        {
-            await RefreshData();
-        }
-    }
-
-
     public async ValueTask DisposeAsync()
     {
-        if (_cts != null)
+        if (_timer != null)
         {
-            await _cts.CancelAsync();
+            _timer.Stop();
+            _timer.Dispose();
         }
-        minuteTimer?.Dispose();
         GC.SuppressFinalize(this);
     }
-
 }
