@@ -176,16 +176,35 @@
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
 
-        await _emailLogs.Refresh();
-        await _systemLogs.Refresh();
-        await _storage.Refresh();
-        await _dbFetch.Refresh();
-        await _tasksLogsChart.Refresh();
-        await _tasksTypeLogsChart.Refresh();
+        if (_emailLogs != null)
+        {
+            await _emailLogs.Refresh();
+        }
+        if (_systemLogs != null)
+        {
+            await _systemLogs.Refresh();
+        }
+        if (_storage != null)
+        {
+            await _storage.Refresh();
+        }
+        if (_dbFetch != null)
+        {
+            await _dbFetch.Refresh();
+        }
+        if (_tasksLogsChart != null)
+        {
+            await _tasksLogsChart.Refresh();
+        }
+        if (_tasksTypeLogsChart != null)
+        {
+            await _tasksTypeLogsChart.Refresh();
+        }
         StateHasChanged();
     }
 
-    public async ValueTask DisposeAsync()
+
+    public ValueTask DisposeAsync()
     {
         if (_timer != null)
         {
@@ -193,5 +212,8 @@
             _timer.Dispose();
         }
         GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
     }
+
+
 }
