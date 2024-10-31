@@ -156,8 +156,7 @@
     private _DblinesFetchedChart _dbFetch = null!;
     private _TasksLogsChart _tasksLogsChart = null!;
     private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
-    PeriodicTimer minuteTimer = null!;
-    private bool _timerOn;
+    private readonly PeriodicTimer minuteTimer = new PeriodicTimer(new TimeSpan(0, 1, 0));
     private CancellationTokenSource? _cts;
 
     protected override async Task OnInitializedAsync()
@@ -166,7 +165,7 @@
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
         _isLoading = false;
-        StartTimer();
+        SetTimer();
     }
 
     private async Task RefreshData()
@@ -183,10 +182,9 @@
         StateHasChanged();
     }
 
-    private async Task SetTimer()
+    private async void SetTimer()
     {
         _cts = new CancellationTokenSource();
-        minuteTimer = new PeriodicTimer(new TimeSpan(0, 1, 0));
 
         while (await minuteTimer.WaitForNextTickAsync(_cts.Token))
         {
@@ -194,11 +192,6 @@
         }
     }
 
-    private void StartTimer()
-    {
-        _timerOn = true;
-        _ = Task.Run(async () => { await SetTimer(); });
-    }
 
     public async ValueTask DisposeAsync()
     {
