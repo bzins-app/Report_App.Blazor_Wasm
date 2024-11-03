@@ -25,7 +25,7 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow: auto;text-wrap-style: nowrap;">
+            <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>

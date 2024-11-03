@@ -45,7 +45,7 @@
                     }
                 </MudChipSet>
             }
-            <div style="overflow: auto;text-wrap-style: nowrap;">
+            <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
                         <MudStack Row="true" Justify="Justify.Center">

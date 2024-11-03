@@ -25,7 +25,7 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow: auto;text-wrap-style: nowrap;">
+            <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogQueryExecutionDto">
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
