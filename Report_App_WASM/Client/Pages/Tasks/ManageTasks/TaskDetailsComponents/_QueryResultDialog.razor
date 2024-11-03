@@ -23,7 +23,7 @@
                 <RowTemplate>
                     @foreach (var t in context)
                     {
-                        <MudTd>@(t.ToString() == "{}" ? string.Empty : t)</MudTd>
+                        <MudTd Style="text-wrap-style: nowrap;">@(t.ToString() == "{}" ? string.Empty : t)</MudTd>
                     }
                 </RowTemplate>
                 <PagerContent>

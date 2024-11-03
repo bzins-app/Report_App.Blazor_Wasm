@@ -22,7 +22,7 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow: auto">
+            <div style="overflow: auto;text-wrap-style: nowrap;">
                 <SimpleGrid BuildInFilter="true" FieldsContent="@_translations" ItemsProvider="@_itemsProvider" Pagination="@_pagination" @ref="_grid">
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreatedAt)" Title="@Localizer.Get("Created at")" Sortable="true"/>
