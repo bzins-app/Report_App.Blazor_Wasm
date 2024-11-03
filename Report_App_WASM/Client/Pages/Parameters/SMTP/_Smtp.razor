@@ -30,7 +30,7 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow: auto">
+            <div style="overflow: auto;text-wrap-style: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
                         <MudStack Row="true" Justify="Justify.Center">

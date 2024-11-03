@@ -22,7 +22,7 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow: auto">
+            <div style="overflow: auto;text-wrap-style: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn >
                         <MudIconButton Style="padding: 0px !important" Icon="@Icons.Material.Outlined.Article" OnClick="() => OpenDetails(context.Id)" title="@Localizer.Get("Display details")" Disabled="context.TaskId == 0"/>

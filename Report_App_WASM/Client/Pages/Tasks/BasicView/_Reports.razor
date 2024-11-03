@@ -31,7 +31,7 @@
                     }
                 </MudChipSet>
             }
-            <div style="overflow: auto">
+            <div style="overflow: auto;text-wrap-style: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
 
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true"/>
