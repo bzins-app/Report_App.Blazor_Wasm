@@ -49,7 +49,7 @@
                     }
                 </MudChipSet>
             }
-            <div style="overflow: auto">
+            <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     @if (_UserIsSupervisor)
                     {

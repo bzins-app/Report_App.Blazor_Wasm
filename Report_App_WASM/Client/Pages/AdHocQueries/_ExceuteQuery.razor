@@ -128,7 +128,7 @@
                 }
             }
         </HeaderContent>
-        <RowTemplate>
+        <RowTemplate >
             @if (_values?.Any() == true)
             {
                 @foreach (var t in context)
@@ -139,7 +139,7 @@
                     }
                     else
                     {
-                        <MudTd>@t</MudTd>
+                        <MudTd Style="text-wrap-mode: nowrap;">@t</MudTd>
                     }
                 }
             }
