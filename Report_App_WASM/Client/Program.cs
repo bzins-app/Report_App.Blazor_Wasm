@@ -1,8 +1,8 @@
-using System.Globalization;
 using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using Report_App_WASM.Client.Services.Contracts;
+using System.Globalization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

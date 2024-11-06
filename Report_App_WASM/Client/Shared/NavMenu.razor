@@ -15,7 +15,7 @@
             </div>
         </a>
     </MudText>
-    <MudDivider/>
+    <MudDivider />
     <MudNavLink Href="Home" Style="padding-top: 15px" Icon="@Icons.Material.Outlined.Home">@Localizer.Get("Home")</MudNavLink>
     @if (_appConst.ActivateTaskSchedulerModule)
     {
@@ -39,12 +39,17 @@
                             <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href="@("RetrieveFiles/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve files")</MudNavLink>
                         }
                     }
+                    @if (_appConst.ActivateAdHocQueriesModule && _appConst.ActivateTaskSchedulerModule)
+                    {
+                        <MudDivider DividerType="DividerType.Inset" />
+                    }
                     @if (_appConst.ActivateAdHocQueriesModule)
                     {
                         <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
                         @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
                             <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage queries")</MudNavLink>
+                            <MudDivider DividerType="DividerType.Inset" />
                             <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"DbExplorer2/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
                         }
                     }
@@ -66,7 +71,7 @@
             {
                 <MudNavLink Href="ManageQueriesGlobal" Icon="@Icons.Material.Outlined.AddChart">@Localizer.Get("Adhoc queries overview")</MudNavLink>
             }
-            <MudDivider DividerType="DividerType.Inset"/>
+            <MudDivider DividerType="DividerType.Inset" />
             <MudNavGroup Title="@Localizer.Get("Logs")" Icon="@Icons.Material.Outlined.AssignmentReturned">
                 <MudNavLink Href="AuditTrail" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Audit Trail")</MudNavLink>
                 @if (_appConst.ActivateTaskSchedulerModule)
@@ -101,7 +106,7 @@
                     <MudNavLink Href="/HangfireRead" Target="_blank" Icon="@Icons.Material.Outlined.Tune">@Localizer.Get("HangFire")</MudNavLink>
                 }
             }
-            <MudDivider DividerType="DividerType.Inset"/>
+            <MudDivider DividerType="DividerType.Inset" />
         </Authorized>
     </AuthorizeView>
     <MudNavLink Href="https://github.com/bzins-app/Report_App.Blazor_Wasm/wiki" Target="_blank" Icon="@Icons.Material.Outlined.QuestionMark">@Localizer.Get("Help")</MudNavLink>
