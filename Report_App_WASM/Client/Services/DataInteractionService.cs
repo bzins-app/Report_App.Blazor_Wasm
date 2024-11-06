@@ -1,7 +1,7 @@
-﻿using System.Net;
+﻿using BlazorDownloadFile;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
-using BlazorDownloadFile;
 
 namespace Report_App_WASM.Client.Services;
 
