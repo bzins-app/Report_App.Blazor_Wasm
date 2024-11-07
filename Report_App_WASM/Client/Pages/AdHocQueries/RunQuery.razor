@@ -18,7 +18,7 @@
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
-        <_ExceuteQuery QueryId="@QueryId" />
+        <_ExceuteQuery QueryId="@QueryId"/>
     </MudCardContent>
 </MudCard>
 
@@ -43,7 +43,6 @@
 
         var uriAction = $"GetQueryStore?queryId={QueryId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
- 
     }
 
     private async Task Back()

@@ -274,10 +274,10 @@
     <value>Bereits hochgeladen?</value>
   </data>
   <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
-    <value>Eine Aktivität ist im Grunde eine Verbindung zu einem bestimmten Datenbankserver und -schema. Sie können ihr einen Ablagepfad, einen Namen und ein Logo zuordnen. Wenn Sie eine Aktivität erstellen, wird im Hintergrund eine Rolle mit demselben Namen angelegt.</value>
+    <value>Eine Aktivität ist im Grunde eine Verbindung zu einem bestimmten Datenbankserver und -schema. Sie können ihr einen Ablagepfad, einen Namen und ein Logo zuordnen. Wenn Sie eine Aktivität erstellen, wird im Hintergrund eine Rolle mit demselben Namen angelegt</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
-    <value>Ein Alert ist ein Prozess, der eine E-Mail sendet, wenn eine oder mehrere Abfragen ein Ergebnis liefern, das nicht Null ist, und zwar im Vergleich zu den auf der Aktivitätsebene konfigurierten Datenbankeinstellungen. Ein Alert muss geplant werden und es müssen E-Mail-Empfänger definiert werden.</value>
+    <value>Ein Alert ist ein Prozess, der eine E-Mail sendet, wenn eine oder mehrere Abfragen ein Ergebnis liefern, das nicht Null ist, und zwar im Vergleich zu den auf der Aktivitätsebene konfigurierten Datenbankeinstellungen. Ein Alert muss geplant werden und es müssen E-Mail-Empfänger definiert werden</value>
   </data>
   <data name="An error has occurred" xml:space="preserve">
     <value>Es ist ein Fehler aufgetreten</value>
@@ -478,7 +478,7 @@
     <value>Passwort erfolgreich geändert</value>
   </data>
   <data name="check if a report or an alert will be correctly sent by email" xml:space="preserve">
-    <value>Prüfen Sie, ob ein Bericht oder eine Warnmeldung korrekt per E-Mail versendet wird. </value>
+    <value>Prüfen Sie, ob ein Bericht oder eine Warnmeldung korrekt per E-Mail versendet wird</value>
   </data>
   <data name="Check if service is active" xml:space="preserve">
     <value>Prüfen, ob der Dienst aktiv ist</value>
@@ -493,7 +493,7 @@
     <value>Aufgabe prüfen</value>
   </data>
   <data name="Chek if your report or alert is active and for report if the &quot;Send by email&quot; button is on" xml:space="preserve">
-    <value>Prüfen Sie, ob Ihr Bericht oder Ihre Meldung aktiv ist und ob die Schaltfläche "Per E-Mail versenden" aktiviert ist.</value>
+    <value>Prüfen Sie, ob Ihr Bericht oder Ihre Meldung aktiv ist und ob die Schaltfläche "Per E-Mail versenden" aktiviert ist</value>
   </data>
   <data name="Choose a credential configuration" xml:space="preserve">
     <value>Wählen Sie eine Berechtigungskonfiguration</value>
@@ -967,13 +967,13 @@
     <value>Ein Schlüsselwort eingeben</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate" xml:space="preserve">
-    <value>Geben Sie einen Berichtstitel ein, wählen Sie eine Aktivität und dann den Dateityp, den Sie erstellen möchten.</value>
+    <value>Geben Sie einen Berichtstitel ein, wählen Sie eine Aktivität und dann den Dateityp, den Sie erstellen möchten</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate and validate" xml:space="preserve">
-    <value>Geben Sie einen Berichtstitel ein, wählen Sie eine Aktivität, dann die Art der zu erstellenden Datei und bestätigen Sie.</value>
+    <value>Geben Sie einen Berichtstitel ein, wählen Sie eine Aktivität, dann die Art der zu erstellenden Datei und bestätigen Sie</value>
   </data>
   <data name="Enter an alert title, select an activity and validate" xml:space="preserve">
-    <value>Geben Sie einen Alarmtitel ein, wählen Sie eine Aktivität aus und bestätigen Sie.</value>
+    <value>Geben Sie einen Alarmtitel ein, wählen Sie eine Aktivität aus und bestätigen Sie</value>
   </data>
   <data name="Enter the email address" xml:space="preserve">
     <value>Geben Sie die E-Mail-Adresse ein</value>
@@ -1204,7 +1204,7 @@
     <value>Wenn Sie Ihren Authentifizierungsschlüssel zurücksetzen, wird Ihre Authentifizierungsanwendung nicht funktionieren, bis Sie sie neu konfigurieren.</value>
   </data>
   <data name="In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences" xml:space="preserve">
-    <value>Um einen zu großen Strom von Warnmeldungen zu vermeiden, können Sie das Verhalten bei mehrfachem Auftreten festlegen. Es kann entweder auf einer Dauer zwischen den Ereignissen oder auf der Anzahl der Ereignisse basieren.</value>
+    <value>Um einen zu großen Strom von Warnmeldungen zu vermeiden, können Sie das Verhalten bei mehrfachem Auftreten festlegen. Es kann entweder auf einer Dauer zwischen den Ereignissen oder auf der Anzahl der Ereignisse basieren</value>
   </data>
   <data name="Inbound" xml:space="preserve">
     <value>Eingehend</value>
@@ -1459,13 +1459,13 @@
     <value>Navigieren Sie zu "Modifity tasks" und "Alerts" und schalten Sie den Bericht ein. Wenn etwas schief geht, erhalten Sie eine Fehlermeldung mit dem Grund</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; then select create a new alert" xml:space="preserve">
-    <value>Navigieren Sie zu "Modifizierungsaufgaben" und "Warnmeldungen" und wählen Sie dann "Neue Warnmeldung erstellen".</value>
+    <value>Navigieren Sie zu "Modifizierungsaufgaben" und "Warnmeldungen" und wählen Sie dann "Neue Warnmeldung erstellen"</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; and switch on the report and if needed the &quot;Send by email&quot; button. If something goes wrong you will get an error with the reason" xml:space="preserve">
     <value>Navigieren Sie zu "Modifizierungsaufgaben" und "Berichte" und schalten Sie den Bericht und bei Bedarf die Schaltfläche "Per E-Mail senden" ein. Wenn etwas schief geht, erhalten Sie eine Fehlermeldung mit dem Grund</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; then select create a new report" xml:space="preserve">
-    <value>Navigieren Sie zu "Änderungsaufgaben" und "Berichte" und wählen Sie dann "Neuen Bericht erstellen".</value>
+    <value>Navigieren Sie zu "Änderungsaufgaben" und "Berichte" und wählen Sie dann "Neuen Bericht erstellen"</value>
   </data>
   <data name="Nbr of active alerts" xml:space="preserve">
     <value>Anzahl der aktiven Warnungen</value>
@@ -2173,10 +2173,10 @@
     <value>Zeitstempel</value>
   </data>
   <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. If you want to define a specific deposit path, click on the corresponding button. When you have finished, validate the changes" xml:space="preserve">
-    <value>Um den Zeitplaner zu verwalten, wählen Sie "Zeitplaner konfigurieren" und dann wählen. Wenn Sie einen bestimmten Ablagepfad festlegen möchten, klicken Sie auf die entsprechende Schaltfläche. Wenn Sie fertig sind, validieren Sie die Änderungen.</value>
+    <value>Um den Zeitplaner zu verwalten, wählen Sie "Zeitplaner konfigurieren" und dann wählen. Wenn Sie einen bestimmten Ablagepfad festlegen möchten, klicken Sie auf die entsprechende Schaltfläche. Wenn Sie fertig sind, validieren Sie die Änderungen</value>
   </data>
   <data name="To manage the scheduler select &quot;Configure scheduler&quot; then choose. When you have finished, validate the changes" xml:space="preserve">
-    <value>Um den Planer zu verwalten, wählen Sie "Planer konfigurieren" und wählen Sie dann. Wenn Sie fertig sind, validieren Sie die Änderungen.</value>
+    <value>Um den Planer zu verwalten, wählen Sie "Planer konfigurieren" und wählen Sie dann. Wenn Sie fertig sind, validieren Sie die Änderungen</value>
   </data>
   <data name="To use an authenticator app go through the following steps:" xml:space="preserve">
     <value>Um eine Authentifizierungsanwendung zu verwenden, gehen Sie die folgenden Schritte durch:</value>
@@ -2389,7 +2389,7 @@
     <value>Wenn Sie den Bericht bearbeiten, klicken Sie auf die Registerkarte "Empfänger verwalten". Geben Sie eine E-Mail-Adresse ein und klicken Sie dann auf die Schaltfläche "Empfänger hinzufügen". Sie können auch die Nachricht der E-Mail mit der Schaltfläche "E-Mail-Nachricht bearbeiten" anpassen</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
-    <value>Wenn Sie den Bericht bearbeiten, klicken Sie auf die Registerkarte "Berichtsdetails". Fügen Sie ein Detail hinzu, wählen Sie den Abfragenamen und geben Sie die Abfrage ein. Sie können das Ergebnis testen. Klicken Sie abschließend auf die Schaltfläche "Validieren".</value>
+    <value>Wenn Sie den Bericht bearbeiten, klicken Sie auf die Registerkarte "Berichtsdetails". Fügen Sie ein Detail hinzu, wählen Sie den Abfragenamen und geben Sie die Abfrage ein. Sie können das Ergebnis testen. Klicken Sie abschließend auf die Schaltfläche "Validieren"</value>
   </data>
   <data name="Width" xml:space="preserve">
     <value>Breite</value>
@@ -2410,7 +2410,7 @@
     <value>Gestern</value>
   </data>
   <data name="You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering" xml:space="preserve">
-    <value>Sie können die Tabellen und Spaltenbeschreibungen hinzufügen, indem Sie eine Datei hochladen. Sie können die untenstehende Vorlage verwenden und diese hochladen. Bitte versuchen Sie, die UTF8-Kodierung zu verwenden, um eine bessere Darstellung zu erreichen.</value>
+    <value>Sie können die Tabellen und Spaltenbeschreibungen hinzufügen, indem Sie eine Datei hochladen. Sie können die untenstehende Vorlage verwenden und diese hochladen. Bitte versuchen Sie, die UTF8-Kodierung zu verwenden, um eine bessere Darstellung zu erreichen</value>
   </data>
   <data name="You can create, edit and delete reports." xml:space="preserve">
     <value>Sie können Berichte erstellen, bearbeiten und löschen.</value>
