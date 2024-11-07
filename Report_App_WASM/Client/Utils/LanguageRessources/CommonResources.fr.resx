@@ -274,10 +274,10 @@
     <value>Déjà téléchargé ?</value>
   </data>
   <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
-    <value>Une activité est essentiellement une connexion à un serveur de base de données et à un schéma spécifiques. Vous pouvez y attacher un chemin de dépôt, un nom et un logo. Lorsque vous créez une activité, un rôle portant le même nom est créé en arrière-plan.</value>
+    <value>Une activité est essentiellement une connexion à un serveur de base de données et à un schéma spécifiques. Vous pouvez y attacher un chemin de dépôt, un nom et un logo. Lorsque vous créez une activité, un rôle portant le même nom est créé en arrière-plan</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
-    <value>Une alerte est un processus qui envoie un e-mail si une ou plusieurs requêtes renvoient un résultat non nul par rapport aux paramètres de la base de données configurés au niveau de l'activité. Une alerte doit être programmée et les destinataires de l'email doivent être définis.</value>
+    <value>Une alerte est un processus qui envoie un e-mail si une ou plusieurs requêtes renvoient un résultat non nul par rapport aux paramètres de la base de données configurés au niveau de l'activité. Une alerte doit être programmée et les destinataires de l'email doivent être définis</value>
   </data>
   <data name="An error has occurred" xml:space="preserve">
     <value>Une erreur s'est produite</value>
@@ -493,7 +493,7 @@
     <value>Vérifier la tâche</value>
   </data>
   <data name="Chek if your report or alert is active and for report if the &quot;Send by email&quot; button is on" xml:space="preserve">
-    <value>Vérifiez si votre rapport ou votre alerte est actif et, pour le rapport, si le bouton "Envoyer par e-mail" est activé.</value>
+    <value>Vérifiez si votre rapport ou votre alerte est actif et, pour le rapport, si le bouton "Envoyer par e-mail" est activé</value>
   </data>
   <data name="Choose a credential configuration" xml:space="preserve">
     <value>Choisir une configuration d'accréditation</value>
@@ -967,13 +967,13 @@
     <value>Saisir un mot clé</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate" xml:space="preserve">
-    <value>Entrez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer.</value>
+    <value>Entrez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate and validate" xml:space="preserve">
-    <value>Saisissez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer et validez.</value>
+    <value>Saisissez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer et validez</value>
   </data>
   <data name="Enter an alert title, select an activity and validate" xml:space="preserve">
-    <value>Saisissez un titre d'alerte, sélectionnez une activité et validez.</value>
+    <value>Saisissez un titre d'alerte, sélectionnez une activité et validez</value>
   </data>
   <data name="Enter the email address" xml:space="preserve">
     <value>Entrer l'email</value>
@@ -1204,7 +1204,7 @@
     <value>Si vous réinitialisez votre clé d'authentification, votre application d'authentification ne fonctionnera pas tant que vous ne l'aurez pas reconfigurée.</value>
   </data>
   <data name="In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences" xml:space="preserve">
-    <value>Afin d'éviter un flux trop important d'alertes, vous pouvez définir le comportement en cas d'occurrences multiples. Il peut être basé sur une durée entre les occurrences ou par nombre ou par nombre d'occurrences.</value>
+    <value>Afin d'éviter un flux trop important d'alertes, vous pouvez définir le comportement en cas d'occurrences multiples. Il peut être basé sur une durée entre les occurrences ou par nombre ou par nombre d'occurrences</value>
   </data>
   <data name="Inbound" xml:space="preserve">
     <value>Réception</value>
@@ -1459,13 +1459,14 @@
     <value>Naviguez vers "Modifier les tâches" et "Alertes" et activez le rapport. Si quelque chose ne va pas, vous obtiendrez une erreur avec la raison suivante</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; then select create a new alert" xml:space="preserve">
-    <value>Naviguez vers "Tâches de modification" et "Alertes", puis sélectionnez "Créer une nouvelle alerte".</value>
+    <value>Naviguez vers "Tâches de modification" et "Alertes", puis sélectionnez "Créer une nouvelle alerte"</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; and switch on the report and if needed the &quot;Send by email&quot; button. If something goes wrong you will get an error with the reason" xml:space="preserve">
-    <value>Naviguez jusqu'à "Tâches de modification" et "Rapports" et activez le rapport et, si nécessaire, le bouton "Envoyer par e-mail". Si quelque chose ne va pas, vous obtiendrez une erreur avec la raison.</value>
+    <value>Naviguez jusqu'à "Tâches de modification" et "Rapports" et activez le rapport et, si nécessaire, le bouton "Envoyer par e-mail". Si quelque chose ne va pas, vous obtiendrez une erreur avec la raison</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; then select create a new report" xml:space="preserve">
-    <value>Naviguez vers "Tâches de modification" et "Rapports" puis sélectionnez "Créer un nouveau rapport".</value>
+    <value>Naviguez vers "Tâches de modification" et "Rapports" puis sélectionnez "Créer un nouveau rapport"
+</value>
   </data>
   <data name="Nbr of active alerts" xml:space="preserve">
     <value>Nbre d'alertes actives</value>
@@ -1624,7 +1625,7 @@
     <value>Mot de passe</value>
   </data>
   <data name="Pasword must contains {0} characters, {1} digit, {2} uppercase, {3} lowercase, {4} non aphanumeric and {5} unique characters" xml:space="preserve">
-    <value>Le mot de passe doit contenir {0} caractères, {1} chiffres, {2} majuscules, {3} minuscules, {4} caractères non alphanumériques et {5} caractères uniques.</value>
+    <value>Le mot de passe doit contenir {0} caractères, {1} chiffres, {2} majuscules, {3} minuscules, {4} caractères non alphanumériques et {5} caractères uniques</value>
   </data>
   <data name="Path" xml:space="preserve">
     <value>Chemin d'accès</value>
@@ -2410,7 +2411,7 @@
     <value>Hier</value>
   </data>
   <data name="You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering" xml:space="preserve">
-    <value>Vous pouvez ajouter les descriptions des tableaux et des colonnes en téléchargeant un fichier. Vous pouvez utiliser le modèle ci-dessous puis le télécharger. Veuillez essayer d'utiliser l'encodage UTF8 pour un meilleur rendu.</value>
+    <value>Vous pouvez ajouter les descriptions des tableaux et des colonnes en téléchargeant un fichier. Vous pouvez utiliser le modèle ci-dessous puis le télécharger. Veuillez essayer d'utiliser l'encodage UTF8 pour un meilleur rendu</value>
   </data>
   <data name="You can create, edit and delete reports." xml:space="preserve">
     <value>Vous pouvez créer, modifier et supprimer des rapports.</value>

@@ -112,47 +112,47 @@
         </div>
     </div>
 </MudPaper>
-@if (_extracting)
-{
-    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
-}
-@if (!_pivotTable)
-{
-    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="57vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
-        <HeaderContent>
-            @if (_values?.Any() == true)
-            {
-                @foreach (var key in _values?.FirstOrDefault()?.Keys!)
+    @if (_extracting)
+    {
+        <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
+    }
+    @if (!_pivotTable)
+    {
+        <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="57vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+            <HeaderContent>
+                @if (_values?.Any() == true)
                 {
-                    <MudTh>@key</MudTh>
-                }
-            }
-        </HeaderContent>
-        <RowTemplate >
-            @if (_values?.Any() == true)
-            {
-                @foreach (var t in context)
-                {
-                    @if (t.ToString() == "{}")
+                    @foreach (var key in _values?.FirstOrDefault()?.Keys!)
                     {
-                        <MudTd></MudTd>
-                    }
-                    else
-                    {
-                        <MudTd Style="text-wrap-mode: nowrap;">@t</MudTd>
+                        <MudTh>@key</MudTh>
                     }
                 }
-            }
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
-        </PagerContent>
-    </MudTable>
-}
-else
-{
-    <PivotTable @ref="_pvt" Value="_values" Style="height: 87%; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name" />
-}
+            </HeaderContent>
+            <RowTemplate>
+                @if (_values?.Any() == true)
+                {
+                    @foreach (var t in context)
+                    {
+                        @if (t.ToString() == "{}")
+                        {
+                            <MudTd></MudTd>
+                        }
+                        else
+                        {
+                            <MudTd Style="text-wrap-mode: nowrap;">@t</MudTd>
+                        }
+                    }
+                }
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
+            </PagerContent>
+        </MudTable>
+    }
+    else
+    {
+        <PivotTable @ref="_pvt" Value="_values" Style="height: 60vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name" />
+    }
 
 @code {
 
@@ -330,7 +330,6 @@ else
                                 await _pvt.LoadConfig(config);
                                 _pivotTableConfig = true;
                             }
-
                         }
                     }
                     else

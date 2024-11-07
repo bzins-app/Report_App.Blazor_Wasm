@@ -165,7 +165,7 @@
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
         _isLoading = false;
 
-        _timer = new System.Timers.Timer(1000*60*2); 
+        _timer = new System.Timers.Timer(1000 * 60 * 2);
         _timer.Elapsed += async (sender, e) => await RefreshData();
         _timer.AutoReset = true;
         _timer.Enabled = true;
@@ -180,26 +180,32 @@
         {
             await _emailLogs.Refresh();
         }
+
         if (_systemLogs != null)
         {
             await _systemLogs.Refresh();
         }
+
         if (_storage != null)
         {
             await _storage.Refresh();
         }
+
         if (_dbFetch != null)
         {
             await _dbFetch.Refresh();
         }
+
         if (_tasksLogsChart != null)
         {
             await _tasksLogsChart.Refresh();
         }
+
         if (_tasksTypeLogsChart != null)
         {
             await _tasksTypeLogsChart.Refresh();
         }
+
         StateHasChanged();
     }
 
@@ -211,6 +217,7 @@
             _timer.Stop();
             _timer.Dispose();
         }
+
         GC.SuppressFinalize(this);
         return ValueTask.CompletedTask;
     }

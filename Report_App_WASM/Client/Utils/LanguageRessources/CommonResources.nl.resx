@@ -274,7 +274,7 @@
     <value>Al geupload?</value>
   </data>
   <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
-    <value>Een activiteit is in principe een verbinding met een specifieke database server en schema. Je kunt er een depotpad, een naam en een logo aan koppelen. Wanneer je een activiteit aanmaakt, wordt op de achtergrond een rol met dezelfde naam aangemaakt.</value>
+    <value>Een activiteit is in principe een verbinding met een specifieke database server en schema. Je kunt er een depotpad, een naam en een logo aan koppelen. Wanneer je een activiteit aanmaakt, wordt op de achtergrond een rol met dezelfde naam aangemaakt</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
     <value>Een waarschuwing is een proces dat een e-mail stuurt als een of meer query's een niet-nul resultaat opleveren ten opzichte van de database-instellingen die op activiteitniveau zijn geconfigureerd. Een waarschuwing moet worden gepland en de ontvangers van de e-mail moeten worden gedefinieerd</value>
@@ -2410,7 +2410,7 @@
     <value>Gisteren</value>
   </data>
   <data name="You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering" xml:space="preserve">
-    <value>U kunt de tabellen en kolombeschrijvingen toevoegen door een bestand te uploaden. U kunt het onderstaande sjabloon gebruiken en vervolgens uploaden. Probeer UTF8 codering te gebruiken voor een betere weergave.</value>
+    <value>U kunt de tabellen en kolombeschrijvingen toevoegen door een bestand te uploaden. U kunt het onderstaande sjabloon gebruiken en vervolgens uploaden. Probeer UTF8 codering te gebruiken voor een betere weergave</value>
   </data>
   <data name="You can create, edit and delete reports." xml:space="preserve">
     <value>U kunt rapporten aanmaken, bewerken en verwijderen.</value>
