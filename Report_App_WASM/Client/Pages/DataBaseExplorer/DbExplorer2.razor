@@ -207,7 +207,8 @@
             _ => parentValue.TypeValue
         };
 
-        _cts?.Cancel();
+        if(_cts is not null)
+            await _cts.CancelAsync();
         _cts = new CancellationTokenSource();
 
         if (parentValue.TypeValue == "Head")
@@ -366,8 +367,9 @@
         }
 
         try
-        {
-            _cts?.Cancel();
+        {   
+            if(_cts is not null)
+            await _cts.CancelAsync();
             _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
             var run = new RemoteDbCommandParameters
