@@ -10,7 +10,7 @@
             @foreach (var element in _parameters.OrderBy(a => a.DisplaySequence))
             {
                 <MudItem xs="6" md="6" lg="6" xl="4" xxl="3">
-                    <MudCard Elevation="4" Style="height: 475px">
+                    <MudCard Elevation="4" Style="height: 430px">
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6">@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)</MudText>
@@ -21,7 +21,7 @@
                         </MudCardHeader>
                         <MudCardContent>
                             <MudTextField @bind-value="@element.DisplayName" TextChanged="UpdateParameters" Text="@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)" T="string" Label="@Localizer.Get("Display name")"/>
-                            <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@(element.DisplaySequence)" @onclick="UpdateParameters"/>
+                            <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@element.DisplaySequence" @onclick="UpdateParameters"/>
                             <MudTextField @bind-value="@element.ParameterIdentifier" TextChanged="UpdateParameters" Text="@element.ParameterIdentifier" T="string" Label="@Localizer.Get("Parameter identifier")"/>
                             <MudField Label="@Localizer.Get("Data type")" Disabled="true"> @Localizer.Get(element.ValueType.ToString())</MudField>
                             @if (element.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
