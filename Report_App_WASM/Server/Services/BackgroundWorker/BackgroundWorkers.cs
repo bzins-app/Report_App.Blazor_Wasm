@@ -18,11 +18,13 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<BackgroundWorkers> _logger;
+    private bool _disposed;
 
     public BackgroundWorkers(
         ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader,
         LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment,
-        IServiceScopeFactory scopeFactory)
+        IServiceScopeFactory scopeFactory, ILogger<BackgroundWorkers> logger)
     {
         _context = context;
         _emailSender = emailSender;
@@ -31,28 +33,30 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         _mapper = mapper;
         _hostingEnvironment = hostingEnvironment;
         _scopeFactory = scopeFactory;
+        _logger = logger;
     }
 
-
-    public void SendEmail(List<EmailRecipient>? email, string? subject, string message,
-        List<Attachment>? attachment = null)
-
+    public void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment>? attachment = null)
     {
         BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment));
     }
 
     public void DeleteFile(string filePath)
     {
-        BackgroundJob.Schedule(
-            () => File.Delete(filePath), TimeSpan.FromMinutes(5));
+        BackgroundJob.Schedule(() => File.Delete(filePath), TimeSpan.FromMinutes(5));
     }
 
     public async Task SwitchBackgroundTasksPerActivityAsync(int activityId, bool activate)
     {
-        var reportHeaders = await _context.TaskHeader.Where(a => a.IsActivated && a.Activity.ActivityId == activityId)
-            .Select(a => a.TaskHeaderId).ToListAsync();
+        var reportHeaders = await _context.TaskHeader
+            .Where(a => a.IsActivated && a.Activity.ActivityId == activityId)
+            .Select(a => a.TaskHeaderId)
+            .ToListAsync();
 
-        foreach (var t in reportHeaders) await HandleTasksJobs(t, activate);
+        foreach (var t in reportHeaders)
+        {
+            await HandleTasksJobs(t, activate);
+        }
     }
 
     public async Task SwitchBackgroundTaskAsync(int taskHeaderId, bool activate)
@@ -65,12 +69,12 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         var queueName = type.ToString().ToLower();
         var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local, QueueName = queueName };
         SubmitResult result = new();
+
         if (activate)
         {
             if (queueName == "cleaner")
             {
-                RecurringJob.AddOrUpdate("CleanerJobFiles", queueName, () => DeleteLocalFilesAsync(), "1 0 * * *",
-                    options);
+                RecurringJob.AddOrUpdate("CleanerJobFiles", queueName, () => DeleteLocalFilesAsync(), "1 0 * * *", options);
                 RecurringJob.AddOrUpdate("CleanerJobLogs", queueName, () => DeleteLogsAsync(), "3 0 * * *", options);
             }
             else
@@ -81,31 +85,29 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     BackgroundTaskType.Alert => TaskType.Alert,
                     _ => TaskType.Report
                 };
+
                 await _context.TaskHeader
-                    .Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
-                        a =>
+                    .Where(a => a.IsActivated && a.Type == typeTask && a.Activity.IsActivated)
+                    .ForEachAsync(a =>
+                    {
+                        var jobName = $"{a.TypeName} Id:{a.TaskHeaderId}";
+                        if (!string.IsNullOrEmpty(a.CronParameters) && a.CronParameters != "[]")
                         {
-                            var jobName = a.TypeName + " Id:" + a.TaskHeaderId;
-                            if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
+                            var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
+                            for (int cronId = 0; cronId < crons.Count; cronId++)
                             {
-                                var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
-                                var cronId = 0;
-                                foreach (var cron in crons!)
+                                var cron = crons[cronId];
+                                var jobParam = new TaskJobParameters
                                 {
-                                    var jobParam = new TaskJobParameters
-                                    {
-                                        TaskHeaderId = a.TaskHeaderId,
-                                        Cts = CancellationToken.None,
-                                        GenerateFiles = true
-                                    };
-                                    var jobId = jobName + "_" + cronId;
-                                    RecurringJob.AddOrUpdate(jobId, queueName,
-                                        () => RunTaskJobAsync(jobParam, CancellationToken.None),
-                                        cron.CronValue, options);
-                                    cronId++;
-                                }
+                                    TaskHeaderId = a.TaskHeaderId,
+                                    Cts = CancellationToken.None,
+                                    GenerateFiles = true
+                                };
+                                var jobId = $"{jobName}_{cronId}";
+                                RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                             }
-                        });
+                        }
+                    });
             }
 
             result.Success = true;
@@ -113,15 +115,17 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         else
         {
             var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
-            foreach (var job in recurringJobs.Where(a => a.Queue == queueName)) RecurringJob.RemoveIfExists(job.Id);
+            foreach (var job in recurringJobs.Where(a => a.Queue == queueName))
+            {
+                RecurringJob.RemoveIfExists(job.Id);
+            }
             result.Success = false;
         }
 
         return result;
     }
 
-    public void RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient>? emails,
-        List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
+    public void RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient>? emails, List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
     {
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
         {
@@ -135,11 +139,24 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         }, CancellationToken.None));
     }
 
-    void IDisposable.Dispose()
+    public void Dispose()
     {
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                // Dispose managed resources here
+            }
+
+            _disposed = true;
+        }
+    }
 
     private async Task HandleTasksJobs(int taskHeaderId, bool activate)
     {
@@ -153,7 +170,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             .Select(a => new { a.TaskName, a.Type, a.TypeName, a.Activity.ActivityName, a.CronParameters })
             .FirstOrDefaultAsync();
 
-        var jobName = taskHeader!.TypeName + " Id:" + taskHeaderId;
+        var jobName = $"{taskHeader!.TypeName} Id:{taskHeaderId}";
 
         if (activate)
         {
@@ -164,7 +181,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                 for (int cronId = 0; cronId < crons.Count; cronId++)
                 {
                     var cron = crons[cronId];
-                    var jobId = jobName + "_" + cronId;
+                    var jobId = $"{jobName}_{cronId}";
                     var jobParam = new TaskJobParameters
                     {
                         TaskHeaderId = taskHeaderId,
@@ -176,22 +193,19 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     {
                         var queueName = "report";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName,
-                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
                     else if (taskHeader.Type == TaskType.Alert && services!.AlertService)
                     {
                         var queueName = "alert";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName,
-                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
                     else if (taskHeader.Type == TaskType.DataTransfer && services!.DataTransferService)
                     {
                         var queueName = "datatransfer";
                         options.QueueName = queueName;
-                        RecurringJob.AddOrUpdate(jobId, queueName,
-                            () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
+                        RecurringJob.AddOrUpdate(jobId, queueName, () => RunTaskJobAsync(jobParam, CancellationToken.None), cron.CronValue, options);
                     }
                 }
             }
@@ -199,8 +213,10 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         else
         {
             var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
-            foreach (var j in recurringJobs.Where(a => a.Id.Contains(" Id:" + taskHeaderId + "_")))
+            foreach (var j in recurringJobs.Where(a => a.Id.Contains($" Id:{taskHeaderId}_")))
+            {
                 RecurringJob.RemoveIfExists(j.Id);
+            }
         }
     }
 
@@ -212,8 +228,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
         if (db != null)
         {
-            using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
-                _hostingEnvironment);
+            using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper, _hostingEnvironment);
             await handler.HandleTask(parameters);
         }
     }
@@ -221,7 +236,12 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     public async Task DeleteLocalFilesAsync()
     {
         ApplicationLogTask logTask = new()
-            { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
+        {
+            StartDateTime = DateTime.Now,
+            JobDescription = "File Cleaner",
+            Type = "Cleaner service"
+        };
+
         try
         {
             var qry = _context.ApplicationLogReportResult.Where(a => a.IsAvailable == true).GroupJoin(
@@ -238,19 +258,27 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                             DateTime.Now.AddDays(-(a.taskHeader == null ? 15 : a.taskHeader.ReportsRetentionInDays)))
                 .Select(a => a.reportResult).ToListAsync();
 
-            if (filesToDelete.Any()) await _fileDeposit.RemoveLocalFilesAsync(filesToDelete);
+            if (filesToDelete.Any())
+            {
+                await _fileDeposit.RemoveLocalFilesAsync(filesToDelete);
+            }
+
             logTask.Result = "Ok";
             logTask.Error = false;
-            logTask.EndDateTime = DateTime.Now;
-            logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
         }
         catch (Exception ex)
         {
             logTask.Result = ex.Message;
             logTask.Error = true;
+            _logger.LogError(ex, "Error during file deletion");
+            await _emailSender.GenerateErrorEmailAsync(ex.Message, "File deletion: ");
+        }
+        finally
+        {
             logTask.EndDateTime = DateTime.Now;
             logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
-            await _emailSender.GenerateErrorEmailAsync(ex.Message, "File deletion: ");
+            await _context.AddAsync(logTask);
+            await _context.SaveChangesAsync();
         }
 
         await DeleteDemoSFTPDirectory();
@@ -291,50 +319,67 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             Type = "Cleaner service"
         };
 
-        var retentionDays = await _context.ApplicationParameters
-            .Select(a => a.LogsRetentionInDays)
-            .FirstOrDefaultAsync();
+        try
+        {
+            var retentionDays = await _context.ApplicationParameters
+                .Select(a => a.LogsRetentionInDays)
+                .FirstOrDefaultAsync();
 
+            await _context.ApplicationLogSystem
+                .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
 
-        await _context.ApplicationLogSystem
-            .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
-        await _context.ApplicationLogTask
-            .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
-        await _context.ApplicationLogTaskDetails
-            .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
-        await _context.ApplicationLogEmailSender
-            .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
-        await _context.ApplicationAuditTrail
-            .Where(a => a.DateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
-        await _context.ApplicationLogReportResult
-            .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-retentionDays) && !a.IsAvailable)
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
-        await _context.ApplicationLogQueryExecution
-            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
-        await _context.ApplicationLogAdHocQueries
-            .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
-            .ForEachAsync(a => _context.Remove(a));
-        await _context.SaveChangesAsync();
+            await _context.ApplicationLogTask
+                .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
 
+            await _context.ApplicationLogTaskDetails
+                .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
 
-        logTask.Result = "Ok";
-        logTask.Error = false;
-        logTask.EndDateTime = DateTime.Now;
-        logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
-        await _context.AddAsync(logTask);
-        await _context.SaveChangesAsync();
+            await _context.ApplicationLogEmailSender
+                .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
+
+            await _context.ApplicationAuditTrail
+                .Where(a => a.DateTime.Date < DateTime.Today.AddDays(-retentionDays))
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
+
+            await _context.ApplicationLogReportResult
+                .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-retentionDays) && !a.IsAvailable)
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
+
+            await _context.ApplicationLogQueryExecution
+                .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
+
+            await _context.ApplicationLogAdHocQueries
+                .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
+                .ForEachAsync(a => _context.Remove(a));
+            await _context.SaveChangesAsync();
+
+            logTask.Result = "Ok";
+            logTask.Error = false;
+        }
+        catch (Exception ex)
+        {
+            logTask.Result = ex.Message;
+            logTask.Error = true;
+            _logger.LogError(ex, "Error during log deletion");
+        }
+        finally
+        {
+            logTask.EndDateTime = DateTime.Now;
+            logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
+            await _context.AddAsync(logTask);
+            await _context.SaveChangesAsync();
+        }
     }
 }

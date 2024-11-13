@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="C:\Users\benoi\.nuget\packages\blazor.aceeditorjs\1.1.12\contentFiles\any\net6.0\bundleconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Blazor-ApexCharts" Version="4.0.0" />
     <PackageReference Include="Blazor.AceEditorJs" Version="1.1.12" />
     <PackageReference Include="Blazor.PivotTable" Version="1.0.6" />
