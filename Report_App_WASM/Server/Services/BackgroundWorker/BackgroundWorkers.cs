@@ -278,9 +278,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     Console.WriteLine($@"An error occurred: {deleteTasks.Message}");
                 }
             }
-
-        await _context.AddAsync(logTask);
-        await _context.SaveChangesAsync();
+        }
     }
 
     public async Task DeleteLogsAsync()
