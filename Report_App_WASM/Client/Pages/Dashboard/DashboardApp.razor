@@ -157,6 +157,9 @@
     private _TasksLogsChart _tasksLogsChart = null!;
     private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
     private System.Timers.Timer? _timer;
+    private bool _isPageVisible = true;
+
+    [Inject] IJSRuntime JSRuntime { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -169,6 +172,9 @@
         _timer.Elapsed += async (sender, e) => await RefreshData();
         _timer.AutoReset = true;
         _timer.Enabled = true;
+
+        await JSRuntime.InvokeVoidAsync("pageVisibility.registerVisibilityChangeCallback", DotNetObjectReference.Create(this));
+
     }
 
     private async Task RefreshData()
@@ -207,6 +213,22 @@
         }
 
         StateHasChanged();
+    }
+
+
+    [JSInvokable]
+    public async Task OnVisibilityChange(bool isVisible)
+    {
+        _isPageVisible = isVisible;
+        if (_isPageVisible)
+        {
+            _timer?.Start();
+            await RefreshData();
+        }
+        else
+        {
+            _timer?.Stop();
+        }
     }
 
 
