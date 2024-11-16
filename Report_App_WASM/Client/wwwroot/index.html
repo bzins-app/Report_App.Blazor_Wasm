@@ -49,6 +49,18 @@
                 navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
         }
     </script>
+<script>
+    window.pageVisibility = {
+        isPageVisible: function () {
+            return !document.hidden;
+        },
+        registerVisibilityChangeCallback: function (dotNetObject) {
+            document.addEventListener('visibilitychange', function () {
+                dotNetObject.invokeMethodAsync('OnVisibilityChange', !document.hidden);
+            });
+        }
+    };
+</script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
 <script src="js/LoadScripts.js"></script>
