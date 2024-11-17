@@ -28,9 +28,9 @@
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
-        @if (!string.IsNullOrEmpty(_errorMessage))
+        @if (!string.IsNullOrEmpty(_queryTestResult))
         {
-            <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
+            <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
         }
         @if (Item != null)
         {
@@ -45,8 +45,8 @@
                                 @if (_activities.Any())
                                 {
                                     <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
-                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
-                                               Required>
+                                    AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
+                                    Required>
                                         @foreach (var value in _activities)
                                         {
                                             <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
@@ -193,7 +193,7 @@
     private QueryStoreDto? Item;
     private TypeDb _typeDbTask;
     private List<Dictionary<string, object>>? _values = new();
-    private string? _queryTestResult { get; set; }
+    private string _queryTestResult = string.Empty;
     private string _querySelectedCode = string.Empty;
     private bool _isDarkMode;
     private AceEditorOptions? _opt;
