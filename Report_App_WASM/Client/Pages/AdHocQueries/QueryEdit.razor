@@ -28,10 +28,6 @@
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
-        @if (!string.IsNullOrEmpty(_queryTestResult))
-        {
-            <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
-        }
         @if (Item != null)
         {
             <MudForm FieldChanged="FormChanged">
@@ -96,6 +92,10 @@
         }
         <MudGrid>
             <MudItem sm="12" md="12" lg="12" xl="6">
+                @if (!string.IsNullOrEmpty(_queryTestResult))
+                {
+                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
+                }
                 @if (Item != null)
                 {
                     <MudPaper Elevation="25">
