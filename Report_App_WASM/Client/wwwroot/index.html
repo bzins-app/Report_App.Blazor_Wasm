@@ -16,56 +16,70 @@
 </head>
 
 <body>
-<div id="app">
-    <svg class="loading-progress">
-        <circle r="40%" cx="50%" cy="50%"/>
-        <circle r="40%" cx="50%" cy="50%"/>
-    </svg>
-    <div class="loading-progress-text"></div>
-</div>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
-<script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
-<script src="_framework/blazor.webassembly.js"></script>
-<script>
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>
         window.cultureInfo = {
             get: () => window.localStorage['ReportApp_Culture'],
             set: (value) => window.localStorage['ReportApp_Culture'] = value
         };
     </script>
-<script>
+    <script>
         window.AppTheme = {
             get: () => window.localStorage['ReportApp_Theme'],
             set: (value) => window.localStorage['ReportApp_Theme'] = value
         };
     </script>
-<script>
+    <script>
         window.getBrowserLanguage = function () {
             return (navigator.languages && navigator.languages.length) ? navigator.languages[0] :
                 navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
         }
     </script>
-<script>
-    window.pageVisibility = {
-        isPageVisible: function () {
-            return !document.hidden;
-        },
-        registerVisibilityChangeCallback: function (dotNetObject) {
-            document.addEventListener('visibilitychange', function () {
-                dotNetObject.invokeMethodAsync('OnVisibilityChange', !document.hidden);
-            });
-        }
-    };
-</script>
-<script src="_content/MudBlazor/MudBlazor.min.js"></script>
-<script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
-<script src="js/LoadScripts.js"></script>
-<script src="_content/Blazor.AceEditorJs/BlazorAceEditor.min.js"></script>
-<script src="_content/Blazor.PivotTable/BlazorPivotTable.min.js"></script>
+    <script>
+        window.pageVisibility = {
+            handlers: {},
+            isPageVisible: function () {
+                return !document.hidden;
+            },
+            registerVisibilityChangeCallback: function (dotNetObject) {
+                const handlerId = Date.now().toString();
+                function visibilityChangeHandler() {
+                    if (dotNetObject && dotNetObject.invokeMethodAsync) {
+                        dotNetObject.invokeMethodAsync('OnVisibilityChange', !document.hidden);
+                    }
+                }
+                document.addEventListener('visibilitychange', visibilityChangeHandler);
+                this.handlers[handlerId] = visibilityChangeHandler;
+                return handlerId; // Return the unique handler ID
+            },
+            unregisterVisibilityChangeCallback: function (handlerId) {
+                const handler = this.handlers[handlerId];
+                if (handler) {
+                    document.removeEventListener('visibilitychange', handler);
+                    delete this.handlers[handlerId];
+                }
+            }
+        };
+    </script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
+    <script src="js/LoadScripts.js"></script>
+    <script src="_content/Blazor.AceEditorJs/BlazorAceEditor.min.js"></script>
+    <script src="_content/Blazor.PivotTable/BlazorPivotTable.min.js"></script>
 </body>
 
 </html>

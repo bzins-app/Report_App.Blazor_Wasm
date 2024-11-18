@@ -7,9 +7,9 @@
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
 <MudStack Row="true">
-    <MudSpacer/>
+    <MudSpacer />
     <MudText Style="align-content:center">@Localizer.Get("Latest update") @DateTime.Now</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")"/>
+    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")" />
 </MudStack>
 
 <MudGrid Spacing="2">
@@ -79,11 +79,11 @@
                 <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
                     @if (_isLoading)
                     {
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
                     }
                     else
                     {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart"/>
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart" />
                     }
                 </MudPaper>
             </MudItem>
@@ -91,17 +91,17 @@
                 <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
                     @if (_isLoading)
                     {
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
                     }
                     else
                     {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart"/>
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart" />
                     }
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" sm="12" md="12" lg="12">
                 <MudPaper Elevation="2" Class="pa-2" Style="height: 220px;">
-                    <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" @ref="_dbFetch"/>
+                    <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" @ref="_dbFetch" />
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -110,17 +110,17 @@
         <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
             @if (_isLoading)
             {
-                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
             }
             else
             {
-                <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs"/>
+                <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs" />
             }
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="6" xl="4">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage"/>
+            <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage" />
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="4" xl="2">
@@ -135,16 +135,15 @@
     </MudItem>
     <MudItem xs="12" sm="12" md="6" xl="3">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs"/>
+            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs" />
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="6" xl="3">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs"/>
+            <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs" />
         </MudPaper>
     </MudItem>
 </MudGrid>
-
 
 @code {
     AppMetrics _metrics = new();
@@ -160,6 +159,8 @@
     private bool _isPageVisible = true;
 
     [Inject] IJSRuntime JSRuntime { get; set; } = null!;
+    private DotNetObjectReference<DashboardApp>? _dotNetRef;
+    private string? _visibilityChangeHandlerId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -173,9 +174,10 @@
         _timer.AutoReset = true;
         _timer.Enabled = true;
 
-        await JSRuntime.InvokeVoidAsync("pageVisibility.registerVisibilityChangeCallback", DotNetObjectReference.Create(this));
-
+        _dotNetRef = DotNetObjectReference.Create(this);
+        _visibilityChangeHandlerId = await JSRuntime.InvokeAsync<string>("pageVisibility.registerVisibilityChangeCallback", _dotNetRef);
     }
+
 
     private async Task RefreshData()
     {
@@ -215,6 +217,14 @@
         StateHasChanged();
     }
 
+    private async Task UnregisterVisibilityChangeCallback()
+    {
+        if (_visibilityChangeHandlerId != null)
+        {
+            await JSRuntime.InvokeVoidAsync("pageVisibility.unregisterVisibilityChangeCallback", _visibilityChangeHandlerId);
+            _visibilityChangeHandlerId = null;
+        }
+    }
 
     [JSInvokable]
     public async Task OnVisibilityChange(bool isVisible)
@@ -231,8 +241,7 @@
         }
     }
 
-
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         if (_timer != null)
         {
@@ -240,9 +249,9 @@
             _timer.Dispose();
         }
 
+        await UnregisterVisibilityChangeCallback();
+        _dotNetRef?.Dispose();
+
         GC.SuppressFinalize(this);
-        return ValueTask.CompletedTask;
     }
-
-
 }
