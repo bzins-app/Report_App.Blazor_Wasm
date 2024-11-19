@@ -366,7 +366,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (!_formParamValidated)
+        else if (!_formParamValidated && param!.Count > 0)
         {
             _values = new List<Dictionary<string, object>>();
         }
