@@ -294,6 +294,7 @@
 
     private async Task RunSql()
     {
+        _queryTestResult=string.Empty;
         StateHasChanged();
         tabs.ActivatePanel(0);
         if (string.IsNullOrEmpty(Item?.Query))
