@@ -203,7 +203,6 @@
     MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private bool _changesToSave;
-    private string? _errorMessage;
     private List<SelectItemActivitiesInfo> _activities = new();
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam = new();
@@ -445,7 +444,6 @@
     {
         try
         {
-            _errorMessage = "";
             if (Item != null)
             {
                 Item.Parameters = JsonSerializer.Serialize(parameters);
@@ -460,14 +458,12 @@
                 else
                 {
                     Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-                    _errorMessage = result.Message;
                 }
             }
         }
         catch (Exception e)
         {
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-            _errorMessage = e.Message;
         }
     }
 
