@@ -110,7 +110,7 @@
                     }
                 </MudChipSet>
             }
-            <MudTable Items="@_filteredQueries" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="82vh" Virtualize="true" Elevation="0">
+            <MudTable Items="@_filteredQueries" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="75vh" Virtualize="true" Elevation="0">
                 <HeaderContent>
                     <MudTh style="width:50px;"></MudTh>
                     <MudTh>@Localizer.Get("Query name")</MudTh>
@@ -135,7 +135,9 @@
         await Task.Delay(10);
         _queryRender = (__builder) =>
         {
-            <_ExceuteQuery QueryId="@queryId"/>
+            <MudCardContent Style="padding:5px">
+                <_ExceuteQuery QueryId="@queryId"/>
+            </MudCardContent>
         };
         StateHasChanged();
     }
