@@ -21,9 +21,9 @@
             {
                 <MudItem md="3" lg="2">
                     <MudPaper>
-                        @if (_tree != null)
+                        @if (_QueriesFragment != null)
                         {
-                            @_tree
+                            @_QueriesFragment
                         }
                     </MudPaper>
                 </MudItem>
@@ -54,7 +54,7 @@
     private List<QueryStoreDto> _queries;
     private List<QueryStoreDto> _filteredQueries;
 
-    public RenderFragment? _tree { get; set; }
+    public RenderFragment? _QueriesFragment { get; set; }
     public RenderFragment? _queryRender { get; set; }
     private string _queryName = string.Empty;
     private bool _open = true;
@@ -99,7 +99,7 @@
             .Distinct().ToList();
 
         _filteredQueries = _queries;
-        _tree = (__builder) =>
+        _QueriesFragment = (__builder) =>
         {
             @if (_tags.Any())
             {
@@ -155,7 +155,11 @@
         _filteredQueries = _queries;
         if (selected != null && selected.Any())
         {
-            _filteredQueries = _queries.Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags) && selected.Contains(JsonSerializer.Deserialize<List<string>>(a.Tags)!.FirstOrDefault())).ToList();
+            foreach (var t in selected)
+            {
+                _filteredQueries = _filteredQueries.Where(a => a.Tags.Contains(t)).ToList();
+            }
+            
         }
     }
 
