@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazor-ApexCharts" Version="4.0.1" />
-    <PackageReference Include="Blazor.AceEditorJs" Version="1.1.12" />
+    <PackageReference Include="Blazor.AceEditorJs" Version="1.1.13" />
     <PackageReference Include="Blazor.PivotTable" Version="1.0.8" />
     <PackageReference Include="Blazor.SimpleGrid" Version="8.0.0" />
     <PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
