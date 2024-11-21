@@ -52,18 +52,14 @@
 
     private string? _pageTitle;
     private List<QueryStoreDto> _queries;
+    private List<QueryStoreDto> _filteredQueries;
 
-    private class QueryTree
-    {
-        public string QueryName { get; set; }
-        public int QueryId { get; set; } = 0;
-    }
-
-    private List<TreeItemData<QueryTree>> InitialTreeItems;
     public RenderFragment? _tree { get; set; }
     public RenderFragment? _queryRender { get; set; }
     private string _queryName = string.Empty;
     private bool _open = true;
+    List<string> _tags;
+    IReadOnlyCollection<string>? selected;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -97,77 +93,35 @@
 
         var _serializedTags = new List<string>();
         _serializedTags = _queries.Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags)).Select(a => a.Tags).ToList();
-        var _tags = new List<string>();
+         _tags = new List<string>();
         _tags = _serializedTags
             .SelectMany(value => JsonSerializer.Deserialize<List<string>>(value)!)
             .Distinct().ToList();
 
-        InitialTreeItems = new List<TreeItemData<QueryTree>>();
-        InitialTreeItems.Clear();
-
-        if (_queries.Where(a => a.Tags == "[]").Any())
-            InitialTreeItems.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = "Uncategorized", }, Icon = Icons.Material.Filled.Label, Expandable = true });
-
-        foreach (var tag in _tags)
-        {
-            InitialTreeItems.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = tag, }, Icon = Icons.Material.Filled.Label, Expandable = true });
-        }
-
-        foreach (var q in _queries)
-        {
-            if (q.Tags == "[]")
-            {
-                var item = InitialTreeItems.FirstOrDefault(a => a.Value?.QueryName == "Uncategorized");
-                if (item != null)
-                {
-                    if (!item.HasChildren)
-                    {
-                        item.Children = new List<TreeItemData<QueryTree>>();
-                    }
-
-                    item.Children!.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = q.QueryName!, QueryId = q.Id }, Icon = Icons.Material.Filled.QueryStats, Expandable = false });
-                }
-            }
-            else
-            {
-                foreach (var tag in _tags)
-                {
-                    if (q.Tags.Contains(tag))
-                    {
-                        var item = InitialTreeItems.FirstOrDefault(a => a.Value!.QueryName == tag);
-                        if (item != null)
-                        {
-                            if (!item.HasChildren)
-                            {
-                                item.Children = new List<TreeItemData<QueryTree>>();
-                            }
-
-                            item.Children!.Add(new TreeItemData<QueryTree> { Value = new QueryTree { QueryName = q.QueryName!, QueryId = q.Id }, Icon = Icons.Material.Filled.QueryStats, Expandable = false });
-                        }
-                    }
-                }
-            }
-        }
-
+        _filteredQueries = _queries;
         _tree = (__builder) =>
         {
-            <MudTreeView Items="@InitialTreeItems" Height="82vh" ReadOnly="false" Dense="true" Class="overflow-x-auto" Ripple="false" Expanded Icon="@Icons.Custom.Uncategorized.Folder" IconExpanded="@Icons.Custom.Uncategorized.FolderOpen">
-                <ItemTemplate >
-                    @if (context.HasChildren)
+            @if (_tags.Any())
+            {
+                <MudChipSet @bind-SelectedValues="selected" SelectionMode="SelectionMode.MultiSelection">
+                    @foreach (var value in _tags)
                     {
-                        <MudTreeViewItem Text="@context.Value?.QueryName" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" Items="@context.Children" Expanded="true"/>
+                        <MudChip Text="@value" Value="value" Variant="Variant.Text" OnClick="OnTagSelected" Color="Color.Default" SelectedColor="Color.Primary"></MudChip>
                     }
-                    else if (context.Value!.QueryId > 0)
-                    {
-                        <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="false">
-                            <BodyContent Context="item">
-                                <MudText>@item.Value?.QueryName</MudText>
-                                <MudIconButton Icon="@Icons.Material.Filled.Launch" Size="Size.Small" Class="ms-2" title="@Localizer.Get("Run query")" OnClick="@(_ => ExecuteQuery(item.Value!.QueryId))"/>
-                            </BodyContent>
-                        </MudTreeViewItem>
-                    }
-                </ItemTemplate>
-            </MudTreeView>
+                </MudChipSet>
+            }
+            <MudTable Items="@_filteredQueries" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="82vh" Virtualize="true" Elevation="0">
+                <HeaderContent>
+                    <MudTh style="width:50px;"></MudTh>
+                    <MudTh>@Localizer.Get("Query name")</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Launch" Size="Size.Small" Class="ms-2" title="@Localizer.Get("Run query")" OnClick="@(_ => ExecuteQuery(context.Id))" />
+                    </MudTd>
+                    <MudTd >@context.QueryName</MudTd>
+                </RowTemplate>
+            </MudTable>
         };
         _queryRender = null;
         _queryName = string.Empty;
@@ -194,6 +148,15 @@
     private void ToggleTree()
     {
         _open = !_open;
+    }
+
+    private async Task OnTagSelected()
+    {
+        _filteredQueries = _queries;
+        if (selected != null && selected.Any())
+        {
+            _filteredQueries = _queries.Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags) && selected.Contains(JsonSerializer.Deserialize<List<string>>(a.Tags)!.FirstOrDefault())).ToList();
+        }
     }
 
 }
