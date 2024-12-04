@@ -1,6 +1,6 @@
 ﻿@using ApexCharts
 @using Color = MudBlazor.Color
-@if (_logs == null)
+@if (_isLoading)
 {
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
 }
@@ -29,10 +29,18 @@ else
     private List<StorageData>? _logs;
     private ApexChartOptions<StorageData> _options = new();
     private ApexChart<StorageData>? _chart;
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
         _logs = await DataService.GetValues<StorageData>("StorageInfo", ApiControllers.DashboardApi);
+        _isLoading = false;
+    }
+
+    public async Task Refresh()
+    {
+        _logs = await DataService.GetValues<StorageData>("StorageInfo", ApiControllers.DashboardApi);
+        await _chart.UpdateSeriesAsync(false);
     }
 
 }

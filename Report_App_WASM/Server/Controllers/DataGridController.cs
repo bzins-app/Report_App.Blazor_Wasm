@@ -22,7 +22,6 @@ public class DataGridController : ODataController, IDisposable
         _mapper = mapper;
     }
 
-
     public void Dispose()
     {
         GC.SuppressFinalize(this);
@@ -35,23 +34,19 @@ public class DataGridController : ODataController, IDisposable
         return _context.ApplicationLogSystem.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
-
     [HttpPost("odata/ExtractLogs")]
     public async Task<FileResult?> ExtractLogsAsync([FromBody] ODataExtractPayload values)
     {
-        if (values.FunctionName == "EmailLogs") return await GetExtractFile(GetEmailLogs(), values);
-
-        if (values.FunctionName == "QueryExecutionLogs") return await GetExtractFile(GetQueryExecutionLogs(), values);
-
-        if (values.FunctionName == "ReportResultLogs") return await GetExtractFile(GetReportResultLogs(), values);
-
-        if (values.FunctionName == "TaskLogs") return await GetExtractFile(GetTaskLogs(), values);
-
-        if (values.FunctionName == "AuditTrail") return await GetExtractFile(GetAuditTrail(), values);
-
-        if (values.FunctionName == "QueriesLogs") return await GetExtractFile(GetQueriesLogs(), values);
-
-        return await GetExtractFile(GetSystemLogs(), values);
+        return values.FunctionName switch
+        {
+            "EmailLogs" => await GetExtractFile(GetEmailLogs(), values),
+            "QueryExecutionLogs" => await GetExtractFile(GetQueryExecutionLogs(), values),
+            "ReportResultLogs" => await GetExtractFile(GetReportResultLogs(), values),
+            "TaskLogs" => await GetExtractFile(GetTaskLogs(), values),
+            "AuditTrail" => await GetExtractFile(GetAuditTrail(), values),
+            "QueriesLogs" => await GetExtractFile(GetQueriesLogs(), values),
+            _ => await GetExtractFile(GetSystemLogs(), values)
+        };
     }
 
     private async Task<FileResult> GetExtractFile<T>(IQueryable<T> source, ODataExtractPayload values) where T : class
@@ -91,7 +86,6 @@ public class DataGridController : ODataController, IDisposable
                 .FirstOrDefault()
         }).OrderBy(a => a.RoleName).AsQueryable();
     }
-
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/EmailLogs")]
@@ -166,11 +160,15 @@ public class DataGridController : ODataController, IDisposable
             .Select(a => new FileDepositPathConfigurationDto
             {
                 ConfigurationName = a.ConfigurationName,
-                CreateDateTime = a.CreateDateTime, ModDateTime = a.ModDateTime, CreateUser = a.CreateUser,
+                CreateDateTime = a.CreateDateTime,
+                ModDateTime = a.ModDateTime,
+                CreateUser = a.CreateUser,
                 FileDepositPathConfigurationId = a.FileDepositPathConfigurationId,
-                FilePath = a.FilePath, ModificationUser = a.ModificationUser,
+                FilePath = a.FilePath,
+                ModificationUser = a.ModificationUser,
                 SftpConfigurationId = a.SftpConfiguration == null ? 0 : a.SftpConfiguration.SftpConfigurationId,
-                TryToCreateFolder = a.TryToCreateFolder, UseSftpProtocol = a.UseSftpProtocol,
+                TryToCreateFolder = a.TryToCreateFolder,
+                UseSftpProtocol = a.UseSftpProtocol,
                 IsReachable = a.IsReachable
             }).AsQueryable();
     }

@@ -98,10 +98,7 @@ builder.Services.AddSwaggerGen(c =>
     c.DocumentFilter<SwaggerFilters>();
 });
 
-builder.Services.AddResponseCompression(options =>
-{
-    options.EnableForHttps = true;
-});
+builder.Services.AddResponseCompression(options => { options.EnableForHttps = true; });
 // Add Hangfire services.
 builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -163,11 +160,13 @@ using (var scope = app.Services.CreateScope())
         {
             retryCount++;
             var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}", retryCount, maxRetries);
+            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}",
+                retryCount, maxRetries);
             if (retryCount >= maxRetries)
             {
                 throw;
             }
+
             Task.Delay(TimeSpan.FromSeconds(10)).Wait(); // Wait before retrying
         }
     }

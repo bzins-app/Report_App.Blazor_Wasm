@@ -20,20 +20,20 @@
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow: auto">
+            <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" TGridItem="UsersPerRole">
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RoleName)" Title="@Localizer.Get("Role name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.UserName)" Title="@Localizer.Get("User name")" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn>
-                        <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
+                        <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
                     </Blazor.SimpleGrid.TemplateColumn>
                 </SimpleGrid>
             </div>

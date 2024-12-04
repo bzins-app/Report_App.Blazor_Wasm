@@ -17,14 +17,14 @@
     <MudCardContent>
         <MudForm Model="@_param" @ref="_form" @bind-IsValid="@_success">
             <MudTextField @bind-Value="_param.ApplicationName" Label="@Localizer.Get("Application name")" Required/>
-            <MudSwitch @bind-Value="_param!.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary"/>
-            <MudSwitch @bind-Value="_param!.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary" />
+            <MudSwitch @bind-Value="_param.ActivateTaskSchedulerModule" Label="@Localizer.Get("Activate Tasks scheduler module?")" Color="Color.Primary"/>
+            <MudSwitch @bind-Value="_param.ActivateAdHocQueriesModule" Label="@Localizer.Get("Activate Adhoc queries module?")" Color="Color.Primary"/>
             <MudNumericField @bind-Value="_param.LogsRetentionInDays" Label="@Localizer.Get("Logs: Archiving duration")"/>
             <MudTextField @bind-Value="_param.EmailPrefix" Label="@Localizer.Get("Email prefix")" Required/>
             <MudTextField @bind-Value="_param.AlertEmailPrefix" Label="@Localizer.Get("Alert email prefix")" Required/>
             <MudTextField @bind-Value="_param.ErrorEmailPrefix" Label="@Localizer.Get("Error email prefix")" Required/>
             <div style="padding-top:10px">
-                <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small" >@Localizer.Get("Edit error email")</MudButton>
+                <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Edit error email")</MudButton>
             </div>
             <MudText Typo="Typo.h6" Class="pa-4">@Localizer.Get("Logo")</MudText>
             <div style="padding-bottom: 5px">
@@ -47,8 +47,8 @@
         <div style="padding-top: 15px">
             <MudTextField T="string" Label="@Localizer.Get("Administrator email for error notifications")" @bind-Value="@_email"
                           Validation="@CheckMail()"/>
-            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small" 
-                        OnClick="@(() => Add())">
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Disabled="_emailNotValidated" Style="text-transform: none" Size="Size.Small"
+                       OnClick="@(() => Add())">
                 @Localizer.Get("Add recipient")
             </MudButton>
             <MudTable Items="@_emailItems" Hover="true" Dense="true">
@@ -60,7 +60,7 @@
                 <RowTemplate>
                     <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
                     <MudTd DataLabel="@Localizer.Get("Blind copy")">
-                        <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary" />
+                        <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
                     </MudTd>
                     <MudTd>
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => Delete(context)"></MudIconButton>
@@ -215,9 +215,9 @@
 
         var dialog = await DialogService.ShowAsync<_TextEditor>(Localizer.Get("Edit error email template"), parameters, maxWidth);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (!(result is { Canceled: true }))
         {
-            _param.ErrorEMailMessage = result.Data.ToString();
+            _param.ErrorEMailMessage = result?.Data?.ToString();
             _success = true;
         }
     }

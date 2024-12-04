@@ -9,9 +9,3 @@ public class UserInfo
     public string? AppTheme { get; init; }
     public List<ClaimsValue>? ExposedClaims { get; init; }
 }
-
-public class ClaimsValue
-{
-    public string? Type { get; init; }
-    public string? Value { get; init; }
-}

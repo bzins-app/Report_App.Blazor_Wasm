@@ -391,7 +391,7 @@
     <value>Background taks</value>
   </data>
   <data name="Background Tasks" xml:space="preserve">
-    <value>Background Tasks</value>
+    <value>Background tasks</value>
   </data>
   <data name="Background tasks logs" xml:space="preserve">
     <value>Background tasks logs</value>
@@ -567,9 +567,6 @@
   <data name="Configure the scheduler and deposit path" xml:space="preserve">
     <value>Configure the scheduler and deposit path</value>
   </data>
-  <data name="Configure the scheduler and deposit path1" xml:space="preserve">
-    <value>Configure the scheduler and deposit path1</value>
-  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirm</value>
   </data>
@@ -629,9 +626,6 @@
   </data>
   <data name="Create a new deposit path" xml:space="preserve">
     <value>Create a new deposit path</value>
-  </data>
-  <data name="Create a new deposit path1" xml:space="preserve">
-    <value>Create a new deposit path1</value>
   </data>
   <data name="Create a new email report" xml:space="preserve">
     <value>Create a new email report</value>
@@ -744,9 +738,8 @@
   <data name="DB explorer" xml:space="preserve">
     <value>DB explorer</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="DB schema" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="DB schema" xml:space="preserve">
+    <value>DB schema</value>
   </data>
   <data name="Db tables" xml:space="preserve">
     <value>Db tables</value>
@@ -820,9 +813,6 @@
   <data name="Domain" xml:space="preserve">
     <value>Domain</value>
   </data>
-  <data name="Domain1" xml:space="preserve">
-    <value>Domain1</value>
-  </data>
   <data name="Don't have access to your authenticator device? You can" xml:space="preserve">
     <value>Don't have access to your authenticator device? You can</value>
   </data>
@@ -870,9 +860,6 @@
   </data>
   <data name="Each selected day" xml:space="preserve">
     <value>Each selected day</value>
-  </data>
-  <data name="Each selected day1" xml:space="preserve">
-    <value>Each selected day1</value>
   </data>
   <data name="Each selected hour" xml:space="preserve">
     <value>Each selected hour</value>
@@ -929,7 +916,7 @@
     <value>Email prefix</value>
   </data>
   <data name="Email Sender" xml:space="preserve">
-    <value>Email Sender</value>
+    <value>Email sender</value>
   </data>
   <data name="Email sender Is Activated?" xml:space="preserve">
     <value>Email sender Is Activated?</value>
@@ -1069,17 +1056,11 @@
   <data name="File deposit path" xml:space="preserve">
     <value>File deposit path</value>
   </data>
-  <data name="File deposit path1" xml:space="preserve">
-    <value>File deposit path1</value>
-  </data>
   <data name="File desposit path" xml:space="preserve">
     <value>File desposit path</value>
   </data>
   <data name="File name" xml:space="preserve">
     <value>File name</value>
-  </data>
-  <data name="File name1" xml:space="preserve">
-    <value>File name1</value>
   </data>
   <data name="File path" xml:space="preserve">
     <value>File path</value>
@@ -1320,9 +1301,6 @@
   </data>
   <data name="LastOpeningDay" xml:space="preserve">
     <value>LastOpeningDay</value>
-  </data>
-  <data name="LastOpeningDay1" xml:space="preserve">
-    <value>LastOpeningDay1</value>
   </data>
   <data name="LastRun" xml:space="preserve">
     <value>LastRun</value>
@@ -1687,9 +1665,6 @@
   <data name="Primary key" xml:space="preserve">
     <value>Primary key</value>
   </data>
-  <data name="Primary key1" xml:space="preserve">
-    <value>Primary key1</value>
-  </data>
   <data name="Processing" xml:space="preserve">
     <value>Processing</value>
   </data>
@@ -1816,9 +1791,6 @@
   <data name="Reports result logs" xml:space="preserve">
     <value>Reports result logs</value>
   </data>
-  <data name="Reports1" xml:space="preserve">
-    <value>Reports1</value>
-  </data>
   <data name="Required" xml:space="preserve">
     <value>Required</value>
   </data>
@@ -1845,9 +1817,6 @@
   </data>
   <data name="reset your authenticator keys." xml:space="preserve">
     <value>reset your authenticator keys.</value>
-  </data>
-  <data name="reset1" xml:space="preserve">
-    <value>reset1</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Restore</value>
@@ -2356,9 +2325,6 @@
   <data name="Use Sftp protocol?" xml:space="preserve">
     <value>Use Sftp protocol?</value>
   </data>
-  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
-    <value>Use standard queries for Rhs WMS?</value>
-  </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Use the default deposit path of the activity?</value>
   </data>
@@ -2420,7 +2386,7 @@
     <value>Welcome</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Manage recipients&quot; tab. Enter an emsail adress then click on &quot;Add recipients&quot; button. You can also customize the message of the email with teh button &quot;Edit email message&quot;" xml:space="preserve">
-    <value>When you are editing the report, click on the "Manage recipients" tab. Enter an emsail adress then click on "Add recipients" button. You can also customize the message of the email with teh button "Edit email message"</value>
+    <value>When you are editing the report, click on the "Manage recipients" tab. Enter an email adress then click on "Add recipients" button. You can also customize the message of the email with teh button "Edit email message"</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
     <value>When you are editing the report, click on the "Report details" tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button</value>
@@ -2509,8 +2475,8 @@
   <data name="Your password length must be at least 6" xml:space="preserve">
     <value>Your password length must be at least 6</value>
   </data>
-  <data name="Your password must contain at least one (!? *.)" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Your password must contain at least one (!? *.)" xml:space="preserve">
+    <value>Your password must contain at least one (!? *.)</value>
   </data>
   <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
     <value>Your password must contain at least one lowercase letter</value>
@@ -2542,11 +2508,11 @@
   <data name="Edit an activity" xml:space="preserve">
     <value>Edit an activity</value>
   </data>
-  <data name="Go back to reports list" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Go back to reports list" xml:space="preserve">
+    <value>Go back to reports list</value>
   </data>
-  <data name="Go back to the activity list" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Go back to the activity list" xml:space="preserve">
+    <value>Go back to the activity list</value>
   </data>
   <data name="Indicate the database name?" xml:space="preserve">
     <value>Indicate the database name?</value>
@@ -2566,8 +2532,8 @@
   <data name="Tasks manager" xml:space="preserve">
     <value>Tasks manager</value>
   </data>
-  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
+    <value>This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account.</value>
   </data>
   <data name="Use Windows authentication?" xml:space="preserve">
     <value>Use Windows authentication?</value>
@@ -2584,19 +2550,49 @@
   <data name="A Target database must be selected" xml:space="preserve">
     <value>A Target database must be selected</value>
   </data>
-  <data name="DB schema" xml:space="preserve">
-    <value>DB schema</value>
+  <data name="Query output" xml:space="preserve">
+    <value>Query output</value>
   </data>
-  <data name="Your password must contain at least one (!? *.)" xml:space="preserve">
-    <value>Your password must contain at least one (!? *.)</value>
+  <data name="Manage queries" xml:space="preserve">
+    <value>Manage queries</value>
   </data>
-  <data name="Go back to reports list" xml:space="preserve">
-    <value>Go back to reports list</value>
+  <data name="Connections manager" xml:space="preserve">
+    <value>Connections manager</value>
   </data>
-  <data name="Go back to the activity list" xml:space="preserve">
-    <value>Go back to the activity list</value>
+  <data name="Tasks logs" xml:space="preserve">
+    <value>Tasks logs</value>
   </data>
-  <data name="This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account." xml:space="preserve">
-    <value>This process disables 2FA until you verify your authenticator app.  If you do not complete your authenticator app configuration you may lose access to your account.</value>
+  <data name="File creation" xml:space="preserve">
+    <value>File creation</value>
+  </data>
+  <data name="Per Connection" xml:space="preserve">
+    <value>Per Connection</value>
+  </data>
+  <data name="Retrieve files" xml:space="preserve">
+    <value>Retrieve files</value>
+  </data>
+  <data name="Latest update" xml:space="preserve">
+    <value>Latest update</value>
+  </data>
+  <data name="Application parameters updated" xml:space="preserve">
+    <value>Application parameters updated</value>
+  </data>
+  <data name="Application name &amp; logo" xml:space="preserve">
+    <value>Application name &amp; logo</value>
+  </data>
+  <data name="Pivot Table: nbr max of columns" xml:space="preserve">
+    <value>Pivot Table: nbr max of columns</value>
+  </data>
+  <data name="Pivot Table: nbr max of rows" xml:space="preserve">
+    <value>Pivot Table: nbr max of rows</value>
+  </data>
+  <data name="Use pivot table component?" xml:space="preserve">
+    <value>Use pivot table component?</value>
+  </data>
+  <data name="Set as default" xml:space="preserve">
+    <value>Set as default</value>
+  </data>
+  <data name="Use pivot table as default view?" xml:space="preserve">
+    <value>Use pivot table as default view?</value>
   </data>
 </root>

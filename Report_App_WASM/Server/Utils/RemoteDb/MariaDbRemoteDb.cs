@@ -13,12 +13,11 @@ public class MariaDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = @$"SELECT  
-                       TABLE_NAME
-                    FROM 
-                        information_schema.TABLES 
-                    WHERE 
-                        TABLE_SCHEMA='{dbInfo.DbSchema}'  AND  TABLE_TYPE ='BASE TABLE' order by 1;";
+            script = @$"		
+        SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
+		FROM information_schema.tables t  
+                where TABLE_SCHEMA='{dbInfo.DbSchema}' 
+                order by 1,2";
         return script;
     }
 
@@ -42,14 +41,16 @@ public class MariaDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = @$"select 
-                            col.column_name as column_name
-                        from information_schema.tables as tab
-                            inner join information_schema.columns as col
-                                on col.table_schema = tab.table_schema
-                                and col.table_name = tab.table_name
-                        where tab.table_type = 'BASE TABLE' and tab.table_name='{tableName}'
-                            and tab.table_schema ='{dbInfo.DbSchema}'";
+            script = @$"select
+				'Col' as Valuetype,
+				c.COLUMN_NAME,
+				c.DATA_TYPE,
+				c.ORDINAL_POSITION as ColOrder
+				from INFORMATION_SCHEMA.COLUMNS c
+                join information_schema.tables t  on t.TABLE_NAME=c.TABLE_NAME
+				where c.TABLE_NAME ='{tableName}'
+                and t.TABLE_SCHEMA='{dbInfo.DbSchema}' 
+				order by ColOrder";
         return script;
     }
 

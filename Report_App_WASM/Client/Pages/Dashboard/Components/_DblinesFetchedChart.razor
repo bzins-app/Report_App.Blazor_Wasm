@@ -1,7 +1,8 @@
 ﻿@using Report_App_WASM.Shared.Dashboard
 @using ApexCharts
 @using Color = MudBlazor.Color
-@if (_logs == null)
+
+@if (_isLoading)
 {
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
 }
@@ -23,19 +24,25 @@ else
     </ApexChart>
 }
 
-
 @code {
-
     [Parameter] public string? Height { get; set; } = null;
 
     private List<DbLinesQuery>? _logs;
     private ApexChartOptions<DbLinesQuery> _options = new();
     private ApexChart<DbLinesQuery>? _chart;
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
         _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", ApiControllers.DashboardApi);
         _options.Tooltip = new Tooltip { X = new TooltipX { Format = @"dd \ MM \ yyyy HH:mm:ss" } };
+        _isLoading = false;
+    }
+
+    public async Task Refresh()
+    {
+        _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", ApiControllers.DashboardApi);
+        await _chart.UpdateSeriesAsync(false);
     }
 
 }

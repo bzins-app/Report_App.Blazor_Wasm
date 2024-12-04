@@ -15,8 +15,8 @@ public class OracleRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script = dbInfo.UseDbSchema
-                ? $"SELECT table_name FROM all_tables where owner='{dbInfo.DbSchema}' order by 1"
-                : "SELECT table_name FROM all_tables order by 1";
+                ? $"SELECT 'Table' as tab_type, table_name FROM all_tables where owner='{dbInfo.DbSchema}' \r\nunion all\r\nSELECT 'View' as tab_type,  View_name FROM all_views where owner='{dbInfo.DbSchema}' \r\norder by 1,2"
+                : "SELECT 'Table' as TypeValue, table_name FROM all_tables  \r\nunion all\r\nSELECT 'View' as TypeValue,  View_name FROM all_views \r\norder by 1,2";
         return script;
     }
 
@@ -35,8 +35,8 @@ public class OracleRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script = dbInfo.UseDbSchema
-                ? $"select column_name as Column_Name from ALL_TAB_COLUMNS where OWNER='{dbInfo.DbSchema}' and table_name='{tableName}'"
-                : $"select column_name as Column_Name from ALL_TAB_COLUMNS where table_name='{tableName}'";
+                ? $"select 'Col' as tab_type,Column_name,Data_Type,Column_id from ALL_TAB_COLUMNS where table_name='{tableName}' and owner='{dbInfo.DbSchema}' order by Column_id"
+                : $"select\r\n'Col' as TypeValue,\r\nColumn_name,\r\nData_Type,\r\nColumn_id\r\nfrom ALL_TAB_COLUMNS \r\nwhere table_name='{tableName}' \r\norder by Column_id";
         return script;
     }
 

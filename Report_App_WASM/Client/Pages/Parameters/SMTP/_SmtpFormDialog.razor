@@ -16,7 +16,7 @@
             <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             <MudTextField @bind-Value="Item!.SmtpHost" Label="@Localizer.Get("Smtp host")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             <MudNumericField @bind-Value="Item!.SmtpPort" Label="@Localizer.Get("Smtp port")" Disabled="Action == CrudAction.Delete"/>
-            <MudSwitch @bind-Value="Item!.SmtpSsl" Label="@Localizer.Get("SSL Activated?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete" />
+            <MudSwitch @bind-Value="Item!.SmtpSsl" Label="@Localizer.Get("SSL Activated?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
             <MudTextField @bind-Value="Item!.SmtpUserName" Label="@Localizer.Get("Smtp username")" Disabled="Action == CrudAction.Delete"/>
             <MudTextField @bind-Value="Item!.SmtpPassword" Label="@Localizer.Get("Smtp password")" InputType="InputType.Password" Disabled="Action == CrudAction.Delete"/>
             <MudTextField @bind-Value="Item!.FromEmail" Label="@Localizer.Get("From email")" InputType="InputType.Email" Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>

@@ -15,11 +15,11 @@
             <MudTextField @bind-Value="Item!.QueryName" Label="@(Localizer.Get("Query Name"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             @if (_activities.Any())
             {
-                <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.IdActivity" AnchorOrigin="Origin.BottomCenter"
+                <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ActivityName" AnchorOrigin="Origin.BottomCenter" 
                            Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
                     @foreach (var value in _activities)
                     {
-                        <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                        <MudSelectItem  Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
                     }
                 </MudSelect>
             }
@@ -50,6 +50,10 @@
     protected override async Task OnInitializedAsync()
     {
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        if (Item.IdActivity > 0)
+        {
+            Item.ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault();
+        }
     }
 
     private void Cancel()
@@ -69,9 +73,8 @@
         }
         else
         {
-            Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault() };
+            Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
             Item.IdActivity = Item.Activity.ActivityId;
-            Item.ActivityName = Item.Activity.ActivityName;
             await _form.Validate();
             if (_form.IsValid && Item.Activity is not null)
             {

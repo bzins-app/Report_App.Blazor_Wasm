@@ -1,0 +1,216 @@
+﻿@implements IAsyncDisposable
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<ErrorBoundary>
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <MudText Typo="Typo.subtitle1" Color="Color.Error">
+            <b>@Localizer.Get("An error has occurred"): @_errorMessage</b>
+        </MudText>
+    }
+    <MudCard Elevation="6">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">@Localizer.Get("Ldap configuration")</MudText>
+            <MudSpacer/>
+            <MudStack Row="true">
+                <MudIconButton Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OpenCreateDialog)"
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
+                <MudIconButton Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
+                <MudIconButton Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+            </MudStack>
+        </MudCardHeader>
+        <MudCardContent>
+            <div style="overflow: auto;text-wrap-mode: nowrap;">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
+                    <Blazor.SimpleGrid.TemplateColumn>
+                        <MudStack Row="true" Justify="Justify.Center">
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
+                        </MudStack>
+                    </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Is activated?")">
+                        <_LdapActivate Item="context"/>
+                    </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Domain)" Title="@Localizer.Get("Domain")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
+                </SimpleGrid>
+            </div>
+            @if (_rendering)
+            {
+                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering"/>
+            }
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
+        </MudCardContent>
+    </MudCard>
+</ErrorBoundary>
+
+@code
+{
+    GridItemsProvider<LdapConfigurationDto>? _itemsProvider;
+    PaginationState _pagination = new() { ItemsPerPage = 10 };
+    SimpleGridFieldsContent? _translations;
+    SimpleGrid<LdapConfigurationDto> _grid = default!;
+    private string? _errorMessage;
+    private bool _rendering;
+
+    protected override void OnInitialized()
+    {
+        _itemsProvider = async req =>
+        {
+            var response = await GetRemoteData(req);
+            _rendering = false;
+            if (response is null)
+            {
+                return GridItemsProviderResult.From(Array.Empty<LdapConfigurationDto>(), 0);
+            }
+
+            return GridItemsProviderResult.From(response.Value!, response.Count);
+        };
+        _translations = AppService.GetGridTranslations();
+    }
+
+    private async Task<ApiResponse<LdapConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<LdapConfigurationDto> req)
+    {
+        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
+        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
+        var odataQuery = _grid?.GetODataQuery();
+        var url = "odata/Ldap?";
+        if (string.IsNullOrEmpty(odataQuery))
+        {
+            url += "$count=true&$top=10";
+        }
+        else
+        {
+            url += odataQuery;
+        }
+
+        try
+        {
+            return await DataService.GetODataValues<LdapConfigurationDto>(url, req.CancellationToken);
+        }
+        catch
+        {
+            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
+            return null;
+        }
+    }
+
+    private async Task OnRefresh()
+    {
+        _rendering = true;
+        await _grid.RefreshDataAsync();
+        _rendering = false;
+    }
+
+    private async Task RemoveFilters()
+    {
+        _rendering = true;
+        await _grid.RemoveFilters();
+        _rendering = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _grid.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
+
+    private async Task OpenEditDialog(LdapConfigurationDto value)
+    {
+        var item = new LdapConfigurationDto
+        {
+            ConfigurationName = value.ConfigurationName,
+            Domain = value.Domain,
+            UserName = value.UserName,
+            Password = value.Password
+        };
+        var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
+
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Edit", parameters);
+        var feedback = await dialog.Result;
+
+        if (!(feedback is { Canceled: true }))
+        {
+            _errorMessage = string.Empty;
+            value.ConfigurationName = item.ConfigurationName;
+            value.Domain = item.Domain;
+            value.UserName = item.UserName;
+            value.Password = item.Password;
+
+            var result = await DataService.PostValues(value, "LdapUpdate");
+            if (result.Success)
+            {
+                Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task OpenDeleteDialog(LdapConfigurationDto value)
+    {
+        var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
+
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Delete", parameters);
+        var feedback = await dialog.Result;
+
+        if (!(feedback is { Canceled: true }))
+        {
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "LdapDelete");
+            if (result.Success)
+            {
+                Snackbar.Add(Localizer.Get("Object deleted"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
+            }
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var value = new LdapConfigurationDto();
+        var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
+
+        var dialog = await DialogService.ShowAsync<_LdapFormDialog>("Create", parameters);
+        var feedback = await dialog.Result;
+
+        if (!(feedback is { Canceled: true }))
+        {
+            _errorMessage = string.Empty;
+            var result = await DataService.PostValues(value, "LdapInsert");
+            if (result.Success)
+            {
+                Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
+                await OnRefresh();
+            }
+            else
+            {
+                Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                _errorMessage = result.Message;
+            }
+        }
+    }
+}

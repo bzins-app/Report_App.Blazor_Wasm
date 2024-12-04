@@ -8,10 +8,6 @@ public class RemoteDataPayload
     public int QueryId { get; init; }
     public string? QueryName { get; init; }
     public string? ActivityName { get; init; }
-}
-
-public class DeleteTablePayload
-{
-    public string TableName { get; set; } = string.Empty;
-    public int IdDataTransfer { get; set; }
+    public bool PivotTable { get; init; }
+    public int PivotTableNbrColumns { get; init; }
 }

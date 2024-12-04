@@ -76,6 +76,7 @@ public class UserManagerController : ControllerBase, IDisposable
             {
                 return Ok(new SubmitResult { Success = false, Message = result.Errors.First().Description });
             }
+
             if (result.Succeeded)
             {
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);

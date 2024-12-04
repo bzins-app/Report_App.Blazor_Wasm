@@ -14,7 +14,7 @@ public class BackgroundTaskHandler : IDisposable
     private readonly LocalFilesService _fileDeposit;
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly IMapper _mapper;
-    private List<EmailRecipient>? _emails = new();
+    private List<EmailRecipient> _emails = new();
 
     private Dictionary<TaskDetail, DataTable> _fetchedData = new();
     private List<MemoryFileContainer> _fileResults = new();
@@ -117,7 +117,8 @@ public class BackgroundTaskHandler : IDisposable
                     {
                         ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName,
                         StartDateTime = DateTime.Now, JobDescription = detail.QueryName,
-                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,Result = "Running"
+                        Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,
+                        Result = "Running"
                     };
 
                     await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
@@ -126,19 +127,20 @@ public class BackgroundTaskHandler : IDisposable
                     var _headerParameters =
                         JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
 
-                    int i=0;
+                    int i = 0;
                     foreach (var value in _fetchedData)
                     {
-                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId,i);
+                        await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId, i);
                         i++;
                     }
 
                     log.EndDateTime = DateTime.Now;
                     log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
-                    if (log.Result== "Running")
+                    if (log.Result == "Running")
                     {
                         log.Result = "No lines fetched";
                     }
+
                     _context.Update(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     _fetchedData.Clear();
@@ -165,6 +167,7 @@ public class BackgroundTaskHandler : IDisposable
             logTask.Error = true;
             logTask.EndDateTime = DateTime.Now;
             logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
+            logTask.Result = ex.Message.Length > 440 ? ex.Message.Substring(0, 440) : ex.Message;
             await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ActivityName + ": " + _header.TaskName);
             await _context.AddAsync(new ApplicationLogTaskDetails
                 { TaskId = _taskId, Step = "Error", Info = logTask.Result });
@@ -232,7 +235,7 @@ public class BackgroundTaskHandler : IDisposable
             CreatedBy = "Report Service",
             TaskHeaderId = _header.TaskHeaderId,
             ReportName = _header.TaskName,
-            SubName = subName ?? "",
+            SubName = subName is null ? "" : subName != fName ? fName : "TaskId:" + _taskId,
             FileType = _header.TypeFile.ToString(),
             ReportPath = "/docsstorage/" + fName,
             FileName = fName,
@@ -251,7 +254,7 @@ public class BackgroundTaskHandler : IDisposable
             SubmitResult resultDeposit;
             var config = await _context.FileDepositPathConfiguration.Include(a => a.SftpConfiguration).AsNoTracking()
                 .FirstAsync(a => a.FileDepositPathConfigurationId == _header.FileDepositPathConfigurationId);
-            if (config.SftpConfiguration != null && config.UseSftpProtocol)
+            if (config is { SftpConfiguration: not null, UseSftpProtocol: true })
             {
                 var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
                 var localfilePath = Path.Combine(storagePath, fName);
@@ -284,7 +287,12 @@ public class BackgroundTaskHandler : IDisposable
             }
 
             if (!resultDeposit.Success)
+            {
                 await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message, "File deposit: ");
+                await _context.AddAsync(new ApplicationLogTaskDetails
+                    { TaskId = _taskId, Step = "Error", Info = resultDeposit.Message });
+            }
+
 
             ApplicationLogReportResult filecreationRemote = new()
             {
@@ -294,7 +302,7 @@ public class BackgroundTaskHandler : IDisposable
                 CreatedBy = "Report Service",
                 TaskHeaderId = _header.TaskHeaderId,
                 ReportName = _header.TaskName,
-                SubName = subName ?? "",
+                SubName = "TaskId:" + _taskId,
                 FileType = _header.TypeFile.ToString(),
                 ReportPath = completePath,
                 FileName = fName,
@@ -343,7 +351,7 @@ public class BackgroundTaskHandler : IDisposable
                     else
                         queryCreate =
                             CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                                detailParam.DataTransferTargetTableName, loopNumber==0?true:false);
+                                detailParam.DataTransferTargetTableName, loopNumber == 0 ? true : false);
                 }
 
                 await _dbReader.CreateTable(queryCreate, activityIdTransfer);
@@ -615,23 +623,13 @@ public class BackgroundTaskHandler : IDisposable
                     var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
                     var message = "";
                     List<Attachment> listAttach = new();
-                    var counter = 0;
                     foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
                         if (table.Value.Rows.Count < 101)
                         {
                             var valueMessage = table.Key.QueryName + ":" + Environment.NewLine;
                             valueMessage += table.Value.ToHtml();
-                            if (counter == 0)
-                            {
-                                message = string.Format(
-                                    _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!, valueMessage);
-                                counter++;
-                            }
-                            else
-                            {
-                                message += "{0}";
-                                message = string.Format(message, valueMessage);
-                            }
+                            message += "\r\n{0}";
+                            message = string.Format(message, valueMessage);
                         }
                         else
                         {
@@ -643,6 +641,9 @@ public class BackgroundTaskHandler : IDisposable
                             listAttach.Add(new Attachment(new MemoryStream(fileResult.Content), fName,
                                 fileResult.ContentType));
                         }
+
+                    message = string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!,
+                        message);
 
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
@@ -672,7 +673,7 @@ public class BackgroundTaskHandler : IDisposable
 
     private async Task GenerateEmail()
     {
-        if (_emails!.Any() && _fileResults.Any())
+        if (_emails.Any() && _fileResults.Any())
         {
             var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
             var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;

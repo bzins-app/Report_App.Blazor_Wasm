@@ -274,10 +274,10 @@
     <value>Déjà téléchargé ?</value>
   </data>
   <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
-    <value>Une activité est essentiellement une connexion à un serveur de base de données et à un schéma spécifiques. Vous pouvez y attacher un chemin de dépôt, un nom et un logo. Lorsque vous créez une activité, un rôle portant le même nom est créé en arrière-plan.</value>
+    <value>Une activité est essentiellement une connexion à un serveur de base de données et à un schéma spécifiques. Vous pouvez y attacher un chemin de dépôt, un nom et un logo. Lorsque vous créez une activité, un rôle portant le même nom est créé en arrière-plan</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
-    <value>Une alerte est un processus qui envoie un e-mail si une ou plusieurs requêtes renvoient un résultat non nul par rapport aux paramètres de la base de données configurés au niveau de l'activité. Une alerte doit être programmée et les destinataires de l'email doivent être définis.</value>
+    <value>Une alerte est un processus qui envoie un e-mail si une ou plusieurs requêtes renvoient un résultat non nul par rapport aux paramètres de la base de données configurés au niveau de l'activité. Une alerte doit être programmée et les destinataires de l'email doivent être définis</value>
   </data>
   <data name="An error has occurred" xml:space="preserve">
     <value>Une erreur s'est produite</value>
@@ -442,7 +442,7 @@
     <value>Annuler</value>
   </data>
   <data name="cannot be enabled because no email recipients have been entered" xml:space="preserve">
-    <value>ne peut pas être activé parce qu'aucun destinataire n'a été saisi.</value>
+    <value>ne peut pas être activé parce qu'aucun destinataire n'a été saisi</value>
   </data>
   <data name="cannot be enabled because no query is attached to this job" xml:space="preserve">
     <value>ne peut pas être activé car aucune requête n'est attachée à ce travail</value>
@@ -478,7 +478,7 @@
     <value>Mot de passe modifié avec succès</value>
   </data>
   <data name="check if a report or an alert will be correctly sent by email" xml:space="preserve">
-    <value>vérifier si un rapport ou une alerte sera correctement envoyé par email </value>
+    <value>vérifier si un rapport ou une alerte sera correctement envoyé par email</value>
   </data>
   <data name="Check if service is active" xml:space="preserve">
     <value>Vérifiez si le service est actif</value>
@@ -493,7 +493,7 @@
     <value>Vérifier la tâche</value>
   </data>
   <data name="Chek if your report or alert is active and for report if the &quot;Send by email&quot; button is on" xml:space="preserve">
-    <value>Vérifiez si votre rapport ou votre alerte est actif et, pour le rapport, si le bouton "Envoyer par e-mail" est activé.</value>
+    <value>Vérifiez si votre rapport ou votre alerte est actif et, pour le rapport, si le bouton "Envoyer par e-mail" est activé</value>
   </data>
   <data name="Choose a credential configuration" xml:space="preserve">
     <value>Choisir une configuration d'accréditation</value>
@@ -567,9 +567,6 @@
   <data name="Configure the scheduler and deposit path" xml:space="preserve">
     <value>Configurer le planificateur et le chemin de dépôt</value>
   </data>
-  <data name="Configure the scheduler and deposit path1" xml:space="preserve">
-    <value>Configurer le planificateur et le chemin de dépôt</value>
-  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirmer</value>
   </data>
@@ -628,9 +625,6 @@
     <value>Créer un nouveau transfert de données</value>
   </data>
   <data name="Create a new deposit path" xml:space="preserve">
-    <value>Créer un nouveau chemin de dépose</value>
-  </data>
-  <data name="Create a new deposit path1" xml:space="preserve">
     <value>Créer un nouveau chemin de dépose</value>
   </data>
   <data name="Create a new email report" xml:space="preserve">
@@ -819,9 +813,6 @@
   <data name="Domain" xml:space="preserve">
     <value>Domaine</value>
   </data>
-  <data name="Domain1" xml:space="preserve">
-    <value>Domaine</value>
-  </data>
   <data name="Don't have access to your authenticator device? You can" xml:space="preserve">
     <value>Vous n'avez pas accès à votre dispositif d'authentification ? Vous pouvez</value>
   </data>
@@ -868,9 +859,6 @@
     <value>Chaque mois</value>
   </data>
   <data name="Each selected day" xml:space="preserve">
-    <value>Chaque jour sélectionné</value>
-  </data>
-  <data name="Each selected day1" xml:space="preserve">
     <value>Chaque jour sélectionné</value>
   </data>
   <data name="Each selected hour" xml:space="preserve">
@@ -979,13 +967,13 @@
     <value>Saisir un mot clé</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate" xml:space="preserve">
-    <value>Entrez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer.</value>
+    <value>Entrez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer</value>
   </data>
   <data name="Enter a report title, select an activity then the type of file you want to generate and validate" xml:space="preserve">
-    <value>Saisissez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer et validez.</value>
+    <value>Saisissez un titre de rapport, sélectionnez une activité puis le type de fichier que vous souhaitez générer et validez</value>
   </data>
   <data name="Enter an alert title, select an activity and validate" xml:space="preserve">
-    <value>Saisissez un titre d'alerte, sélectionnez une activité et validez.</value>
+    <value>Saisissez un titre d'alerte, sélectionnez une activité et validez</value>
   </data>
   <data name="Enter the email address" xml:space="preserve">
     <value>Entrer l'email</value>
@@ -1068,17 +1056,11 @@
   <data name="File deposit path" xml:space="preserve">
     <value>Chemin du dépôt du fichier</value>
   </data>
-  <data name="File deposit path1" xml:space="preserve">
-    <value>Chemin du dépose de fichiers</value>
-  </data>
   <data name="File desposit path" xml:space="preserve">
     <value>Chemin de dépôt du fichier</value>
   </data>
   <data name="File name" xml:space="preserve">
     <value>Nom du fichier</value>
-  </data>
-  <data name="File name1" xml:space="preserve">
-    <value>Nom de fichier</value>
   </data>
   <data name="File path" xml:space="preserve">
     <value>Chemin du fichier</value>
@@ -1222,7 +1204,7 @@
     <value>Si vous réinitialisez votre clé d'authentification, votre application d'authentification ne fonctionnera pas tant que vous ne l'aurez pas reconfigurée.</value>
   </data>
   <data name="In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences" xml:space="preserve">
-    <value>Afin d'éviter un flux trop important d'alertes, vous pouvez définir le comportement en cas d'occurrences multiples. Il peut être basé sur une durée entre les occurrences ou par nombre ou par nombre d'occurrences.</value>
+    <value>Afin d'éviter un flux trop important d'alertes, vous pouvez définir le comportement en cas d'occurrences multiples. Il peut être basé sur une durée entre les occurrences ou par nombre ou par nombre d'occurrences</value>
   </data>
   <data name="Inbound" xml:space="preserve">
     <value>Réception</value>
@@ -1267,7 +1249,7 @@
     <value>Est visible?</value>
   </data>
   <data name="It looks like you are offline or need to log back in" xml:space="preserve">
-    <value>Il semble que vous soyez hors ligne ou que vous deviez vous reconnecter.</value>
+    <value>Il semble que vous soyez hors ligne ou que vous deviez vous reconnecter</value>
   </data>
   <data name="items" xml:space="preserve">
     <value>éléments</value>
@@ -1318,9 +1300,6 @@
     <value>Dernier jour ouvré du mois</value>
   </data>
   <data name="LastOpeningDay" xml:space="preserve">
-    <value>Dernier jour ouvré</value>
-  </data>
-  <data name="LastOpeningDay1" xml:space="preserve">
     <value>Dernier jour ouvré</value>
   </data>
   <data name="LastRun" xml:space="preserve">
@@ -1480,13 +1459,14 @@
     <value>Naviguez vers "Modifier les tâches" et "Alertes" et activez le rapport. Si quelque chose ne va pas, vous obtiendrez une erreur avec la raison suivante</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Alerts&quot; then select create a new alert" xml:space="preserve">
-    <value>Naviguez vers "Tâches de modification" et "Alertes", puis sélectionnez "Créer une nouvelle alerte".</value>
+    <value>Naviguez vers "Tâches de modification" et "Alertes", puis sélectionnez "Créer une nouvelle alerte"</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; and switch on the report and if needed the &quot;Send by email&quot; button. If something goes wrong you will get an error with the reason" xml:space="preserve">
-    <value>Naviguez jusqu'à "Tâches de modification" et "Rapports" et activez le rapport et, si nécessaire, le bouton "Envoyer par e-mail". Si quelque chose ne va pas, vous obtiendrez une erreur avec la raison.</value>
+    <value>Naviguez jusqu'à "Tâches de modification" et "Rapports" et activez le rapport et, si nécessaire, le bouton "Envoyer par e-mail". Si quelque chose ne va pas, vous obtiendrez une erreur avec la raison</value>
   </data>
   <data name="Navigate to &quot;Modifity tasks&quot; and &quot;Reports&quot; then select create a new report" xml:space="preserve">
-    <value>Naviguez vers "Tâches de modification" et "Rapports" puis sélectionnez "Créer un nouveau rapport".</value>
+    <value>Naviguez vers "Tâches de modification" et "Rapports" puis sélectionnez "Créer un nouveau rapport"
+</value>
   </data>
   <data name="Nbr of active alerts" xml:space="preserve">
     <value>Nbre d'alertes actives</value>
@@ -1645,7 +1625,7 @@
     <value>Mot de passe</value>
   </data>
   <data name="Pasword must contains {0} characters, {1} digit, {2} uppercase, {3} lowercase, {4} non aphanumeric and {5} unique characters" xml:space="preserve">
-    <value>Le mot de passe doit contenir {0} caractères, {1} chiffres, {2} majuscules, {3} minuscules, {4} caractères non alphanumériques et {5} caractères uniques.</value>
+    <value>Le mot de passe doit contenir {0} caractères, {1} chiffres, {2} majuscules, {3} minuscules, {4} caractères non alphanumériques et {5} caractères uniques</value>
   </data>
   <data name="Path" xml:space="preserve">
     <value>Chemin d'accès</value>
@@ -1812,9 +1792,6 @@
   <data name="Reports result logs" xml:space="preserve">
     <value>Journaux des résultats des rapports</value>
   </data>
-  <data name="Reports1" xml:space="preserve">
-    <value>Rapports</value>
-  </data>
   <data name="Required" xml:space="preserve">
     <value>Obligatoire</value>
   </data>
@@ -1841,9 +1818,6 @@
   </data>
   <data name="reset your authenticator keys." xml:space="preserve">
     <value>réinitialiser vos clés d'authentification.</value>
-  </data>
-  <data name="reset1" xml:space="preserve">
-    <value>réinitialiser</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Rétablir</value>
@@ -1879,7 +1853,7 @@
     <value>Rôles assignés</value>
   </data>
   <data name="Roles assigned to" xml:space="preserve">
-    <value>Rôles affecter à </value>
+    <value>Rôles affecter à</value>
   </data>
   <data name="Roles available" xml:space="preserve">
     <value>Rôles disponibles</value>
@@ -2284,7 +2258,7 @@
     <value>Jusqu'à 200K lignes</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value>Mettre à jour</value>
+    <value>Actualiser</value>
   </data>
   <data name="Update a deposit path" xml:space="preserve">
     <value>Mise à jour d'un chemin de dépose</value>
@@ -2352,9 +2326,6 @@
   <data name="Use Sftp protocol?" xml:space="preserve">
     <value>Utiliser le protocole Sftp ?</value>
   </data>
-  <data name="Use standard queries for Rhs WMS?" xml:space="preserve">
-    <value>Utilier les requêtes standards pour le WMS Rhs?</value>
-  </data>
   <data name="Use the default deposit path of the activity?" xml:space="preserve">
     <value>Utiliser le chemin de dépose de l'activité ?</value>
   </data>
@@ -2416,7 +2387,7 @@
     <value>Bienvenue</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Manage recipients&quot; tab. Enter an emsail adress then click on &quot;Add recipients&quot; button. You can also customize the message of the email with teh button &quot;Edit email message&quot;" xml:space="preserve">
-    <value>Lorsque vous éditez le rapport, cliquez sur l'onglet "Gérer les destinataires". Saisissez une adresse électronique puis cliquez sur le bouton "Ajouter des destinataires". Vous pouvez également personnaliser le message de l'e-mail avec le bouton "Modifier le message de l'e-mail".</value>
+    <value>Lorsque vous éditez le rapport, cliquez sur l'onglet "Gérer les destinataires". Saisissez une adresse électronique puis cliquez sur le bouton "Ajouter des destinataires". Vous pouvez également personnaliser le message de l'e-mail avec le bouton "Modifier le message de l'e-mail"</value>
   </data>
   <data name="When you are editing the report, click on the &quot;Report details&quot; tab. Add a detail then choose the query name and enter the query. You can test the result. Finally click on validate button" xml:space="preserve">
     <value>Lorsque vous éditez le rapport, cliquez sur l'onglet "Détails du rapport". Ajoutez un détail puis choisissez le nom de la requête et saisissez la requête. Vous pouvez tester le résultat. Enfin, cliquez sur le bouton de validation</value>
@@ -2440,7 +2411,7 @@
     <value>Hier</value>
   </data>
   <data name="You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering" xml:space="preserve">
-    <value>Vous pouvez ajouter les descriptions des tableaux et des colonnes en téléchargeant un fichier. Vous pouvez utiliser le modèle ci-dessous puis le télécharger. Veuillez essayer d'utiliser l'encodage UTF8 pour un meilleur rendu.</value>
+    <value>Vous pouvez ajouter les descriptions des tableaux et des colonnes en téléchargeant un fichier. Vous pouvez utiliser le modèle ci-dessous puis le télécharger. Veuillez essayer d'utiliser l'encodage UTF8 pour un meilleur rendu</value>
   </data>
   <data name="You can create, edit and delete reports." xml:space="preserve">
     <value>Vous pouvez créer, modifier et supprimer des rapports.</value>
@@ -2500,7 +2471,7 @@
     <value>Votre mot de passe ne peut pas être vide</value>
   </data>
   <data name="Your password has been reset." xml:space="preserve">
-    <value>Votre mot de passe a été réinitialisé</value>
+    <value>Votre mot de passe a été réinitialisé.</value>
   </data>
   <data name="Your password length must be at least 6" xml:space="preserve">
     <value>La longueur de votre mot de passe doit être d'au moins 6</value>
@@ -2509,13 +2480,13 @@
     <value>Votre mot de passe doit contenir au moins un ( !? *.)</value>
   </data>
   <data name="Your password must contain at least one lowercase letter" xml:space="preserve">
-    <value>Votre mot de passe doit contenir au moins une lettre minuscule.</value>
+    <value>Votre mot de passe doit contenir au moins une lettre minuscule</value>
   </data>
   <data name="Your password must contain at least one number" xml:space="preserve">
     <value>Votre mot de passe doit contenir au moins un chiffre</value>
   </data>
   <data name="Your password must contain at least one uppercase letter" xml:space="preserve">
-    <value>Votre mot de passe doit contenir au moins une lettre majuscule.</value>
+    <value>Votre mot de passe doit contenir au moins une lettre majuscule</value>
   </data>
   <data name="Add recipients" xml:space="preserve">
     <value>Ajouter des destinataires</value>
@@ -2579,5 +2550,50 @@
   </data>
   <data name="A Target database must be selected" xml:space="preserve">
     <value>Une base de données cible doit être sélectionnée</value>
+  </data>
+  <data name="Query output" xml:space="preserve">
+    <value>Resultat de la requête</value>
+  </data>
+  <data name="Manage queries" xml:space="preserve">
+    <value>Gérer les requêtes</value>
+  </data>
+  <data name="Connections manager" xml:space="preserve">
+    <value>Gestion des connexions</value>
+  </data>
+  <data name="Tasks logs" xml:space="preserve">
+    <value>Journal des tâches</value>
+  </data>
+  <data name="File creation" xml:space="preserve">
+    <value>Création de fichiers</value>
+  </data>
+  <data name="Per Connection" xml:space="preserve">
+    <value>Par connexion</value>
+  </data>
+  <data name="Retrieve files" xml:space="preserve">
+    <value>Récupération de fichiers</value>
+  </data>
+  <data name="Latest update" xml:space="preserve">
+    <value>Dernière actualisation</value>
+  </data>
+  <data name="Application parameters updated" xml:space="preserve">
+    <value>Paramètres mis à jour</value>
+  </data>
+  <data name="Application name &amp; logo" xml:space="preserve">
+    <value>Nom et logo de l'application</value>
+  </data>
+  <data name="Pivot Table: nbr max of columns" xml:space="preserve">
+    <value>Pivot table : nbr max de colonnes</value>
+  </data>
+  <data name="Pivot Table: nbr max of rows" xml:space="preserve">
+    <value>Pivot table: nbre max de lignes</value>
+  </data>
+  <data name="Use pivot table component?" xml:space="preserve">
+    <value>Utiliser le composant pivot table ?</value>
+  </data>
+  <data name="Set as default" xml:space="preserve">
+    <value>Mettre par défaut</value>
+  </data>
+  <data name="Use pivot table as default view?" xml:space="preserve">
+    <value>Utiliser le tableau croisé dynamique comme vue par défaut ?</value>
   </data>
 </root>

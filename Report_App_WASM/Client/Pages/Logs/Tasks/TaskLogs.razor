@@ -1,0 +1,26 @@
+﻿@page "/TaskLogs"
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<PageTitle>@Localizer.Get("Tasks logs")</PageTitle>
+
+<ErrorBoundary>
+    <ChildContent>
+        <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
+                 ApplyEffectsToContainer="true">
+            <MudTabPanel Text="@Localizer.Get("Background Tasks")" Icon="@Icons.Material.Filled.SyncAlt">
+                <_BackgroundTasks/>
+            </MudTabPanel>
+            <MudTabPanel Text="@Localizer.Get("File creation")" Icon="@Icons.Material.Filled.SnippetFolder">
+                <_FileCreation/>
+            </MudTabPanel>
+            <MudTabPanel Text="@Localizer.Get("Email Sender")" Icon="@Icons.Material.Filled.ScheduleSend">
+                <_EmailSender/>
+            </MudTabPanel>
+        </MudTabs>
+    </ChildContent>
+</ErrorBoundary>
+
+
+@code {
+
+}

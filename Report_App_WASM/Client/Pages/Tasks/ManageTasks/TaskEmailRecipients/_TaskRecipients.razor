@@ -1,0 +1,158 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject IDialogService DialogService
+
+<MudTable Items="@_emailItems" Hover="true" Dense="true" Virtualize="true" Elevation="25">
+    <ToolBarContent>
+        <MudButton OnClick="OpenTextEditorComponent" Variant="Variant.Filled" Color="Color.Tertiary" Style="text-transform: none;" Size="Size.Small">@Localizer.Get("Edit email message")</MudButton>
+        <MudSpacer/>
+        <MudForm Model="@_email" @ref="_form">
+            <MudAutocomplete T="string" InputMode="InputMode.email" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email" OpenIcon="@Icons.Material.Filled.Email" IconSize="Size.Medium" Style="width: 300px;"
+                             Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")" CoerceText="false" CoerceValue="false" SearchFunc="@SearchEmail"/>
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
+                       OnClick="AddRecipient">
+                @Localizer.Get("Add recipient")
+            </MudButton>
+        </MudForm>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>@Localizer.Get("Email")</MudTh>
+        <MudTh>@Localizer.Get("Cc")</MudTh>
+        <MudTh>@Localizer.Get("Blind copy")</MudTh>
+        <MudTh>@Localizer.Get("Action")</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
+        <MudTd DataLabel="@Localizer.Get("Cc")">
+            <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary"/>
+        </MudTd>
+        <MudTd DataLabel="@Localizer.Get("Blind copy")">
+            <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteRecipient(context)"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+
+@code {
+
+    [Parameter] public TaskHeaderDto? Item { get; set; }
+
+    [Parameter] public bool ChangePending { get; set; }
+
+    [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
+
+    private List<EmailRecipient> _emails = new();
+    private List<EmailRecipient> _emailItems = new();
+    private TaskEmailRecipientDto _recipients = new();
+    private MudForm _form = default!;
+    private string _email = "";
+    private List<string> _activityEmails = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _recipients = Item?.TaskEmailRecipients.FirstOrDefault() ?? new TaskEmailRecipientDto
+        {
+            TaskHeader = Item,
+            Email = "[]",
+            Message = Item!.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>"
+        };
+
+        if (!string.IsNullOrEmpty(_recipients.Email))
+        {
+            _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_recipients.Email) ?? new List<EmailRecipient>();
+            PopulateEmailItems();
+        }
+
+        _activityEmails = (await DataService.GetValues<EmailRecipient>($"GetEmailsPerActivity?activityId={Item!.IdActivity}")).Select(a => a.Email).ToList();
+    }
+
+    private void PopulateEmailItems()
+    {
+        _emailItems = new List<EmailRecipient>(_emails);
+    }
+
+    private async Task DeleteRecipient(EmailRecipient recipient)
+    {
+        _emails.Remove(recipient);
+        UpdateRecipientsEmail();
+        await NotifyChangePending();
+    }
+
+    private async Task ChangeBccValue(EmailRecipient recipient, bool value)
+    {
+        var bccUpdate = _emails.FirstOrDefault(a => a.Email == recipient.Email);
+        if (bccUpdate != null && bccUpdate.Bcc != value)
+        {
+            bccUpdate.Bcc = value;
+            UpdateRecipientsEmail();
+            await NotifyChangePending();
+        }
+    }
+
+    private async Task ChangeCcValue(EmailRecipient recipient, bool value)
+    {
+        var ccUpdate = _emails.FirstOrDefault(a => a.Email == recipient.Email);
+        if (ccUpdate != null && ccUpdate.Cc != value)
+        {
+            ccUpdate.Cc = value;
+            UpdateRecipientsEmail();
+            await NotifyChangePending();
+        }
+    }
+
+    private async Task AddRecipient()
+    {
+        await _form.Validate();
+        if (_form.IsValid && !_emails.Any(a => a.Email == _email))
+        {
+            _emails.Add(new EmailRecipient { Email = _email });
+            UpdateRecipientsEmail();
+            await NotifyChangePending();
+            _email = "";
+        }
+        else if (_emails.Any(a => a.Email == _email))
+        {
+            _email = "";
+        }
+    }
+
+    private void UpdateRecipientsEmail()
+    {
+        _recipients.Email = JsonSerializer.Serialize(_emails);
+        PopulateEmailItems();
+    }
+
+    private async Task NotifyChangePending()
+    {
+        ChangePending = true;
+        await ChangePendingChanged.InvokeAsync(ChangePending);
+    }
+
+    private string? _htmlText;
+    private bool _displayTagMessage = false;
+
+    private async Task OpenTextEditorComponent()
+    {
+        _displayTagMessage = Item!.Type == TaskType.Alert;
+        _htmlText = _recipients.Message;
+
+        var parameters = new DialogParameters { ["htmlText"] = _htmlText, ["displayTagMessage"] = _displayTagMessage };
+        var dialog = await DialogService.ShowAsync<_TextEditor>(Localizer.Get("Edit email message"), parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
+        var result = await dialog.Result;
+
+        if (result?.Canceled != true)
+        {
+            _recipients.Message = result?.Data?.ToString();
+            await NotifyChangePending();
+        }
+    }
+
+    private async Task<IEnumerable<string>> SearchEmail(string value, CancellationToken token)
+    {
+        await Task.Delay(1, token);
+        return string.IsNullOrEmpty(value) ? Array.Empty<string>() : _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+}

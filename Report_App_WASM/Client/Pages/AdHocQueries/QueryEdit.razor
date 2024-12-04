@@ -3,6 +3,7 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @using Blazor.AceEditorJs
@@ -27,10 +28,6 @@
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
-        @if (!string.IsNullOrEmpty(_errorMessage))
-        {
-            <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
-        }
         @if (Item != null)
         {
             <MudForm FieldChanged="FormChanged">
@@ -44,8 +41,8 @@
                                 @if (_activities.Any())
                                 {
                                     <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
-                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
-                                               Required>
+                                    AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
+                                    Required>
                                         @foreach (var value in _activities)
                                         {
                                             <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
@@ -55,6 +52,18 @@
                             </MudItem>
                             <MudItem>
                                 <MudSwitch @bind-Value="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
+                            </MudItem>
+                            <MudItem>
+                                <MudSwitch @bind-Value="parameters.UsePivotTable" Label="@Localizer.Get("Use pivot table component?")" Color="Color.Primary"/>
+                            </MudItem>
+                            <MudItem>
+                                <MudSwitch @bind-Value="parameters.PivotTableAsDefaultView" Label="@Localizer.Get("Use pivot table as default view?")" Color="Color.Primary" Disabled="!parameters.UsePivotTable"/>
+                            </MudItem>
+                            <MudItem>
+                                <MudNumericField @bind-Value="parameters.PivotTableNbrOfColumnsMax" Label="@Localizer.Get("Pivot Table: nbr max of columns")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
+                            </MudItem>
+                            <MudItem>
+                                <MudNumericField @bind-Value="parameters.PivotTableMaxRowsFetched" Label="@Localizer.Get("Pivot Table: nbr max of rows")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
                         </MudGrid>
                     </MudItem>
@@ -82,109 +91,96 @@
             </MudForm>
         }
         <MudGrid>
-            <MudItem sm="12" md="12" lg="6" xl="6">
-                <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunSql" Variant="Variant.Filled" Color="Color.Primary">
-                    <LoadingContent>
-                        <MudText>@Localizer.Get("Processing")</MudText>
-                    </LoadingContent>
-                    <ChildContent>
-                        <MudText>@Localizer.Get("Test query")</MudText>
-                    </ChildContent>
-                </MudLoadingButton>
-                @if (_loading)
+            <MudItem sm="12" md="12" lg="12" xl="6">
+                @if (!string.IsNullOrEmpty(_queryTestResult))
                 {
-                    <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
-                        <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
-                    </MudButton>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
                 }
-                <div class="form-group">
-                    <p style="color: red">@_queryTestResult</p>
-                </div>
                 @if (Item != null)
                 {
-                    @if (_typeDbTask != TypeDb.Db2)
+                    <MudPaper Elevation="25">
+                        <MudToolBar Dense="true">
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
+                        </MudToolBar>
+                    </MudPaper>
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
+                    @if (_opt != null)
                     {
-                        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
-                            <MudTabPanel Text="SQL">
-                                <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 55vh"/>
-                            </MudTabPanel>
-                            <MudTabPanel Text="@Localizer.Get("Query parameters")">
-                                <CascadingValue Value="_changesToSave">
-                                    <_AdHocQueryParameters Item="Item" @ref="_refQuery" ValueChanged="ParametersChange"/>
-                                </CascadingValue>
-                            </MudTabPanel>
-                        </MudTabs>
-                    }
-                    else
-                    {
-                        <Blazor.AceEditorJs.AceJsEditor @bind-Value="@Item.Query" Options="@_opt" Style="height: 65vh"/>
+                        <Blazor.AceEditorJs.AceJsEditor Style="height: 55vh" @bind-Value="@Item.Query" @bind-SelectedValue="@_querySelectedCode" Options="@_opt"/>
                     }
                 }
             </MudItem>
-            <MudItem sm="12" md="12" lg="6" xl="6">
-                @if (param.Count > 0)
-                {
-                    <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
-                        <MudForm @ref="_validateParam">
-                            <MudGrid>
-                                @foreach (var t in param!.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
-                                {
-                                    <MudItem>
-                                        @if (t.ValueType == QueryCommandParameterValueType.Date)
-                                        {
-                                            <MudTextField InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
-                                        }
-                                        @if (t.ValueType == QueryCommandParameterValueType.DateTime)
-                                        {
-                                            <MudTextField InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
-                                        }
-                                        @if (t.ValueType == QueryCommandParameterValueType.Number)
-                                        {
-                                            <MudTextField InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
-                                        }
-                                        @if (t.ValueType == QueryCommandParameterValueType.String)
-                                        {
-                                            <MudTextField InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
-                                        }
-                                    </MudItem>
-                                }
-                            </MudGrid>
-                            <div style="padding-top: 5px">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@Localizer.Get("Validate")</MudButton>
-                            </div>
-                        </MudForm>
-                    </MudPaper>
-                }
-                <MudTable ServerData="ServerReload" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="4">
-                    <HeaderContent>
-                        @if (_values?.Any() == true)
+            <MudItem sm="12" md="12" lg="12" xl="6">
+                <MudTabs Elevation="25" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3" @ref="tabs">
+                    <MudTabPanel Text="@Localizer.Get("Query output")" >
+                        @if (param.Count > 0)
                         {
-                            @foreach (var key in _values?.FirstOrDefault()?.Keys!)
-                            {
-                                <MudTh>@key</MudTh>
-                            }
+                            <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
+                                <MudForm @ref="_validateParam">
+                                    <MudGrid Spacing="1" >
+                                        @foreach (var t in param.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
+                                        {
+                                            <MudItem>
+                                                @if (t.ValueType == QueryCommandParameterValueType.Date)
+                                                {
+                                                    <MudTextField Clearable="true" InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                                                }
+                                                @if (t.ValueType == QueryCommandParameterValueType.DateTime)
+                                                {
+                                                    <MudTextField Clearable="true" InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                                                }
+                                                @if (t.ValueType == QueryCommandParameterValueType.Number)
+                                                {
+                                                    <MudTextField Clearable="true" InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                                }
+                                                @if (t.ValueType == QueryCommandParameterValueType.String)
+                                                {
+                                                    <MudTextField Clearable="true" InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                                }
+                                            </MudItem>
+                                        }
+                                    </MudGrid>
+                                    <div style="padding-top: 5px">
+                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@Localizer.Get("Validate")</MudButton>
+                                    </div>
+                                </MudForm>
+                            </MudPaper>
                         }
-                    </HeaderContent>
-                    <RowTemplate>
-                        @if (_values?.Any() == true)
-                        {
-                            @foreach (var t in context)
-                            {
-                                @if (t.ToString() == "{}")
+                        <MudTable ServerData="ServerReload" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="25" >
+                            <HeaderContent>
+                                @if (_values?.Any() == true)
                                 {
-                                    <MudTd></MudTd>
+                                    var keys = _values.FirstOrDefault()?.Keys;
+                                    if (keys != null)
+                                    {
+                                        @foreach (var key in keys)
+                                        {
+                                            <MudTh>@key</MudTh>
+                                        }
+                                    }
                                 }
-                                else
+                            </HeaderContent>
+                            <RowTemplate>
+                                @if (_values?.Any() == true)
                                 {
-                                    <MudTd>@t</MudTd>
+                                    @foreach (var t in context)
+                                    {
+                                        <MudTd Style="text-wrap-mode: nowrap;">@(t.ToString() == "{}" ? string.Empty : t)</MudTd>
+                                    }
                                 }
-                            }
-                        }
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
-                    </PagerContent>
-                </MudTable>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
+                            </PagerContent>
+                        </MudTable>
+                    </MudTabPanel>
+                    <MudTabPanel Text="@Localizer.Get("Query parameters")" Disabled="_typeDbTask==TypeDb.Db2">
+                        <CascadingValue Value="_changesToSave">
+                            <_AdHocQueryParameters Style="height: 65vh" Item="Item" @ref="_refQuery" ValueChanged="ParametersChange"/>
+                        </CascadingValue>
+                    </MudTabPanel>
+                </MudTabs>
             </MudItem>
         </MudGrid>
     </MudCardContent>
@@ -197,7 +193,8 @@
     private QueryStoreDto? Item;
     private TypeDb _typeDbTask;
     private List<Dictionary<string, object>>? _values = new();
-    private string? _queryTestResult { get; set; }
+    private string _queryTestResult = string.Empty;
+    private string _querySelectedCode = string.Empty;
     private bool _isDarkMode;
     private AceEditorOptions? _opt;
     private _AdHocQueryParameters? _refQuery;
@@ -206,7 +203,6 @@
     MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private bool _changesToSave;
-    private string? _errorMessage;
     private List<SelectItemActivitiesInfo> _activities = new();
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam = new();
@@ -216,6 +212,7 @@
     private bool _openPopOver;
     string _tagValue = string.Empty;
     List<string> _AvailableTags = new();
+    MudTabs tabs;
 
     protected override async Task OnInitializedAsync()
     {
@@ -296,6 +293,9 @@
 
     private async Task RunSql()
     {
+        _queryTestResult=string.Empty;
+        StateHasChanged();
+        tabs.ActivatePanel(0);
         if (string.IsNullOrEmpty(Item?.Query))
         {
             _queryTestResult = "query is not set";
@@ -366,7 +366,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (!_formParamValidated)
+        else if (!_formParamValidated && param!.Count > 0)
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -376,7 +376,10 @@
             {
                 _cts = new CancellationTokenSource();
 
-                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var _queryTorun = string.Empty;
+                _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) && !string.IsNullOrEmpty(_querySelectedCode) ? _querySelectedCode : Item.Query;
+
+                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -409,6 +412,7 @@
         }
 
         _loading = false;
+        _formParamValidated = false;
         return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
     }
 
@@ -419,8 +423,6 @@
 
     private async Task Back()
     {
-        var uri = $"/QueryStore/{Item!.IdActivity}/{Item.Activity!.ActivityName}";
-
         if (_changesToSave)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
@@ -428,13 +430,13 @@
 
             if (result != null)
             {
-                UriHelper.NavigateTo(uri);
+                await JSRuntime.InvokeVoidAsync("history.back");
             }
 
             return;
         }
 
-        UriHelper.NavigateTo(uri);
+        await JSRuntime.InvokeVoidAsync("history.back");
     }
 
 
@@ -442,7 +444,6 @@
     {
         try
         {
-            _errorMessage = "";
             if (Item != null)
             {
                 Item.Parameters = JsonSerializer.Serialize(parameters);
@@ -457,14 +458,12 @@
                 else
                 {
                     Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-                    _errorMessage = result.Message;
                 }
             }
         }
         catch (Exception e)
         {
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-            _errorMessage = e.Message;
         }
     }
 
@@ -488,7 +487,7 @@
 
     private void RemoveTag(MudChip<string> mudChip)
     {
-        _tags.Remove(mudChip.Text);
+        if (mudChip.Text != null) _tags.Remove(mudChip.Text);
         _changesToSave = true;
     }
 
