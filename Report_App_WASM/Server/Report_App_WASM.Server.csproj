@@ -23,7 +23,7 @@
     <PackageReference Include="Community.OData.Linq" Version="2.1.0" />
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="EPPlus" Version="7.5.1" />
-    <PackageReference Include="FluentFTP" Version="51.1.0" />
+    <PackageReference Include="FluentFTP" Version="52.0.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.17" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.17" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
