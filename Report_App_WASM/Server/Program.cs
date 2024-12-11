@@ -12,12 +12,8 @@ using Report_App_WASM.Server.Utils.SettingsConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.ConfigureLogging((hostingContext, logging) =>
-{
-    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-
-    logging.AddEntityFramework<ApplicationDbContext, ApplicationLogSystem>();
-});
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+builder.Logging.AddEntityFramework<ApplicationDbContext, ApplicationLogSystem>();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
