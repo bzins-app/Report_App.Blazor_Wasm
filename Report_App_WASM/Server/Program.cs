@@ -126,10 +126,10 @@ var env = builder.Environment;
 
 using (var scope = app.Services.CreateScope())
 {
-    bool loop = true;
-    int retryCount = 0;
+    var loop = true;
+    var retryCount = 0;
     const int maxRetries = 5;
-    while (loop && retryCount < maxRetries)
+    while (loop)
     {
         var services = scope.ServiceProvider;
         try
