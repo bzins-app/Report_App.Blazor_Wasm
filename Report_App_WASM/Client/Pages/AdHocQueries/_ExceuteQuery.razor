@@ -12,7 +12,7 @@
     <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_errorMessage</MudText>
 }
 
-<MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px" >
+<MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
     @if (param.Count > 0)
     {
         <MudForm @ref="_validateParam">
@@ -23,19 +23,19 @@
                     <MudItem>
                         @if (t.ValueType == QueryCommandParameterValueType.Date)
                         {
-                            <MudTextField Clearable="true" InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                            <MudTextField Clearable="true" InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.DateTime)
                         {
-                            <MudTextField Clearable="true" InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px" />
+                            <MudTextField Clearable="true" InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.Number)
                         {
-                            <MudTextField Clearable="true" InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField Clearable="true" InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                         }
                         @if (t.ValueType == QueryCommandParameterValueType.String)
                         {
-                            <MudTextField Clearable="true" InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField Clearable="true" InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                         }
                     </MudItem>
                 }
@@ -65,15 +65,15 @@
                 {
                     <MudItem>
                         <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
-                            <MudSelectItem Value="@("Grid")" />
-                            <MudSelectItem Value="@("pivot")" />
+                            <MudSelectItem Value="@("Grid")"/>
+                            <MudSelectItem Value="@("pivot")"/>
                         </MudSelect>
                     </MudItem>
                 }
                 <MudItem>
                     <MudIconButton Variant="Variant.Outlined"
                                    OnClick="@(SaveConfiguration)"
-                                   Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable" />
+                                   Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
                 </MudItem>
                 <MudItem>
                     <MudMenu Variant="Variant.Outlined"
@@ -106,53 +106,53 @@
                 <MudItem>
                     <MudIconButton Variant="Variant.Outlined"
                                    OnClick="@(ExtractElements)"
-                                   Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting" />
+                                   Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
                 </MudItem>
             </MudGrid>
         </div>
     </div>
 </MudPaper>
-    @if (_extracting)
-    {
-        <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting" />
-    }
-    @if (!_pivotTable)
-    {
-        <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
-            <HeaderContent>
-                @if (_values?.Any() == true)
+@if (_extracting)
+{
+    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
+}
+@if (!_pivotTable)
+{
+    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+        <HeaderContent>
+            @if (_values?.Any() == true)
+            {
+                @foreach (var key in _values?.FirstOrDefault()?.Keys!)
                 {
-                    @foreach (var key in _values?.FirstOrDefault()?.Keys!)
+                    <MudTh>@key</MudTh>
+                }
+            }
+        </HeaderContent>
+        <RowTemplate>
+            @if (_values?.Any() == true)
+            {
+                @foreach (var t in context)
+                {
+                    @if (t.ToString() == "{}")
                     {
-                        <MudTh>@key</MudTh>
+                        <MudTd></MudTd>
+                    }
+                    else
+                    {
+                        <MudTd Style="text-wrap-mode: nowrap;">@t</MudTd>
                     }
                 }
-            </HeaderContent>
-            <RowTemplate>
-                @if (_values?.Any() == true)
-                {
-                    @foreach (var t in context)
-                    {
-                        @if (t.ToString() == "{}")
-                        {
-                            <MudTd></MudTd>
-                        }
-                        else
-                        {
-                            <MudTd Style="text-wrap-mode: nowrap;">@t</MudTd>
-                        }
-                    }
-                }
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
-            </PagerContent>
-        </MudTable>
-    }
-    else
-    {
-        <PivotTable @ref="_pvt" Value="_values" Style="height: 65vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name" />
-    }
+            }
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
+        </PagerContent>
+    </MudTable>
+}
+else
+{
+    <PivotTable @ref="_pvt" Value="_values" Style="height: 65vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name"/>
+}
 
 @code {
 

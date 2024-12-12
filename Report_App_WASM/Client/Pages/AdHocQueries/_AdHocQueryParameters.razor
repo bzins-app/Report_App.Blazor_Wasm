@@ -34,7 +34,7 @@
                                 </MudSelect>
                                 @if (element.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                 {
-                                    <MudField  Label="@Localizer.Get("Calculated date")">@(element.ValueType == QueryCommandParameterValueType.Date ? DateTime.Now.Date.ToString("d") : DateTime.Now)</MudField>
+                                    <MudField Label="@Localizer.Get("Calculated date")">@(element.ValueType == QueryCommandParameterValueType.Date ? DateTime.Now.Date.ToString("d") : DateTime.Now)</MudField>
                                 }
                                 else
                                 {
@@ -43,11 +43,11 @@
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.String)
                             {
-                                <MudTextField Clearable="true" InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" Text="@element.Value" />
+                                <MudTextField Clearable="true" InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@element.Value" TextChanged="UpdateParameters" Text="@element.Value"/>
                             }
                             @if (element.ValueType == QueryCommandParameterValueType.Number)
                             {
-                                <MudTextField Clearable="true" InputType="InputType.Number" Label="@Localizer.Get(" Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value" />
+                                <MudTextField Clearable="true" InputType="InputType.Number" Label="@Localizer.Get(" Enter value")" @bind-Value="@(element.Value)" TextChanged="UpdateParameters" Text="@element.Value"/>
                             }
                             <MudGrid>
                                 <MudItem md="6">
