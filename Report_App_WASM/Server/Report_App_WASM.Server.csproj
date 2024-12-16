@@ -40,7 +40,7 @@
     <PackageReference Include="System.Data.OleDb" Version="8.0.1" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.1" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
-    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
