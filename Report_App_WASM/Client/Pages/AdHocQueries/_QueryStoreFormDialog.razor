@@ -15,11 +15,11 @@
             <MudTextField @bind-Value="Item!.QueryName" Label="@(Localizer.Get("Query Name"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             @if (_activities.Any())
             {
-                <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ActivityName" AnchorOrigin="Origin.BottomCenter" 
+                <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ActivityName" AnchorOrigin="Origin.BottomCenter"
                            Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
                     @foreach (var value in _activities)
                     {
-                        <MudSelectItem  Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
+                        <MudSelectItem Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
                     }
                 </MudSelect>
             }
