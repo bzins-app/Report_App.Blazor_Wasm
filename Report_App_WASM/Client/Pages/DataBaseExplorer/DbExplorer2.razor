@@ -35,11 +35,11 @@
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                         </MudToolBar>
                     </MudPaper>
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="false" />
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
                     @if (_opt != null && _editor != null)
                     {
                         @_editor
@@ -47,7 +47,7 @@
                     <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="32vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="25">
                         <ToolBarContent>
                             <MudText>@_tableHeader</MudText>
-                            <MudSpacer />
+                            <MudSpacer/>
                         </ToolBarContent>
                         <HeaderContent>
                             @if (_values?.Any() == true)
@@ -72,7 +72,7 @@
                             }
                         </RowTemplate>
                         <PagerContent>
-                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
+                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
                         </PagerContent>
                     </MudTable>
                 </div>
@@ -148,23 +148,23 @@
 
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
+        {
+            IsReadOnly = false,
+            Language = _typeDbTask switch
             {
-                IsReadOnly = false,
-                Language = _typeDbTask switch
-                {
-                    TypeDb.MySql => AceLanguage.mysql,
-                    TypeDb.MariaDb => AceLanguage.mysql,
-                    TypeDb.SqlServer => AceLanguage.sqlserver,
-                    TypeDb.PostgreSql => AceLanguage.pgsql,
-                    _ => AceLanguage.sql
-                },
-                Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
-            };
+                TypeDb.MySql => AceLanguage.mysql,
+                TypeDb.MariaDb => AceLanguage.mysql,
+                TypeDb.SqlServer => AceLanguage.sqlserver,
+                TypeDb.PostgreSql => AceLanguage.pgsql,
+                _ => AceLanguage.sql
+            },
+            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
+        };
 
 
         _editor = (__builder) =>
         {
-            <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" />
+            <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
         };
 
         _tree = (__builder) =>
@@ -176,13 +176,13 @@
                         <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
                             <BodyContent Context="item">
                                 <MudText>@(string.IsNullOrEmpty(item.Value.Description) ? item.Value?.Name : item.Value?.Name + " " + item.Value.Description)</MudText>
-                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
                             </BodyContent>
                         </MudTreeViewItem>
                     }
                     else
                     {
-                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable" />
+                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
                     }
                 </ItemTemplate>
             </MudTreeView>
@@ -207,7 +207,7 @@
             _ => parentValue.TypeValue
         };
 
-        if(_cts is not null)
+        if (_cts is not null)
             await _cts.CancelAsync();
         _cts = new CancellationTokenSource();
 
@@ -240,17 +240,17 @@
                     if (data != null)
                     {
                         childItem.Children = data.Values.Select(a => new TreeItemData<TablesColsInfo>
+                        {
+                            Value = a,
+                            Icon = a.ColType.ToLower() switch
                             {
-                                Value = a,
-                                Icon = a.ColType.ToLower() switch
-                                {
-                                    var colType when colType.Contains("date") || colType.Contains("time") => Icons.Material.Filled.DateRange,
-                                    var colType when colType.Contains("char") || colType.Contains("string") || colType.Contains("text") => Icons.Material.Filled.TextSnippet,
-                                    var colType when colType.Contains("number") || colType.Contains("int") => Icons.Material.Filled._123,
-                                    _ => Icons.Material.Filled.Label
-                                },
-                                Expandable = false
-                            }).ToList();
+                                var colType when colType.Contains("date") || colType.Contains("time") => Icons.Material.Filled.DateRange,
+                                var colType when colType.Contains("char") || colType.Contains("string") || colType.Contains("text") => Icons.Material.Filled.TextSnippet,
+                                var colType when colType.Contains("number") || colType.Contains("int") => Icons.Material.Filled._123,
+                                _ => Icons.Material.Filled.Label
+                            },
+                            Expandable = false
+                        }).ToList();
                         return childItem.Children;
                     }
                 }
@@ -360,29 +360,29 @@
             };
 
             return new TableData<Dictionary<string, object>.ValueCollection>
-                {
-                    TotalItems = 0,
-                    Items = placeholderData.Select(d => d.Values).ToList()
-                };
+            {
+                TotalItems = 0,
+                Items = placeholderData.Select(d => d.Values).ToList()
+            };
         }
 
         try
-        {   
-            if(_cts is not null)
-            await _cts.CancelAsync();
+        {
+            if (_cts is not null)
+                await _cts.CancelAsync();
             _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
             var run = new RemoteDbCommandParameters
-                {
-                    ActivityId = ActivityId,
-                    QueryToRun = QueryRun,
-                    Test = true,
-                    PaginatedResult = true,
-                    StartRecord = currentPage * pageSize,
-                    MaxSize = pageSize + 1,
-                    LastRunDateTime = DateTime.Now,
-                    QueryCommandParameters = new List<QueryCommandParameter>()
-                };
+            {
+                ActivityId = ActivityId,
+                QueryToRun = QueryRun,
+                Test = true,
+                PaginatedResult = true,
+                StartRecord = currentPage * pageSize,
+                MaxSize = pageSize + 1,
+                LastRunDateTime = DateTime.Now,
+                QueryCommandParameters = new List<QueryCommandParameter>()
+            };
 
             var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
@@ -418,10 +418,10 @@
         var totalItems = _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1;
 
         return new TableData<Dictionary<string, object>.ValueCollection>
-            {
-                TotalItems = totalItems,
-                Items = items
-            };
+        {
+            TotalItems = totalItems,
+            Items = items
+        };
     }
 
 }

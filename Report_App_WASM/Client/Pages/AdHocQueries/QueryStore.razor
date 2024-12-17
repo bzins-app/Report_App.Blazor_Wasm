@@ -93,7 +93,7 @@
 
         var _serializedTags = new List<string>();
         _serializedTags = _queries.Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags)).Select(a => a.Tags).ToList();
-         _tags = new List<string>();
+        _tags = new List<string>();
         _tags = _serializedTags
             .SelectMany(value => JsonSerializer.Deserialize<List<string>>(value)!)
             .Distinct().ToList();
@@ -110,6 +110,7 @@
                     }
                 </MudChipSet>
             }
+
             <MudTable Items="@_filteredQueries" Dense="true" Hover="true" Bordered="true" Striped="true" FixedHeader="true" Height="70vh" Virtualize="true" Elevation="0">
                 <HeaderContent>
                     <MudTh style="width:50px;"></MudTh>
@@ -117,7 +118,7 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Launch" Size="Size.Small" Class="ms-2" title="@Localizer.Get("Run query")" OnClick="@(_ => ExecuteQuery(context.Id))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Launch" Size="Size.Small" Class="ms-2" title="@Localizer.Get("Run query")" OnClick="@(_ => ExecuteQuery(context.Id))"/>
                     </MudTd>
                     <MudTd >@context.QueryName</MudTd>
                 </RowTemplate>
@@ -161,7 +162,6 @@
             {
                 _filteredQueries = _filteredQueries.Where(a => a.Tags.Contains(t)).ToList();
             }
-            
         }
     }
 
