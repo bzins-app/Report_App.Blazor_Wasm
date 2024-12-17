@@ -153,8 +153,8 @@
     private async Task<IEnumerable<string>> SearchEmail(string value, CancellationToken token)
     {
         await Task.Delay(1, token);
-        var results = string.IsNullOrEmpty(value) ? null : _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
-        if (!results.Any())
+        var results = string.IsNullOrEmpty(value) ? new List<string>() : _activityEmails.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        if (!results.Any() && !string.IsNullOrEmpty(value))
         {
             results.Add(value);
         }
