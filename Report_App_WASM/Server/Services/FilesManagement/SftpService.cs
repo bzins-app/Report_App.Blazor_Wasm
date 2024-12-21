@@ -57,7 +57,7 @@ public class SftpService : IDisposable
             client.Connect();
             if (tryCreateFolder && !client.Exists(remoteDirectory)) client.CreateDirectory(remoteDirectory);
             var destinationPath = Path.Combine(remoteDirectory, fileName);
-            using FileStream fs = new(localFilePath, FileMode.Open);
+            await using FileStream fs = new(localFilePath, FileMode.Open);
             client.BufferSize = 4 * 1024;
             client.UploadFile(fs, destinationPath);
             // _logger.LogInformation($"Finished uploading file [{localFilePath}] to [{remoteDirectory}]");
@@ -84,7 +84,7 @@ public class SftpService : IDisposable
         try
         {
             client.Connect();
-            using var s = File.Create(localFilePath);
+            await using var s = File.Create(localFilePath);
             client.DownloadFile(remoteFilePath, s);
             //  _logger.LogInformation($"Finished downloading file [{localFilePath}] from [{remoteFilePath}]");
         }

@@ -1,4 +1,5 @@
 # Report application on blazor webassembly hosted 
+A demo version is available at: [https://reportappdemo.dev.bzins.app/](https://reportappdemo.dev.bzins.app/) 
 
 This application is designed to generate reports and manage database operations efficiently. It is built with ASP.NET Core (NET 8) and offers three main features:
 
@@ -15,8 +16,6 @@ Moreover, an API is available to trigger jobs externally, allowing seamless inte
 - It utilizes official Microsoft libraries such as Entity Framework Core and Identity Manager.
 - The layout is built using the MudBlazor UI framework (https://mudblazor.com/), while data rendering and grids are powered by a fork of QuickGrid (https://aspnet.github.io/quickgridsamples/).
 - Background tasks are managed using Hangfire (https://www.hangfire.io/), enabling robust job scheduling and execution.
-
-A demo version is available at: [https://reportappdemo.dev.bzins.app/](https://reportappdemo.dev.bzins.app/) 
 
 
 Below are some UI screenshots:

@@ -12,7 +12,7 @@
                         <MudCardHeader>
                             <CardHeaderAvatar>
                                 <MudAvatar Size="Size.Medium" Color="Color.Primary" Class="ma-2">
-                                    @string.Concat(context.User.Identity?.Name?.ToUpper().Split(".").FirstOrDefault()!.First(), context.User.Identity?.Name?.Split(".").Length > 1 ? context.User.Identity.Name?.ToUpper().Split(".").Skip(1).FirstOrDefault()!.First() : "")
+                                    @GetInitials(context.User.Identity?.Name)
                                 </MudAvatar>
                             </CardHeaderAvatar>
                             <CardHeaderContent>
@@ -52,12 +52,23 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
+@code {
 
     private async Task BeginLogOut()
     {
         await AuthStateProvider.Logout();
         NavigationManager.NavigateTo("/login");
+    }
+
+    private string GetInitials(string? fullName)
+    {
+        if (string.IsNullOrEmpty(fullName))
+            return string.Empty;
+
+        var names = fullName.ToUpper().Split(".");
+        return names.Length > 1
+            ? $"{names[0].First()}{names[1].First()}"
+            : $"{names[0].First()}";
     }
 
 }

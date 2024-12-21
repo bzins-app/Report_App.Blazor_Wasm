@@ -11,6 +11,7 @@
     <link href="css/app.css" rel="stylesheet"/>
     <link href="Report_App_WASM.Client.styles.css" rel="stylesheet"/>
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
+    <link href="_content/Blazor.PivotTable/PivotTable.css" rel="stylesheet"/>
     <link href="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.css" rel="stylesheet"/>
 </head>
 
@@ -48,10 +49,37 @@
                 navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
         }
     </script>
+<script>
+        window.pageVisibility = {
+            handlers: {},
+            isPageVisible: function () {
+                return !document.hidden;
+            },
+            registerVisibilityChangeCallback: function (dotNetObject) {
+                const handlerId = Date.now().toString();
+                function visibilityChangeHandler() {
+                    if (dotNetObject && dotNetObject.invokeMethodAsync) {
+                        dotNetObject.invokeMethodAsync('OnVisibilityChange', !document.hidden);
+                    }
+                }
+                document.addEventListener('visibilitychange', visibilityChangeHandler);
+                this.handlers[handlerId] = visibilityChangeHandler;
+                return handlerId; // Return the unique handler ID
+            },
+            unregisterVisibilityChangeCallback: function (handlerId) {
+                const handler = this.handlers[handlerId];
+                if (handler) {
+                    document.removeEventListener('visibilitychange', handler);
+                    delete this.handlers[handlerId];
+                }
+            }
+        };
+    </script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
 <script src="js/LoadScripts.js"></script>
 <script src="_content/Blazor.AceEditorJs/BlazorAceEditor.min.js"></script>
+<script src="_content/Blazor.PivotTable/BlazorPivotTable.min.js"></script>
 </body>
 
 </html>

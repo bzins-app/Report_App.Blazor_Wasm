@@ -1,0 +1,34 @@
+﻿@page "/ConnectionsManager"
+@using Report_App_WASM.Client.Pages.Connections.Activity
+@using Report_App_WASM.Client.Pages.Connections.DataTransfers
+@attribute [Authorize(Roles = "Admin, Supervisor")]
+
+<PageTitle>@Localizer.Get("Connections manager")</PageTitle>
+
+<ErrorBoundary>
+    <ChildContent>
+        <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
+                 ApplyEffectsToContainer="true">
+            <MudTabPanel Text="@(Localizer.Get("Activities") + " (Source)")" Icon="@Icons.Material.Filled.ArrowCircleUp">
+                <_Activities/>
+            </MudTabPanel>
+            @if (_appConst.ActivateTaskSchedulerModule)
+            {
+                <MudTabPanel Text="@(Localizer.Get("Data transfer") + " (Destination)")" Icon="@Icons.Material.Filled.ArrowCircleDown">
+                    <_DataTransfer/>
+                </MudTabPanel>
+            }
+        </MudTabs>
+    </ChildContent>
+</ErrorBoundary>
+
+
+@code {
+    private ApplicationConstantsValues _appConst = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _appConst = (await AppService.GetApplicationConstantsValues())!;
+    }
+
+}

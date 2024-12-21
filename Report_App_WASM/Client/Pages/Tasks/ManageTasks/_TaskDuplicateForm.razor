@@ -1,0 +1,62 @@
+﻿@inject ISnackbar Snackbar
+
+<MudIconButton OnClick="() => OpenRunConfirmationComponent()" Icon="@Icons.Material.Filled.ContentCopy" title="@Localizer.Get("Duplicate")"/>
+
+<MudDialog @bind-Visible="_visible" Options="_dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @Localizer.Get("Confirm duplication")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="_name" Label="@Localizer.Get("Report title")"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CancelDialog">@Localizer.Get("Cancel")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmDuplicate" Class="px-10">@Localizer.Get("Validate")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] public SimpleGrid<TaskHeaderDto>? DataGrid { get; set; }
+
+    [Parameter] public TaskHeaderDto? Item { get; set; }
+
+    string _name = "";
+
+    private bool _visible;
+    private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+    private void OpenRunConfirmationComponent()
+    {
+        _name = Item?.TaskName + " (Copy)";
+        _visible = true;
+    }
+
+    private async Task ConfirmDuplicate()
+    {
+        _visible = false;
+        await Clone(_name, Item!.TaskHeaderId);
+        Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
+        await DataGrid?.RefreshDataAsync()!;
+    }
+
+    void CancelDialog()
+    {
+        _visible = false;
+    }
+
+    private async Task Clone(string name, int taskHeaderId)
+    {
+        DuplicateTask payload = new() { Name = name, TaskHeaderId = taskHeaderId };
+        var result = await DataService.PostValues(payload, "TaskClone");
+        if (!result.Success)
+        {
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            if (result.Message != null) Snackbar.Add(result.Message, Severity.Error);
+        }
+    }
+
+
+}

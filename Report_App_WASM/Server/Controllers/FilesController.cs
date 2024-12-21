@@ -6,15 +6,12 @@
 [ApiController]
 public class FilesController : ControllerBase, IDisposable
 {
-    private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly ILogger<FilesController> _logger;
 
-    public FilesController(ILogger<FilesController> logger,
-        ApplicationDbContext context, IWebHostEnvironment hostingEnvironment)
+    public FilesController(ILogger<FilesController> logger, IWebHostEnvironment hostingEnvironment)
     {
         _logger = logger;
-        _context = context;
         _hostingEnvironment = hostingEnvironment;
     }
 

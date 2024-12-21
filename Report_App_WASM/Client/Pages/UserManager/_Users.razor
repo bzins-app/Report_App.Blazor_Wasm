@@ -32,7 +32,7 @@
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
-            <div style="overflow: auto">
+            <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
                         <MudStack Row="true" Justify="Justify.Center">
@@ -121,7 +121,7 @@
         var dialog = await DialogService.ShowAsync<_UserDialogForm>("Delete", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };
@@ -147,7 +147,7 @@
         var dialog = await DialogService.ShowAsync<_UserDialogForm>("Create", parameters);
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
             var valueUser = new UserPayload { UserMail = value.Email, Password = value.PasswordHash, UserName = value.UserName };

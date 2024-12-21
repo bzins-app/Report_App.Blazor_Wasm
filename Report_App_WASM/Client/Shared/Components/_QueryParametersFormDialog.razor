@@ -11,7 +11,7 @@
             <MudTextField @bind-Value="_param.DisplayName" Label="@Localizer.Get("Display name")" Variant="Variant.Text" Required></MudTextField>
             <MudTextField @bind-Value="_param.ParameterIdentifier" Label="@Localizer.Get("Parameter identifier")" Variant="Variant.Text" Required></MudTextField>
             <MudSelect @bind-Value="_param.ValueType" Label="@Localizer.Get("Select a data type")" Required>
-                @foreach (QueryCommandParameterValueType item in Enum.GetValues(typeof(QueryCommandParameterValueType)))
+                @foreach (QueryCommandParameterValueType item in Enum.GetValues<QueryCommandParameterValueType>())
                 {
                     <MudSelectItem Value="@item">@item</MudSelectItem>
                 }
@@ -19,7 +19,7 @@
             @if (_param.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
             {
                 <MudSelect @bind-Value="_param.DateOption" Label="@Localizer.Get("Select a date calculation")" Required>
-                    @foreach (CalulatedDateOption item in Enum.GetValues(typeof(CalulatedDateOption)))
+                    @foreach (CalulatedDateOption item in Enum.GetValues<CalulatedDateOption>())
                     {
                         <MudSelectItem Value="@item">@Localizer.Get(item.ToString())</MudSelectItem>
                     }
@@ -35,14 +35,11 @@
     </DialogActions>
 </MudDialog>
 
-
 @code {
-
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
     QueryCommandParameter _param = new();
     private MudForm _form = default!;
-
 
     private void Cancel()
     {

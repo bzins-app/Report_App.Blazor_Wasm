@@ -63,4 +63,9 @@ else
         //options.Chart.Toolbar = new Toolbar { Show = false };
     }
 
+    public async Task Refresh()
+    {
+        await _chart.UpdateSeriesAsync(false);
+    }
+
 }

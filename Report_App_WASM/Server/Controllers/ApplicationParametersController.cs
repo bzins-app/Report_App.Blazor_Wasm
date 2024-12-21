@@ -26,22 +26,10 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     [HttpGet("ActivitiesInfo")]
     public async Task<IEnumerable<SelectItemActivitiesInfo>> GetActivitiesInfo()
     {
-        return await _context.Activity.Where(a => a.ActivityType == ActivityType.SourceDb).AsNoTracking().Select(a =>
-            new SelectItemActivitiesInfo
-            {
-                ActivityId = a.ActivityId, ActivityName = a.ActivityName,
-                HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
-                IsVisible = a.Display, LogoPath = a.ActivityLogo, IsActivated = a.IsActivated,
-                DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
-            }).ToArrayAsync();
-    }
-
-    [Authorize]
-    [HttpGet("DataTransfers")]
-    public async Task<IEnumerable<SelectItemActivitiesInfo>> GetDataTransfersInfo()
-    {
-        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb).AsNoTracking().Select(a =>
-            new SelectItemActivitiesInfo
+        return await _context.Activity
+            .Where(a => a.ActivityType == ActivityType.SourceDb)
+            .AsNoTracking()
+            .Select(a => new SelectItemActivitiesInfo
             {
                 ActivityId = a.ActivityId,
                 ActivityName = a.ActivityName,
@@ -50,7 +38,28 @@ public class ApplicationParametersController : ControllerBase, IDisposable
                 LogoPath = a.ActivityLogo,
                 IsActivated = a.IsActivated,
                 DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
-            }).ToArrayAsync();
+            })
+            .ToArrayAsync();
+    }
+
+    [Authorize]
+    [HttpGet("DataTransfers")]
+    public async Task<IEnumerable<SelectItemActivitiesInfo>> GetDataTransfersInfo()
+    {
+        return await _context.Activity
+            .Where(a => a.ActivityType == ActivityType.TargetDb)
+            .AsNoTracking()
+            .Select(a => new SelectItemActivitiesInfo
+            {
+                ActivityId = a.ActivityId,
+                ActivityName = a.ActivityName,
+                HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
+                IsVisible = a.Display,
+                LogoPath = a.ActivityLogo,
+                IsActivated = a.IsActivated,
+                DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
+            })
+            .ToArrayAsync();
     }
 
     [Authorize]
@@ -58,21 +67,23 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     public async Task<IEnumerable<SelectItem>> GetSftpInfo()
     {
         return await _context.SftpConfiguration
-            .Select(a => new SelectItem { Id = a.SftpConfigurationId, Name = a.ConfigurationName }).ToListAsync();
+            .Select(a => new SelectItem { Id = a.SftpConfigurationId, Name = a.ConfigurationName })
+            .ToListAsync();
     }
 
     [Authorize]
     [HttpGet("DepositPathInfo")]
     public async Task<IEnumerable<SelectItem>> GetDepositPathInfo()
     {
-        return await _context.FileDepositPathConfiguration.Select(a => new SelectItem
-            { Id = a.FileDepositPathConfigurationId, Name = a.ConfigurationName }).ToListAsync();
+        return await _context.FileDepositPathConfiguration
+            .Select(a => new SelectItem { Id = a.FileDepositPathConfigurationId, Name = a.ConfigurationName })
+            .ToListAsync();
     }
 
     [HttpGet("ApplicationConstants")]
     public ApplicationConstantsValues GetApplicationConstants()
     {
-        ApplicationConstantsValues values = new()
+        return new ApplicationConstantsValues
         {
             ApplicationLogo = ApplicationConstants.ApplicationLogo,
             ApplicationName = ApplicationConstants.ApplicationName,
@@ -81,25 +92,27 @@ public class ApplicationParametersController : ControllerBase, IDisposable
             ActivateAdHocQueriesModule = ApplicationConstants.ActivateAdHocQueriesModule,
             ActivateTaskSchedulerModule = ApplicationConstants.ActivateTaskSchedulerModule
         };
-        return values;
     }
 
     [Authorize]
     [HttpGet("CheckSmtpConfiguration")]
     public async Task<bool> CheckSmtpConfigurationAsync()
     {
-        return await _context.SmtpConfiguration.Where(a => a.IsActivated).AnyAsync();
+        return await _context.SmtpConfiguration.AnyAsync(a => a.IsActivated);
     }
 
     [Authorize]
     [HttpGet("CheckTaskHeaderEmail")]
     public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
     {
-        return await _context.TaskEmailRecipient.Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId)
-            .Select(a => a.Email).FirstOrDefaultAsync() != "[]" && await _context.TaskEmailRecipient
-            .Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId).AnyAsync();
-    }
+        var email = await _context.TaskEmailRecipient
+            .Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId)
+            .Select(a => a.Email)
+            .FirstOrDefaultAsync();
 
+        return email != "[]" && await _context.TaskEmailRecipient
+            .AnyAsync(a => a.TaskHeader.TaskHeaderId == taskHeaderId);
+    }
 
     [Authorize]
     [HttpGet("GetUploadedFilePath")]
@@ -107,15 +120,16 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     {
         var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "upload");
         var filePath = Path.Combine(uploads, fileName);
-        var savePath = "upload/" + fileName;
-        Tuple<string, string> result = new(savePath, filePath);
-        return result;
+        var savePath = Path.Combine("upload", fileName);
+        return new Tuple<string, string>(savePath, filePath);
     }
 
     [Authorize]
     [HttpGet("GetApplicationParameters")]
     public async Task<ApplicationParameters?> GetApplicationParametersAsync()
     {
-        return await _context.ApplicationParameters.OrderBy(a => a.Id).FirstOrDefaultAsync();
+        return await _context.ApplicationParameters
+            .OrderBy(a => a.Id)
+            .FirstOrDefaultAsync();
     }
 }

@@ -27,23 +27,27 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
 
     private async Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type)
     {
-        var result = await _backgroundWorkers.ActivateBackgroundWorkersAsync(activate, type);
-
-        return result;
+        return await _backgroundWorkers.ActivateBackgroundWorkersAsync(activate, type);
     }
 
     [HttpPost]
     public async Task<IActionResult> UpdateServicesStatusAsync(ApiCrudPayload<ServicesStatus> status)
     {
+        if (status.EntityValue == null)
+        {
+            return Ok(new SubmitResult { Success = false, Message = "EntityValue cannot be null." });
+        }
+
         try
         {
-            _context.Entry(status.EntityValue!).State = EntityState.Modified;
+            _context.Entry(status.EntityValue).State = EntityState.Modified;
             await SaveDbAsync(status.UserName);
-            _context.Entry(status.EntityValue!).State = EntityState.Detached;
+            _context.Entry(status.EntityValue).State = EntityState.Detached;
             return Ok(new SubmitResult { Success = true });
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error updating service status");
             return Ok(new SubmitResult { Success = false, Message = ex.Message });
         }
     }
@@ -59,61 +63,55 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error updating services");
             return new SubmitResult { Success = false, Message = ex.Message };
         }
     }
 
     private async Task<ServicesStatus> GetServiceStatusAsync()
     {
-        return (await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync())!;
+        return await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ?? new ServicesStatus();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> ActivateReportService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    private async Task<IActionResult> ActivateServiceAsync(ApiCrudPayload<ApiBackgroundWorkerPayload> value,
+        BackgroundTaskType type, Action<ServicesStatus, bool> updateServiceStatus)
     {
         var item = await GetServiceStatusAsync();
-        item.ReportService = value.EntityValue!.Activate;
-        var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.Report);
-        await UpdateServicesAsync(item, value.UserName);
-        return Ok(result);
-    }
-
-
-    [HttpPost]
-    public async Task<IActionResult> ActivateAlertService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
-    {
-        var item = await GetServiceStatusAsync();
-        item.AlertService = value.EntityValue!.Activate;
-        var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.Alert);
-        await UpdateServicesAsync(item, value.UserName);
-        return Ok(result);
-    }
-
-
-    [HttpPost]
-    public async Task<IActionResult> ActivateDataTransferService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
-    {
-        var item = await GetServiceStatusAsync();
-        item.DataTransferService = value.EntityValue!.Activate;
-        var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.DataTransfer);
+        updateServiceStatus(item, value.EntityValue!.Activate);
+        var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, type);
         await UpdateServicesAsync(item, value.UserName);
         return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivateCleanerService(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public Task<IActionResult> ActivateReportService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
-        var item = await GetServiceStatusAsync();
-
-        item.CleanerService = value.EntityValue.Activate;
-
-        var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, BackgroundTaskType.Cleaner);
-        await UpdateServicesAsync(item, value.UserName);
-        return Ok(result);
+        return ActivateServiceAsync(value, BackgroundTaskType.Report,
+            (item, activate) => item.ReportService = activate);
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivatePerActivity(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public Task<IActionResult> ActivateAlertService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
+    {
+        return ActivateServiceAsync(value, BackgroundTaskType.Alert, (item, activate) => item.AlertService = activate);
+    }
+
+    [HttpPost]
+    public Task<IActionResult> ActivateDataTransferService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
+    {
+        return ActivateServiceAsync(value, BackgroundTaskType.DataTransfer,
+            (item, activate) => item.DataTransferService = activate);
+    }
+
+    [HttpPost]
+    public Task<IActionResult> ActivateCleanerService(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
+    {
+        return ActivateServiceAsync(value, BackgroundTaskType.Cleaner,
+            (item, activate) => item.CleanerService = activate);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ActivatePerActivity(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         await _backgroundWorkers.SwitchBackgroundTasksPerActivityAsync(value.EntityValue!.Value,
             value.EntityValue.Activate);
@@ -121,7 +119,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivatePerTask(ApiCrudPayload<ApiBackgrounWorkerdPayload> value)
+    public async Task<IActionResult> ActivatePerTask(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
         await _backgroundWorkers.SwitchBackgroundTaskAsync(value.EntityValue!.Value, value.EntityValue.Activate);
         return Ok(new SubmitResult { Success = true });

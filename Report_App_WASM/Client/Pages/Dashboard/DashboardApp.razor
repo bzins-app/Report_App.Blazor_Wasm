@@ -1,166 +1,257 @@
 ﻿@page "/DashboardApp"
 @inherits ComponentBase
+@using Report_App_WASM.Client.Pages.Dashboard.Components
 @using Report_App_WASM.Shared.Dashboard
-@implements IDisposable
+@implements IAsyncDisposable
 @attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
+<MudStack Row="true">
+    <MudSpacer/>
+    <MudText Style="align-content:center">@Localizer.Get("Latest update") @DateTime.Now</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")"/>
+</MudStack>
 
-<MudContainer Class="pt-2 px-2" MaxWidth="MaxWidth.False">
-    <MudGrid Spacing="2">
-        <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-            <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of tasks")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfTasksExcecutedToday</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
-                </div>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-            <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.Wysiwyg" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Reports")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveReports</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-                </div>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-            <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.Report" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Alerts")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveAlerts</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-                </div>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-            <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.Inbox" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data transfer")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveDataTransfer</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-                </div>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-            <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.QueryStats" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of queries")</MudText>
-                    <MudText Typo="Typo.h5">@_metrics.NbrOfActiveQueries</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-                </div>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-            <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-                <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Tasks in error")</MudText>
-                    <MudText Typo="Typo.h5" Color="Color.Error">@_metrics.NbrTasksInError</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
-                </div>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="12" md="12" lg="6">
-            <MudGrid Spacing="2">
-                <MudItem xs="12" sm="12" md="6" lg="6">
-                    <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
-                        @if (_isLoading)
-                        {
-                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
-                        }
-                        else
-                        {
-                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs"/>
-                        }
-                    </MudPaper>
-                </MudItem>
-                <MudItem xs="12" sm="12" md="6" lg="6">
-                    <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
-                        @if (_isLoading)
-                        {
-                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
-                        }
-                        else
-                        {
-                            <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs"/>
-                        }
-                    </MudPaper>
-                </MudItem>
-                <MudItem xs="12" sm="12" md="12" lg="12">
-                    <MudPaper Elevation="2" Class="pa-2" Style="height: 220px;">
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%"/>
-                    </MudPaper>
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12" sm="12" md="12" lg="6">
-            <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 484px; min-height: 200px;">
-                @if (_isLoading)
-                {
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
-                }
-                else
-                {
-                    <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs"/>
-                }
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="6" xl="4">
-            <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%"/>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4" xl="2">
-            <MudPaper Elevation="2" Class="d-flex flex-row pa-2">
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
-                    <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
-                    <MudText Typo="Typo.h6">@($"{_metrics.SizeFilesStoredLocally:0.00}") MB</MudText>
-                </div>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="12" md="6" xl="3">
-            <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%"/>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="12" md="6" xl="3">
-            <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%"/>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</MudContainer>
+<MudGrid Spacing="2">
+    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
+        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+            <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of tasks")</MudText>
+                <MudText Typo="Typo.h5">@_metrics.NbrOfTasksExcecutedToday.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
+        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Wysiwyg" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Reports")</MudText>
+                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveReports.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
+        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Report" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Alerts")</MudText>
+                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveAlerts.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
+        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Inbox" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data transfer")</MudText>
+                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveDataTransfer.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
+        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+            <MudIcon Icon="@Icons.Material.Filled.QueryStats" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of queries")</MudText>
+                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveQueries.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
+        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Tasks in error")</MudText>
+                <MudText Typo="Typo.h5" Color="Color.Error">@_metrics.NbrTasksInError.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="12" lg="6">
+        <MudGrid Spacing="2">
+            <MudItem xs="12" sm="12" md="6" lg="6">
+                <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
+                    @if (_isLoading)
+                    {
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+                    }
+                    else
+                    {
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart"/>
+                    }
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="12" md="6" lg="6">
+                <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
+                    @if (_isLoading)
+                    {
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+                    }
+                    else
+                    {
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart"/>
+                    }
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="12" md="12" lg="12">
+                <MudPaper Elevation="2" Class="pa-2" Style="height: 220px;">
+                    <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" @ref="_dbFetch"/>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="12" lg="6">
+        <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
+            @if (_isLoading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+            }
+            else
+            {
+                <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs"/>
+            }
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="6" xl="4">
+        <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
+            <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage"/>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4" xl="2">
+        <MudPaper Elevation="2" Class="d-flex flex-row pa-2">
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
+                <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
+                <MudText Typo="Typo.h6">@_metrics.SizeFilesStoredLocally.ToString("N2") MB</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="6" xl="3">
+        <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
+            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs"/>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="6" xl="3">
+        <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
+            <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs"/>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
 @code {
     AppMetrics _metrics = new();
     private List<TaksLogsValues>? _taskLogs;
     private bool _isLoading = true;
+    private _EmailLogsChart _emailLogs = null!;
+    private _SystemLogsChart _systemLogs = null!;
+    private _StorageChart _storage = null!;
+    private _DblinesFetchedChart _dbFetch = null!;
+    private _TasksLogsChart _tasksLogsChart = null!;
+    private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
+    private System.Timers.Timer? _timer;
+    private bool _isPageVisible = true;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
-        await base.OnParametersSetAsync();
-    }
-
+    [Inject] IJSRuntime JSRuntime { get; set; } = null!;
+    private DotNetObjectReference<DashboardApp>? _dotNetRef;
+    private string? _visibilityChangeHandlerId;
 
     protected override async Task OnInitializedAsync()
     {
+        _isLoading = true;
+        _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
         _isLoading = false;
+
+        _timer = new System.Timers.Timer(1000 * 60 * 2);
+        _timer.Elapsed += async (sender, e) => await RefreshData();
+        _timer.AutoReset = true;
+        _timer.Enabled = true;
+
+        _dotNetRef = DotNetObjectReference.Create(this);
+        _visibilityChangeHandlerId = await JSRuntime.InvokeAsync<string>("pageVisibility.registerVisibilityChangeCallback", _dotNetRef);
     }
 
-    public void Dispose()
+
+    private async Task RefreshData()
     {
+        _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
+        _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
+
+        if (_emailLogs != null)
+        {
+            await _emailLogs.Refresh();
+        }
+
+        if (_systemLogs != null)
+        {
+            await _systemLogs.Refresh();
+        }
+
+        if (_storage != null)
+        {
+            await _storage.Refresh();
+        }
+
+        if (_dbFetch != null)
+        {
+            await _dbFetch.Refresh();
+        }
+
+        if (_tasksLogsChart != null)
+        {
+            await _tasksLogsChart.Refresh();
+        }
+
+        if (_tasksTypeLogsChart != null)
+        {
+            await _tasksTypeLogsChart.Refresh();
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task UnregisterVisibilityChangeCallback()
+    {
+        if (_visibilityChangeHandlerId != null)
+        {
+            await JSRuntime.InvokeVoidAsync("pageVisibility.unregisterVisibilityChangeCallback", _visibilityChangeHandlerId);
+            _visibilityChangeHandlerId = null;
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnVisibilityChange(bool isVisible)
+    {
+        _isPageVisible = isVisible;
+        if (_isPageVisible)
+        {
+            _timer?.Start();
+            await RefreshData();
+        }
+        else
+        {
+            _timer?.Stop();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_timer != null)
+        {
+            _timer.Stop();
+            _timer.Dispose();
+        }
+
+        await UnregisterVisibilityChangeCallback();
+        _dotNetRef?.Dispose();
+
         GC.SuppressFinalize(this);
     }
 

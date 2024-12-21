@@ -58,4 +58,10 @@ else
         _isLoading = false;
     }
 
+    public async Task Refresh()
+    {
+        _logs = await DataService.GetValues<TaksSystemValues>("SystemLogs", ApiControllers.DashboardApi);
+        await _chart.UpdateSeriesAsync(false);
+    }
+
 }

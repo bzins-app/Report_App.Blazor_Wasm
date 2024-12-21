@@ -70,6 +70,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             Error = false,
             Result = "Ok"
         };
+
         var total = 0;
         if (payload.CalculateTotalElements)
         {
@@ -85,7 +86,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                 var dataTotal = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
                 payload.Values.QueryToRun = originalQuery;
                 if (dataTotal != null)
-                    total = Convert.ToInt32(dataTotal.AsEnumerable().Select(r => r[0]).FirstOrDefault());
+                    total = Convert.ToInt32(dataTotal.Rows[0][0]);
             }
             catch (Exception ex)
             {
@@ -98,18 +99,44 @@ public class RemoteDbController : ControllerBase, IDisposable
         try
         {
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
-            var result = new SubmitResultRemoteData
-                { Success = true, Value = data.ToDictionnary(), TotalElements = total };
-            log.EndDateTime = DateTime.Now;
-            log.NbrOfRows = data.Rows.Count;
-            log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
-            if (payload.LogPayload)
+            if (payload.PivotTable)
             {
-                await _context.AddAsync(log);
-                await _context.SaveChangesAsync();
-            }
+                var selectColumns = data.Columns.Cast<DataColumn>().Take(10);
+                var nbrCols = data.Columns.Count;
+                var maxCols = payload.PivotTableNbrColumns;
+                if (nbrCols > maxCols)
+                    for (var x = maxCols; x < nbrCols; x++)
+                        if (data.Columns.Count > maxCols)
+                            data.Columns.RemoveAt(maxCols);
 
-            return Ok(result);
+                log.Type = "Pivot table";
+                log.NbrOfRows = data.Rows.Count;
+                log.EndDateTime = DateTime.Now;
+                log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+                if (payload.LogPayload)
+                {
+                    await _context.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                }
+
+                var result = new SubmitResultRemoteData { Success = true, Value = data.ToDictionnary() };
+                return Ok(result);
+            }
+            else
+            {
+                log.EndDateTime = DateTime.Now;
+                log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
+                log.NbrOfRows = data.Rows.Count;
+                if (payload.LogPayload)
+                {
+                    await _context.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                }
+
+                var result = new SubmitResultRemoteData
+                    { Success = true, Value = data.ToDictionnary(), TotalElements = total };
+                return Ok(result);
+            }
         }
         catch (Exception e)
         {
@@ -124,14 +151,20 @@ public class RemoteDbController : ControllerBase, IDisposable
             }
 
             var result = new SubmitResultRemoteData
-                { Success = false, Message = e.Message, Value = new List<Dictionary<string, object>>() };
+            {
+                Success = false,
+                Message = e.Message,
+                Value = new List<Dictionary<string, object>>()
+            };
             return Ok(result);
         }
     }
 
     private async Task<TypeDb> GetDbType(int activityId)
     {
-        return await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == activityId).Select(a => a.TypeDb)
+        return await _context.ActivityDbConnection
+            .Where(a => a.Activity.ActivityId == activityId)
+            .Select(a => a.TypeDb)
             .FirstOrDefaultAsync();
     }
 
@@ -161,6 +194,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             Error = false,
             Result = "Ok"
         };
+
         try
         {
             _logger.LogInformation("Grid extraction: Start " + payload.Values.FileName, payload.Values.FileName);
@@ -170,13 +204,13 @@ public class RemoteDbController : ControllerBase, IDisposable
                 .FirstOrDefaultAsync(ct);
             payload.Values.MaxSize = queriesMaxSizeExtract + 1;
             var items = await _remoteDb.RemoteDbToDatableAsync(payload.Values, ct);
-            var fileName = payload.Values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+            var fileName = $"{payload.Values.FileName} {DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
             log.NbrOfRows = items.Rows.Count;
             var file = CreateFile.ExcelFromDatable(fileName,
                 new ExcelCreationDatatable(payload.Values.FileName, new ExcelTemplate(),
                     items.AsEnumerable().Take(queriesMaxSizeExtract).CopyToDataTable()));
             _logger.LogInformation($"Grid extraction: End {fileName} {items.Rows.Count} lines",
-                $" {fileName} {items.Rows.Count} lines");
+                $"{fileName} {items.Rows.Count} lines");
             log.EndDateTime = DateTime.Now;
             log.DurationInSeconds = (log.EndDateTime - log.StartDateTime).Seconds;
             await _context.AddAsync(log);
@@ -204,10 +238,10 @@ public class RemoteDbController : ControllerBase, IDisposable
             var fileDesc = "Db Description";
             _logger.LogInformation("Db Description extraction: Start ");
             var values = _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == DbconnectionID);
-            var fileName = fileDesc + " " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+            var fileName = $"{fileDesc} {DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
 
             var file = CreateFile.ExcelFromCollection(fileName, fileDesc, await values.ToListAsync(ct));
-            _logger.LogInformation($"Grid extraction: End {fileName}", $" {fileName}");
+            _logger.LogInformation($"Grid extraction: End {fileName}", $"{fileName}");
             return File(file.Content, file.ContentType, file.FileName);
         }
         catch (Exception e)
@@ -220,7 +254,7 @@ public class RemoteDbController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<DbTablesColList> GetTablesListAsync(int activityId, CancellationToken ct)
     {
-        DbTablesColList listTables = new();
+        var listTables = new DbTablesColList();
         try
         {
             var script = await _remoteDb.GetAllTablesScript(activityId);
@@ -230,7 +264,9 @@ public class RemoteDbController : ControllerBase, IDisposable
                     { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new
+                    .Where(a => a.Activity.ActivityId == activityId)
+                    .AsNoTracking()
+                    .Select(a => new
                     {
                         tableDesc = a.UseTablesDescriptions,
                         a.UseDescriptionsFromAnotherActivity,
@@ -238,33 +274,35 @@ public class RemoteDbController : ControllerBase, IDisposable
                     })
                     .FirstOrDefaultAsync(ct);
 
-                var tables = data.AsEnumerable()
-                    .Select(r => r.Field<string>(0))
-                    .ToList();
+                var tables = data.AsEnumerable().Select(selector: r => new TablesColsInfo
+                    { TypeValue = r.Field<string>(0), Name = r.Field<string>(1) }).ToList();
                 if (tables != null)
                 {
                     if (description.tableDesc || description.UseDescriptionsFromAnotherActivity)
                     {
-                        var Prework = await _context.DbTableDescriptions
-                            .Where(a => a.ActivityDbConnection.Id == description.ConnectId).AsNoTracking()
-                            .Select(a => new { a.TableName, a.TableDescription }).Distinct().ToListAsync(ct);
+                        var prework = await _context.DbTableDescriptions
+                            .Where(a => a.ActivityDbConnection.Id == description.ConnectId)
+                            .AsNoTracking()
+                            .Select(a => new { a.TableName, a.TableDescription })
+                            .Distinct()
+                            .ToListAsync(ct);
                         listTables.Values = (from a in tables
-                            join b in Prework on a equals b.TableName into c
+                            join b in prework on a.Name equals b.TableName into c
                             from d in c.DefaultIfEmpty()
-                            select new DescriptionValues { Name = a, Description = d?.TableDescription }).ToList();
-                        listTables.HasDescription = Prework.Any();
+                            select new TablesColsInfo
+                                { Name = a.Name, Description = d?.TableDescription, TypeValue = a.TypeValue }).ToList();
+                        listTables.HasDescription = prework.Any();
                     }
                     else
                     {
-                        foreach (var table in tables.Distinct())
-                            listTables.Values.Add(new DescriptionValues { Name = table! });
+                        listTables.Values = tables;
                     }
                 }
             }
 
             return listTables;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return listTables;
         }
@@ -273,17 +311,20 @@ public class RemoteDbController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<DbTablesColList> GetColumnListAsync(int activityId, string table, CancellationToken ct)
     {
-        DbTablesColList listCols = new();
+        var listCols = new DbTablesColList();
         try
         {
             var script = await _remoteDb.GetTableColumnInfoScript(activityId, table);
+            Console.WriteLine(script);
             if (!string.IsNullOrEmpty(script))
             {
                 var parameters = new RemoteDbCommandParameters
                     { ActivityId = activityId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
                 var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId).AsNoTracking().Select(a => new
+                    .Where(a => a.Activity.ActivityId == activityId)
+                    .AsNoTracking()
+                    .Select(a => new
                     {
                         tableDesc = a.UseTablesDescriptions,
                         a.UseDescriptionsFromAnotherActivity,
@@ -293,60 +334,57 @@ public class RemoteDbController : ControllerBase, IDisposable
 
                 if (data.Rows.Count > 0)
                 {
-                    var cols = data.AsEnumerable()
-                        .Select(r => r.Field<string>(0))
+                    var cols = data.AsEnumerable().Select(selector: r => new TablesColsInfo
+                            { TypeValue = r.Field<string>(0), Name = r.Field<string>(1), ColType = r.Field<string>(2) })
                         .ToList();
                     if (cols != null)
                     {
                         if ((description.tableDesc || description.UseDescriptionsFromAnotherActivity) && await _context
-                                .DbTableDescriptions.Where(a =>
-                                    a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
+                                .DbTableDescriptions
+                                .Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
                                 .AnyAsync(ct))
                         {
                             var desc = await _context.DbTableDescriptions
                                 .Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
-                                .AsNoTracking().Select(a => new
-                                {
-                                    Name = a.ColumnName, Desciption = a.ColumnDescription ?? string.Empty, a.IsSnippet
-                                })
+                                .AsNoTracking()
+                                .Select(a => new { a.ColumnName, a.ColumnDescription, a.IsSnippet })
                                 .ToListAsync();
                             if (desc != null)
                             {
-                                listCols.Values.AddRange(desc.Where(a => a.IsSnippet).Select(a => new DescriptionValues
-                                    { Name = a.Name!, Description = a.Desciption, IsSnippet = true }).ToList());
+                                listCols.Values.AddRange(desc.Where(a => a.IsSnippet).Select(a => new TablesColsInfo
+                                {
+                                    Name = a.ColumnName!,
+                                    Description = a.ColumnDescription ?? string.Empty,
+                                    IsSnippet = true
+                                }).ToList());
                                 listCols.HasDescription = true;
-                                foreach (var col in cols.Distinct())
-                                    listCols.Values.Add(new DescriptionValues
-                                    {
-                                        Name = col!,
-                                        Description =
-                                            desc.Where(a => a.Name == col! && !a.IsSnippet).Select(a => a.Desciption)
-                                                .FirstOrDefault() ?? string.Empty
-                                    });
+                                listCols.Values.AddRange(cols.Distinct().Select(col => new TablesColsInfo
+                                {
+                                    Name = col.Name!,
+                                    TypeValue = col.TypeValue,
+                                    ColType = col.ColType,
+                                    ColOrder = col.ColOrder,
+                                    Description =
+                                        desc.FirstOrDefault(a => a.ColumnName == col.Name && !a.IsSnippet)
+                                            ?.ColumnDescription ?? string.Empty
+                                }));
                             }
                             else
                             {
-                                foreach (var col in cols.Distinct())
-                                {
-                                    if (col != null) listCols.Values.Add(new DescriptionValues { Name = col });
-                                    listCols.HasDescription = false;
-                                }
+                                listCols.Values.AddRange(cols);
                             }
                         }
                         else
                         {
-                            foreach (var col in cols.Distinct())
-                                if (col != null)
-                                    listCols.Values.Add(new DescriptionValues { Name = col });
+                            listCols.Values.AddRange(cols);
                         }
                     }
                 }
             }
 
-
             return listCols;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return listCols;
         }

@@ -8,22 +8,22 @@
                 .then(editor => {
                     editors[id] = editor;
                     editor.model.document.on('change:data', () => {
-                        let data = editor.getData();
-
+                        const data = editor.getData().trim();
                         const el = document.createElement('div');
                         el.innerHTML = data;
-                        if (el.innerText.trim() == '')
-                            data = null;
+                        const cleanedData = el.innerText.trim() === '' ? null : data;
 
-                        dotNetReference.invokeMethodAsync('EditorDataChanged', data);
+                        dotNetReference.invokeMethodAsync('EditorDataChanged', cleanedData);
                     });
                 })
                 .catch(error => console.error(error));
         },
         destroy(id) {
-            editors[id].destroy()
-                .then(() => delete editors[id])
-                .catch(error => console.log(error));
+            if (editors[id]) {
+                editors[id].destroy()
+                    .then(() => delete editors[id])
+                    .catch(error => console.error(error));
+            }
         }
     };
 })();

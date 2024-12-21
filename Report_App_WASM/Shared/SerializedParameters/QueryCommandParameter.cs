@@ -11,32 +11,3 @@ public class QueryCommandParameter
     public bool HideParameter { get; set; } = false;
     public string Value { get; set; } = string.Empty;
 }
-
-public enum QueryCommandParameterValueType
-{
-    String,
-    Number,
-    Date,
-    DateTime
-}
-
-public enum CalulatedDateOption
-{
-    LastRun,
-    LastOpeningDay,
-    Now,
-    Yesterday,
-    Tomorrow,
-    StartOfThisWeek,
-    EndOfThisWeek,
-    StartOfLastWeek,
-    EndOfLastWeek,
-    StartOfThisMonth,
-    EndOfThisMonth,
-    StartOfLastMonth,
-    EndOfLastMonth,
-    StartOfThisQuarter,
-    EndOfThisQuarter,
-    StartOfThisYear,
-    EndOfThisYear
-}

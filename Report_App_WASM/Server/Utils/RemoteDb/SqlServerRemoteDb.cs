@@ -15,8 +15,10 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script = dbInfo.UseDbSchema
-                ? $"SELECT  concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1"
-                : "SELECT concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name FROM information_schema.tables order by 1";
+                ? $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
+                FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1,2"
+                : $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
+                FROM information_schema.tables order by 1,2";
         return script;
     }
 
@@ -43,9 +45,14 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
             script =
-                $"select col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id  " +
-                $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name " +
-                $"where concat(tables.TABLE_SCHEMA,'.',tab.name) ='{tableName}'";
+                $@"select
+				'Col' as Valuetype,
+				COLUMN_NAME,
+				DATA_TYPE,
+				ORDINAL_POSITION as ColOrder
+				from INFORMATION_SCHEMA.COLUMNS
+				where concat(TABLE_SCHEMA,'.',TABLE_NAME) ='{tableName}'
+				order by ColOrder";
         return script;
     }
 

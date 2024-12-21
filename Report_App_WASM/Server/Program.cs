@@ -12,12 +12,8 @@ using Report_App_WASM.Server.Utils.SettingsConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.ConfigureLogging((hostingContext, logging) =>
-{
-    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-
-    logging.AddEntityFramework<ApplicationDbContext, ApplicationLogSystem>();
-});
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+builder.Logging.AddEntityFramework<ApplicationDbContext, ApplicationLogSystem>();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
@@ -130,10 +126,10 @@ var env = builder.Environment;
 
 using (var scope = app.Services.CreateScope())
 {
-    bool loop = true;
-    int retryCount = 0;
+    var loop = true;
+    var retryCount = 0;
     const int maxRetries = 5;
-    while (loop && retryCount < maxRetries)
+    while (loop)
     {
         var services = scope.ServiceProvider;
         try

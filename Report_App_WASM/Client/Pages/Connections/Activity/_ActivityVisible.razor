@@ -1,0 +1,24 @@
+﻿@inject ISnackbar Snackbar
+
+<MudSwitch Style="justify-content: center" Value="@Item!.Display" Color="Color.Primary" ThumbIcon="@(Item.Display ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.Display ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)"/>
+
+@code {
+
+    [Parameter] public ActivityDto? Item { get; set; }
+
+    private async Task ChangeStatusAsync(bool value)
+    {
+        Item!.Display = value;
+        var result = await DataService.PostValues(Item, "ActivityUpdate");
+        if (!result.Success)
+        {
+            Item.Display = !value;
+            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            if (result.Message != null) Snackbar.Add(result.Message, Severity.Error);
+            return;
+        }
+
+        Snackbar.Add(Item.Display ? Item.ActivityName + " " + Localizer.Get("is diplayed") : Item.ActivityName + " " + Localizer.Get("is not displayed"), Item.Display ? Severity.Success : Severity.Normal);
+    }
+
+}
