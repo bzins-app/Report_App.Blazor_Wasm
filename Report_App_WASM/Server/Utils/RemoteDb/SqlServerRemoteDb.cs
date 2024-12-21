@@ -177,7 +177,7 @@ public class SqlServerRemoteDb : IRemoteDb
                 $"server ={dbInfo.ConnectionPath}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
 
         if (dbInfo.IntentReadOnly) connectionString += "applicationintent=readonly;";
-        connectionString += "Encrypt=False;";
+        connectionString += "Encrypt=False;MultipleActiveResultSets=True;";
         value.ConnnectionString = connectionString;
 
         return value;
