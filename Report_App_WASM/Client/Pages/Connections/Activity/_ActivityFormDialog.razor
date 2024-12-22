@@ -1,4 +1,5 @@
 ﻿@using BlazorDownloadFile
+@using Report_App_WASM.Shared.DatabasesConnectionParameters
 @inject IBlazorDownloadFileService _blazorDownloadFileService
 @inject HttpClient Http
 
@@ -264,6 +265,7 @@
     private string _deletionValidation = null!;
 
     private ActivityDbConnectionDto DbCon { get; set; } = new();
+    // private DatabaseParameters DbParameters { get; set; } 
     private string _connectionTestResult = null!;
     private List<SelectItemActivitiesInfo> _activities = new();
     private ApplicationConstantsValues? _appConst;

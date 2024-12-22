@@ -43,6 +43,20 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpPost]
+    public async Task<IActionResult> TestConnection2(ApiCrudPayload<ActivityDbConnection> value)
+    {
+        try
+        {
+            var result = await _remoteDb.TestConnectionAsync2(value.EntityValue);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return Ok(new SubmitResult { Success = false, Message = ex.Message });
+        }
+    }
+
+    [HttpPost]
     public async Task<IActionResult> DeleteDataTransferTable(ApiCrudPayload<DeleteTablePayload> value)
     {
         try

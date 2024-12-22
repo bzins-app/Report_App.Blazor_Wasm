@@ -48,6 +48,13 @@ public class OracleRemoteDb : IRemoteDb
         await conn.DisposeAsync();
     }
 
+    public async Task TryConnectAsync(string ConnnectionString)
+    {
+        DbConnection conn = new OracleConnection(ConnnectionString);
+        await conn.OpenAsync();
+        await conn.DisposeAsync();
+    }
+
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
         ActivityDbConnection dbInfo, CancellationToken cts)
     {

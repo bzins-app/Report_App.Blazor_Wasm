@@ -62,6 +62,13 @@ public class PostgreSqlRemoteDb : IRemoteDb
         await conn.DisposeAsync();
     }
 
+    public async Task TryConnectAsync(string ConnnectionString)
+    {
+        DbConnection conn = new NpgsqlConnection(ConnnectionString);
+        await conn.OpenAsync();
+        await conn.DisposeAsync();
+    }
+
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
         ActivityDbConnection dbInfo, CancellationToken cts)
     {

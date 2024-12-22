@@ -88,6 +88,7 @@
             <MudNavGroup Title="@Localizer.Get("Base parameters")" Icon="@Icons.Material.Outlined.SettingsApplications">
                 <MudNavLink Href="BaseParameters" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Application parameters")</MudNavLink>
                 <MudNavLink Href="ConnectionsManager" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Connections manager")</MudNavLink>
+                <MudNavLink Href="TestConnection" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("TestConnection")</MudNavLink>
                 @if (_appConst.ActivateTaskSchedulerModule)
                 {
                     <MudNavLink Href="DepositPath" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">@Localizer.Get("Deposit path")</MudNavLink>
