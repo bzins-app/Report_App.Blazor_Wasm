@@ -41,10 +41,10 @@
                                 <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("DB schema")" Disabled="!DbCon.UseDbSchema" Margin="Margin.Dense"/>
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Margin="Margin.Dense" autocomplete="new-login" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense" autocomplete="new-password" />
                             </MudItem>
                         </MudGrid>
                         <MudNumericField @bind-Value="DbCon.CommandFetchSize" Label="@Localizer.Get("Command fetch size")" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense"/>
@@ -66,10 +66,10 @@
                                 <MudSwitch @bind-Value="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true"/>
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense" autocomplete="new-login" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="DbCon.AdAuthentication" Margin="Margin.Dense" autocomplete="new-password" />
                             </MudItem>
                         </MudGrid>
                     }
@@ -79,10 +79,10 @@
                         <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense"/>
                         <MudGrid>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense" autocomplete="new-login" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense" autocomplete="new-password" />
                             </MudItem>
                         </MudGrid>
                     }
@@ -97,10 +97,10 @@
                                 <MudTextField @bind-Value="DbCon.DbSchema" Label="@Localizer.Get("Database name")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense"/>
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.ConnectionLogin" Label="@Localizer.Get("Connection login")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense" autocomplete="new-login" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense"/>
+                                <MudTextField @bind-Value="DbCon.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Margin="Margin.Dense" autocomplete="new-password" />
                             </MudItem>
                         </MudGrid>
                     }
