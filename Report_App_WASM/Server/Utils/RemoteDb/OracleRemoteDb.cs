@@ -1,5 +1,6 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -175,6 +176,9 @@ public class OracleRemoteDb : IRemoteDb
             ConnnectionString =
                 $"User ID={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)}; Data Source={dbInfo.ConnectionPath};"
         };
+
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        value.ConnnectionString = dbparam.BuildConnectionString();
 
         return value;
     }

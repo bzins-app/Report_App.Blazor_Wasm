@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.Data.SqlClient;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -186,6 +187,9 @@ public class SqlServerRemoteDb : IRemoteDb
         if (dbInfo.IntentReadOnly) connectionString += "applicationintent=readonly;";
         connectionString += "Encrypt=False;MultipleActiveResultSets=True;";
         value.ConnnectionString = connectionString;
+
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        value.ConnnectionString = dbparam.BuildConnectionString();
 
         return value;
     }

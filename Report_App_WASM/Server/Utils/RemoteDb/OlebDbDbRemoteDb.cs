@@ -1,4 +1,5 @@
 ﻿using System.Data.OleDb;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 #pragma warning disable CA1416
 
@@ -106,6 +107,9 @@ public class OlebDbDbRemoteDb : IRemoteDb
         if (dbInfo.UseDbSchema) databaseInfo = $";Initial Catalog={dbInfo.DbSchema}";
         value.ConnnectionString =
             $"Provider=DB2OLEDB.1;Data Source={dbInfo.ConnectionPath}{databaseInfo};User ID={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        value.ConnnectionString = dbparam.BuildConnectionString();
 
         return value;
     }

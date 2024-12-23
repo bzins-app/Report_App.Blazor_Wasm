@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -177,6 +178,9 @@ public class MariaDbRemoteDb : IRemoteDb
         if (dbInfo.UseDbSchema) databaseInfo = $";database={dbInfo.DbSchema}";
         value.ConnnectionString =
             $"server={dbInfo.ConnectionPath};port={dbInfo.Port}{databaseInfo};uid={dbInfo.ConnectionLogin};Pwd={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};SslMode=Preferred;";
+
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        value.ConnnectionString = dbparam.BuildConnectionString();
 
         return value;
     }

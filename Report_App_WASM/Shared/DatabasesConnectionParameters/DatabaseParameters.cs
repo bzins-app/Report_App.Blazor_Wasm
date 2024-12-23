@@ -1,4 +1,6 @@
-﻿namespace Report_App_WASM.Shared.DatabasesConnectionParameters
+﻿using System.Text.Json;
+
+namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 {
     public enum ApplicationIntent
     {
@@ -37,10 +39,7 @@
             return !EqualityComparer<T>.Default.Equals(value, defaultValue) ? $"{key}={value};" : "";
         }
 
-        public DatabaseParameters Clone()
-        {
-            return (DatabaseParameters)this.MemberwiseClone();
-        }
+        public abstract JsonElement SerializeMenbersToJson();
     }
 
     public class SqlServerParameters : DatabaseParameters
@@ -89,6 +88,18 @@
 
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
+
+        public override JsonElement SerializeMenbersToJson()
+        {
+            // Create a shallow copy of the parameters object
+            var parametersCopy = (SqlServerParameters)this.MemberwiseClone();
+
+            // Remove sensitive information
+            parametersCopy.UserId = null;
+            parametersCopy.Password = null;
+
+            return JsonSerializer.SerializeToElement(parametersCopy) ;
+        }
     }
 
     public class MySqlParameters : DatabaseParameters
@@ -124,6 +135,18 @@
             };
 
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
+        }
+
+        public override JsonElement SerializeMenbersToJson()
+        {
+            // Create a shallow copy of the parameters object
+            var parametersCopy = (MySqlParameters)this.MemberwiseClone();
+
+            // Remove sensitive information
+            parametersCopy.UserId = null;
+            parametersCopy.Password = null;
+
+            return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
     }
 
@@ -165,6 +188,18 @@
             }
 
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
+        }
+
+        public override JsonElement SerializeMenbersToJson()
+        {
+            // Create a shallow copy of the parameters object
+            var parametersCopy = (PostgreSqlParameters)this.MemberwiseClone();
+
+            // Remove sensitive information
+            parametersCopy.UserId = null;
+            parametersCopy.Password = null;
+
+            return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
     }
 
@@ -208,6 +243,18 @@
 
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
+
+        public override JsonElement SerializeMenbersToJson()
+        {
+            // Create a shallow copy of the parameters object
+            var parametersCopy = (OracleParameters)this.MemberwiseClone();
+
+            // Remove sensitive information
+            parametersCopy.UserId = null;
+            parametersCopy.Password = null;
+
+            return JsonSerializer.SerializeToElement(parametersCopy) ;
+        }
     }
 
     public class MariaDbParameters : DatabaseParameters
@@ -244,6 +291,18 @@
 
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
+
+        public override JsonElement SerializeMenbersToJson()
+        {
+            // Create a shallow copy of the parameters object
+            var parametersCopy = (MariaDbParameters)this.MemberwiseClone();
+
+            // Remove sensitive information
+            parametersCopy.UserId = null;
+            parametersCopy.Password = null;
+
+            return JsonSerializer.SerializeToElement(parametersCopy) ;
+        }
     }
 
     public class OleDbParameters : DatabaseParameters
@@ -268,6 +327,18 @@
             };
 
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
+        }
+
+        public override JsonElement SerializeMenbersToJson()
+        {
+            // Create a shallow copy of the parameters object
+            var parametersCopy = (OleDbParameters)this.MemberwiseClone();
+
+            // Remove sensitive information
+            parametersCopy.UserId = null;
+            parametersCopy.Password = null;
+
+            return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
     }
 }

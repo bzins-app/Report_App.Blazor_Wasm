@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -169,6 +170,9 @@ public class PostgreSqlRemoteDb : IRemoteDb
         if (dbInfo.UseDbSchema) databaseInfo = $";Database={dbInfo.DbSchema}";
         value.ConnnectionString =
             $"Server={dbInfo.ConnectionPath};Port={dbInfo.Port}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        value.ConnnectionString = dbparam.BuildConnectionString();
 
         return value;
     }

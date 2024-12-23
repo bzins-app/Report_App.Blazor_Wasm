@@ -11,19 +11,12 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 
     public class DatabaseConnectionParametersManager
     {
-        public static string SerializeToJson(DatabaseParameters parameters, TypeDb type)
+        public static string SerializeToJson(JsonElement parameters, TypeDb type)
         {
-            // Create a shallow copy of the parameters object
-            var parametersCopy = parameters.Clone();
-
-            // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
-
             var config = new DatabaseConfig
             {
                 Type = type,
-                Parameters = JsonSerializer.SerializeToElement(parametersCopy)
+                Parameters = parameters
             };
             return JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
         }
