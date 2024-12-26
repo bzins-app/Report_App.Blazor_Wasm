@@ -69,7 +69,7 @@ public class InitializeDatabase
                     {
                         PostgreParameters.Port = t.Port;
                     }
-                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMenbersToJson(), TypeDb.PostgreSql);
+                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
 
                 }
                 else if (t.TypeDb == TypeDb.MariaDb)
@@ -81,7 +81,7 @@ public class InitializeDatabase
                     {
                         MariaParameters.Port = t.Port;
                     }
-                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMenbersToJson(), TypeDb.MariaDb);
+                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMembersToJson(), TypeDb.MariaDb);
 
                 }
                 else if (t.TypeDb == TypeDb.MySql)
@@ -93,7 +93,7 @@ public class InitializeDatabase
                     {
                         MyParameters.Port = t.Port;
                     }
-                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMenbersToJson(), TypeDb.MySql);
+                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMembersToJson(), TypeDb.MySql);
 
                 }
                 else if (t.TypeDb == TypeDb.Db2)
@@ -102,7 +102,7 @@ public class InitializeDatabase
                     if (t.ConnectionPath != null) oleDParameters.Server = t.ConnectionPath;
                     if (t.DbSchema != null) oleDParameters.Database = t.DbSchema;
                     oleDParameters.Provider = "DB2OLEDB.1";
-                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMenbersToJson(), TypeDb.OlebDb);
+                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMembersToJson(), TypeDb.OlebDb);
                     t.TypeDb = TypeDb.OlebDb;
 
                 }
@@ -153,7 +153,7 @@ public class InitializeDatabase
                     {
                         OParameters.Port = t.Port;
                     }
-                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMenbersToJson(), TypeDb.Oracle);
+                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
 
                 }
                 else if (t.TypeDb == TypeDb.SqlServer)
@@ -167,7 +167,7 @@ public class InitializeDatabase
                         sqlServerParameters.Port = t.Port;
                     }
                     sqlServerParameters.Encrypt = false;
-                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMenbersToJson(), TypeDb.SqlServer);
+                    t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMembersToJson(), TypeDb.SqlServer);
 
                 }
 

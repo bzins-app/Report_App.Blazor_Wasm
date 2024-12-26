@@ -39,7 +39,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return !EqualityComparer<T>.Default.Equals(value, defaultValue) ? $"{key}={value};" : "";
         }
 
-        public abstract JsonElement SerializeMenbersToJson();
+        public abstract JsonElement SerializeMembersToJson();
     }
 
     public class SqlServerParameters : DatabaseParameters
@@ -89,7 +89,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
 
-        public override JsonElement SerializeMenbersToJson()
+        public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
             var parametersCopy = (SqlServerParameters)this.MemberwiseClone();
@@ -137,7 +137,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
 
-        public override JsonElement SerializeMenbersToJson()
+        public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
             var parametersCopy = (MySqlParameters)this.MemberwiseClone();
@@ -190,7 +190,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
 
-        public override JsonElement SerializeMenbersToJson()
+        public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
             var parametersCopy = (PostgreSqlParameters)this.MemberwiseClone();
@@ -244,7 +244,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
 
-        public override JsonElement SerializeMenbersToJson()
+        public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
             var parametersCopy = (OracleParameters)this.MemberwiseClone();
@@ -292,7 +292,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
 
-        public override JsonElement SerializeMenbersToJson()
+        public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
             var parametersCopy = (MariaDbParameters)this.MemberwiseClone();
@@ -329,7 +329,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return string.Join("", parts.Where(p => !string.IsNullOrEmpty(p)));
         }
 
-        public override JsonElement SerializeMenbersToJson()
+        public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
             var parametersCopy = (OleDbParameters)this.MemberwiseClone();

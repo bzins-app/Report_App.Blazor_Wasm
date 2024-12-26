@@ -16,7 +16,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudStack Spacing="1" Style="max-height: 80vh; overflow-x: hidden; overflow-y: auto; width: 100%">
+        <MudStack Spacing="1" >
             <MudForm Model="@Item" @ref="@_form">
                 <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action == CrudAction.Delete" />
                 <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
@@ -29,21 +29,26 @@
                         <MudSelectItem Value="@item">@item</MudSelectItem>
                     }
                 </MudSelect>
+               
                 @if (DbCon.TypeDb > 0 && Action != CrudAction.Delete)
-                {
+                { <MudPaper >
                     @if (DbCon.TypeDb == TypeDb.Oracle)
                     {
+                        <MudStack Row="true">
                         <MudTextField @bind-Value="OParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
                         <MudNumericField @bind-Value="OParameters.Port" Label="Port" Required="true" />
                         <MudTextField @bind-Value="OParameters.ServiceName" Label="Oracle ServiceName" Required="true" />
+                        </MudStack>
+                        <MudStack Row="true">
                         <MudTextField @bind-Value="OParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" />
                         <MudTextField @bind-Value="OParameters.Password" Label="Password" Required="true" autocomplete="new-password"
-                        InputType="InputType.Password" />
+                                      InputType="InputType.Password" />
+                        </MudStack>
                         <MudStack Row="true">
                             <MudSwitch @bind-Value="OParameters.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
                             <MudTextField @bind-Value="OParameters.Schema" Label="@Localizer.Get("DB schema")" Disabled="!OParameters.UseDbSchema" Required="!OParameters.UseDbSchema" />
-                        </MudStack>
                         <MudNumericField @bind-Value="OParameters.ConnectTimeout" Label="ConnectTimeout" />
+                        </MudStack>
                         <MudStack Row="true">
                             <MudCheckBox @bind-Value="OParameters.Pooling" Label="Pooling?" />
                             <MudNumericField @bind-Value="OParameters.MinPoolSize" Label="MinPoolSize" Disabled="!OParameters.Pooling" />
@@ -53,12 +58,16 @@
                     }
                     else if (DbCon.TypeDb == TypeDb.SqlServer)
                     {
-                        <MudTextField @bind-Value="sqlServerParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
-                        <MudNumericField @bind-Value="sqlServerParameters.Port" Label="Port" />
-                        <MudSwitch @bind-Value="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true" />
+                        <MudStack Row="true">
+                            <MudTextField @bind-Value="sqlServerParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" />
+                            <MudNumericField @bind-Value="sqlServerParameters.Port" Label="Port" />
+                            <MudSwitch @bind-Value="DbCon.AdAuthentication" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="true" />
+                        </MudStack>
+                        <MudStack Row="true">
                         <MudTextField @bind-Value="sqlServerParameters.UserId" Label="UserId" Required="true" Disabled="DbCon.AdAuthentication" autocomplete="new-userid" />
                         <MudTextField @bind-Value="sqlServerParameters.Password" Label="Password" Required="true" Disabled="DbCon.AdAuthentication" autocomplete="new-password"
-                        InputType="InputType.Password" />
+                                      InputType="InputType.Password" />
+                        </MudStack>
                         <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" />
                         <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" AnchorOrigin="Origin.BottomCenter">
                             @foreach (ApplicationIntent item in Enum.GetValues(typeof(ApplicationIntent)))
@@ -138,7 +147,19 @@
                             <MudCheckBox @bind-Value="MyParameters.AllowUserVariables" Label="AllowUserVariables" />
                         </MudStack>
                     }
-
+                    
+                    <div>
+                        <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
+                            <LoadingContent>
+                                <MudText>@Localizer.Get("Processing")</MudText>
+                            </LoadingContent>
+                            <ChildContent>
+                                <MudText>@Localizer.Get("Test Db connection")</MudText>
+                            </ChildContent>
+                        </MudLoadingButton>
+                        <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
+                    </div>
+                </MudPaper>
                     <MudGrid>
                         <MudItem md="6">
                             <MudNumericField @bind-Value="DbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
@@ -159,17 +180,7 @@
                             <MudNumericField @bind-Value="DbCon.DataTransferMaxNbrofRowsFetched" Label="@(Localizer.Get("DataTransfer") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
                         </MudItem>
                     </MudGrid>
-                    <div>
-                        <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
-                            <LoadingContent>
-                                <MudText>@Localizer.Get("Processing")</MudText>
-                            </LoadingContent>
-                            <ChildContent>
-                                <MudText>@Localizer.Get("Test Db connection")</MudText>
-                            </ChildContent>
-                        </MudLoadingButton>
-                        <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
-                    </div>
+   
                     <MudPaper Class="pa-2" Outlined="true">
                         <div>
                             <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
@@ -335,37 +346,37 @@
                 if(string.IsNullOrEmpty(DbCon.ConnectionPath))  DbCon.ConnectionPath = "PostgreParameters.Password;" ;
                 if (DbCon.TypeDb == TypeDb.PostgreSql)
                 {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMenbersToJson(), TypeDb.PostgreSql);
+                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
                     DbCon.Password=PostgreParameters.Password;
                     DbCon.ConnectionLogin = PostgreParameters.UserId;
                 }
                 else if (DbCon.TypeDb == TypeDb.MariaDb)
                 {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMenbersToJson(), TypeDb.MariaDb);
+                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMembersToJson(), TypeDb.MariaDb);
                     DbCon.Password = MariaParameters.Password;
                     DbCon.ConnectionLogin = MariaParameters.UserId;
                 }
                 else if (DbCon.TypeDb == TypeDb.MySql)
                 {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMenbersToJson(), TypeDb.MySql);
+                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMembersToJson(), TypeDb.MySql);
                     DbCon.Password = MyParameters.Password;
                     DbCon.ConnectionLogin = MyParameters.UserId;
                 }
                 else if (DbCon.TypeDb == TypeDb.OlebDb)
                 {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMenbersToJson(), TypeDb.OlebDb);
+                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMembersToJson(), TypeDb.OlebDb);
                     DbCon.Password = oleDParameters.Password;
                     DbCon.ConnectionLogin = oleDParameters.UserId;
                 }
                 else if (DbCon.TypeDb == TypeDb.Oracle)
                 {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMenbersToJson(), TypeDb.Oracle);
+                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
                     DbCon.Password = OParameters.Password;
                     DbCon.ConnectionLogin = OParameters.UserId;
                 }
                 else if (DbCon.TypeDb == TypeDb.SqlServer)
                 {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMenbersToJson(), TypeDb.SqlServer);
+                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMembersToJson(), TypeDb.SqlServer);
                     DbCon.Password = sqlServerParameters.Password;
                     DbCon.ConnectionLogin = sqlServerParameters.UserId;
                 }
@@ -423,37 +434,37 @@
         if (string.IsNullOrEmpty(DbCon.ConnectionPath)) DbCon.ConnectionPath = "PostgreParameters.Password;";
         if (DbCon.TypeDb == TypeDb.PostgreSql)
         {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMenbersToJson(), TypeDb.PostgreSql);
+            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
             DbCon.Password = PostgreParameters.Password;
             DbCon.ConnectionLogin = PostgreParameters.UserId;
         }
         else if (DbCon.TypeDb == TypeDb.MariaDb)
         {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMenbersToJson(), TypeDb.MariaDb);
+            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMembersToJson(), TypeDb.MariaDb);
             DbCon.Password = MariaParameters.Password;
             DbCon.ConnectionLogin = MariaParameters.UserId;
         }
         else if (DbCon.TypeDb == TypeDb.MySql)
         {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMenbersToJson(), TypeDb.MySql);
+            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMembersToJson(), TypeDb.MySql);
             DbCon.Password = MyParameters.Password;
             DbCon.ConnectionLogin = MyParameters.UserId;
         }
         else if (DbCon.TypeDb == TypeDb.OlebDb)
         {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMenbersToJson(), TypeDb.OlebDb);
+            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMembersToJson(), TypeDb.OlebDb);
             DbCon.Password = oleDParameters.Password;
             DbCon.ConnectionLogin = oleDParameters.UserId;
         }
         else if (DbCon.TypeDb == TypeDb.Oracle)
         {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMenbersToJson(), TypeDb.Oracle);
+            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
             DbCon.Password = OParameters.Password;
             DbCon.ConnectionLogin = OParameters.UserId;
         }
         else if (DbCon.TypeDb == TypeDb.SqlServer)
         {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMenbersToJson(), TypeDb.SqlServer);
+            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMembersToJson(), TypeDb.SqlServer);
             DbCon.Password = sqlServerParameters.Password;
             DbCon.ConnectionLogin = sqlServerParameters.UserId;
         }
