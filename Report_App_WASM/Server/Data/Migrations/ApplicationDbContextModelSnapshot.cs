@@ -206,7 +206,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("ActivityId");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activity", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ActivityDbConnection", b =>
@@ -305,7 +305,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivityDbConnection");
+                    b.ToTable("ActivityDbConnection", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationAuditTrail", b =>
@@ -351,7 +351,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("Type", "TableName");
 
-                    b.ToTable("ApplicationAuditTrail");
+                    b.ToTable("ApplicationAuditTrail", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogAdHocQueries", b =>
@@ -405,7 +405,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("ActivityId", "QueryId", "JobDescription");
 
-                    b.ToTable("ApplicationLogAdHocQueries");
+                    b.ToTable("ApplicationLogAdHocQueries", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogEmailSender", b =>
@@ -446,7 +446,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("Error", "Result");
 
-                    b.ToTable("ApplicationLogEmailSender");
+                    b.ToTable("ApplicationLogEmailSender", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogQueryExecution", b =>
@@ -508,7 +508,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationLogQueryExecution");
+                    b.ToTable("ApplicationLogQueryExecution", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogReportResult", b =>
@@ -577,7 +577,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("ActivityId", "ReportPath");
 
-                    b.ToTable("ApplicationLogReportResult");
+                    b.ToTable("ApplicationLogReportResult", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogSystem", b =>
@@ -641,7 +641,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("TimeStampAppHour");
 
-                    b.ToTable("ApplicationLogSystem");
+                    b.ToTable("ApplicationLogSystem", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogTask", b =>
@@ -694,7 +694,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("Error", "Result");
 
-                    b.ToTable("ApplicationLogTask");
+                    b.ToTable("ApplicationLogTask", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogTaskDetails", b =>
@@ -721,7 +721,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("TaskId", "Id");
 
-                    b.ToTable("ApplicationLogTaskDetails");
+                    b.ToTable("ApplicationLogTaskDetails", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationParameters", b =>
@@ -789,7 +789,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationParameters");
+                    b.ToTable("ApplicationParameters", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationUniqueKey", b =>
@@ -800,7 +800,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationUniqueKey");
+                    b.ToTable("ApplicationUniqueKey", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationUser", b =>
@@ -949,7 +949,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("TableName", "ColumnName");
 
-                    b.ToTable("DbTableDescriptions");
+                    b.ToTable("DbTableDescriptions", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.FileDepositPathConfiguration", b =>
@@ -999,7 +999,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("SftpConfigurationId");
 
-                    b.ToTable("FileDepositPathConfiguration");
+                    b.ToTable("FileDepositPathConfiguration", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.LdapConfiguration", b =>
@@ -1045,7 +1045,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LdapConfiguration");
+                    b.ToTable("LdapConfiguration", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.QueryStore", b =>
@@ -1106,7 +1106,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("QueryName");
 
-                    b.ToTable("QueryStore");
+                    b.ToTable("QueryStore", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ServicesStatus", b =>
@@ -1148,7 +1148,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServicesStatus");
+                    b.ToTable("ServicesStatus", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.SftpConfiguration", b =>
@@ -1195,7 +1195,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("SftpConfigurationId");
 
-                    b.ToTable("SftpConfiguration");
+                    b.ToTable("SftpConfiguration", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.SmtpConfiguration", b =>
@@ -1257,7 +1257,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SmtpConfiguration");
+                    b.ToTable("SmtpConfiguration", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.TaskDetail", b =>
@@ -1314,7 +1314,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("TaskHeaderId");
 
-                    b.ToTable("TaskDetail");
+                    b.ToTable("TaskDetail", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.TaskEmailRecipient", b =>
@@ -1353,7 +1353,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("TaskHeaderId");
 
-                    b.ToTable("TaskEmailRecipient");
+                    b.ToTable("TaskEmailRecipient", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.TaskHeader", b =>
@@ -1453,7 +1453,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("TaskHeader");
+                    b.ToTable("TaskHeader", (string)null);
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.UserSavedConfiguration", b =>
@@ -1503,7 +1503,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("UserId", "TypeConfiguration", "IdIntConfiguration");
 
-                    b.ToTable("UserSavedConfiguration");
+                    b.ToTable("UserSavedConfiguration", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
