@@ -10,7 +10,7 @@ public class MySqlDbRemoteDb : IRemoteDb
         GC.SuppressFinalize(this);
     }
 
-    public string GetAllTablesScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -22,7 +22,7 @@ public class MySqlDbRemoteDb : IRemoteDb
         return script;
     }
 
-    public string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesAndColumnsScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -38,7 +38,7 @@ public class MySqlDbRemoteDb : IRemoteDb
         return script;
     }
 
-    public string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName)
+    public string GetTableColumnInfoScript(DatabaseConnection dbInfo, string tableName)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -55,7 +55,7 @@ public class MySqlDbRemoteDb : IRemoteDb
         return script;
     }
 
-    public async Task TryConnectAsync(ActivityDbConnection dbInfo)
+    public async Task TryConnectAsync(DatabaseConnection dbInfo)
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new MySqlConnection(param.ConnnectionString);
@@ -71,7 +71,7 @@ public class MySqlDbRemoteDb : IRemoteDb
     }
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts)
+        DatabaseConnection dbInfo, CancellationToken cts)
     {
         if (CheckDbType(dbInfo))
         {
@@ -157,12 +157,12 @@ public class MySqlDbRemoteDb : IRemoteDb
         return data;
     }
 
-    private static bool CheckDbType(ActivityDbConnection dbInfo)
+    private static bool CheckDbType(DatabaseConnection dbInfo)
     {
         return dbInfo.TypeDb == TypeDb.MySql;
     }
 
-    private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
+    private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
         RemoteConnectionParameter value = new()
         {

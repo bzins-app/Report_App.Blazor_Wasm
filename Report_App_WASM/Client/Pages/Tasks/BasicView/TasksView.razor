@@ -1,4 +1,4 @@
-﻿@page "/TasksView/{ActivityName}/{ActivityId:int}"
+﻿@page "/TasksView/{ProviderName}/{DataProviderId:int}"
 @inject NavigationManager UriHelper
 @attribute [Authorize]
 
@@ -9,10 +9,10 @@
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true" Elevation="6"
                  ApplyEffectsToContainer="true">
             <MudTabPanel Text="@Localizer.Get("Run reports manually")">
-                <_Reports ActivityId="@ActivityId" ActivityName="@ActivityName"/>
+                <_Reports DataProviderId="@DataProviderId" ProviderName="@ProviderName"/>
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Retrieve files")">
-                <_RetrieveFiles ActivityId="@ActivityId" ActivityName="@ActivityName"/>
+                <_RetrieveFiles DataProviderId="@DataProviderId" ProviderName="@ProviderName"/>
             </MudTabPanel>
         </MudTabs>
     </ChildContent>
@@ -20,16 +20,16 @@
 
 @code
 {
-    [Parameter] public int ActivityId { get; set; }
+    [Parameter] public int DataProviderId { get; set; }
 
-    [Parameter] public string? ActivityName { get; set; }
+    [Parameter] public string? ProviderName { get; set; }
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 
     protected override async Task OnParametersSetAsync()
     {
         var user = (await AuthenticationStateTask).User;
-        if (!user.IsInRole(ActivityName!) && !user.IsInRole("Admin"))
+        if (!user.IsInRole(ProviderName!) && !user.IsInRole("Admin"))
         {
             UriHelper.NavigateTo("/403");
         }

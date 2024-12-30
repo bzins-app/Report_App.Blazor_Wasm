@@ -1,4 +1,4 @@
-﻿@page "/DbExplorer2/{ActivityId:int}/{ActivityName}"
+﻿@page "/DbExplorer2/{DataProviderId:int}/{ProviderName}"
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Report_App_WASM.Shared.Extensions
@@ -13,7 +13,7 @@
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h6">
-                @Localizer.Get("DB explorer"): @ActivityName
+                @Localizer.Get("DB explorer"): @ProviderName
             </MudText>
         </CardHeaderContent>
     </MudCardHeader>
@@ -83,9 +83,9 @@
 
 @code {
 
-    [Parameter] public string ActivityName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int ActivityId { get; set; }
+    [Parameter] public int DataProviderId { get; set; }
 
     private List<TablesColsInfo> TableNames = new();
     private List<TablesColsInfo> TableNamesStored = new();
@@ -115,7 +115,7 @@
     protected override async Task OnParametersSetAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
         {
             NavigationManager.NavigateTo("/403");
         }
@@ -139,8 +139,8 @@
         QueryBuilder = "";
         TableNamesStored = new List<TablesColsInfo>();
         ColNamesStored = new List<TablesColsInfo>();
-        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
-        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+        var uri = $"GetActivityDbConnection?DataProviderId={DataProviderId}";
+        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
         if (response.Any())
         {
             _typeDbTask = response.Select(a => a.TypeDb).First();
@@ -216,7 +216,7 @@
             var item = InitialTreeItems.FirstOrDefault(a => a.Value == parentValue);
             if (item != null)
             {
-                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
+                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
                 if (data != null)
                 {
                     item.Children = data.Values
@@ -236,7 +236,7 @@
                 var childItem = item.Children.FirstOrDefault(a => a.Value.Name == parentValue.Name);
                 if (childItem != null)
                 {
-                    var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={parentValue.Name}", _cts.Token);
+                    var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={parentValue.Name}", _cts.Token);
                     if (data != null)
                     {
                         childItem.Children = data.Values.Select(a => new TreeItemData<TablesColsInfo>
@@ -264,7 +264,7 @@
     {
         _cts = new CancellationTokenSource();
         _loading = true;
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
         TableNames = data!.Values;
         TableNamesStored = data.Values;
         _hasDesc = data.HasDescription;
@@ -276,7 +276,7 @@
         _cts = new CancellationTokenSource();
         _loading = true;
         _SelectedTable = table;
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={table}", _cts.Token);
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={table}", _cts.Token);
         ColNames = data!.Values;
         ColNamesStored = data.Values;
         _hasDescCol = data.HasDescription;
@@ -374,7 +374,7 @@
 
             var run = new RemoteDbCommandParameters
             {
-                ActivityId = ActivityId,
+                DataProviderId = DataProviderId,
                 QueryToRun = QueryRun,
                 Test = true,
                 PaginatedResult = true,

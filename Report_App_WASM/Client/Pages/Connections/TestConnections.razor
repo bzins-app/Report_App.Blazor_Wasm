@@ -200,7 +200,7 @@
     private async Task ConnectionTest(DatabaseParameters dbParameters, TypeDb db)
     {
         _loading = true;
-        var tryConn = new ActivityDbConnectionDto
+        var tryConn = new DatabaseConnectionDto
         {
 
             ConnectionPath = dbParameters.BuildConnectionString(),

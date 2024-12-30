@@ -13,7 +13,7 @@
     <DialogContent>
         <MudStack Spacing="1" Style="max-height: 80vh; overflow-x: hidden; overflow-y: auto; width: 100%">
             <MudForm Model="@Item" @ref="@_form">
-                <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action == CrudAction.Delete"/>
+                <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete"/>
                 <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="true">
                     @if (DbCon.TypeDb == 0)
                     {
@@ -150,16 +150,16 @@
 
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public ActivityDto? Item { get; set; }
+    [Parameter] public DataProviderDto? Item { get; set; }
 
     [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = default!;
     private string _deletionValidation = null!;
 
-    private ActivityDbConnectionDto DbCon { get; set; } = new() { TypeDb = TypeDb.SqlServer };
+    private DatabaseConnectionDto DbCon { get; set; } = new() { TypeDb = TypeDb.SqlServer };
     private string _connectionTestResult = null!;
-    private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
     private ApplicationConstantsValues? _appConst;
     private bool _loading;
 
@@ -191,9 +191,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Item!.ActivityDbConnections.Any())
+        if (Item!.DatabaseConnections.Any())
         {
-            DbCon = Item.ActivityDbConnections.First();
+            DbCon = Item.DatabaseConnections.First();
             if (DbCon.TypeDb == TypeDb.PostgreSql || DbCon.TypeDb == TypeDb.MariaDb || DbCon.TypeDb == TypeDb.MySql)
             {
                 if (DbCon.Port == 0)
@@ -204,7 +204,7 @@
         }
 
         DbCon.TypeDb = TypeDb.SqlServer;
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _loading = false;
         _appConst = await AppService.GetApplicationConstantsValues();
     }
@@ -218,7 +218,7 @@
 
     private async Task ConnectionTest()
     {
-        var tryConn = new ActivityDbConnectionDto
+        var tryConn = new DatabaseConnectionDto
         {
             AdAuthentication = DbCon.AdAuthentication,
             ConnectionLogin = DbCon.ConnectionLogin,
@@ -234,15 +234,15 @@
         _connectionTestResult = result.Message ?? "Ok!";
     }
 
-    private bool CheckActivityName()
+    private bool CheckProviderName()
     {
-        if (string.IsNullOrEmpty(Item?.ActivityName))
+        if (string.IsNullOrEmpty(Item?.ProviderName))
         {
             return false;
         }
 
-        Item.ActivityName = Item.ActivityName.Trim();
-        if (_activities.Any(a => a.ActivityName?.ToLower() == Item.ActivityName.ToLower()))
+        Item.ProviderName = Item.ProviderName.Trim();
+        if (_activities.Any(a => a.ProviderName?.ToLower() == Item.ProviderName.ToLower()))
         {
             Localizer.Get("Another activity with the same name already exists");
             return false;

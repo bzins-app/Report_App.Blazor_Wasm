@@ -2,7 +2,7 @@
 
 public class RemoteDbCommandParameters
 {
-    public int ActivityId { get; init; }
+    public int DataProviderId { get; init; }
     public string? FileName { get; set; }
     public string? QueryToRun { get; set; }
     public List<QueryCommandParameter>? QueryCommandParameters { get; init; } = new();

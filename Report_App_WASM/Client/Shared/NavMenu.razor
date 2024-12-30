@@ -22,21 +22,21 @@
         <MudNavLink Href="DashboardApp" Icon="@Icons.Material.Outlined.AreaChart">@Localizer.Get("Dashboard")</MudNavLink>
     }
     <MudNavGroup Title="@Localizer.Get("Per Connection")" Icon="@Icons.Material.Outlined.Analytics">
-        @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ActivityName))
+        @foreach (var t in _activities.Where(a => a.IsVisible).OrderBy(a => a.ProviderName))
         {
-            <AuthorizeView Roles=@(t.ActivityName)>
-                <MudNavGroup Title="@t.ActivityName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
+            <AuthorizeView Roles=@(t.ProviderName)>
+                <MudNavGroup Title="@t.ProviderName" Style="@(IsDarkMode ? "background:#0e1824cc;" : "background:#000c17;")">
                     @if (_appConst.ActivateTaskSchedulerModule)
                     {
                         @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
-                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href="@("TasksView/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Base view")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href="@("TasksView/" + t.ProviderName + "/" + t.DataProviderId)">@Localizer.Get("Base view")</MudNavLink>
                         }
 
                         @if (context.User.IsInRole("Supervisor"))
                         {
-                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"TasksPerActivity/Report/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage reports")</MudNavLink>
-                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href="@("RetrieveFiles/" + t.ActivityName + "/" + t.ActivityId)">@Localizer.Get("Retrieve files")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"TasksPerActivity/Report/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Manage reports")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href="@("RetrieveFiles/" + t.ProviderName + "/" + t.DataProviderId)">@Localizer.Get("Retrieve files")</MudNavLink>
                         }
                     }
                     @if (_appConst.ActivateAdHocQueriesModule && _appConst.ActivateTaskSchedulerModule)
@@ -45,12 +45,12 @@
                     }
                     @if (_appConst.ActivateAdHocQueriesModule)
                     {
-                        <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"QueryStore/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Queries store")</MudNavLink>
+                        <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"QueryStore/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Queries store")</MudNavLink>
                         @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
                         {
-                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"ManageQueries/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("Manage queries")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"ManageQueries/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Manage queries")</MudNavLink>
                             <MudDivider DividerType="DividerType.Inset"/>
-                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"DbExplorer2/{t.ActivityId}/{t.ActivityName}")>@Localizer.Get("DB explorer")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? "background:#0C1520;" : "background:#000A14;")" Href=@($"DbExplorer2/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("DB explorer")</MudNavLink>
                         }
                     }
                 </MudNavGroup>
@@ -122,13 +122,13 @@
 
     [Parameter] public bool IsDarkMode { get; set; }
 
-    private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
     private ApplicationConstantsValues _appConst = new();
 
     protected override async Task OnInitializedAsync()
     {
         _appConst = (await AppService.GetApplicationConstantsValues())!;
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 
 }

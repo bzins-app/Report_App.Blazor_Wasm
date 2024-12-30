@@ -16,9 +16,9 @@ public class BackgroundTaskHandler : IDisposable
     private readonly IMapper _mapper;
     private List<EmailRecipient> _emails = new();
 
-    private Dictionary<TaskDetail, DataTable> _fetchedData = new();
+    private Dictionary<ScheduledTaskQuery, DataTable> _fetchedData = new();
     private List<MemoryFileContainer> _fileResults = new();
-    private TaskHeader _header = null!;
+    private ScheduledTask _header = null!;
     private TaskJobParameters _jobParameters = null!;
 
     private JsonSerializerOptions _jsonOpt = new()
@@ -54,7 +54,7 @@ public class BackgroundTaskHandler : IDisposable
             .FirstOrDefaultAsync())!;
         var _activityConnect = await _context.ActivityDbConnection
             .Where(a => a.Activity.ActivityId == _header.IdActivity).FirstOrDefaultAsync();
-        ApplicationLogTask logTask = new()
+        TaskLog logTask = new()
         {
             ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now,
             JobDescription = _header.TaskName, Type = _header.Type + " service", Result = "Running",
@@ -77,7 +77,7 @@ public class BackgroundTaskHandler : IDisposable
         logTask.TaskId = logTask.Id;
         _context.Update(logTask);
         _taskId = logTask.Id;
-        await _context.AddAsync(new ApplicationLogTaskDetails
+        await _context.AddAsync(new TaskStepLog
             { TaskId = _taskId, Step = "Initialization", Info = "Nbr of queries:" + _header.TaskDetails.Count });
 
         try
@@ -113,7 +113,7 @@ public class BackgroundTaskHandler : IDisposable
             {
                 foreach (var detail in _header.TaskDetails.OrderBy(a => a.DetailSequence))
                 {
-                    ApplicationLogTask log = new()
+                    TaskLog log = new()
                     {
                         ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName,
                         StartDateTime = DateTime.Now, JobDescription = detail.QueryName,
@@ -158,7 +158,7 @@ public class BackgroundTaskHandler : IDisposable
                 _context.Entry(_header).State = EntityState.Modified;
             }
 
-            await _context.AddAsync(new ApplicationLogTaskDetails
+            await _context.AddAsync(new TaskStepLog
                 { TaskId = _taskId, Step = "Job end", Info = $"Total duration {logTask.DurationInSeconds} seconds" });
         }
         catch (Exception ex)
@@ -169,7 +169,7 @@ public class BackgroundTaskHandler : IDisposable
             logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
             logTask.Result = ex.Message.Length > 440 ? ex.Message.Substring(0, 440) : ex.Message;
             await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ActivityName + ": " + _header.TaskName);
-            await _context.AddAsync(new ApplicationLogTaskDetails
+            await _context.AddAsync(new TaskStepLog
                 { TaskId = _taskId, Step = "Error", Info = logTask.Result });
             _fetchedData.Clear();
         }
@@ -179,7 +179,7 @@ public class BackgroundTaskHandler : IDisposable
     }
 
 
-    private async ValueTask FetchData(TaskDetail detail, int maxRows = 100000)
+    private async ValueTask FetchData(ScheduledTaskQuery detail, int maxRows = 100000)
     {
         using var remoteDb = new RemoteDbConnection(_context, _mapper);
         var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!, _jsonOpt);
@@ -205,7 +205,7 @@ public class BackgroundTaskHandler : IDisposable
                 PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now,
                 QueryCommandParameters = param, MaxSize = maxRows
             }, _jobParameters.Cts, _taskId);
-        await _context.AddAsync(new ApplicationLogTaskDetails
+        await _context.AddAsync(new TaskStepLog
         {
             TaskId = _taskId, Step = "Fetch data completed",
             Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count
@@ -227,7 +227,7 @@ public class BackgroundTaskHandler : IDisposable
         if (!localFileResult.Success)
             await _emailSender.GenerateErrorEmailAsync(localFileResult.Message, "Local file writing: ");
 
-        ApplicationLogReportResult filecreationLocal = new()
+        ReportGenerationLog filecreationLocal = new()
         {
             ActivityId = _header.Activity.ActivityId,
             ActivityName = _header.ActivityName,
@@ -245,7 +245,7 @@ public class BackgroundTaskHandler : IDisposable
             FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.Content.Length)
         };
         await _context.AddAsync(filecreationLocal);
-        await _context.AddAsync(new ApplicationLogTaskDetails
+        await _context.AddAsync(new TaskStepLog
             { TaskId = _taskId, Step = "File local storage", Info = "Ok" });
 
         if (_header.FileDepositPathConfigurationId != 0 && useDepositConfiguration && localFileResult.Success)
@@ -264,7 +264,7 @@ public class BackgroundTaskHandler : IDisposable
                     using var ftp = new FtpService(_context);
                     resultDeposit = await ftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
                         localfilePath, config.FilePath, fName, config.TryToCreateFolder);
-                    await _context.AddAsync(new ApplicationLogTaskDetails
+                    await _context.AddAsync(new TaskStepLog
                         { TaskId = _taskId, Step = "File FTP drop", Info = config.FilePath });
                 }
                 else
@@ -273,7 +273,7 @@ public class BackgroundTaskHandler : IDisposable
                     using var sftp = new SftpService(_context);
                     resultDeposit = await sftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
                         localfilePath, config.FilePath, fName, config.TryToCreateFolder);
-                    await _context.AddAsync(new ApplicationLogTaskDetails
+                    await _context.AddAsync(new TaskStepLog
                         { TaskId = _taskId, Step = "File Sftp drop", Info = config.FilePath });
                 }
             }
@@ -282,19 +282,19 @@ public class BackgroundTaskHandler : IDisposable
                 completePath = Path.Combine(config.FilePath, fName);
                 resultDeposit =
                     await _fileDeposit.SaveFileAsync(fileResult, fName, config.FilePath, config.TryToCreateFolder);
-                await _context.AddAsync(new ApplicationLogTaskDetails
+                await _context.AddAsync(new TaskStepLog
                     { TaskId = _taskId, Step = "File folder drop", Info = config.FilePath });
             }
 
             if (!resultDeposit.Success)
             {
                 await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message, "File deposit: ");
-                await _context.AddAsync(new ApplicationLogTaskDetails
+                await _context.AddAsync(new TaskStepLog
                     { TaskId = _taskId, Step = "Error", Info = resultDeposit.Message });
             }
 
 
-            ApplicationLogReportResult filecreationRemote = new()
+            ReportGenerationLog filecreationRemote = new()
             {
                 ActivityId = _header.Activity.ActivityId,
                 ActivityName = _header.ActivityName,
@@ -315,7 +315,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async ValueTask HandleDataTransferTask(TaskDetail a, DataTable data, ApplicationLogTask logTask,
+    private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, TaskLog logTask,
         int activityIdTransfer, int loopNumber)
     {
         if (data.Rows.Count > 0)
@@ -362,7 +362,7 @@ public class BackgroundTaskHandler : IDisposable
                 logTask.Result = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " +
                                  data.Rows.Count;
                 await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName, activityIdTransfer);
-                await _context.AddAsync(new ApplicationLogTaskDetails
+                await _context.AddAsync(new TaskStepLog
                 {
                     TaskId = _taskId, Step = "Bulk insert completed",
                     Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " +
@@ -382,7 +382,7 @@ public class BackgroundTaskHandler : IDisposable
                 try
                 {
                     await _dbReader.LoadDatatableToTable(data, tempTable, activityIdTransfer);
-                    await _context.AddAsync(new ApplicationLogTaskDetails
+                    await _context.AddAsync(new TaskStepLog
                     {
                         TaskId = _taskId, Step = "Bulk insert completed",
                         Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " +
@@ -460,7 +460,7 @@ public class BackgroundTaskHandler : IDisposable
                 logTask.Result = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " +
                                  mergeResult.UpdatedCount + " Nbr lines deleted: " + mergeResult.DeletedCount;
                 await _dbReader.DeleteTable(tempTable, activityIdTransfer);
-                await _context.AddAsync(new ApplicationLogTaskDetails
+                await _context.AddAsync(new TaskStepLog
                 {
                     TaskId = _taskId, Step = "Merge completed",
                     Info = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " +
@@ -553,7 +553,7 @@ public class BackgroundTaskHandler : IDisposable
             }
 
             _fileResults.Add(fileCreated);
-            await _context.AddAsync(new ApplicationLogTaskDetails
+            await _context.AddAsync(new TaskStepLog
                 { TaskId = _taskId, Step = "File created", Info = fName });
         }
 
@@ -589,7 +589,7 @@ public class BackgroundTaskHandler : IDisposable
 
             _fileResults.Add(fileCreated);
             excelMultipleTabs.Clear();
-            await _context.AddAsync(new ApplicationLogTaskDetails
+            await _context.AddAsync(new TaskStepLog
                 { TaskId = _taskId, Step = "File created", Info = fName });
         }
 
@@ -635,7 +635,7 @@ public class BackgroundTaskHandler : IDisposable
                         {
                             ExcelCreationDatatable dataExcel = new()
                                 { TabName = a.TaskHeader?.TaskName, Data = table.Value };
-                            var fileResult = CreateFile.ExcelFromDatable(a.TaskHeader?.TaskName, dataExcel);
+                            var fileResult = CreateFile.ExcelFromDatable((string?)(a.TaskHeader?.TaskName), dataExcel);
                             var fName =
                                 $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
                             listAttach.Add(new Attachment(new MemoryStream(fileResult.Content), fName,
@@ -647,10 +647,10 @@ public class BackgroundTaskHandler : IDisposable
 
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
-                        await _context.AddAsync(new ApplicationLogTaskDetails
+                        await _context.AddAsync(new TaskStepLog
                             { TaskId = _taskId, Step = "Email sent", Info = subject });
                     else
-                        await _context.AddAsync(new ApplicationLogTaskDetails
+                        await _context.AddAsync(new TaskStepLog
                             { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
 
                     listAttach.Clear();
@@ -688,10 +688,10 @@ public class BackgroundTaskHandler : IDisposable
                 {
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
-                        await _context.AddAsync(new ApplicationLogTaskDetails
+                        await _context.AddAsync(new TaskStepLog
                             { TaskId = _taskId, Step = "Email sent", Info = subject });
                     else
-                        await _context.AddAsync(new ApplicationLogTaskDetails
+                        await _context.AddAsync(new TaskStepLog
                             { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
                 }
         }

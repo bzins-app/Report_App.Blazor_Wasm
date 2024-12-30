@@ -11,10 +11,10 @@
     <DialogContent>
         @if (_activities.Any())
         {
-            <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="_selectedActivityId" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")">
+            <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="_selectedDataProviderId" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")">
                 @foreach (var item in _activities)
                 {
-                    <MudSelectItem Value="@item.ActivityId">@item.ActivityName</MudSelectItem>
+                    <MudSelectItem Value="@item.DataProviderId">@item.ProviderName</MudSelectItem>
                 }
             </MudSelect>
         }
@@ -28,21 +28,21 @@
 
 @code {
 
-    [CascadingParameter] public SimpleGrid<QueryStoreDto>? DataGrid { get; set; }
+    [CascadingParameter] public SimpleGrid<StoredQueryDto>? DataGrid { get; set; }
 
-    [Parameter] public QueryStoreDto? Item { get; set; }
+    [Parameter] public StoredQueryDto? Item { get; set; }
 
     string _name = "";
 
     private bool _visible;
     private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Small, FullWidth = true };
-    private List<SelectItemActivitiesInfo> _activities = new();
-    private int _selectedActivityId;
+    private List<SelectItemDataproviderInfo> _activities = new();
+    private int _selectedDataProviderId;
 
     protected override async Task OnInitializedAsync()
     {
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        if (Item != null) _selectedActivityId = Item.IdActivity;
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        if (Item != null) _selectedDataProviderId = Item.DataProviderId;
     }
 
     private void OpenRunConfirmationComponent()
@@ -54,7 +54,7 @@
     private async Task ConfirmDuplicate()
     {
         _visible = false;
-        await Clone(_name, Item!.Id, _selectedActivityId);
+        await Clone(_name, Item!.Id, _selectedDataProviderId);
         Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
         await DataGrid?.RefreshDataAsync()!;
     }
@@ -66,7 +66,7 @@
 
     private async Task Clone(string name, int queryId, int idActivity)
     {
-        DuplicateQueryStore payload = new() { Name = name, QueryId = queryId, ActivityId = idActivity };
+        DuplicateQueryStore payload = new() { Name = name, QueryId = queryId, DataProviderId = idActivity };
         var result = await DataService.PostValues(payload, "DuplicateQueryStore");
         if (!result.Success)
         {

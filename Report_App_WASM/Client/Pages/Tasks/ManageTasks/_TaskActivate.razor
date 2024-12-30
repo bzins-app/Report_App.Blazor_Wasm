@@ -1,30 +1,30 @@
 ﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
 
-<MudSwitch Style="justify-content: center" Value="@Item.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)"/>
+<MudSwitch Style="justify-content: center" Value="@Item.IsEnabled" Color="Color.Primary" ThumbIcon="@(Item.IsEnabled ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsEnabled ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)"/>
 
 @code {
 
-    [Parameter] public TaskHeaderDto Item { get; set; } = new();
+    [Parameter] public ScheduledTaskDto Item { get; set; } = new();
 
     private async Task ChangeStatusAsync(bool value)
     {
-        Item.IsActivated = value;
+        Item.IsEnabled = value;
 
-        if (Item.IsActivated)
+        if (Item.IsEnabled)
         {
-            var activityActivated = (await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a => a.ActivityId == Item.IdActivity).Select(a => new { a.IsActivated, a.ActivityName }).FirstOrDefault();
+            var activityActivated = (await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a => a.DataProviderId == Item.IdActivity).Select(a => new { a.IsActivated, a.ProviderName }).FirstOrDefault();
             if (!activityActivated!.IsActivated)
             {
-                Item.IsActivated = false;
-                Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because the related activity is not enabled") + " :" + activityActivated.ActivityName, Severity.Error);
+                Item.IsEnabled = false;
+                Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because the related activity is not enabled") + " :" + activityActivated.ProviderName, Severity.Error);
 
                 return;
             }
 
             if (string.IsNullOrEmpty(Item.CronParameters) || Item.CronParameters == "[]")
             {
-                Item.IsActivated = false;
+                Item.IsEnabled = false;
                 Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because the scheduler value is not defined"), Severity.Error);
 
                 return;
@@ -32,7 +32,7 @@
 
             if (Item.Type == TaskType.Alert)
             {
-                var uriEmails = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
+                var uriEmails = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.ScheduledTaskId}";
                 var emailsConfigured = await Http.GetFromJsonAsync<bool>(uriEmails);
                 if (!emailsConfigured)
                 {
@@ -42,29 +42,29 @@
                 }
             }
 
-            var uri = $"{ApiControllers.CrudDataApi}GetTaskHasDetails?taskHeaderId={Item.TaskHeaderId}";
+            var uri = $"{ApiControllers.CrudDataApi}GetTaskHasDetails?taskHeaderId={Item.ScheduledTaskId}";
             var reportDetailsExists = await Http.GetFromJsonAsync<bool>(uri);
             if (!reportDetailsExists)
             {
-                Item.IsActivated = false;
+                Item.IsEnabled = false;
                 Snackbar.Add(Item.TaskName + " " + Localizer.Get("cannot be enabled because no query is attached to this report"), Severity.Error);
 
                 return;
             }
         }
 
-        var result = await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = Item.IsActivated, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+        var result = await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = Item.IsEnabled, Value = Item.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
         if (!result.Success)
         {
-            Item.IsActivated = !value;
+            Item.IsEnabled = !value;
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
             if (result.Message != null) Snackbar.Add(result.Message, Severity.Error);
             return;
         }
 
-        await DataService.PostValues(new TaskActivatePayload { Activate = Item.IsActivated, TaskHeaderId = Item.TaskHeaderId }, "TaskActivate");
+        await DataService.PostValues(new TaskActivatePayload { Activate = Item.IsEnabled, TaskHeaderId = Item.ScheduledTaskId }, "TaskActivate");
 
-        Snackbar.Add(Item.IsActivated ? Item.TaskName + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+        Snackbar.Add(Item.IsEnabled ? Item.TaskName + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("disabled"), Item.IsEnabled ? Severity.Success : Severity.Normal);
     }
 
 }

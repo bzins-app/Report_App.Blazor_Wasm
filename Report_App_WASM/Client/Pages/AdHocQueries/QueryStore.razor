@@ -1,4 +1,4 @@
-﻿@page "/QueryStore/{ActivityId:int}/{ActivityName}"
+﻿@page "/QueryStore/{DataProviderId:int}/{ProviderName}"
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @implements IAsyncDisposable
 @inject HttpClient Http
@@ -46,13 +46,13 @@
 
 @code {
 
-    [Parameter] public string ActivityName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int? ActivityId { get; set; }
+    [Parameter] public int? DataProviderId { get; set; }
 
     private string? _pageTitle;
-    private List<QueryStoreDto> _queries;
-    private List<QueryStoreDto> _filteredQueries;
+    private List<StoredQueryDto> _queries;
+    private List<StoredQueryDto> _filteredQueries;
 
     public RenderFragment? _QueriesFragment { get; set; }
     public RenderFragment? _queryRender { get; set; }
@@ -66,26 +66,26 @@
         _pageTitle = Localizer.Get("Queries store");
 
         var urlExt = string.Empty;
-        if (!string.IsNullOrEmpty(ActivityName))
+        if (!string.IsNullOrEmpty(ProviderName))
         {
-            urlExt = $"?activityId={ActivityId!.Value}";
+            urlExt = $"?DataProviderId={DataProviderId!.Value}";
         }
 
         var uri = $"{ApiControllers.CrudDataApi}GetQueryStoreByActivity{urlExt}";
         try
         {
-            _queries = (await Http.GetFromJsonAsync<List<QueryStoreDto>>(uri))!;
+            _queries = (await Http.GetFromJsonAsync<List<StoredQueryDto>>(uri))!;
         }
         catch
         {
-            _queries = new List<QueryStoreDto>();
+            _queries = new List<StoredQueryDto>();
         }
 
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (!string.IsNullOrEmpty(ActivityName))
+        if (!string.IsNullOrEmpty(ProviderName))
         {
-            _pageTitle += ": " + ActivityName;
-            if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+            _pageTitle += ": " + ProviderName;
+            if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
             {
                 NavigationManager.NavigateTo("/403");
             }

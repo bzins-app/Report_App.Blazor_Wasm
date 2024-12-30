@@ -2,8 +2,8 @@
 
 public interface IRemoteDbConnection
 {
-    Task<SubmitResult> TestConnectionAsync(ActivityDbConnection parameter);
-    Task<SubmitResult> TestConnectionAsync2(ActivityDbConnection parameter);
+    Task<SubmitResult> TestConnectionAsync(DatabaseConnection parameter);
+    Task<SubmitResult> TestConnectionAsync2(DatabaseConnection parameter);
     Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts, int taskId = 0);
     Task<bool> CkeckTableExists(string query, int activityIdTransfer);
     Task CreateTable(string query, int activityIdTransfer);

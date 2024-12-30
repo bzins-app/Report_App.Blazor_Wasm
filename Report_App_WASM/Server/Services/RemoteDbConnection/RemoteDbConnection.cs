@@ -83,7 +83,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         return remote.GetTableColumnInfoScript(_dbInfo, tableName);
     }
 
-    public async Task<SubmitResult> TestConnectionAsync(ActivityDbConnection parameter)
+    public async Task<SubmitResult> TestConnectionAsync(DatabaseConnection parameter)
     {
         try
         {
@@ -98,7 +98,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
     }
 
     
-    public async Task<SubmitResult> TestConnectionAsync2(ActivityDbConnection parameter)
+    public async Task<SubmitResult> TestConnectionAsync2(DatabaseConnection parameter)
     {
         try
         {
@@ -124,7 +124,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                 .Select(a => a.ActivityName).FirstOrDefaultAsync(cts);
             var _dbInfo = await GetDbInfo(run.ActivityId);
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
-            var logTask = new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
+            var logTask = new TaskStepLog { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
             try
             {
                 attempts++;
@@ -146,7 +146,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                 var end = DateTime.Now;
                 if (!run.Test)
                 {
-                    ApplicationLogQueryExecution logQuery = new()
+                    QueryExecutionLog logQuery = new()
                     {
                         ActivityId = run.ActivityId,
                         Database = _dbInfo.DbSchema,
@@ -202,8 +202,8 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
 
     private async Task<int> GetDataTransferActivity(int activityId)
     {
-        return await _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb && a.ActivityId == activityId)
-            .Select(a => a.ActivityId)
+        return await _context.Activity.Where(a => a.ActivityType == Shared.ProviderType.TargetDb && a.ActivityId == activityId)
+            .Select((object a) => a.ActivityId)
             .FirstOrDefaultAsync();
     }
 
@@ -220,7 +220,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         };
     }
 
-    private async Task<ActivityDbConnection> GetDbInfo(int activityId)
+    private async Task<DatabaseConnection> GetDbInfo(int activityId)
     {
         return (await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == activityId)
             .FirstOrDefaultAsync())!;

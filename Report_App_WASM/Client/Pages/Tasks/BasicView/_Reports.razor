@@ -3,12 +3,12 @@
 @inject HttpClient Http
 @attribute [Authorize]
 
-<PageTitle>@Localizer.Get("Run reports manually"): @ActivityName</PageTitle>
+<PageTitle>@Localizer.Get("Run reports manually"): @ProviderName</PageTitle>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@ActivityName</MudText>
+            <MudText Typo="Typo.h6">@ProviderName</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -62,17 +62,17 @@
 
 @code
 {
-    [Parameter] public int? ActivityId { get; set; }
+    [Parameter] public int? DataProviderId { get; set; }
 
-    [Parameter] public string? ActivityName { get; set; }
+    [Parameter] public string? ProviderName { get; set; }
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 
     private readonly string _typeTask = TaskType.Report.ToString();
-    GridItemsProvider<TaskHeaderDto>? _itemsProvider;
+    GridItemsProvider<ScheduledTaskDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent _translations = default!;
-    SimpleGrid<TaskHeaderDto> _grid = default!;
+    SimpleGrid<ScheduledTaskDto> _grid = default!;
     private bool _rendering;
     List<string> _tags = new();
     IReadOnlyCollection<string> selected = null!;
@@ -80,7 +80,7 @@
     protected override async Task OnParametersSetAsync()
     {
         var user = (await AuthenticationStateTask).User;
-        if (!user.IsInRole(ActivityName!) && !user.IsInRole("Admin"))
+        if (!user.IsInRole(ProviderName!) && !user.IsInRole("Admin"))
         {
             UriHelper.NavigateTo("/403");
         }
@@ -88,9 +88,9 @@
         selected = null!;
         var type = TaskType.Report;
         var urlExt = string.Empty;
-        if (!string.IsNullOrEmpty(ActivityName))
+        if (!string.IsNullOrEmpty(ProviderName))
         {
-            urlExt = $"&&activityId={ActivityId!.Value}";
+            urlExt = $"&&DataProviderId={DataProviderId!.Value}";
         }
 
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
@@ -105,7 +105,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ScheduledTaskDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -113,7 +113,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<TaskHeaderDto>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDto> req)
+    private async Task<ApiResponse<ScheduledTaskDto>?> GetRemoteData(GridItemsProviderRequest<ScheduledTaskDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -124,9 +124,9 @@
 
 
         var customFilters = $"TypeName eq '{_typeTask}'";
-        if (ActivityId.HasValue)
+        if (DataProviderId.HasValue)
         {
-            customFilters += $" and  IdActivity eq {ActivityId.Value} ";
+            customFilters += $" and  IdActivity eq {DataProviderId.Value} ";
         }
 
         url += "$count=true";
@@ -162,7 +162,7 @@
 
         try
         {
-            return await DataService.GetODataValues<TaskHeaderDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<ScheduledTaskDto>(url, req.CancellationToken);
         }
         catch
         {

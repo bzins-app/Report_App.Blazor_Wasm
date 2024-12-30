@@ -35,7 +35,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ApplicationLogTaskDetails>> GetLogTaskDetailsAsync(int logTaskHeaderId)
+    public async Task<IEnumerable<TaskStepLog>> GetLogTaskDetailsAsync(int logTaskHeaderId)
     {
         return await _context.ApplicationLogTaskDetails
             .AsNoTracking()
@@ -84,7 +84,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ActivityDbConnection>> GetActivityDbConnectionAsync(int activityId)
+    public async Task<IEnumerable<DatabaseConnection>> GetActivityDbConnectionAsync(int activityId)
     {
         return await _context.ActivityDbConnection
             .AsNoTracking()
@@ -101,7 +101,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<IEnumerable<TaskEmailRecipient?>> GetTaskEmailRecipientAsync(int taskHeaderId)
+    public async Task<IEnumerable<ScheduledTaskDistributionList?>> GetTaskEmailRecipientAsync(int taskHeaderId)
     {
         return await _context.TaskEmailRecipient
             .AsNoTracking()
@@ -110,7 +110,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<QueryStore?> GetQueryStoreAsync(int queryId)
+    public async Task<StoredQuery?> GetQueryStoreAsync(int queryId)
     {
         return await _context.QueryStore
             .Include(a => a.Activity)
@@ -119,7 +119,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<List<QueryStore>?> GetQueryStoreByActivityAsync(int activityId)
+    public async Task<List<StoredQuery>?> GetQueryStoreByActivityAsync(int activityId)
     {
         return await _context.QueryStore
             .AsNoTracking()
@@ -143,7 +143,7 @@ public class DataCrudController : ControllerBase, IDisposable
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.ActivityId == values.EntityValue.ActivityId);
 
-        var _newQuery = new QueryStore
+        var _newQuery = new StoredQuery
         {
             QueryName = values.EntityValue.Name,
             Query = queryToDuplicate.Query,
@@ -159,24 +159,24 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<Activity> GetDataTransferInfoAsync()
+    public async Task<DataProvider> GetDataTransferInfoAsync()
     {
         var targetInfo = await _context.Activity
             .Include(a => a.ActivityDbConnections)
             .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.ActivityType == ActivityType.TargetDb);
+            .FirstOrDefaultAsync((TEntity a) => a.ActivityType == Shared.ProviderType.TargetDb);
 
         if (targetInfo != null) return targetInfo;
 
-        var connections = new List<ActivityDbConnection>
+        var connections = new List<DatabaseConnection>
         {
-            new ActivityDbConnection { Activity = targetInfo, TypeDb = TypeDb.SqlServer }
+            new DatabaseConnection { Activity = targetInfo, TypeDb = TypeDb.SqlServer }
         };
 
-        targetInfo = new Activity
+        targetInfo = new DataProvider
         {
             ActivityName = "Data transfer",
-            ActivityType = ActivityType.TargetDb,
+            ActivityType = Shared.ProviderType.TargetDb,
             ActivityDbConnections = connections
         };
 
@@ -184,7 +184,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<ServicesStatus> GetServiceStatusAsync()
+    public async Task<SystemServicesStatus> GetServiceStatusAsync()
     {
         return (await _context.ServicesStatus
             .AsNoTracking()
@@ -193,7 +193,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ApplicationParametersUpdateAsync(ApiCrudPayload<ApplicationParameters> values)
+    public async Task<IActionResult> ApplicationParametersUpdateAsync(ApiCrudPayload<SystemParameters> values)
     {
         try
         {
@@ -330,11 +330,11 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivityInsert(ApiCrudPayload<Activity> values)
+    public async Task<IActionResult> ActivityInsert(ApiCrudPayload<DataProvider> values)
     {
         try
         {
-            if (values.EntityValue.ActivityType == ActivityType.SourceDb)
+            if (values.EntityValue.ActivityType == Shared.ProviderType.SourceDb)
             {
                 if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ActivityName!))
                 {
@@ -365,7 +365,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivityDelete(ApiCrudPayload<Activity> values)
+    public async Task<IActionResult> ActivityDelete(ApiCrudPayload<DataProvider> values)
     {
         try
         {
@@ -382,11 +382,11 @@ public class DataCrudController : ControllerBase, IDisposable
 
 
     [HttpPost]
-    public async Task<IActionResult> ActivityUpdate(ApiCrudPayload<Activity> values)
+    public async Task<IActionResult> ActivityUpdate(ApiCrudPayload<DataProvider> values)
     {
         try
         {
-            if (values.EntityValue.ActivityType == ActivityType.SourceDb)
+            if (values.EntityValue.ActivityType == Shared.ProviderType.SourceDb)
             {
                 var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue?.ActivityRoleId!);
                 if (roleActivity != null && roleActivity.Name != values.EntityValue!.ActivityName)
@@ -413,7 +413,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<TaskHeader> GetTaskHeaderAsync(int taskHeaderId)
+    public async Task<ScheduledTask> GetTaskHeaderAsync(int taskHeaderId)
     {
         return (await _context.TaskHeader
             .Include(a => a.TaskDetails)
@@ -449,7 +449,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TaskHeaderInsert(ApiCrudPayload<TaskHeader> values)
+    public async Task<IActionResult> TaskHeaderInsert(ApiCrudPayload<ScheduledTask> values)
     {
         var result = await InsertEntity(values.EntityValue, values.UserName!);
         result.KeyValue = values.EntityValue.TaskHeaderId;
@@ -489,7 +489,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TaskHeaderDelete(ApiCrudPayload<TaskHeader> values)
+    public async Task<IActionResult> TaskHeaderDelete(ApiCrudPayload<ScheduledTask> values)
     {
         return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
     }
@@ -531,7 +531,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TaskHeaderUpdate(ApiCrudPayload<TaskHeader> values)
+    public async Task<IActionResult> TaskHeaderUpdate(ApiCrudPayload<ScheduledTask> values)
     {
         try
         {
@@ -552,7 +552,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TaskDetailDelete(ApiCrudPayload<TaskDetail> values)
+    public async Task<IActionResult> TaskDetailDelete(ApiCrudPayload<ScheduledTaskQuery> values)
     {
         return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
     }
@@ -576,9 +576,9 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> DepositPathInsert(ApiCrudPayload<FileDepositPathConfigurationDto> values)
+    public async Task<IActionResult> DepositPathInsert(ApiCrudPayload<FileStorageLocationDto> values)
     {
-        var val = new FileDepositPathConfiguration();
+        var val = new FileStorageLocation();
         if (values.EntityValue.SftpConfigurationId > 0)
             val.SftpConfiguration = await _context.SftpConfiguration
                 .Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
@@ -592,7 +592,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileDepositPathConfigurationDto> values)
+    public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileStorageLocationDto> values)
     {
         var val = await _context.FileDepositPathConfiguration
             .Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId)
@@ -601,7 +601,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileDepositPathConfigurationDto> values)
+    public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileStorageLocationDto> values)
     {
         var val = await _context.FileDepositPathConfiguration
             .Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId)
@@ -619,7 +619,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> QueryStoreInsert(ApiCrudPayload<QueryStore> values)
+    public async Task<IActionResult> QueryStoreInsert(ApiCrudPayload<StoredQuery> values)
     {
         var result = await InsertEntity(values.EntityValue, values.UserName!);
         result.KeyValue = values.EntityValue.Id;
@@ -627,7 +627,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> QueryStoreDelete(ApiCrudPayload<QueryStore> values)
+    public async Task<IActionResult> QueryStoreDelete(ApiCrudPayload<StoredQuery> values)
     {
         return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
     }
@@ -638,7 +638,7 @@ public class DataCrudController : ControllerBase, IDisposable
         var user = await _userManager.FindByNameAsync(item.UserName!);
         if (user != null)
         {
-            var config = new UserSavedConfiguration
+            var config = new UserPreferences
             {
                 SaveName = item.EntityValue.SaveName, IdIntConfiguration = item.EntityValue.IdIntConfiguration,
                 TypeConfiguration = item.EntityValue.TypeConfiguration, SavedValues = item.EntityValue.SavedValues,
@@ -685,7 +685,7 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> QueryStoreUpdate(ApiCrudPayload<QueryStore> values)
+    public async Task<IActionResult> QueryStoreUpdate(ApiCrudPayload<StoredQuery> values)
     {
         values.EntityValue.Activity = (await _context.Activity.Where(a => a.ActivityId == values.EntityValue.IdActivity)
             .FirstOrDefaultAsync())!;
@@ -701,7 +701,7 @@ public class DataCrudController : ControllerBase, IDisposable
                 return Ok(new SubmitResult { Success = false, Message = "No file path" });
             }
 
-            var _descriptions = new List<DbTableDescriptions>();
+            var _descriptions = new List<TableMetadata>();
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 Delimiter = ";"
@@ -736,7 +736,7 @@ public class DataCrudController : ControllerBase, IDisposable
             {
                 if (!_descriptions.Any(a => a.TableName == data.TableName && a.ColumnName == data.ColumnName))
                 {
-                    _descriptions.Add(new DbTableDescriptions
+                    _descriptions.Add(new TableMetadata
                     {
                         TableName = data.TableName,
                         ColumnName = data.ColumnName,

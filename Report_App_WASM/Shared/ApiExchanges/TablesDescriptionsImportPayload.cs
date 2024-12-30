@@ -2,6 +2,6 @@
 
 public class TablesDescriptionsImportPayload
 {
-    public int ActivityDbConnectionId { get; set; }
+    public int DatabaseConnectionId { get; set; }
     public string? FilePath { get; set; }
 }

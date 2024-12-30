@@ -219,7 +219,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     public async Task DeleteLocalFilesAsync()
     {
-        ApplicationLogTask logTask = new()
+        TaskLog logTask = new()
             { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
         try
         {
@@ -258,7 +258,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     public async Task DeleteLogsAsync()
     {
-        var logTask = new ApplicationLogTask
+        var logTask = new TaskLog
         {
             StartDateTime = DateTime.Now,
             JobDescription = "Logs cleaner",

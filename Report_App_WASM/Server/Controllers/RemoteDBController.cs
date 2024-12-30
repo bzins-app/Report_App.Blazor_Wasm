@@ -28,7 +28,7 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TestConnection(ApiCrudPayload<ActivityDbConnection> value)
+    public async Task<IActionResult> TestConnection(ApiCrudPayload<DatabaseConnection> value)
     {
         try
         {
@@ -43,7 +43,7 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TestConnection2(ApiCrudPayload<ActivityDbConnection> value)
+    public async Task<IActionResult> TestConnection2(ApiCrudPayload<DatabaseConnection> value)
     {
         try
         {
@@ -73,7 +73,7 @@ public class RemoteDbController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> RemoteDbGetValues(RemoteDataPayload payload, CancellationToken ct)
     {
-        var log = new ApplicationLogAdHocQueries
+        var log = new AdHocQueryExecutionLog
         {
             QueryId = payload.QueryId,
             ActivityName = payload.ActivityName,
@@ -197,7 +197,7 @@ public class RemoteDbController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<FileResult?> RemoteDbExtractValuesAsync(RemoteDataPayload payload, CancellationToken ct)
     {
-        var log = new ApplicationLogAdHocQueries
+        var log = new AdHocQueryExecutionLog
         {
             QueryId = payload.QueryId,
             ActivityName = payload.ActivityName,

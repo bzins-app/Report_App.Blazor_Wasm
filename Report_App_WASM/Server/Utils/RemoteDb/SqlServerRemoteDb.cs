@@ -11,7 +11,7 @@ public class SqlServerRemoteDb : IRemoteDb
         GC.SuppressFinalize(this);
     }
 
-    public string GetAllTablesScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -23,7 +23,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return script;
     }
 
-    public string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesAndColumnsScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -41,7 +41,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return script;
     }
 
-    public string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName)
+    public string GetTableColumnInfoScript(DatabaseConnection dbInfo, string tableName)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -57,7 +57,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return script;
     }
 
-    public async Task TryConnectAsync(ActivityDbConnection dbInfo)
+    public async Task TryConnectAsync(DatabaseConnection dbInfo)
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new SqlConnection(param.ConnnectionString);
@@ -73,7 +73,7 @@ public class SqlServerRemoteDb : IRemoteDb
     }
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts)
+        DatabaseConnection dbInfo, CancellationToken cts)
     {
         if (CheckDbType(dbInfo))
         {
@@ -157,12 +157,12 @@ public class SqlServerRemoteDb : IRemoteDb
         return data;
     }
 
-    private static bool CheckDbType(ActivityDbConnection dbInfo)
+    private static bool CheckDbType(DatabaseConnection dbInfo)
     {
         return dbInfo.TypeDb == TypeDb.SqlServer;
     }
 
-    private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
+    private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
         RemoteConnectionParameter value = new()
         {
@@ -194,7 +194,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return value;
     }
 
-    public async Task<bool> CkeckTableExists(ActivityDbConnection dbInfo, string query)
+    public async Task<bool> CkeckTableExists(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
@@ -218,7 +218,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return false;
     }
 
-    public async Task DeleteTable(ActivityDbConnection dbInfo, string tableName)
+    public async Task DeleteTable(DatabaseConnection dbInfo, string tableName)
     {
         if (string.IsNullOrEmpty(tableName))
             throw new ArgumentNullException(nameof(tableName));
@@ -236,7 +236,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
-    public async Task CreateTable(ActivityDbConnection dbInfo, string query)
+    public async Task CreateTable(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
@@ -245,7 +245,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
-    public async Task<MergeResult> MergeTables(ActivityDbConnection dbInfo, string query)
+    public async Task<MergeResult> MergeTables(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         SqlConnection conn = new(remoteConnection.ConnnectionString);
@@ -287,7 +287,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return result;
     }
 
-    public async Task LoadDatatableToTable(ActivityDbConnection dbInfo, DataTable data, string? targetTable)
+    public async Task LoadDatatableToTable(DatabaseConnection dbInfo, DataTable data, string? targetTable)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);

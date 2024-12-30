@@ -47,7 +47,7 @@ public class InitializeDatabase
 
     private async Task CreateHashKey()
     {
-        ApplicationUniqueKey key = new() { Id = Guid.NewGuid() };
+        SystemUniqueKey key = new() { Id = Guid.NewGuid() };
         await _context.AddAsync(key);
         await _context.SaveChangesAsync();
     }
@@ -56,7 +56,7 @@ public class InitializeDatabase
     {
         try
         {
-            var con = await _context.ActivityDbConnection
+            var con = await _context.DatabaseConnection
                 .Where(a => a.DbConnectionParameters == "[]" && a.ConnectionType == "SQL").ToListAsync();
             foreach (var t in con)
             {
@@ -226,7 +226,7 @@ public class InitializeDatabase
 
     private async Task ApplicationParameters()
     {
-        ApplicationParameters parameters = new()
+        SystemParameters parameters = new()
         {
             ApplicationName = "Report Service App",
             CreateDateTime = DateTime.Now,
@@ -250,7 +250,7 @@ public class InitializeDatabase
 
     private async Task DefaultServiceStatus()
     {
-        ServicesStatus serviceStat = new()
+        SystemServicesStatus serviceStat = new()
         {
             CleanerService = false,
             ReportService = false,

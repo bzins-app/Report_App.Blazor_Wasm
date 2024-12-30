@@ -18,7 +18,7 @@
     <DialogContent>
         <MudStack Spacing="1" >
             <MudForm Model="@Item" @ref="@_form">
-                <MudTextField @bind-Value="Item!.ActivityName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckActivityName()" Disabled="Action == CrudAction.Delete" />
+                <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete" />
                 <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
                     @if (DbCon.TypeDb == 0)
                     {
@@ -184,9 +184,9 @@
                     <MudPaper Class="pa-2" Outlined="true">
                         <div>
                             <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
-                            @if (!string.IsNullOrEmpty(Item?.ActivityLogo))
+                            @if (!string.IsNullOrEmpty(Item?.ProviderIcon))
                             {
-                                <img src="@Item.ActivityLogo" style="max-height: 200px; max-width: 150px; padding: 10px" alt="@Item.ActivityName" />
+                                <img src="@Item.ProviderIcon" style="max-height: 200px; max-width: 150px; padding: 10px" alt="@Item.ProviderName" />
                             }
                         </div>
                         <MudGrid>
@@ -267,17 +267,17 @@
                         @if (_activities.Any())
                         {
                             <MudItem md="6">
-                                <MudSwitch @bind-Value="DbCon.UseDescriptionsFromAnotherActivity" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="DbCon.UseDescriptionsFromAnotherProvider" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherActivity">
+                                <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherProvider">
                                     @if (DbCon.IdDescriptions == 0)
                                     {
                                         <MudSelectItem Value="DbCon.IdDescriptions">@Localizer.Get("Activity name")</MudSelectItem>
                                     }
-                                    @foreach (var item in _activities.Where(a => Item != null && a.ActivityName != Item.ActivityName))
+                                    @foreach (var item in _activities.Where(a => Item != null && a.ProviderName != Item.ProviderName))
                                     {
-                                        <MudSelectItem Value="@item.DbConnectionId">@item.ActivityName</MudSelectItem>
+                                        <MudSelectItem Value="@item.DatabaseConnectionId">@item.ProviderName</MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>
@@ -301,17 +301,17 @@
 
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public ActivityDto? Item { get; set; }
+    [Parameter] public DataProviderDto? Item { get; set; }
 
     [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = default!;
     private string _deletionValidation = null!;
 
-    private ActivityDbConnectionDto DbCon { get; set; } = new();
+    private DatabaseConnectionDto DbCon { get; set; } = new();
     // private DatabaseParameters DbParameters { get; set; }
     private string _connectionTestResult = null!;
-    private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
     private ApplicationConstantsValues? _appConst;
     private bool _loading;
     private bool _loadingDescription;
@@ -343,7 +343,6 @@
             await _form.Validate();
             if (_form.IsValid && DbCon.TypeDb > 0)
             {
-                if(string.IsNullOrEmpty(DbCon.ConnectionPath))  DbCon.ConnectionPath = "PostgreParameters.Password;" ;
                 if (DbCon.TypeDb == TypeDb.PostgreSql)
                 {
                     DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
@@ -388,9 +387,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Item!.ActivityDbConnections.Any())
+        if (Item!.DatabaseConnections.Any())
         {
-            DbCon = Item.ActivityDbConnections.First();
+            DbCon = Item.DatabaseConnections.First();
             if (DbCon.TypeDb == TypeDb.PostgreSql &&DbCon.DbConnectionParameters!="[]")
             {
                 PostgreParameters = (PostgreSqlParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
@@ -417,7 +416,7 @@
             }
         }
 
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _loading = false;
         _appConst = await AppService.GetApplicationConstantsValues();
     }
@@ -431,7 +430,6 @@
 
     private async Task ConnectionTest()
     {
-        if (string.IsNullOrEmpty(DbCon.ConnectionPath)) DbCon.ConnectionPath = "PostgreParameters.Password;";
         if (DbCon.TypeDb == TypeDb.PostgreSql)
         {
             DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
@@ -469,7 +467,7 @@
             DbCon.ConnectionLogin = sqlServerParameters.UserId;
         }
 
-        var tryConn = new ActivityDbConnectionDto
+        var tryConn = new DatabaseConnectionDto
             {
                 AdAuthentication = DbCon.AdAuthentication,
                 ConnectionLogin = DbCon.ConnectionLogin,
@@ -486,15 +484,15 @@
         _connectionTestResult = result.Message ?? "Ok!";
     }
 
-    private bool CheckActivityName()
+    private bool CheckProviderName()
     {
-        if (string.IsNullOrEmpty(Item?.ActivityName))
+        if (string.IsNullOrEmpty(Item?.ProviderName))
         {
             return false;
         }
 
-        Item.ActivityName = Item.ActivityName.Trim();
-        if (_activities.Any(a => a.ActivityName?.ToLower() == Item.ActivityName.ToLower()))
+        Item.ProviderName = Item.ProviderName.Trim();
+        if (_activities.Any(a => a.ProviderName?.ToLower() == Item.ProviderName.ToLower()))
         {
             Localizer.Get("Another activity with the same name already exists");
             return false;
@@ -508,13 +506,13 @@
         var result = await DataService.PostFile(file);
         if (result.Success)
         {
-            Item!.ActivityLogo = "/" + result.Message;
+            Item!.ProviderIcon = "/" + result.Message;
         }
     }
 
     private void OnRemoveLogo()
     {
-        Item!.ActivityLogo = null;
+        Item!.ProviderIcon = null;
     }
 
     private async Task OnUploadDescriptions(IBrowserFile file)
@@ -525,7 +523,7 @@
         if (result.Success)
         {
             var filePath = result.Message;
-            var payload = new TablesDescriptionsImportPayload { FilePath = filePath, ActivityDbConnectionId = DbCon.Id };
+            var payload = new TablesDescriptionsImportPayload { FilePath = filePath, DatabaseConnectionId = DbCon.DatabaseConnectionId };
 
             var resultCreation = await DataService.PostValuesLogJob(payload, "ImportTablesDescriptions", ApiControllers.CrudDataApi, cts.Token);
             if (!resultCreation.Success)
@@ -541,7 +539,7 @@
     {
         _extractDescriptions = true;
         var uri = $"{ApiControllers.RemoteDbApi}ExtractDbDescriptions";
-        var DbconectId = DbCon.UseDescriptionsFromAnotherActivity ? DbCon.IdDescriptions : DbCon.Id;
+        var DbconectId = DbCon.UseDescriptionsFromAnotherProvider ? DbCon.IdDescriptions : DbCon.DatabaseConnectionId;
         var response = await Http.PostAsJsonAsync(uri, DbconectId);
         if (response.IsSuccessStatusCode)
         {

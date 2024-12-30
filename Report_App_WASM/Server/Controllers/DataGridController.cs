@@ -89,44 +89,44 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/EmailLogs")]
-    public IQueryable<ApplicationLogEmailSender> GetEmailLogs()
+    public IQueryable<EmailLog> GetEmailLogs()
     {
         return _context.ApplicationLogEmailSender.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/QueriesLogs")]
-    public IQueryable<ApplicationLogAdHocQueries> GetQueriesLogs()
+    public IQueryable<AdHocQueryExecutionLog> GetQueriesLogs()
     {
         return _context.ApplicationLogAdHocQueries.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/QueryExecutionLogs")]
-    public IQueryable<ApplicationLogQueryExecutionDto> GetQueryExecutionLogs()
+    public IQueryable<QueryExecutionLogDto> GetQueryExecutionLogs()
     {
         return _context.ApplicationLogQueryExecution
-            .ProjectTo<ApplicationLogQueryExecutionDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id)
+            .ProjectTo<QueryExecutionLogDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id)
             .AsQueryable();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/ReportResultLogs")]
-    public IQueryable<ApplicationLogReportResult> GetReportResultLogs()
+    public IQueryable<ReportGenerationLog> GetReportResultLogs()
     {
         return _context.ApplicationLogReportResult.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/TaskLogs")]
-    public IQueryable<ApplicationLogTask> GetTaskLogs()
+    public IQueryable<TaskLog> GetTaskLogs()
     {
         return _context.ApplicationLogTask.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/AuditTrail")]
-    public IQueryable<ApplicationAuditTrail> GetAuditTrail()
+    public IQueryable<AuditTrail> GetAuditTrail()
     {
         return _context.ApplicationAuditTrail.OrderByDescending(a => a.Id).AsNoTracking();
     }
@@ -154,10 +154,10 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery]
     [HttpGet("odata/DepositPath")]
-    public IQueryable<FileDepositPathConfigurationDto> GetDepositPath()
+    public IQueryable<FileStorageLocationDto> GetDepositPath()
     {
         return _context.FileDepositPathConfiguration
-            .Select(a => new FileDepositPathConfigurationDto
+            .Select(a => new FileStorageLocationDto
             {
                 ConfigurationName = a.ConfigurationName,
                 CreateDateTime = a.CreateDateTime,
@@ -175,23 +175,23 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery]
     [HttpGet("odata/Activities")]
-    public IQueryable<Activity> GetActivities()
+    public IQueryable<DataProvider> GetActivities()
     {
-        return _context.Activity.Where(a => a.ActivityType == ActivityType.SourceDb)
-            .Include(a => a.ActivityDbConnections).AsNoTracking();
+        return _context.Activity.Where(a => a.ActivityType == Shared.ProviderType.SourceDb)
+            .Include((object a) => a.ActivityDbConnections).AsNoTracking();
     }
 
     [EnableQuery]
     [HttpGet("odata/DataTransfers")]
-    public IQueryable<Activity> GetDataTransfers()
+    public IQueryable<DataProvider> GetDataTransfers()
     {
-        return _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb)
-            .Include(a => a.ActivityDbConnections).AsNoTracking();
+        return _context.Activity.Where(a => a.ActivityType == Shared.ProviderType.TargetDb)
+            .Include((object a) => a.ActivityDbConnections).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/TaskHeader")]
-    public IQueryable<TaskHeader> GetTaskHeader()
+    public IQueryable<ScheduledTask> GetTaskHeader()
     {
         return _context.TaskHeader.OrderByDescending(a => a.TaskHeaderId).AsNoTracking();
     }
@@ -207,8 +207,8 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/Queries")]
-    public IQueryable<QueryStore> GetQueries()
+    public IQueryable<StoredQuery> GetQueries()
     {
-        return _context.QueryStore.OrderByDescending(a => a.Id);
+        return _context.QueryStore.OrderByDescending((System.Linq.Expressions.Expression<Func<StoredQuery, int>>)(a => (int)a.Id));
     }
 }

@@ -39,12 +39,12 @@
                             <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text"/>
                             @if (_activities.Any())
                             {
-                                <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@_activityId"
+                                <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@_DataProviderId"
                                            AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler"
                                            Required>
                                     @foreach (var value in _activities)
                                     {
-                                        <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                                        <MudSelectItem Value="@value.DataProviderId">@value.ProviderName</MudSelectItem>
                                     }
                                 </MudSelect>
                             }
@@ -138,7 +138,7 @@
                                                Required>
                                         @foreach (var value in _dataTransfers)
                                         {
-                                            <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                                            <MudSelectItem Value="@value.DataProviderId">@value.ProviderName</MudSelectItem>
                                         }
                                     </MudSelect>
                                 }
@@ -147,12 +147,12 @@
                             {
                                 <AuthorizeView Roles="Admin">
                                     <Authorized>
-                                        <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileDepositPathConfigurationId"
+                                        <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId"
                                                    AnchorOrigin="Origin.BottomCenter"
                                                    Clearable>
-                                            @if (Item.FileDepositPathConfigurationId == 0)
+                                            @if (Item.FileStorageLocationId == 0)
                                             {
-                                                <MudSelectItem Value="@Item.FileDepositPathConfigurationId">@Localizer.Get("Empty")</MudSelectItem>
+                                                <MudSelectItem Value="@Item.FileStorageLocationId">@Localizer.Get("Empty")</MudSelectItem>
                                             }
                                             @foreach (var value in _depositPathSelect)
                                             {
@@ -161,12 +161,12 @@
                                         </MudSelect>
                                     </Authorized>
                                     <NotAuthorized>
-                                        <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileDepositPathConfigurationId" Disabled="true"
+                                        <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId" Disabled="true"
                                                    AnchorOrigin="Origin.BottomCenter"
                                                    Clearable>
-                                            @if (Item.FileDepositPathConfigurationId == 0)
+                                            @if (Item.FileStorageLocationId == 0)
                                             {
-                                                <MudSelectItem Value="@Item.FileDepositPathConfigurationId">@Localizer.Get("Empty")</MudSelectItem>
+                                                <MudSelectItem Value="@Item.FileStorageLocationId">@Localizer.Get("Empty")</MudSelectItem>
                                             }
                                             @foreach (var value in _depositPathSelect)
                                             {
@@ -234,13 +234,13 @@
 
     [Parameter] [SupplyParameterFromQuery] public int? PageSize { get; set; }
 
-    private TaskHeaderDto Item { get; set; } = new();
-    private List<SelectItemActivitiesInfo> _activities = new();
-    private List<SelectItemActivitiesInfo> _dataTransfers = new();
+    private ScheduledTaskDto Item { get; set; } = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _dataTransfers = new();
     private List<SelectItem> _depositPathSelect = new();
-    private int _activityId;
+    private int _DataProviderId;
     private string? _errorMessage;
-    private readonly List<TaskDetailDto> _itemToDelete = new();
+    private readonly List<ScheduledTaskQueryDto> _itemToDelete = new();
     private TaskHeaderParameters? _param = new();
 
     private bool _loading;
@@ -266,8 +266,8 @@
     {
         var uriAction = $"GetTaskHeader?taskHeaderId={TaskHeaderId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
-        _activityId = Item.Activity.ActivityId;
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _DataProviderId = Item.DataProvider.DataProviderId;
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
 
         var controllerActionDepositPath = "DepositPathInfo";
         _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
@@ -282,13 +282,13 @@
             _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags, _jsonOpt)!;
         }
 
-        if (Item.FileDepositPathConfigurationId != 0)
+        if (Item.FileStorageLocationId != 0)
         {
-            _depositPathSelect.Where(a => a.Id == Item.FileDepositPathConfigurationId).Select(a => a.Name).FirstOrDefault();
+            _depositPathSelect.Where(a => a.Id == Item.FileStorageLocationId).Select(a => a.Name).FirstOrDefault();
         }
 
-        var uri = $"GetActivityDbConnection?ActivityId={Item.Activity.ActivityId}";
-        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+        var uri = $"GetActivityDbConnection?DataProviderId={Item.DataProvider.DataProviderId}";
+        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
         if (response.Any())
         {
             _typeDbTask = response.Select(a => a.TypeDb).First();
@@ -299,7 +299,7 @@
 
         if (Item.Type == TaskType.DataTransfer)
         {
-            _dataTransfers = await DataService.GetValues<SelectItemActivitiesInfo>("DataTransfers", ApiControllers.ApplicationParametersApi);
+            _dataTransfers = await DataService.GetValues<SelectItemDataproviderInfo>("DataTransfers", ApiControllers.ApplicationParametersApi);
         }
 
         _itemToDelete.Clear();
@@ -318,9 +318,9 @@
                 return;
             }
 
-            if (Item.IsActivated)
+            if (Item.IsEnabled)
             {
-                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = Item.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             }
 
             if (Item.Type == TaskType.Alert && Item.SendByEmail == false)
@@ -328,10 +328,10 @@
                 Item.SendByEmail = true;
             }
 
-            if (!Item.TaskEmailRecipients.Any())
+            if (!Item.DistributionLists.Any())
             {
-                var recipients = new TaskEmailRecipientDto { TaskHeader = Item, Email = "[]", Message = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
-                Item.TaskEmailRecipients = new List<TaskEmailRecipientDto> { recipients };
+                var recipients = new ScheduledTaskDistributionListDto { ScheduledTask = Item, Recipients = "[]", EmailMessage = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
+                Item.DistributionLists = new List<ScheduledTaskDistributionListDto> { recipients };
             }
 
             Item.TaskHeaderParameters = JsonSerializer.Serialize(_param);
@@ -339,7 +339,7 @@
 
             if (Item.CronParameters == "[]" || string.IsNullOrEmpty(Item.CronParameters))
             {
-                Item.IsActivated = false;
+                Item.IsEnabled = false;
             }
 
             if (Item.QueryParameters == "[]" || string.IsNullOrEmpty(Item.QueryParameters))
@@ -354,9 +354,9 @@
                 await DataService.PostValues(detail, "TaskDetailDelete");
             }
 
-            if (Item.IsActivated)
+            if (Item.IsEnabled)
             {
-                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = true, Value = Item.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = true, Value = Item.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             }
 
             await UpdateValues();
@@ -374,7 +374,7 @@
         string uri;
         if (FromTaskManager.HasValue && FromTaskManager.Value)
         {
-            uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.Activity.ActivityId}/{Item.Activity.ActivityName}",
+            uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.DataProvider.DataProviderId}/{Item.DataProvider.ProviderName}",
                 new Dictionary<string, object>
                 {
                     ["Page"] = Page!,
@@ -409,10 +409,10 @@
 
     private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
     {
-        _activityId = actId.FirstOrDefault();
-        Item.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
-        Item.IdActivity = Item.Activity.ActivityId;
-        if (Item.Activity.ActivityName != null) Item.ActivityName = Item.Activity.ActivityName;
+        _DataProviderId = actId.FirstOrDefault();
+        Item.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
+        Item.DataProviderId = Item.DataProvider.DataProviderId;
+        if (Item.DataProvider.ProviderName != null) Item.ProviderName = Item.DataProvider.ProviderName;
     }
 
     private async Task OnUploadTemplate(IBrowserFile file)

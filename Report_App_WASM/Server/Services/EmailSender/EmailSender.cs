@@ -38,7 +38,7 @@ public class EmailSender : IEmailSender
 
         if (email != null && smtp != null && email.Any() && emailservice)
         {
-            ApplicationLogEmailSender log = new()
+            EmailLog log = new()
             {
                 EmailTitle = subject,
                 StartDateTime = DateTime.Now,
