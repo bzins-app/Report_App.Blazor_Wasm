@@ -3,9 +3,9 @@
 public class RemoteConnectionParameter
 {
     public string? ConnnectionString { get; set; }
-    public TypeDb TypeDb { get; init; }
-    public string? Schema { get; init; }
-    public bool UseDbSchema { get; init; }
-    public int CommandTimeOut { get; init; } = 300;
-    public int CommandFetchSize { get; init; } = 2000;
+    public TypeDb TypeDb { get; set; }
+    public int CommandTimeOut { get; set; } = 300;
+    public int CommandFetchSize { get; set; } = 2000;
+    public bool UseDbSchema { get; set; }
+    public string? Schema { get; set; }
 }

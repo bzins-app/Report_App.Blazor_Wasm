@@ -69,7 +69,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
                 AddParameterIfNotEmpty("Database", Database),
                 AddParameterIfNotEmpty("User Id", UserId),
                 AddParameterIfNotEmpty("Password", Password),
-                AddParameterIfNotDefault("Trusted_Connection", TrustedConnection, false),
+                AddParameterIfNotEmpty("Integrated Security=SSPI", TrustedConnection?"SSPI":string.Empty),
                 AddParameterIfNotDefault("Encrypt", Encrypt, true),
                 AddParameterIfNotDefault("TrustServerCertificate", TrustServerCertificate, false),
                 AddEnumParameterIfNotDefault("ApplicationIntent", ApplicationIntent, ApplicationIntent.ReadWrite),
