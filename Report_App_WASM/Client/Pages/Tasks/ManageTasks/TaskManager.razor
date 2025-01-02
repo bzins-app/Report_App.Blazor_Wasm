@@ -80,7 +80,7 @@
                     }
                     @if (TypeTask == TaskType.Report.ToString())
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileDepositPathConfigurationId)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context"/>
                         </Blazor.SimpleGrid.TemplateColumn>

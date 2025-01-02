@@ -13,7 +13,7 @@
 
         if (Item.IsEnabled)
         {
-            var activityActivated = (await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a => a.DataProviderId == Item.IdActivity).Select(a => new { a.IsActivated, a.ProviderName }).FirstOrDefault();
+            var activityActivated = (await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a => a.DataProviderId == Item.DataProviderId).Select(a => new { a.IsActivated, a.ProviderName }).FirstOrDefault();
             if (!activityActivated!.IsActivated)
             {
                 Item.IsEnabled = false;

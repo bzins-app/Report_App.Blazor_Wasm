@@ -13,7 +13,7 @@
 
         if (Item.SendByEmail)
         {
-            var uri = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
+            var uri = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.ScheduledTaskId}";
             var emailsConfigured = await Http.GetFromJsonAsync<bool>(uri);
             if (!emailsConfigured)
             {
@@ -23,7 +23,7 @@
             }
         }
 
-        var result = await DataService.PostValues(new TaskActivatePayload { Activate = Item.SendByEmail, TaskHeaderId = Item.TaskHeaderId }, "TaskSendByEmail");
+        var result = await DataService.PostValues(new TaskActivatePayload { Activate = Item.SendByEmail, TaskHeaderId = Item.ScheduledTaskId }, "TaskSendByEmail");
         if (!result.Success)
         {
             Item.SendByEmail = !value;

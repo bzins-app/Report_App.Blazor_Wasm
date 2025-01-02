@@ -37,7 +37,7 @@
     private async Task ConfirmDuplicate()
     {
         _visible = false;
-        await Clone(_name, Item!.TaskHeaderId);
+        await Clone(_name, Item!.ScheduledTaskId);
         Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
         await DataGrid?.RefreshDataAsync()!;
     }

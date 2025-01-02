@@ -164,13 +164,6 @@
             {
                 sqlServerParameters = (SqlServerParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
             }
-            if (DbCon.TypeDb == TypeDb.PostgreSql || DbCon.TypeDb == TypeDb.MariaDb || DbCon.TypeDb == TypeDb.MySql)
-            {
-                if (DbCon.Port == 0)
-                {
-                    DbCon.Port = DbCon.TypeDb == TypeDb.PostgreSql ? 5432 : 3306;
-                }
-            }
         }
 
         DbCon.TypeDb = TypeDb.SqlServer;
@@ -197,14 +190,8 @@
 
         var tryConn = new DatabaseConnectionDto
             {
-                AdAuthentication = DbCon.AdAuthentication,
                 ConnectionLogin = DbCon.ConnectionLogin,
-                ConnectionPath = DbCon.ConnectionPath,
-                IntentReadOnly = DbCon.IntentReadOnly,
-                DbSchema = DbCon.DbSchema,
                 TypeDb = DbCon.TypeDb,
-                Port = DbCon.Port,
-                UseDbSchema = DbCon.UseDbSchema,
                 Password = DbCon.Password,
                 DbConnectionParameters = DbCon.DbConnectionParameters,
             };
