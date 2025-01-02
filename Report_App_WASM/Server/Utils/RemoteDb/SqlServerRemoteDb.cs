@@ -15,11 +15,14 @@ public class SqlServerRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = dbInfo.UseDbSchema
+        {
+            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
-                FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' order by 1,2"
+                FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' order by 1,2"
                 : $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables order by 1,2";
+        }
         return script;
     }
 
@@ -28,10 +31,11 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
         {
-            if (dbInfo.UseDbSchema)
+            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            if (!string.IsNullOrEmpty(dbparam.Database))
                 script =
                     $"select  concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
-                    $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and tables.TABLE_CATALOG='{dbInfo.DbSchema}' order by 1 ,2";
+                    $" inner join information_schema.tables tables on tables.TABLE_NAME=tab.name and tables.TABLE_CATALOG='{dbparam.Database}' order by 1 ,2";
             else
                 script =
                     "select concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
@@ -164,32 +168,32 @@ public class SqlServerRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        RemoteConnectionParameter value = new()
-        {
-            Schema = dbInfo.DbSchema,
-            UseDbSchema = dbInfo.UseDbSchema,
-            TypeDb = dbInfo.TypeDb,
-            CommandFetchSize = dbInfo.CommandFetchSize,
-            CommandTimeOut = dbInfo.CommandTimeOut
-        };
 
-        var windowsAuthentication = ";Integrated Security=SSPI";
-        string connectionString;
-        var databaseInfo = "";
-        if (dbInfo.UseDbSchema) databaseInfo = $";Database={dbInfo.DbSchema}";
 
-        if (dbInfo.AdAuthentication)
-            connectionString = $"server ={dbInfo.ConnectionPath}{databaseInfo}{windowsAuthentication};";
-        else
-            connectionString =
-                $"server ={dbInfo.ConnectionPath}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+        //var windowsAuthentication = ";Integrated Security=SSPI";
+        //string connectionString;
+        //var databaseInfo = "";
+        //if (dbInfo.UseDbSchema) databaseInfo = $";Database={dbInfo.DbSchema}";
 
-        if (dbInfo.IntentReadOnly) connectionString += "applicationintent=readonly;";
-        connectionString += "Encrypt=False;MultipleActiveResultSets=True;";
-        value.ConnnectionString = connectionString;
+        //if (dbInfo.AdAuthentication)
+        //    connectionString = $"server ={dbInfo.ConnectionPath}{databaseInfo}{windowsAuthentication};";
+        //else
+        //    connectionString =
+        //        $"server ={dbInfo.ConnectionPath}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+
+        //if (dbInfo.IntentReadOnly) connectionString += "applicationintent=readonly;";
+        //connectionString += "Encrypt=False;MultipleActiveResultSets=True;";
+        //value.ConnnectionString = connectionString;
 
         var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
-        value.ConnnectionString = dbparam.BuildConnectionString();
+        RemoteConnectionParameter value = new()
+        {
+            TypeDb = dbInfo.TypeDb,
+            CommandFetchSize = dbInfo.CommandFetchSize,
+            CommandTimeOut = dbInfo.CommandTimeOut,
+            ConnnectionString = dbparam.BuildConnectionString()
+        };
+
 
         return value;
     }

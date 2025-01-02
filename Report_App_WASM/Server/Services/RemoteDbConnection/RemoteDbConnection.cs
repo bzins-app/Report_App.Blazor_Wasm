@@ -181,10 +181,10 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
 
                 var delay = attempts switch
                 {
-                    1 => 10000,
+                    1 => 10 * 1000,
                     2 => 60 * 1000,
                     3 => 10 * 60 * 1000,
-                    _ => 10000
+                    _ => 10 * 1000
                 };
                 if (!run.Test)
                 {
