@@ -97,21 +97,6 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         }
     }
 
-    
-    public async Task<SubmitResult> TestConnectionAsync2(ActivityDbConnection parameter)
-    {
-        try
-        {
-            var remote = GetRemoteDbType(parameter.TypeDb);
-            await remote.TryConnectAsync(parameter.ConnectionPath);
-            return new SubmitResult { Success = true, Message = "OK" };
-        }
-        catch (Exception e)
-        {
-            return new SubmitResult { Success = false, Message = e.Message };
-        }
-    }
-
     public async Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts,
         int taskId = 0)
     {
