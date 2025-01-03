@@ -2,6 +2,6 @@
 
 public static class ApplicationInfo
 {
-    public const string ApplicationVersion = "202501Beta";
+    public const string ApplicationVersion = "202412Beta";
     public const int VersionYear = 2025;
 }
