@@ -97,21 +97,6 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         }
     }
 
-    
-    public async Task<SubmitResult> TestConnectionAsync2(DatabaseConnection parameter)
-    {
-        try
-        {
-            var remote = GetRemoteDbType(parameter.TypeDb);
-            await remote.TryConnectAsync(parameter.ConnectionPath);
-            return new SubmitResult { Success = true, Message = "OK" };
-        }
-        catch (Exception e)
-        {
-            return new SubmitResult { Success = false, Message = e.Message };
-        }
-    }
-
     public async Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts,
         int taskId = 0)
     {
@@ -214,6 +199,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
             TypeDb.Oracle => new OracleRemoteDb(),
             TypeDb.SqlServer => new SqlServerRemoteDb(),
             TypeDb.Db2 => new OlebDbDbRemoteDb(),
+            TypeDb.OlebDb => new OlebDbDbRemoteDb(),
             TypeDb.MariaDb => new MariaDbRemoteDb(),
             TypeDb.PostgreSql => new PostgreSqlRemoteDb(),
             _ => new MySqlDbRemoteDb()
