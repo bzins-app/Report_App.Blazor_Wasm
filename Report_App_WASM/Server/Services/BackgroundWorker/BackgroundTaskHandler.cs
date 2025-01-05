@@ -49,19 +49,19 @@ public class BackgroundTaskHandler : IDisposable
     public async ValueTask HandleTask(TaskJobParameters parameters)
     {
         _jobParameters = parameters;
-        _header = (await _context.TaskHeader.Where(a => a.TaskHeaderId == parameters.TaskHeaderId)
-            .Include(a => a.Activity).Include(a => a.TaskDetails).Include(a => a.TaskEmailRecipients)
+        _header = (await _context.ScheduledTask.Where(a => a.ScheduledTaskId == parameters.ScheduledTaskId)
+            .Include(a => a.DataProvider).Include(a => a.TaskQueries).Include(a => a.DistributionLists)
             .FirstOrDefaultAsync())!;
-        var _activityConnect = await _context.ActivityDbConnection
-            .Where(a => a.Activity.ActivityId == _header.IdActivity).FirstOrDefaultAsync();
+        var _activityConnect = await _context.DatabaseConnection
+            .Where(a => a.DataProvider.DataProviderId == _header.IdDataProvider).FirstOrDefaultAsync();
         TaskLog logTask = new()
         {
-            ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName, StartDateTime = DateTime.Now,
+            DataProviderId = _header.DataProvider.DataProviderId, ProviderName = _header.ProviderName, StartDateTime = DateTime.Now,
             JobDescription = _header.TaskName, Type = _header.Type + " service", Result = "Running",
             RunBy = _jobParameters.RunBy, EndDateTime = DateTime.Now
         };
 
-        if (!_header.TaskDetails.Any())
+        if (!_header.TaskQueries.Any())
         {
             logTask.EndDateTime = DateTime.Now;
             logTask.Result = "No query to run";
@@ -74,21 +74,21 @@ public class BackgroundTaskHandler : IDisposable
 
         await _context.AddAsync(logTask);
         await _context.SaveChangesAsync("backgroundworker");
-        logTask.TaskId = logTask.Id;
+        logTask.TaskId = logTask.TaskLogId;
         _context.Update(logTask);
-        _taskId = logTask.Id;
+        _taskId = logTask.TaskLogId;
         await _context.AddAsync(new TaskStepLog
-            { TaskId = _taskId, Step = "Initialization", Info = "Nbr of queries:" + _header.TaskDetails.Count });
+            { TaskId = _taskId, Step = "Initialization", Info = "Nbr of queries:" + _header.TaskQueries.Count });
 
         try
         {
             if (_header.Type != TaskType.DataTransfer)
             {
-                if (_header.SendByEmail && _header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]")
-                    _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.TaskEmailRecipients
-                        .Select(a => a.Email).FirstOrDefault()!);
+                if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
+                    _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
+                        .Select(a => a.Recipients).FirstOrDefault()!);
                 if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
-                foreach (var detail in _header.TaskDetails.OrderBy(a => a.DetailSequence))
+                foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
                 {
                     await FetchData(detail, _activityConnect.TaskSchedulerMaxNbrofRowsFetched);
                     await _context.SaveChangesAsync("backgroundworker");
@@ -111,11 +111,11 @@ public class BackgroundTaskHandler : IDisposable
             }
             else
             {
-                foreach (var detail in _header.TaskDetails.OrderBy(a => a.DetailSequence))
+                foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
                 {
                     TaskLog log = new()
                     {
-                        ActivityId = _header.Activity.ActivityId, ActivityName = _header.ActivityName,
+                        DataProviderId = _header.DataProvider.DataProviderId, ProviderName = _header.ProviderName,
                         StartDateTime = DateTime.Now, JobDescription = detail.QueryName,
                         Type = _header.Type + " service", Error = false, RunBy = _jobParameters.RunBy,
                         Result = "Running"
@@ -125,7 +125,7 @@ public class BackgroundTaskHandler : IDisposable
                     await _context.AddAsync(log);
                     await _context.SaveChangesAsync("backgroundworker");
                     var _headerParameters =
-                        JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters);
+                        JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskHeaderParameters);
 
                     int i = 0;
                     foreach (var value in _fetchedData)
@@ -149,7 +149,7 @@ public class BackgroundTaskHandler : IDisposable
 
             logTask.Error = false;
             logTask.Result = "Ok";
-            logTask.TaskId = logTask.Id;
+            logTask.TaskId = logTask.TaskLogId;
             logTask.EndDateTime = DateTime.Now;
             logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
             if (parameters.GenerateFiles)
@@ -168,7 +168,7 @@ public class BackgroundTaskHandler : IDisposable
             logTask.EndDateTime = DateTime.Now;
             logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
             logTask.Result = ex.Message.Length > 440 ? ex.Message.Substring(0, 440) : ex.Message;
-            await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ActivityName + ": " + _header.TaskName);
+            await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ProviderName + ": " + _header.TaskName);
             await _context.AddAsync(new TaskStepLog
                 { TaskId = _taskId, Step = "Error", Info = logTask.Result });
             _fetchedData.Clear();
@@ -182,7 +182,7 @@ public class BackgroundTaskHandler : IDisposable
     private async ValueTask FetchData(ScheduledTaskQuery detail, int maxRows = 100000)
     {
         using var remoteDb = new RemoteDbConnection(_context, _mapper);
-        var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(detail.TaskDetailParameters!, _jsonOpt);
+        var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(detail.QueryParameters!, _jsonOpt);
         List<QueryCommandParameter>? param = new();
         if (_jobParameters.CustomQueryParameters!.Any())
             param = _jobParameters.CustomQueryParameters;
@@ -201,7 +201,7 @@ public class BackgroundTaskHandler : IDisposable
         var table = await remoteDb.RemoteDbToDatableAsync(
             new RemoteDbCommandParameters
             {
-                ActivityId = _header.Activity.ActivityId, QueryToRun = detail.Query, QueryInfo = detail.QueryName,
+                DataProviderId = _header.DataProvider.DataProviderId, QueryToRun = detail.Query, QueryInfo = detail.QueryName,
                 PaginatedResult = true, LastRunDateTime = detail.LastRunDateTime ?? DateTime.Now,
                 QueryCommandParameters = param, MaxSize = maxRows
             }, _jobParameters.Cts, _taskId);
@@ -229,11 +229,11 @@ public class BackgroundTaskHandler : IDisposable
 
         ReportGenerationLog filecreationLocal = new()
         {
-            ActivityId = _header.Activity.ActivityId,
-            ActivityName = _header.ActivityName,
+            DataProviderId = _header.DataProvider.DataProviderId,
+            ProviderName = _header.ProviderName,
             CreatedAt = DateTime.Now,
             CreatedBy = "Report Service",
-            TaskHeaderId = _header.TaskHeaderId,
+            ScheduledTaskId = _header.ScheduledTaskId,
             ReportName = _header.TaskName,
             SubName = subName is null ? "" : subName != fName ? fName : "TaskId:" + _taskId,
             FileType = _header.TypeFile.ToString(),
@@ -248,12 +248,12 @@ public class BackgroundTaskHandler : IDisposable
         await _context.AddAsync(new TaskStepLog
             { TaskId = _taskId, Step = "File local storage", Info = "Ok" });
 
-        if (_header.FileDepositPathConfigurationId != 0 && useDepositConfiguration && localFileResult.Success)
+        if (_header.FileStorageLocationId != 0 && useDepositConfiguration && localFileResult.Success)
         {
             string completePath;
             SubmitResult resultDeposit;
-            var config = await _context.FileDepositPathConfiguration.Include(a => a.SftpConfiguration).AsNoTracking()
-                .FirstAsync(a => a.FileDepositPathConfigurationId == _header.FileDepositPathConfigurationId);
+            var config = await _context.FileStorageLocation.Include(a => a.SftpConfiguration).AsNoTracking()
+                .FirstAsync(a => a.FileStorageLocationId == _header.FileStorageLocationId);
             if (config is { SftpConfiguration: not null, UseSftpProtocol: true })
             {
                 var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
@@ -296,11 +296,11 @@ public class BackgroundTaskHandler : IDisposable
 
             ReportGenerationLog filecreationRemote = new()
             {
-                ActivityId = _header.Activity.ActivityId,
-                ActivityName = _header.ActivityName,
+                DataProviderId = _header.DataProvider.DataProviderId,
+                ProviderName = _header.ProviderName,
                 CreatedAt = DateTime.Now,
                 CreatedBy = "Report Service",
-                TaskHeaderId = _header.TaskHeaderId,
+                ScheduledTaskId = _header.ScheduledTaskId,
                 ReportName = _header.TaskName,
                 SubName = "TaskId:" + _taskId,
                 FileType = _header.TypeFile.ToString(),
@@ -320,7 +320,7 @@ public class BackgroundTaskHandler : IDisposable
     {
         if (data.Rows.Count > 0)
         {
-            var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(a.TaskDetailParameters!);
+            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(a.QueryParameters!);
             var checkTableQuery = $@"IF (EXISTS (SELECT *
                                                        FROM INFORMATION_SCHEMA.TABLES
                                                        WHERE TABLE_SCHEMA = 'dbo'
@@ -476,15 +476,15 @@ public class BackgroundTaskHandler : IDisposable
         string fExtension;
         var informationSheet = false;
         List<ExcelCreationDatatable> excelMultipleTabs = new();
-        var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters, _jsonOpt);
+        var headerParam = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskHeaderParameters, _jsonOpt);
 
         foreach (var d in _fetchedData)
         {
             MemoryFileContainer fileCreated;
-            var detailParam = JsonSerializer.Deserialize<TaskDetailParameters>(d.Key.TaskDetailParameters!, _jsonOpt);
+            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(d.Key.QueryParameters!, _jsonOpt);
             if (string.IsNullOrEmpty(detailParam?.FileName))
                 fName =
-                    $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
+                    $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
             else
                 fName = $"{detailParam.FileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
 
@@ -560,7 +560,7 @@ public class BackgroundTaskHandler : IDisposable
         if (excelMultipleTabs.Any())
         {
             fName = string.IsNullOrEmpty(headerParam?.ExcelFileName)
-                ? $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}"
+                ? $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}"
                 : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
 
             MemoryFileContainer fileCreated;
@@ -598,16 +598,16 @@ public class BackgroundTaskHandler : IDisposable
 
     private async ValueTask HandleTaskAlertAsync()
     {
-        var headerParam = JsonSerializer.Deserialize<TaskHeaderParameters>(_header.TaskHeaderParameters, _jsonOpt);
+        var headerParam = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskHeaderParameters, _jsonOpt);
         if (_fetchedData.Any())
         {
             var sendEmail = false;
             var a = _fetchedData.Select(a => a.Key).FirstOrDefault();
             if ((!headerParam!.AlertOccurenceByTime &&
-                 a!.NbrOfCumulativeOccurences > headerParam.NbrOfOccurencesBeforeResendAlertEmail - 1) ||
-                a!.NbrOfCumulativeOccurences == 0)
+                 a!.ExecutionCount > headerParam.NbrOfOccurencesBeforeResendAlertEmail - 1) ||
+                a!.ExecutionCount == 0)
             {
-                a.NbrOfCumulativeOccurences = 0;
+                a.ExecutionCount = 0;
                 sendEmail = true;
             }
 
@@ -616,11 +616,11 @@ public class BackgroundTaskHandler : IDisposable
                                                         .NbrOfMinutesBeforeResendAlertEmail))) sendEmail = true;
             if (sendEmail || _jobParameters.ManualRun)
             {
-                var emailPrefix = await _context.ApplicationParameters.Select(a => a.AlertEmailPrefix)
+                var emailPrefix = await _context.SystemParameters.Select(a => a.AlertEmailPrefix)
                     .FirstOrDefaultAsync();
-                if (_header.TaskEmailRecipients.Select(a => a.Email).FirstOrDefault() != "[]")
+                if (_header.DistributionLists.Select(a => a.EmailMessage).FirstOrDefault() != "[]")
                 {
-                    var subject = emailPrefix + " - " + a.TaskHeader?.ActivityName + ": " + a.TaskHeader?.TaskName;
+                    var subject = emailPrefix + " - " + a.ScheduledTask?.ProviderName + ": " + a.ScheduledTask?.TaskName;
                     var message = "";
                     List<Attachment> listAttach = new();
                     foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
@@ -634,15 +634,15 @@ public class BackgroundTaskHandler : IDisposable
                         else
                         {
                             ExcelCreationDatatable dataExcel = new()
-                                { TabName = a.TaskHeader?.TaskName, Data = table.Value };
-                            var fileResult = CreateFile.ExcelFromDatable((string?)(a.TaskHeader?.TaskName), dataExcel);
+                                { TabName = a.ScheduledTask?.TaskName, Data = table.Value };
+                            var fileResult = CreateFile.ExcelFromDatable((string?)(a.ScheduledTask?.TaskName), dataExcel);
                             var fName =
-                                $"{_header.ActivityName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
+                                $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
                             listAttach.Add(new Attachment(new MemoryStream(fileResult.Content), fName,
                                 fileResult.ContentType));
                         }
 
-                    message = string.Format(_header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault()!,
+                    message = string.Format(_header.DistributionLists.Select(a => a.EmailMessage).FirstOrDefault()!,
                         message);
 
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
@@ -656,17 +656,17 @@ public class BackgroundTaskHandler : IDisposable
                     listAttach.Clear();
                 }
 
-                _header.TaskDetails.ToList().ForEach(a => a.LastRunDateTime = DateTime.Now);
+                _header.TaskQueries.ToList().ForEach(a => a.LastRunDateTime = DateTime.Now);
             }
 
-            a.NbrOfCumulativeOccurences++;
+            a.ExecutionCount++;
             //header.TaskDetails.ToList().ForEach(a => a.NbrOFCumulativeOccurences = nbrOccurrences);
             _context.Entry(a).State = EntityState.Modified;
         }
         else
         {
-            var a = _header.TaskDetails.FirstOrDefault();
-            a!.NbrOfCumulativeOccurences = 0;
+            var a = _header.TaskQueries.FirstOrDefault();
+            a!.ExecutionCount = 0;
             _context.Entry(a).State = EntityState.Modified;
         }
     }
@@ -675,14 +675,14 @@ public class BackgroundTaskHandler : IDisposable
     {
         if (_emails.Any() && _fileResults.Any())
         {
-            var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
-            var subject = emailPrefix + " - " + _header.ActivityName + ": " + _header.TaskName;
+            var emailPrefix = await _context.SystemParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
+            var subject = emailPrefix + " - " + _header.ProviderName + ": " + _header.TaskName;
 
             List<Attachment> listAttach = new();
             listAttach.AddRange(_fileResults.Select(a =>
                 new Attachment(new MemoryStream(a.Content), a.FileName, a.ContentType)).ToList());
 
-            var message = _header.TaskEmailRecipients.Select(a => a.Message).FirstOrDefault();
+            var message = _header.DistributionLists.Select(a => a.EmailMessage).FirstOrDefault();
             if (listAttach.Any())
                 if (message != null)
                 {

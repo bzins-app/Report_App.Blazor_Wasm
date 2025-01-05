@@ -20,7 +20,7 @@ public class SqlServerRemoteDb : IRemoteDb
             script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' order by 1,2"
-                : $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
+                : @"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables order by 1,2";
         }
         return script;
@@ -39,7 +39,7 @@ public class SqlServerRemoteDb : IRemoteDb
             else
                 script =
                     "select concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
-                    $"  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
+                    "  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
         }
 
         return script;

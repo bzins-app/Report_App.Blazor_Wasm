@@ -26,11 +26,11 @@ public class DashboardController : ControllerBase, IDisposable
     public async Task<AppMetrics> GetAppMetricsAsync()
     {
         var today = DateTime.Today.Date;
-        var tasksToday = _context.ApplicationLogTask.Where(a => a.EndDateTime.Date == today);
-        var reportsToday = _context.ApplicationLogReportResult.Where(a => a.IsAvailable);
+        var tasksToday = _context.TaskLog.Where(a => a.EndDateTime.Date == today);
+        var reportsToday = _context.ReportGenerationLog.Where(a => a.IsAvailable);
 
-        var servicesStatus = await _context.ServicesStatus.FirstOrDefaultAsync();
-        var activeTask = _context.TaskHeader.Where(a => a.IsActivated && a.Activity.IsActivated);
+        var servicesStatus = await _context.SystemServicesStatus.FirstOrDefaultAsync();
+        var activeTask = _context.ScheduledTask.Where(a => a.IsEnabled && a.DataProvider.IsEnabled);
 
         var tasksTodayList = await tasksToday.ToListAsync();
         var reportsTodayList = await reportsToday.ToListAsync();
@@ -51,11 +51,11 @@ public class DashboardController : ControllerBase, IDisposable
             NbrOfActiveDataTransfer = servicesStatus.DataTransferService
                 ? activeTaskList.Count(a => a.Type == TaskType.DataTransfer)
                 : 0,
-            NbrOfActiveQueries = await _context.TaskDetail.CountAsync(a =>
-                a.TaskHeader!.IsActivated && a.TaskHeader.Activity.IsActivated &&
-                ((a.TaskHeader.Type == TaskType.Report && servicesStatus.ReportService) ||
-                 (a.TaskHeader.Type == TaskType.Alert && servicesStatus.AlertService) ||
-                 (a.TaskHeader.Type == TaskType.DataTransfer && servicesStatus.DataTransferService)))
+            NbrOfActiveQueries = await _context.ScheduledTaskQuery.CountAsync(a =>
+                a.ScheduledTask!.IsEnabled && a.ScheduledTask.DataProvider.IsEnabled &&
+                ((a.ScheduledTask.Type == TaskType.Report && servicesStatus.ReportService) ||
+                 (a.ScheduledTask.Type == TaskType.Alert && servicesStatus.AlertService) ||
+                 (a.ScheduledTask.Type == TaskType.DataTransfer && servicesStatus.DataTransferService)))
         };
 
         return metrics;
@@ -65,14 +65,14 @@ public class DashboardController : ControllerBase, IDisposable
     public async Task<List<TaksLogsValues>> GetTasksLogsAsync()
     {
         var dateThreshold = DateTime.Today.AddDays(-20);
-        return await _context.ApplicationLogTask.AsNoTracking()
-            .Where(a => !string.IsNullOrEmpty(a.ActivityName) && a.EndDateTime.Date > dateThreshold &&
+        return await _context.TaskLog.AsNoTracking()
+            .Where(a => !string.IsNullOrEmpty(a.ProviderName) && a.EndDateTime.Date > dateThreshold &&
                         !a.Result.Contains("attempt"))
-            .GroupBy(a => new { a.Type, a.ActivityName, a.EndDateTime.Date })
+            .GroupBy(a => new { a.Type, a.ProviderName, a.EndDateTime.Date })
             .Select(a => new TaksLogsValues
             {
                 Date = a.Key.Date,
-                ActivityName = a.Key.ActivityName,
+                ProviderName = a.Key.ProviderName,
                 TypeTask = a.Key.Type,
                 TotalDuration = a.Sum(a => a.DurationInSeconds),
                 NbrTasks = a.Count(),
@@ -84,7 +84,7 @@ public class DashboardController : ControllerBase, IDisposable
     public async Task<List<TaksSystemValues>> GetSystemLogsAsync()
     {
         var dateThreshold = DateTime.Today.AddDays(-20);
-        return await _context.ApplicationLogSystem.AsNoTracking()
+        return await _context.SystemLog.AsNoTracking()
             .Where(a => a.Level > 2 && a.TimeStamp.Date > dateThreshold)
             .GroupBy(a => a.TimeStamp.Date)
             .Select(a => new TaksSystemValues
@@ -100,7 +100,7 @@ public class DashboardController : ControllerBase, IDisposable
     public async Task<List<EmailsLogsValues>> GetEmailLogsAsync()
     {
         var dateThreshold = DateTime.Today.AddDays(-20);
-        return await _context.ApplicationLogEmailSender.AsNoTracking()
+        return await _context.EmailLog.AsNoTracking()
             .Where(a => a.EndDateTime.Date > dateThreshold)
             .GroupBy(a => a.EndDateTime.Date)
             .Select(a => new EmailsLogsValues
@@ -116,7 +116,7 @@ public class DashboardController : ControllerBase, IDisposable
     public async Task<List<StorageData>> GetStorageInfoAsync()
     {
         var dateThreshold = DateTime.Today.AddDays(-10);
-        return await _context.ApplicationLogReportResult
+        return await _context.ReportGenerationLog
             .Where(a => a.CreatedAt > dateThreshold && a.IsAvailable && !a.Error)
             .GroupBy(a => a.ReportName)
             .Select(a => new StorageData { ReportName = a.Key, FileSizeInMb = a.Sum(b => b.FileSizeInMb) })
@@ -127,7 +127,7 @@ public class DashboardController : ControllerBase, IDisposable
     public async Task<List<DbLinesQuery>> GetDbFetchMetricsAsync()
     {
         var dateThreshold = DateTime.Today.AddDays(-10);
-        return await _context.ApplicationLogQueryExecution
+        return await _context.QueryExecutionLog
             .Where(a => a.EndDateTime > dateThreshold)
             .GroupBy(a => new DateTime(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour,
                 a.EndDateTime.Minute, 0))

@@ -37,22 +37,22 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<IEnumerable<TaskStepLog>> GetLogTaskDetailsAsync(int logTaskHeaderId)
     {
-        return await _context.ApplicationLogTaskDetails
+        return await _context.TaskStepLog
             .AsNoTracking()
             .Where(a => a.TaskId == logTaskHeaderId)
             .ToArrayAsync();
     }
 
     [HttpGet]
-    public async Task<IEnumerable<string>> GetTagsTasksAsync(TaskType type, int activityId = 0)
+    public async Task<IEnumerable<string>> GetTagsTasksAsync(TaskType type, int dataProviderId = 0)
     {
-        var query = _context.TaskHeader
+        var query = _context.ScheduledTask
             .AsNoTracking()
             .Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags) && a.Type == type);
 
-        if (activityId > 0)
+        if (dataProviderId > 0)
         {
-            query = query.Where(a => a.IdActivity == activityId);
+            query = query.Where(a => a.IdDataProvider == dataProviderId);
         }
 
         var _serializedTags = await query.Select(a => a.Tags).ToListAsync();
@@ -64,15 +64,15 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<IEnumerable<string>> GetTagsQueriesAsync(int activityId = 0)
+    public async Task<IEnumerable<string>> GetTagsQueriesAsync(int dataProviderId = 0)
     {
-        var query = _context.QueryStore
+        var query = _context.StoredQuery
             .AsNoTracking()
             .Where(a => a.Tags != "[]" && !string.IsNullOrEmpty(a.Tags));
 
-        if (activityId > 0)
+        if (dataProviderId > 0)
         {
-            query = query.Where(a => a.IdActivity == activityId);
+            query = query.Where(a => a.IdDataProvider == dataProviderId);
         }
 
         var _serializedTags = await query.Select(a => a.Tags).ToListAsync();
@@ -84,11 +84,11 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<IEnumerable<DatabaseConnection>> GetActivityDbConnectionAsync(int activityId)
+    public async Task<IEnumerable<DatabaseConnection>> GetActivityDbConnectionAsync(int dataProviderId)
     {
-        return await _context.ActivityDbConnection
+        return await _context.DatabaseConnection
             .AsNoTracking()
-            .Where(a => a.Activity!.ActivityId == activityId)
+            .Where(a => a.DataProvider!.DataProviderId == dataProviderId)
             .ToArrayAsync();
     }
 
@@ -103,34 +103,34 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<IEnumerable<ScheduledTaskDistributionList?>> GetTaskEmailRecipientAsync(int taskHeaderId)
     {
-        return await _context.TaskEmailRecipient
+        return await _context.ScheduledTaskDistributionList
             .AsNoTracking()
-            .Where(a => a.TaskHeader.TaskHeaderId == taskHeaderId)
+            .Where(a => a.ScheduledTask.ScheduledTaskId == taskHeaderId)
             .ToListAsync();
     }
 
     [HttpGet]
     public async Task<StoredQuery?> GetQueryStoreAsync(int queryId)
     {
-        return await _context.QueryStore
-            .Include(a => a.Activity)
+        return await _context.StoredQuery
+            .Include(a => a.DataProvider)
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == queryId);
     }
 
     [HttpGet]
-    public async Task<List<StoredQuery>?> GetQueryStoreByActivityAsync(int activityId)
+    public async Task<List<StoredQuery>?> GetQueryStoreByActivityAsync(int dataProviderId)
     {
-        return await _context.QueryStore
+        return await _context.StoredQuery
             .AsNoTracking()
-            .Where(a => a.IdActivity == activityId)
+            .Where(a => a.IdDataProvider == dataProviderId)
             .ToListAsync();
     }
 
     [HttpPost]
     public async Task<IActionResult> DuplicateQueryStore(ApiCrudPayload<DuplicateQueryStore> values)
     {
-        var queryToDuplicate = await _context.QueryStore
+        var queryToDuplicate = await _context.StoredQuery
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == values.EntityValue.QueryId);
 
@@ -139,9 +139,9 @@ public class DataCrudController : ControllerBase, IDisposable
             return Ok(new SubmitResult { Success = false, Message = "Object not found" });
         }
 
-        var activityInfo = await _context.Activity
+        var activityInfo = await _context.DataProvider
             .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.ActivityId == values.EntityValue.ActivityId);
+            .FirstOrDefaultAsync(a => a.DataProviderId == values.EntityValue.DataProviderId);
 
         var _newQuery = new StoredQuery
         {
@@ -150,9 +150,9 @@ public class DataCrudController : ControllerBase, IDisposable
             Tags = queryToDuplicate.Tags,
             QueryParameters = queryToDuplicate.QueryParameters,
             Parameters = queryToDuplicate.Parameters,
-            IdActivity = activityInfo.ActivityId,
-            Activity = activityInfo,
-            ActivityName = activityInfo.ActivityName
+            IdDataProvider = activityInfo.DataProviderId,
+            DataProvider = activityInfo,
+            ProviderName = activityInfo.ProviderName
         };
 
         return Ok(await InsertEntity(_newQuery, values.UserName!));
@@ -161,23 +161,23 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<DataProvider> GetDataTransferInfoAsync()
     {
-        var targetInfo = await _context.Activity
-            .Include(a => a.ActivityDbConnections)
+        var targetInfo = await _context.DataProvider
+            .Include(a => a.DatabaseConnections)
             .AsNoTracking()
-            .FirstOrDefaultAsync((TEntity a) => a.ActivityType == Shared.ProviderType.TargetDb);
+            .FirstOrDefaultAsync(( a) => a.ProviderType == Shared.ProviderType.TargetDatabase);
 
         if (targetInfo != null) return targetInfo;
 
         var connections = new List<DatabaseConnection>
         {
-            new DatabaseConnection { Activity = targetInfo, TypeDb = TypeDb.SqlServer }
+            new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer }
         };
 
         targetInfo = new DataProvider
         {
-            ActivityName = "Data transfer",
-            ActivityType = Shared.ProviderType.TargetDb,
-            ActivityDbConnections = connections
+            ProviderName = "Data transfer",
+            ProviderType = Shared.ProviderType.TargetDatabase,
+            DatabaseConnections = connections
         };
 
         return targetInfo;
@@ -186,7 +186,7 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<SystemServicesStatus> GetServiceStatusAsync()
     {
-        return (await _context.ServicesStatus
+        return (await _context.SystemServicesStatus
             .AsNoTracking()
             .OrderBy(a => a.Id)
             .FirstOrDefaultAsync())!;
@@ -334,22 +334,22 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            if (values.EntityValue.ActivityType == Shared.ProviderType.SourceDb)
+            if (values.EntityValue.ProviderType == Shared.ProviderType.SourceDatabase)
             {
-                if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ActivityName!))
+                if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ProviderName!))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole<Guid>(values.EntityValue.ActivityName!));
+                    await _roleManager.CreateAsync(new IdentityRole<Guid>(values.EntityValue.ProviderName!));
                     var users = await _userManager.GetUsersInRoleAsync("Admin");
 
                     foreach (var user in users)
-                        if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ActivityName!))
-                            await _userManager.AddToRoleAsync(user, values.EntityValue.ActivityName!);
+                        if (!await _userManager.IsInRoleAsync(user, values.EntityValue.ProviderName!))
+                            await _userManager.AddToRoleAsync(user, values.EntityValue.ProviderName!);
                 }
 
-                if (string.IsNullOrEmpty(values.EntityValue?.ActivityRoleId))
+                if (string.IsNullOrEmpty(values.EntityValue?.ProviderRoleId))
                 {
-                    var newRole = await _roleManager.FindByNameAsync(values.EntityValue?.ActivityName!);
-                    values.EntityValue!.ActivityRoleId = newRole!.Id.ToString();
+                    var newRole = await _roleManager.FindByNameAsync(values.EntityValue?.ProviderName!);
+                    values.EntityValue!.ProviderRoleId = newRole!.Id.ToString();
                 }
             }
 
@@ -369,7 +369,7 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            var role = await _roleManager.FindByNameAsync(values.EntityValue.ActivityName!);
+            var role = await _roleManager.FindByNameAsync(values.EntityValue.ProviderName!);
 
             if (role != null) await _roleManager.DeleteAsync(role);
             return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
@@ -386,19 +386,19 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            if (values.EntityValue.ActivityType == Shared.ProviderType.SourceDb)
+            if (values.EntityValue.ProviderType == Shared.ProviderType.SourceDatabase)
             {
-                var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue?.ActivityRoleId!);
-                if (roleActivity != null && roleActivity.Name != values.EntityValue!.ActivityName)
+                var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue?.ProviderRoleId!);
+                if (roleActivity != null && roleActivity.Name != values.EntityValue!.ProviderName)
                 {
-                    roleActivity.Name = values.EntityValue.ActivityName;
+                    roleActivity.Name = values.EntityValue.ProviderName;
                     await _roleManager.UpdateAsync(roleActivity);
                 }
             }
 
-            if (values.EntityValue.ActivityDbConnections != null)
+            if (values.EntityValue.DatabaseConnections != null)
             {
-                foreach (var connect in values.EntityValue.ActivityDbConnections)
+                foreach (var connect in values.EntityValue.DatabaseConnections)
                 {
                     await UpdateEntity(connect, values.UserName!);
                 }
@@ -415,19 +415,19 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<ScheduledTask> GetTaskHeaderAsync(int taskHeaderId)
     {
-        return (await _context.TaskHeader
-            .Include(a => a.TaskDetails)
-            .Include(a => a.TaskEmailRecipients)
-            .Include(a => a.Activity)
+        return (await _context.ScheduledTask
+            .Include(a => a.TaskQueries)
+            .Include(a => a.DistributionLists)
+            .Include(a => a.DataProvider)
             .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.TaskHeaderId == taskHeaderId))!;
+            .FirstOrDefaultAsync(a => a.ScheduledTaskId == taskHeaderId))!;
     }
 
-    public async Task<IEnumerable<EmailRecipient>> GetEmailsPerActivityAsync(int activityId)
+    public async Task<IEnumerable<EmailRecipient>> GetEmailsPerActivityAsync(int dataProviderId)
     {
-        var listTask = await _context.TaskEmailRecipient
-            .Where(a => a.TaskHeader.Activity.ActivityId == activityId && a.Email != "[]")
-            .Select(a => a.Email)
+        var listTask = await _context.ScheduledTaskDistributionList
+            .Where(a => a.ScheduledTask.DataProvider.DataProviderId == dataProviderId && a.Recipients != "[]")
+            .Select(a => a.Recipients)
             .ToListAsync();
 
         var emails = listTask
@@ -442,9 +442,9 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpGet]
     public async Task<bool> GetTaskHasDetailsAsync(int taskHeaderId)
     {
-        return await _context.TaskHeader
-            .Where(a => a.TaskHeaderId == taskHeaderId)
-            .Include(a => a.TaskDetails)
+        return await _context.ScheduledTask
+            .Where(a => a.ScheduledTaskId == taskHeaderId)
+            .Include(a => a.TaskQueries)
             .AnyAsync();
     }
 
@@ -452,19 +452,19 @@ public class DataCrudController : ControllerBase, IDisposable
     public async Task<IActionResult> TaskHeaderInsert(ApiCrudPayload<ScheduledTask> values)
     {
         var result = await InsertEntity(values.EntityValue, values.UserName!);
-        result.KeyValue = values.EntityValue.TaskHeaderId;
+        result.KeyValue = values.EntityValue.ScheduledTaskId;
         return Ok(result);
     }
 
     [HttpPost]
     public async Task<IActionResult> TaskActivate(ApiCrudPayload<TaskActivatePayload> values)
     {
-        var entity = await _context.TaskHeader
-            .FirstOrDefaultAsync(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId);
+        var entity = await _context.ScheduledTask
+            .FirstOrDefaultAsync(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId);
 
         if (entity != null)
         {
-            entity.IsActivated = values.EntityValue.Activate;
+            entity.IsEnabled = values.EntityValue.Activate;
             var result = await UpdateEntity(entity, values.UserName!);
             return Ok(result);
         }
@@ -475,8 +475,8 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> TaskSendByEmail(ApiCrudPayload<TaskActivatePayload> values)
     {
-        var entity = await _context.TaskHeader
-            .FirstOrDefaultAsync(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId);
+        var entity = await _context.ScheduledTask
+            .FirstOrDefaultAsync(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId);
 
         if (entity != null)
         {
@@ -499,23 +499,23 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            var dbItem = await _context.TaskHeader.Include(a => a.Activity).Include(a => a.TaskDetails)
-                .Include(a => a.TaskEmailRecipients).Where(a => a.TaskHeaderId == values.EntityValue.TaskHeaderId)
+            var dbItem = await _context.ScheduledTask.Include(a => a.DataProvider).Include(a => a.TaskQueries)
+                .Include(a => a.ScheduledTaskId).Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
                 .AsNoTracking().FirstOrDefaultAsync();
 
             if (dbItem == null) return NotFound(new SubmitResult { Success = false, Message = "Item not found" });
             dbItem.TaskName = values.EntityValue!.Name;
-            dbItem.IsActivated = false;
+            dbItem.IsEnabled = false;
             dbItem.SendByEmail = dbItem.Type == TaskType.Alert;
-            dbItem.FileDepositPathConfigurationId = 0;
-            dbItem.TaskHeaderId = 0;
+            dbItem.FileStorageLocationId = 0;
+            dbItem.ScheduledTaskId = 0;
 
-            if (dbItem.TaskDetails != null)
-                foreach (var t in dbItem.TaskDetails)
-                    t.TaskDetailId = 0;
-            if (dbItem.TaskEmailRecipients != null)
-                foreach (var t in dbItem.TaskEmailRecipients)
-                    t.TaskEmailRecipientId = 0;
+            if (dbItem.TaskQueries != null)
+                foreach (var t in dbItem.TaskQueries)
+                    t.ScheduledTaskQueryId = 0;
+            if (dbItem.DistributionLists != null)
+                foreach (var t in dbItem.DistributionLists)
+                    t.ScheduledTaskDistributionListId = 0;
             _context.Update(dbItem);
             await SaveDbAsync(values.UserName);
             _context.Entry(dbItem).State = EntityState.Detached;
@@ -535,12 +535,12 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            values.EntityValue.Activity = (await _context.Activity
-                .Where(a => a.ActivityId == values.EntityValue.IdActivity).FirstOrDefaultAsync())!;
+            values.EntityValue.DataProvider = (await _context.DataProvider
+                .Where(a => a.DataProviderId == values.EntityValue.IdDataProvider).FirstOrDefaultAsync())!;
 
             _context.Entry(values.EntityValue).State = EntityState.Modified;
-            _context.UpdateRange(values.EntityValue.TaskDetails);
-            _context.UpdateRange(values.EntityValue.TaskEmailRecipients);
+            _context.UpdateRange(values.EntityValue.TaskQueries);
+            _context.UpdateRange(values.EntityValue.DistributionLists);
             await SaveDbAsync(values.UserName);
             _context.Entry(values.EntityValue).State = EntityState.Detached;
             return Ok(new SubmitResult { Success = true });
@@ -594,8 +594,8 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> DepositPathDelete(ApiCrudPayload<FileStorageLocationDto> values)
     {
-        var val = await _context.FileDepositPathConfiguration
-            .Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId)
+        var val = await _context.FileStorageLocation
+            .Where(a => a.FileStorageLocationId == values.EntityValue.FileStorageLocationId)
             .FirstOrDefaultAsync();
         return Ok(await DeleteEntity(val, values.UserName!));
     }
@@ -603,8 +603,8 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> DepositPathUpdate(ApiCrudPayload<FileStorageLocationDto> values)
     {
-        var val = await _context.FileDepositPathConfiguration
-            .Where(a => a.FileDepositPathConfigurationId == values.EntityValue.FileDepositPathConfigurationId)
+        var val = await _context.FileStorageLocation
+            .Where(a => a.FileStorageLocationId == values.EntityValue.FileStorageLocationId)
             .FirstOrDefaultAsync();
         if (values.EntityValue.SftpConfigurationId > 0)
             val.SftpConfiguration = await _context.SftpConfiguration
@@ -656,7 +656,7 @@ public class DataCrudController : ControllerBase, IDisposable
         var user = await _userManager.FindByNameAsync(item.UserName!);
         if (user != null)
         {
-            var config = await _context.UserSavedConfiguration
+            var config = await _context.UserPreferences
                 .Where(a => a.Id == item.EntityValue.Id && a.UserId == user.Id.ToString())
                 .FirstOrDefaultAsync();
             if (config != null) return Ok(await DeleteEntity(config, item.UserName!));
@@ -672,7 +672,7 @@ public class DataCrudController : ControllerBase, IDisposable
         var user = await _userManager.FindByNameAsync(UserName);
 
         if (user != null)
-            return await _context.UserSavedConfiguration
+            return await _context.UserPreferences
                 .Where(a => a.IdIntConfiguration == IdIntConfiguration && a.UserId == user.Id.ToString())
                 .Select(a => new UserConfigurations
                 {
@@ -687,7 +687,7 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> QueryStoreUpdate(ApiCrudPayload<StoredQuery> values)
     {
-        values.EntityValue.Activity = (await _context.Activity.Where(a => a.ActivityId == values.EntityValue.IdActivity)
+        values.EntityValue.DataProvider = (await _context.DataProvider.Where(a => a.DataProviderId == values.EntityValue.IdDataProvider)
             .FirstOrDefaultAsync())!;
         return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
     }
@@ -714,21 +714,21 @@ public class DataCrudController : ControllerBase, IDisposable
                 records = csv.GetRecords<TableDescriptionCSV>().ToList();
             }
 
-            var _dbConnect = await _context.ActivityDbConnection
-                .FirstOrDefaultAsync(a => a.Id == value.EntityValue.ActivityDbConnectionId);
+            var _dbConnect = await _context.DatabaseConnection
+                .FirstOrDefaultAsync(a => a.DatabaseConnectionId == value.EntityValue.DatabaseConnectionId);
 
             if (_dbConnect == null)
             {
                 return Ok(new SubmitResult { Success = false, Message = "Database connection not found" });
             }
 
-            var existingDescriptions = await _context.DbTableDescriptions
-                .Where(a => a.ActivityDbConnection.Id == value.EntityValue.ActivityDbConnectionId)
+            var existingDescriptions = await _context.TableMetadata
+                .Where(a => a.DatabaseConnection.DatabaseConnectionId == value.EntityValue.DatabaseConnectionId)
                 .ToListAsync();
 
             if (existingDescriptions.Any())
             {
-                _context.DbTableDescriptions.RemoveRange(existingDescriptions);
+                _context.TableMetadata.RemoveRange(existingDescriptions);
                 await SaveDbAsync(value.UserName);
             }
 
@@ -747,7 +747,7 @@ public class DataCrudController : ControllerBase, IDisposable
                 }
             }
 
-            _dbConnect.DbTableDescriptions = _descriptions;
+            _dbConnect.TableMetadata = _descriptions;
             _dbConnect.UseTablesDescriptions = true;
             _context.Entry(_dbConnect).State = EntityState.Modified;
             await SaveDbAsync(value.UserName);

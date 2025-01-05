@@ -90,7 +90,7 @@ public class UserManagerController : ControllerBase, IDisposable
                     Request.Scheme);
 
                 List<EmailRecipient> listEmail = new();
-                var emailPrefix = await _context.ApplicationParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
+                var emailPrefix = await _context.SystemParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                 listEmail.Add(new EmailRecipient { Email = appUser.Email });
                 var title = emailPrefix + " - Confirm your email";
                 var body =

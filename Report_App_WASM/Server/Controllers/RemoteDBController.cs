@@ -62,8 +62,8 @@ public class RemoteDbController : ControllerBase, IDisposable
         var log = new AdHocQueryExecutionLog
         {
             QueryId = payload.QueryId,
-            ActivityName = payload.ActivityName,
-            ActivityId = payload.Values.ActivityId,
+            ProviderName = payload.ProviderName,
+            DataProviderId = payload.Values.DataProviderId,
             JobDescription = payload.QueryName,
             RunBy = User?.Identity?.Name,
             Type = "Grid",
@@ -77,7 +77,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             var originalQuery = payload.Values.QueryToRun;
             if (payload.Values.QueryToRun != null)
             {
-                var query = await GetQueryTotal(payload.Values.ActivityId, payload.Values.QueryToRun);
+                var query = await GetQueryTotal(payload.Values.DataProviderId, payload.Values.QueryToRun);
                 payload.Values.QueryToRun = query;
             }
 
@@ -160,17 +160,17 @@ public class RemoteDbController : ControllerBase, IDisposable
         }
     }
 
-    private async Task<TypeDb> GetDbType(int activityId)
+    private async Task<TypeDb> GetDbType(int dataProviderId)
     {
-        return await _context.ActivityDbConnection
-            .Where(a => a.Activity.ActivityId == activityId)
+        return await _context.DatabaseConnection
+            .Where(a => a.DataProvider.DataProviderId == dataProviderId)
             .Select(a => a.TypeDb)
             .FirstOrDefaultAsync();
     }
 
-    private async Task<string> GetQueryTotal(int activityId, string query)
+    private async Task<string> GetQueryTotal(int dataProviderId, string query)
     {
-        var _typeDb = await GetDbType(activityId);
+        var _typeDb = await GetDbType(dataProviderId);
 
         if (_typeDb == TypeDb.SqlServer && query.ToLower().RemoveSpecialCharacters().Contains("orderby"))
             query += Environment.NewLine + " OFFSET 0 Rows";
@@ -186,8 +186,8 @@ public class RemoteDbController : ControllerBase, IDisposable
         var log = new AdHocQueryExecutionLog
         {
             QueryId = payload.QueryId,
-            ActivityName = payload.ActivityName,
-            ActivityId = payload.Values.ActivityId,
+            ProviderName = payload.ProviderName,
+            DataProviderId = payload.Values.DataProviderId,
             JobDescription = payload.QueryName,
             RunBy = User?.Identity?.Name,
             Type = "Grid extraction",
@@ -198,8 +198,8 @@ public class RemoteDbController : ControllerBase, IDisposable
         try
         {
             _logger.LogInformation("Grid extraction: Start " + payload.Values.FileName, payload.Values.FileName);
-            var queriesMaxSizeExtract = await _context.ActivityDbConnection
-                .Where(a => a.Activity.ActivityId == payload.Values.ActivityId)
+            var queriesMaxSizeExtract = await _context.DatabaseConnection
+                .Where(a => a.DataProvider.DataProviderId == payload.Values.DataProviderId)
                 .Select(a => a.AdHocQueriesMaxNbrofRowsFetched)
                 .FirstOrDefaultAsync(ct);
             payload.Values.MaxSize = queriesMaxSizeExtract + 1;
@@ -237,7 +237,7 @@ public class RemoteDbController : ControllerBase, IDisposable
         {
             var fileDesc = "Db Description";
             _logger.LogInformation("Db Description extraction: Start ");
-            var values = _context.DbTableDescriptions.Where(a => a.ActivityDbConnection.Id == DbconnectionID);
+            var values = _context.TableMetadata.Where(a => a.DatabaseConnection.DatabaseConnectionId == DbconnectionID);
             var fileName = $"{fileDesc} {DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
 
             var file = CreateFile.ExcelFromCollection(fileName, fileDesc, await values.ToListAsync(ct));
@@ -252,25 +252,25 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<DbTablesColList> GetTablesListAsync(int activityId, CancellationToken ct)
+    public async Task<DbTablesColList> GetTablesListAsync(int dataProviderId, CancellationToken ct)
     {
         var listTables = new DbTablesColList();
         try
         {
-            var script = await _remoteDb.GetAllTablesScript(activityId);
+            var script = await _remoteDb.GetAllTablesScript(dataProviderId);
             if (!string.IsNullOrEmpty(script))
             {
                 var parameters = new RemoteDbCommandParameters
-                    { ActivityId = activityId, QueryToRun = script, Test = true };
+                    { DataProviderId = dataProviderId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
-                var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId)
+                var description = await _context.DatabaseConnection
+                    .Where(a => a.DataProvider.DataProviderId == dataProviderId)
                     .AsNoTracking()
                     .Select(a => new
                     {
                         tableDesc = a.UseTablesDescriptions,
-                        a.UseDescriptionsFromAnotherActivity,
-                        ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id
+                        a.UseDescriptionsFromAnotherProvider,
+                        ConnectId = a.UseDescriptionsFromAnotherProvider ? a.IdDescriptions : a.DatabaseConnectionId
                     })
                     .FirstOrDefaultAsync(ct);
 
@@ -278,10 +278,10 @@ public class RemoteDbController : ControllerBase, IDisposable
                     { TypeValue = r.Field<string>(0), Name = r.Field<string>(1) }).ToList();
                 if (tables != null)
                 {
-                    if (description.tableDesc || description.UseDescriptionsFromAnotherActivity)
+                    if (description.tableDesc || description.UseDescriptionsFromAnotherProvider)
                     {
-                        var prework = await _context.DbTableDescriptions
-                            .Where(a => a.ActivityDbConnection.Id == description.ConnectId)
+                        var prework = await _context.TableMetadata
+                            .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId)
                             .AsNoTracking()
                             .Select(a => new { a.TableName, a.TableDescription })
                             .Distinct()
@@ -309,26 +309,26 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<DbTablesColList> GetColumnListAsync(int activityId, string table, CancellationToken ct)
+    public async Task<DbTablesColList> GetColumnListAsync(int dataProviderId, string table, CancellationToken ct)
     {
         var listCols = new DbTablesColList();
         try
         {
-            var script = await _remoteDb.GetTableColumnInfoScript(activityId, table);
+            var script = await _remoteDb.GetTableColumnInfoScript(dataProviderId, table);
             Console.WriteLine(script);
             if (!string.IsNullOrEmpty(script))
             {
                 var parameters = new RemoteDbCommandParameters
-                    { ActivityId = activityId, QueryToRun = script, Test = true };
+                    { DataProviderId = dataProviderId, QueryToRun = script, Test = true };
                 var data = await _remoteDb.RemoteDbToDatableAsync(parameters, ct);
-                var description = await _context.ActivityDbConnection
-                    .Where(a => a.Activity.ActivityId == activityId)
+                var description = await _context.DatabaseConnection
+                    .Where(a => a.DataProvider.DataProviderId == dataProviderId)
                     .AsNoTracking()
                     .Select(a => new
                     {
                         tableDesc = a.UseTablesDescriptions,
-                        a.UseDescriptionsFromAnotherActivity,
-                        ConnectId = a.UseDescriptionsFromAnotherActivity ? a.IdDescriptions : a.Id
+                        a.UseDescriptionsFromAnotherProvider,
+                        ConnectId = a.UseDescriptionsFromAnotherProvider ? a.IdDescriptions : a.DatabaseConnectionId
                     })
                     .FirstOrDefaultAsync(ct);
 
@@ -339,13 +339,13 @@ public class RemoteDbController : ControllerBase, IDisposable
                         .ToList();
                     if (cols != null)
                     {
-                        if ((description.tableDesc || description.UseDescriptionsFromAnotherActivity) && await _context
-                                .DbTableDescriptions
-                                .Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
+                        if ((description.tableDesc || description.UseDescriptionsFromAnotherProvider) && await _context
+                                .TableMetadata
+                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId && a.TableName == table)
                                 .AnyAsync(ct))
                         {
-                            var desc = await _context.DbTableDescriptions
-                                .Where(a => a.ActivityDbConnection.Id == description.ConnectId && a.TableName == table)
+                            var desc = await _context.TableMetadata
+                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId && a.TableName == table)
                                 .AsNoTracking()
                                 .Select(a => new { a.ColumnName, a.ColumnDescription, a.IsSnippet })
                                 .ToListAsync();

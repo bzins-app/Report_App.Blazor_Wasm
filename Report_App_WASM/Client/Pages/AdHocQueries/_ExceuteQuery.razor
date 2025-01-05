@@ -306,7 +306,7 @@ else
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.DataProviderId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true, QueryId = QueryId, ProviderName = Item.ProviderName, PivotTableNbrColumns = parameters.PivotTableNbrOfColumnsMax, QueryName = Item.QueryName };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -427,7 +427,7 @@ else
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.DataProviderId, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -476,7 +476,7 @@ else
         {
             _extracting = true;
             _cts = new CancellationTokenSource();
-            var run = new RemoteDbCommandParameters { DataProviderId = Item.DataProviderId, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+            var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
             var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName };
             await DataService.ExtractAdHocQuery(remoteDataPayload, _cts.Token);
             _extracting = false;

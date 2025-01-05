@@ -42,7 +42,7 @@
     protected override async Task OnInitializedAsync()
     {
         _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        if (Item != null) _selectedDataProviderId = Item.DataProviderId;
+        if (Item != null) _selectedDataProviderId = Item.IdDataProvider;
     }
 
     private void OpenRunConfirmationComponent()

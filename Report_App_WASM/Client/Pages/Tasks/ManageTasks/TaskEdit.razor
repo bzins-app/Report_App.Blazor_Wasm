@@ -241,7 +241,7 @@
     private int _DataProviderId;
     private string? _errorMessage;
     private readonly List<ScheduledTaskQueryDto> _itemToDelete = new();
-    private TaskHeaderParameters? _param = new();
+    private ScheduledTaskParameters? _param = new();
 
     private bool _loading;
     private TypeDb _typeDbTask;
@@ -274,7 +274,7 @@
 
         if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters != "[]")
         {
-            _param = JsonSerializer.Deserialize<TaskHeaderParameters>(Item.TaskHeaderParameters, _jsonOpt);
+            _param = JsonSerializer.Deserialize<ScheduledTaskParameters>(Item.TaskHeaderParameters, _jsonOpt);
         }
 
         if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
@@ -411,7 +411,7 @@
     {
         _DataProviderId = actId.FirstOrDefault();
         Item.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
-        Item.DataProviderId = Item.DataProvider.DataProviderId;
+        Item.IdDataProvider = Item.DataProvider.DataProviderId;
         if (Item.DataProvider.ProviderName != null) Item.ProviderName = Item.DataProvider.ProviderName;
     }
 

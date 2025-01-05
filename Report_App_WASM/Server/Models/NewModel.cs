@@ -1,9 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Newtonsoft.Json;
-using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
-
-namespace Report_App_WASM.Server.Models
+﻿namespace Report_App_WASM.Server.Models
 {
 
     //[Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]

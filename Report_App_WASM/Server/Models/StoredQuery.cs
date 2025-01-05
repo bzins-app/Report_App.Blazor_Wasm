@@ -3,7 +3,7 @@
 public class StoredQuery : BaseTraceability
 {
     public int Id { get; set; }
-    public int DataProviderId { get; set; }
+    public int IdDataProvider { get; set; }
     [MaxLength(200)] public string? ProviderName { get; set; }
     [MaxLength(400)] public string? Comment { get; set; }
     [MaxLength(1000)] public string Tags { get; set; } = "[]";

@@ -49,7 +49,7 @@
 
     private async Task Clone(string name, int taskHeaderId)
     {
-        DuplicateTask payload = new() { Name = name, TaskHeaderId = taskHeaderId };
+        DuplicateTask payload = new() { Name = name, ScheduledTaskId = taskHeaderId };
         var result = await DataService.PostValues(payload, "TaskClone");
         if (!result.Success)
         {

@@ -27,9 +27,9 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     public async Task<IEnumerable<SelectItemDataproviderInfo>> GetActivitiesInfo()
     {
         return await _context.DataProvider
-            .Where(a => a.ProviderType == Shared.ProviderType.SourceDatabase)
+            .Where(a => a.ProviderType == ProviderType.SourceDatabase)
             .AsNoTracking()
-            .Select(( a) => new SelectItemDataproviderInfo
+            .Select(a => new SelectItemDataproviderInfo
             {
                 DataProviderId = a.DataProviderId,
                 ProviderName = a.ProviderName,
@@ -47,9 +47,9 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     public async Task<IEnumerable<SelectItemDataproviderInfo>> GetDataTransfersInfo()
     {
         return await _context.DataProvider
-            .Where(a => a.ProviderType == Shared.ProviderType.TargetDatabase)
+            .Where(a => a.ProviderType == ProviderType.TargetDatabase)
             .AsNoTracking()
-            .Select(( a) => new SelectItemDataproviderInfo
+            .Select(a => new SelectItemDataproviderInfo
             {
                 DataProviderId = a.DataProviderId,
                 ProviderName = a.ProviderName,

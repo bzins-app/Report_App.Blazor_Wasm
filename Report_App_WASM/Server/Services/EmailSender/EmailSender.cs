@@ -15,7 +15,7 @@ public class EmailSender : IEmailSender
 
     public async Task GenerateErrorEmailAsync(string errorMessage, string subjectSuffix)
     {
-        var emailInfos = await Context.ApplicationParameters
+        var emailInfos = await Context.SystemParameters
             .Select(a => new { a.ErrorEmailPrefix, a.ErrorEMailMessage, a.AdminEmails }).FirstOrDefaultAsync();
 
         if (emailInfos != null && emailInfos.AdminEmails != "[]")
@@ -32,7 +32,7 @@ public class EmailSender : IEmailSender
     {
         var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking()
             .FirstOrDefaultAsync();
-        var emailservice = await Context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
+        var emailservice = await Context.SystemServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
 
         var result = new SubmitResult();
 

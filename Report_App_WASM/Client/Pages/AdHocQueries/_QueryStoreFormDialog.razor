@@ -50,9 +50,9 @@
     protected override async Task OnInitializedAsync()
     {
         _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        if (Item.DataProviderId > 0)
+        if (Item.IdDataProvider > 0)
         {
-            Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.DataProviderId).Select(a => a.ProviderName).FirstOrDefault();
+            Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
         }
     }
 
@@ -67,14 +67,14 @@
         {
             if (_deletionValidation == "Validate")
             {
-                Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == Item.DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == Item.DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
+                Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault() };
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
             Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.ProviderName == Item.ProviderName).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = Item.ProviderName };
-            Item.DataProviderId = Item.DataProvider.DataProviderId;
+            Item.IdDataProvider = Item.DataProvider.DataProviderId;
             await _form.Validate();
             if (_form.IsValid && Item.DataProvider is not null)
             {

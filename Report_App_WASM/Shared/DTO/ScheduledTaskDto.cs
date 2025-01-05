@@ -11,7 +11,7 @@ public sealed class ScheduledTaskDto : BaseTraceabilityDto, IDto
     public int ScheduledTaskId { get; set; }
     [Required][MaxLength(100)] public string? TaskName { get; set; }
     [Required][MaxLength(60)] public string ProviderName { get; set; }
-    public int DataProviderId { get; set; }
+    public int IdDataProvider { get; set; }
     [MaxLength(60)] public string? TaskNamePrefix { get; set; }
     [MaxLength(100)] public string TimeZone { get; set; } = TimeZoneInfo.Local.Id;
     public TaskType Type { get; set; }

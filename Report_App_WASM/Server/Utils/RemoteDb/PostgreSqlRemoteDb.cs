@@ -19,7 +19,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
             script = dbInfo.UseDbSchema
                 ? $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 				FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' and TABLE_SCHEMA='public' order by 1,2"
-                : $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
+                : @"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 				FROM information_schema.tables where TABLE_SCHEMA='public' order by 1,2";
         }
 

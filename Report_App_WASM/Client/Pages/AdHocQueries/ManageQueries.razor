@@ -316,7 +316,7 @@
 
     private void RunQuery(StoredQueryDto value)
     {
-        UriHelper.NavigateTo($"RunQuery/{value.Id}/{value.DataProviderId}/{value.ProviderName}");
+        UriHelper.NavigateTo($"RunQuery/{value.Id}/{value.IdDataProvider}/{value.ProviderName}");
     }
 
     private void EditItem(StoredQueryDto value)
@@ -336,7 +336,7 @@
         var value = new StoredQueryDto();
         if (DataProviderId.HasValue)
         {
-            value.DataProviderId = DataProviderId.Value;
+            value.IdDataProvider = DataProviderId.Value;
         }
 
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };

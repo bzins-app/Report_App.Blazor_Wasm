@@ -196,8 +196,8 @@
     private string? _deletionValidation;
     private _QueryParameters? _refQuery;
 
-    private TaskDetailParameters _param = new();
-    private TaskHeaderParameters? _paramHeader = new();
+    private ScheduledTaskQueryParameters _param = new();
+    private ScheduledTaskParameters? _paramHeader = new();
     private TypeDb _typeDbActivity;
     private string? _taskType;
     private string? _fileType;
@@ -232,12 +232,12 @@
         _fileType = Header?.TypeFileName;
         if (Item!.ExecutionParameters != "[]" && !string.IsNullOrEmpty(Item.ExecutionParameters))
         {
-            _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.ExecutionParameters, _jsonOpt)!;
+            _param = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(Item.ExecutionParameters, _jsonOpt)!;
         }
 
         if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
         {
-            _paramHeader = JsonSerializer.Deserialize<TaskHeaderParameters>(Header.TaskHeaderParameters, _jsonOpt);
+            _paramHeader = JsonSerializer.Deserialize<ScheduledTaskParameters>(Header.TaskHeaderParameters, _jsonOpt);
         }
 
         _useExcelTemplate = _paramHeader!.UseAnExcelTemplate;

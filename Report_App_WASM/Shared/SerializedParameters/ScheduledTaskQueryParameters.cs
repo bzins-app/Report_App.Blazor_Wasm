@@ -1,6 +1,6 @@
 ﻿namespace Report_App_WASM.Shared.SerializedParameters;
 
-public class TaskDetailParameters
+public class ScheduledTaskQueryParameters
 {
     public string? FileName { get; set; }
     public string? EncodingType { get; set; } = "UTF8";

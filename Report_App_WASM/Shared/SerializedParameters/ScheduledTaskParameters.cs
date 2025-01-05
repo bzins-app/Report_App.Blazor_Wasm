@@ -1,6 +1,6 @@
 ﻿namespace Report_App_WASM.Shared.SerializedParameters;
 
-public class TaskHeaderParameters
+public class ScheduledTaskParameters
 {
     public string? Delimiter { get; set; } = ";";
     public bool UseASpecificFileNaming { get; set; } = false;

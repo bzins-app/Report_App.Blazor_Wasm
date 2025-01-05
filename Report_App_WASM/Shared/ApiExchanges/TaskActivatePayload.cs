@@ -3,5 +3,5 @@
 public class TaskActivatePayload
 {
     public bool Activate { get; init; }
-    public int TaskHeaderId { get; init; }
+    public int ScheduledTaskId { get; init; }
 }

@@ -86,32 +86,32 @@ public class ApplicationDbContext : AuditableIdentityContext
             b.ToTable("Users");
         });
 
-        modelBuilder.Entity<IdentityUserClaim<System.Guid>>(b =>
+        modelBuilder.Entity<IdentityUserClaim<Guid>>(b =>
         {
             b.ToTable("UserClaims");
         });
 
-        modelBuilder.Entity<IdentityUserLogin<System.Guid>>(b =>
+        modelBuilder.Entity<IdentityUserLogin<Guid>>(b =>
         {
             b.ToTable("UserLogins");
         });
 
-        modelBuilder.Entity<IdentityUserToken<System.Guid>>(b =>
+        modelBuilder.Entity<IdentityUserToken<Guid>>(b =>
         {
             b.ToTable("UserTokens");
         });
 
-        modelBuilder.Entity<IdentityRole<System.Guid>>(b =>
+        modelBuilder.Entity<IdentityRole<Guid>>(b =>
         {
             b.ToTable("Roles");
         });
 
-        modelBuilder.Entity<IdentityRoleClaim<System.Guid>>(b =>
+        modelBuilder.Entity<IdentityRoleClaim<Guid>>(b =>
         {
             b.ToTable("RoleClaims");
         });
 
-        modelBuilder.Entity<IdentityUserRole<System.Guid>>(b =>
+        modelBuilder.Entity<IdentityUserRole<Guid>>(b =>
         {
             b.ToTable("UserRoles");
         });

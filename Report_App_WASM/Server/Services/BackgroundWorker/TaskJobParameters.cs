@@ -2,7 +2,7 @@
 
 public class TaskJobParameters
 {
-    public int TaskHeaderId { get; init; }
+    public int ScheduledTaskId { get; init; }
     public CancellationToken Cts { get; set; }
     public List<EmailRecipient>? CustomEmails { get; init; } = null;
     public List<QueryCommandParameter>? CustomQueryParameters { get; init; } = new();

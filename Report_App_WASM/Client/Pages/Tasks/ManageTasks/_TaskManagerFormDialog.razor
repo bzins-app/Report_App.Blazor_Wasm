@@ -81,7 +81,7 @@
         else
         {
             Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.ProviderName == Item.ProviderName).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = Item.ProviderName };
-            Item.DataProviderId = Item.DataProvider.DataProviderId;
+            Item.IdDataProvider = Item.DataProvider.DataProviderId;
             await _form.Validate();
             if (_form.IsValid && Item.DataProvider is not null)
             {

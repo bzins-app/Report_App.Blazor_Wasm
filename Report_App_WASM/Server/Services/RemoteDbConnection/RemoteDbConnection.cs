@@ -21,64 +21,64 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public async Task<bool> CkeckTableExists(string query, int activityIdTransfer)
+    public async Task<bool> CkeckTableExists(string query, int dataProviderIdTransfer)
     {
-        var activityId = await GetDataTransferActivity(activityIdTransfer);
-        var _dbInfo = await GetDbInfo(activityId);
+        var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         SqlServerRemoteDb remote = new();
         return await remote.CkeckTableExists(_dbInfo, query);
     }
 
-    public async Task DeleteTable(string tableName, int activityIdTransfer)
+    public async Task DeleteTable(string tableName, int dataProviderIdTransfer)
     {
-        var activityId = await GetDataTransferActivity(activityIdTransfer);
-        var _dbInfo = await GetDbInfo(activityId);
+        var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         SqlServerRemoteDb remote = new();
         await remote.DeleteTable(_dbInfo, tableName);
     }
 
-    public async Task CreateTable(string query, int activityIdTransfer)
+    public async Task CreateTable(string query, int dataProviderIdTransfer)
     {
-        var activityId = await GetDataTransferActivity(activityIdTransfer);
-        var _dbInfo = await GetDbInfo(activityId);
+        var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         SqlServerRemoteDb remote = new();
         await remote.CreateTable(_dbInfo, query);
     }
 
-    public async Task<MergeResult> MergeTables(string query, int activityIdTransfer)
+    public async Task<MergeResult> MergeTables(string query, int dataProviderIdTransfer)
     {
-        var activityId = await GetDataTransferActivity(activityIdTransfer);
-        var _dbInfo = await GetDbInfo(activityId);
+        var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         SqlServerRemoteDb remote = new();
         return await remote.MergeTables(_dbInfo, query);
     }
 
-    public async Task LoadDatatableToTable(DataTable data, string? targetTable, int activityIdTransfer)
+    public async Task LoadDatatableToTable(DataTable data, string? targetTable, int dataProviderIdTransfer)
     {
-        var activityId = await GetDataTransferActivity(activityIdTransfer);
-        var _dbInfo = await GetDbInfo(activityId);
+        var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         SqlServerRemoteDb remote = new();
         await remote.LoadDatatableToTable(_dbInfo, data, targetTable);
     }
 
-    public async Task<string> GetAllTablesScript(int activityId)
+    public async Task<string> GetAllTablesScript(int dataProviderId)
     {
-        var _dbInfo = await GetDbInfo(activityId);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         var remote = GetRemoteDbType(_dbInfo.TypeDb);
         return remote.GetAllTablesScript(_dbInfo);
     }
 
 
-    public async Task<string> GetAllTablesAndColumnsScript(int activityId)
+    public async Task<string> GetAllTablesAndColumnsScript(int dataProviderId)
     {
-        var _dbInfo = await GetDbInfo(activityId);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         var remote = GetRemoteDbType(_dbInfo.TypeDb);
         return remote.GetAllTablesAndColumnsScript(_dbInfo);
     }
 
-    public async Task<string> GetTableColumnInfoScript(int activityId, string tableName)
+    public async Task<string> GetTableColumnInfoScript(int dataProviderId, string tableName)
     {
-        var _dbInfo = await GetDbInfo(activityId);
+        var _dbInfo = await GetDbInfo(dataProviderId);
         var remote = GetRemoteDbType(_dbInfo.TypeDb);
         return remote.GetTableColumnInfoScript(_dbInfo, tableName);
     }
@@ -105,9 +105,9 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         if (run.Test) attempts = 3;
         do
         {
-            var activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId)
-                .Select(a => a.ActivityName).FirstOrDefaultAsync(cts);
-            var _dbInfo = await GetDbInfo(run.ActivityId);
+            var activityName = await _context.DataProvider.Where(a => a.DataProviderId == run.DataProviderId)
+                .Select(a => a.ProviderName).FirstOrDefaultAsync(cts);
+            var _dbInfo = await GetDbInfo(run.DataProviderId);
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
             var logTask = new TaskStepLog { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
             try
@@ -133,7 +133,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                 {
                     QueryExecutionLog logQuery = new()
                     {
-                        ActivityId = run.ActivityId,
+                        DataProviderId = run.DataProviderId,
                         Database = _dbInfo.DbSchema,
                         TypeDb = _dbInfo.TypeDb.ToString(),
                         CommandTimeOut = _dbInfo.CommandTimeOut,
@@ -146,7 +146,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                         QueryName = run.QueryInfo,
                         Query = run.QueryToRun,
                         NbrOfRows = values.Rows.Count,
-                        ActivityName = activityName
+                        ProviderName = activityName
                     };
                     await _context.AddAsync(logQuery);
                     await _context.SaveChangesAsync();
@@ -185,10 +185,10 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         } while (true);
     }
 
-    private async Task<int> GetDataTransferActivity(int activityId)
+    private async Task<int> GetDataTransferActivity(int dataProviderId)
     {
-        return await _context.Activity.Where(a => a.ActivityType == Shared.ProviderType.TargetDb && a.ActivityId == activityId)
-            .Select((object a) => a.ActivityId)
+        return await _context.DataProvider.Where(a => a.ProviderType == ProviderType.TargetDatabase && a.DataProviderId == dataProviderId)
+            .Select(( a) => a.DataProviderId)
             .FirstOrDefaultAsync();
     }
 
@@ -206,9 +206,9 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
         };
     }
 
-    private async Task<DatabaseConnection> GetDbInfo(int activityId)
+    private async Task<DatabaseConnection> GetDbInfo(int dataProviderId)
     {
-        return (await _context.ActivityDbConnection.Where(a => a.Activity.ActivityId == activityId)
+        return (await _context.DatabaseConnection.Where(a => a.DataProvider.DataProviderId == dataProviderId)
             .FirstOrDefaultAsync())!;
     }
 

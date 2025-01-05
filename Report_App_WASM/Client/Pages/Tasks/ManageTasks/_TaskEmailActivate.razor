@@ -23,7 +23,7 @@
             }
         }
 
-        var result = await DataService.PostValues(new TaskActivatePayload { Activate = Item.SendByEmail, TaskHeaderId = Item.ScheduledTaskId }, "TaskSendByEmail");
+        var result = await DataService.PostValues(new TaskActivatePayload { Activate = Item.SendByEmail, ScheduledTaskId = Item.ScheduledTaskId }, "TaskSendByEmail");
         if (!result.Success)
         {
             Item.SendByEmail = !value;

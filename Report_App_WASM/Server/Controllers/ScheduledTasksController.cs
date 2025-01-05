@@ -41,23 +41,23 @@ public class ScheduledTasksController : ControllerBase
     private async Task<List<TasksInfo>> GetTasksListAsync(string? activityName, TaskType taskType,
         bool includeFileDetails = false)
     {
-        var query = _context.TaskHeader.Where(a => a.Type == taskType);
+        var query = _context.ScheduledTask.Where(a => a.Type == taskType);
 
         if (!string.IsNullOrEmpty(activityName))
         {
-            query = query.Where(a => a.Activity.ActivityName == activityName);
+            query = query.Where(a => a.DataProvider.ProviderName == activityName);
         }
 
         return await query.Select(a => new TasksInfo
         {
-            TaksId = a.TaskHeaderId,
-            ActivityName = a.Activity.ActivityName,
+            TaksId = a.ScheduledTaskId,
+            ActivityName = a.DataProvider.ProviderName,
             LastRunDateTime = a.LastRunDateTime,
-            IsActivated = a.IsActivated,
+            IsActivated = a.IsEnabled,
             TaskName = a.TaskName,
             TaskType = a.Type.ToString(),
-            QueriesName = a.TaskDetails.Select(td => td.QueryName).ToList(),
-            HasADepositPath = includeFileDetails && a.FileDepositPathConfigurationId != 0,
+            QueriesName = a.TaskQueries.Select(td => td.QueryName).ToList(),
+            HasADepositPath = includeFileDetails && a.FileStorageLocationId != 0,
             TypeOfGeneratedFile = includeFileDetails ? a.TypeFileName : null
         }).ToListAsync();
     }
@@ -68,15 +68,15 @@ public class ScheduledTasksController : ControllerBase
     {
         if (payload == null) return BadRequest("Payload null");
 
-        var taskHeader = await _context.TaskHeader.Include(a => a.TaskEmailRecipients)
-            .FirstOrDefaultAsync(a => a.TaskHeaderId == payload.TaksId);
+        var taskHeader = await _context.ScheduledTask.Include(a => a.DistributionLists)
+            .FirstOrDefaultAsync(a => a.ScheduledTaskId == payload.ScheduledTaskId);
 
         if (taskHeader == null) return BadRequest("Task id not found");
 
         var recipients = new List<EmailRecipient>();
         if (payload.SendEmail)
         {
-            var emailSerialized = taskHeader.TaskEmailRecipients.FirstOrDefault()?.Email;
+            var emailSerialized = taskHeader.DistributionLists.FirstOrDefault()?.Recipients;
             if (!string.IsNullOrEmpty(emailSerialized))
             {
                 recipients = JsonSerializer.Deserialize<List<EmailRecipient>>(emailSerialized) ??
@@ -89,7 +89,7 @@ public class ScheduledTasksController : ControllerBase
               new List<QueryCommandParameter>()
             : new List<QueryCommandParameter>();
 
-        _backgroundWorkers.RunManuallyTask(payload.TaksId, User?.Identity?.Name, recipients, parameters,
+        _backgroundWorkers.RunManuallyTask(payload.ScheduledTaskId, User?.Identity?.Name, recipients, parameters,
             payload.GenerateFileToFolder);
 
         return Ok("Task enqueued successfully");

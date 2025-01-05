@@ -13,7 +13,7 @@
 
         if (Item.IsEnabled)
         {
-            var activityActivated = (await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a => a.DataProviderId == Item.DataProviderId).Select(a => new { a.IsActivated, a.ProviderName }).FirstOrDefault();
+            var activityActivated = (await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi)).Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => new { a.IsActivated, a.ProviderName }).FirstOrDefault();
             if (!activityActivated!.IsActivated)
             {
                 Item.IsEnabled = false;
@@ -62,7 +62,7 @@
             return;
         }
 
-        await DataService.PostValues(new TaskActivatePayload { Activate = Item.IsEnabled, TaskHeaderId = Item.ScheduledTaskId }, "TaskActivate");
+        await DataService.PostValues(new TaskActivatePayload { Activate = Item.IsEnabled, ScheduledTaskId = Item.ScheduledTaskId }, "TaskActivate");
 
         Snackbar.Add(Item.IsEnabled ? Item.TaskName + " " + Localizer.Get("enabled") : Item.TaskName + " " + Localizer.Get("disabled"), Item.IsEnabled ? Severity.Success : Severity.Normal);
     }

@@ -40,7 +40,7 @@
                             <MudItem>
                                 @if (_activities.Any())
                                 {
-                                    <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.DataProviderId"
+                                    <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
                                                AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
                                                Required>
                                         @foreach (var value in _activities)
@@ -226,7 +226,7 @@
         Item = await DataService.GetUniqueValue(Item, uriAction);
         if (Item != null)
         {
-            var uri = $"GetActivityDbConnection?DataProviderId={Item.DataProviderId}";
+            var uri = $"GetActivityDbConnection?DataProviderId={Item.IdDataProvider}";
             var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
             if (response.Any())
             {
@@ -379,7 +379,7 @@
                 var _queryTorun = string.Empty;
                 _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) && !string.IsNullOrEmpty(_querySelectedCode) ? _querySelectedCode : Item.Query;
 
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.DataProviderId, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -448,7 +448,7 @@
             {
                 Item.Parameters = JsonSerializer.Serialize(parameters);
                 Item.Tags = JsonSerializer.Serialize(_tags);
-                Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.DataProviderId).Select(a => a.ProviderName).FirstOrDefault();
+                Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
                 var result = await DataService.PostValues(Item, "QueryStoreUpdate");
                 if (result.Success)
                 {
@@ -471,7 +471,7 @@
     {
         var _DataProviderId = actId.FirstOrDefault();
         Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
-        Item.DataProviderId = Item.DataProvider.DataProviderId;
+        Item.IdDataProvider = Item.DataProvider.DataProviderId;
         Item.ProviderName = Item.DataProvider.ProviderName;
     }
 
