@@ -36,7 +36,6 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
                 TypeDb.Oracle => JsonSerializer.Deserialize<OracleParameters>(config.Parameters.GetRawText(), options),
                 TypeDb.MariaDb => JsonSerializer.Deserialize<MariaDbParameters>(config.Parameters.GetRawText(), options),
                 TypeDb.OlebDb => JsonSerializer.Deserialize<OleDbParameters>(config.Parameters.GetRawText(), options),
-                TypeDb.Db2 => JsonSerializer.Deserialize<OleDbParameters>(config.Parameters.GetRawText(), options),
                 _ => throw new ArgumentException("Unsupported database type")
             })!;
 

@@ -8,6 +8,5 @@ public enum TypeDb
     MySql = 3,
     MariaDb = 4,
     PostgreSql = 6,
-    OlebDb=8,
-    Db2 = 10
+    OlebDb=10
 }
