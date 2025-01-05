@@ -1,4 +1,5 @@
 ﻿using Report_App_WASM.Server.Utils.RemoteDb;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Services.RemoteDb;
 
@@ -108,6 +109,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
             var activityName = await _context.Activity.Where(a => a.ActivityId == run.ActivityId)
                 .Select(a => a.ActivityName).FirstOrDefaultAsync(cts);
             var _dbInfo = await GetDbInfo(run.ActivityId);
+            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(_dbInfo.DbConnectionParameters, "", "");
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
             var logTask = new ApplicationLogTaskDetails { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
             try
@@ -134,7 +136,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                     ApplicationLogQueryExecution logQuery = new()
                     {
                         ActivityId = run.ActivityId,
-                        Database = _dbInfo.DbSchema,
+                        Database = dbparam.Database,
                         TypeDb = _dbInfo.TypeDb.ToString(),
                         CommandTimeOut = _dbInfo.CommandTimeOut,
                         StartDateTime = start,

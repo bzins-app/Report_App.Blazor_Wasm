@@ -47,7 +47,7 @@
                             </MudStack>
                             <MudStack Row="true">
                                 <MudSwitch @bind-Value="OParameters.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
-                                <MudTextField @bind-Value="OParameters.Schema" Label="@Localizer.Get("DB schema")" Disabled="!OParameters.UseDbSchema" Required="!OParameters.UseDbSchema" Margin="Margin.Dense" />
+                                <MudTextField @bind-Value="OParameters.Schema" Label="@Localizer.Get("DB schema")" Disabled="!OParameters.UseDbSchema" Required="OParameters.UseDbSchema" Margin="Margin.Dense" />
                             </MudStack>
                             <MudStack Row="true">
                                 <MudCheckBox @bind-Value="OParameters.Pooling" Label="Pooling?" />
@@ -399,6 +399,7 @@
                 }
                 else if (DbCon.TypeDb == TypeDb.Oracle)
                 {
+                    OParameters.Database = OParameters.Schema??string.Empty;
                     DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
                     DbCon.Password = OParameters.Password;
                     DbCon.ConnectionLogin = OParameters.UserId;
