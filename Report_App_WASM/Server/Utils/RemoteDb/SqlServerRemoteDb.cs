@@ -168,24 +168,7 @@ public class SqlServerRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
-
-
-        //var windowsAuthentication = ";Integrated Security=SSPI";
-        //string connectionString;
-        //var databaseInfo = "";
-        //if (dbInfo.UseDbSchema) databaseInfo = $";Database={dbInfo.DbSchema}";
-
-        //if (dbInfo.AdAuthentication)
-        //    connectionString = $"server ={dbInfo.ConnectionPath}{databaseInfo}{windowsAuthentication};";
-        //else
-        //    connectionString =
-        //        $"server ={dbInfo.ConnectionPath}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
-
-        //if (dbInfo.IntentReadOnly) connectionString += "applicationintent=readonly;";
-        //connectionString += "Encrypt=False;MultipleActiveResultSets=True;";
-        //value.ConnnectionString = connectionString;
-
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin??"", string.IsNullOrEmpty(dbInfo.Password)?"": EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,
