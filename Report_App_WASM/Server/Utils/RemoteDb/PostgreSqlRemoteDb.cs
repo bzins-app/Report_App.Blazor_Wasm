@@ -16,7 +16,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
         {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
-            script = dbInfo.UseDbSchema
+            script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 				FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' and TABLE_SCHEMA='public' order by 1,2"
                 : @"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
