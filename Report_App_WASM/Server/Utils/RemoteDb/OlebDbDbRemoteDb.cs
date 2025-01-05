@@ -1,4 +1,5 @@
 ﻿using System.Data.OleDb;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 #pragma warning disable CA1416
 
@@ -36,6 +37,14 @@ public class OlebDbDbRemoteDb : IRemoteDb
         await conn.OpenAsync();
         await conn.DisposeAsync();
     }
+
+    public async Task TryConnectAsync(string ConnnectionString)
+    {
+        DbConnection conn = new OleDbConnection(ConnnectionString);
+        await conn.OpenAsync();
+        await conn.DisposeAsync();
+    }
+
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
         ActivityDbConnection dbInfo, CancellationToken cts)
@@ -79,12 +88,12 @@ public class OlebDbDbRemoteDb : IRemoteDb
 
     private static bool CheckDbType(ActivityDbConnection dbInfo)
     {
-        return dbInfo.TypeDb == TypeDb.Db2;
+        return dbInfo.TypeDb == TypeDb.OlebDb;
     }
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
-        RemoteConnectionParameter value = new()
+       /* RemoteConnectionParameter value = new()
         {
             Schema = dbInfo.DbSchema,
             UseDbSchema = dbInfo.UseDbSchema,
@@ -97,7 +106,16 @@ public class OlebDbDbRemoteDb : IRemoteDb
         var databaseInfo = "";
         if (dbInfo.UseDbSchema) databaseInfo = $";Initial Catalog={dbInfo.DbSchema}";
         value.ConnnectionString =
-            $"Provider=DB2OLEDB.1;Data Source={dbInfo.ConnectionPath}{databaseInfo};User ID={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+            $"Provider=DB2OLEDB.1;Data Source={dbInfo.ConnectionPath}{databaseInfo};User ID={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";*/
+
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        RemoteConnectionParameter value = new()
+        {
+            TypeDb = dbInfo.TypeDb,
+            CommandFetchSize = dbInfo.CommandFetchSize,
+            CommandTimeOut = dbInfo.CommandTimeOut,
+            ConnnectionString = dbparam.BuildConnectionString()
+        };
 
         return value;
     }

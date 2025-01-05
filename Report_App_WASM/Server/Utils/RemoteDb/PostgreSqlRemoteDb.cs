@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -14,11 +15,14 @@ public class PostgreSqlRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = dbInfo.UseDbSchema
+        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
-				FROM information_schema.tables where TABLE_CATALOG='{dbInfo.DbSchema}' and TABLE_SCHEMA='public' order by 1,2"
+				FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' and TABLE_SCHEMA='public' order by 1,2"
                 : $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 				FROM information_schema.tables where TABLE_SCHEMA='public' order by 1,2";
+        }
+
         return script;
     }
 
@@ -26,14 +30,17 @@ public class PostgreSqlRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
+        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select t.table_name,
                     c.column_name 
                     from information_schema.tables t
                     inner join information_schema.columns c on c.table_name = t.table_name 
                                                     and c.table_schema = t.table_schema
-                    where t.table_catalog='{dbInfo.DbSchema}' and t.table_schema='public' 
+                    where t.table_catalog='{dbparam.Database}' and t.table_schema='public' 
                           and t.table_type = 'BASE TABLE'
                     order by 1,2;";
+        }
+
         return script;
     }
 
@@ -41,6 +48,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
+        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"                select
 				'Col' as Valuetype,
 				c.COLUMN_NAME,
@@ -49,8 +57,10 @@ public class PostgreSqlRemoteDb : IRemoteDb
 				from INFORMATION_SCHEMA.COLUMNS c
                 join information_schema.tables t  on t.TABLE_NAME=c.TABLE_NAME
 				where c.TABLE_NAME ='{tableName}'
-                and t.TABLE_CATALOG='{dbInfo.DbSchema}' 
+                and t.TABLE_CATALOG='{dbparam.Database}' 
 				order by ColOrder";
+        }
+
         return script;
     }
 
@@ -58,6 +68,13 @@ public class PostgreSqlRemoteDb : IRemoteDb
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new NpgsqlConnection(param.ConnnectionString);
+        await conn.OpenAsync();
+        await conn.DisposeAsync();
+    }
+
+    public async Task TryConnectAsync(string ConnnectionString)
+    {
+        DbConnection conn = new NpgsqlConnection(ConnnectionString);
         await conn.OpenAsync();
         await conn.DisposeAsync();
     }
@@ -148,20 +165,20 @@ public class PostgreSqlRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
+        //dbInfo.UseDbSchema = true;
+        //var databaseInfo = "";
+        //if (dbInfo.UseDbSchema) databaseInfo = $";Database={dbInfo.DbSchema}";
+        //value.ConnnectionString =
+        //    $"Server={dbInfo.ConnectionPath};Port={dbInfo.Port}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
+
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
-            Schema = dbInfo.DbSchema,
-            UseDbSchema = dbInfo.UseDbSchema,
             TypeDb = dbInfo.TypeDb,
             CommandFetchSize = dbInfo.CommandFetchSize,
-            CommandTimeOut = dbInfo.CommandTimeOut
+            CommandTimeOut = dbInfo.CommandTimeOut,
+            ConnnectionString = dbparam.BuildConnectionString()
         };
-
-        dbInfo.UseDbSchema = true;
-        var databaseInfo = "";
-        if (dbInfo.UseDbSchema) databaseInfo = $";Database={dbInfo.DbSchema}";
-        value.ConnnectionString =
-            $"Server={dbInfo.ConnectionPath};Port={dbInfo.Port}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
 
         return value;
     }
