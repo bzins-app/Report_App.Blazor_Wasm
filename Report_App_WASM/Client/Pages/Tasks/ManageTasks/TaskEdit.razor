@@ -52,7 +52,7 @@
                             {
                                 <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")"/>
                             }
-                            @if (_typeDbTask != TypeDb.Db2)
+                            @if (_typeDbTask != TypeDb.OlebDb)
                             {
                                 <MudSwitch @bind-Value="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary"/>
                             }
