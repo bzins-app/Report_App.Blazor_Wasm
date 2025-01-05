@@ -172,12 +172,6 @@ public class MariaDbRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
-        //dbInfo.UseDbSchema = true;
-        //var databaseInfo = "";
-        //if (dbInfo.UseDbSchema) databaseInfo = $";database={dbInfo.DbSchema}";
-        //value.ConnnectionString =
-        //    $"server={dbInfo.ConnectionPath};port={dbInfo.Port}{databaseInfo};uid={dbInfo.ConnectionLogin};Pwd={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};SslMode=Preferred;";
-
         var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {

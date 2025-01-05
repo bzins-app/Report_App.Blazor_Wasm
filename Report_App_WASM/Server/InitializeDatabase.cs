@@ -166,6 +166,7 @@ public class InitializeDatabase
                     sqlServerParameters.Server = t.ConnectionPath;
                     if (t.IntentReadOnly) sqlServerParameters.ApplicationIntent = ApplicationIntent.ReadOnly;
                     if (t.DbSchema != null) sqlServerParameters.Database = t.DbSchema;
+                    if(t.AdAuthentication) sqlServerParameters.TrustedConnection = true;
                     if (t.Port > 0)
                     {
                         sqlServerParameters.Port = t.Port;

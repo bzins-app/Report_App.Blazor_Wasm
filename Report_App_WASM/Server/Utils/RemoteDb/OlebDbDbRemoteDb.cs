@@ -93,21 +93,6 @@ public class OlebDbDbRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
-       /* RemoteConnectionParameter value = new()
-        {
-            Schema = dbInfo.DbSchema,
-            UseDbSchema = dbInfo.UseDbSchema,
-            TypeDb = dbInfo.TypeDb,
-            CommandFetchSize = dbInfo.CommandFetchSize,
-            CommandTimeOut = dbInfo.CommandTimeOut
-        };
-
-        dbInfo.UseDbSchema = true;
-        var databaseInfo = "";
-        if (dbInfo.UseDbSchema) databaseInfo = $";Initial Catalog={dbInfo.DbSchema}";
-        value.ConnnectionString =
-            $"Provider=DB2OLEDB.1;Data Source={dbInfo.ConnectionPath}{databaseInfo};User ID={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";*/
-
         var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {

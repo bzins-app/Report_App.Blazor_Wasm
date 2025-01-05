@@ -165,12 +165,6 @@ public class PostgreSqlRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
-        //dbInfo.UseDbSchema = true;
-        //var databaseInfo = "";
-        //if (dbInfo.UseDbSchema) databaseInfo = $";Database={dbInfo.DbSchema}";
-        //value.ConnnectionString =
-        //    $"Server={dbInfo.ConnectionPath};Port={dbInfo.Port}{databaseInfo};User Id={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};";
-
         var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
