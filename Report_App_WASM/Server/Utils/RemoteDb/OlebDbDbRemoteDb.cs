@@ -88,7 +88,7 @@ public class OlebDbDbRemoteDb : IRemoteDb
 
     private static bool CheckDbType(ActivityDbConnection dbInfo)
     {
-        return dbInfo.TypeDb == TypeDb.Db2;
+        return dbInfo.TypeDb == TypeDb.OlebDb;
     }
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)

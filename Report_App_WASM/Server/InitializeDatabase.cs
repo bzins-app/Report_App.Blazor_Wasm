@@ -96,7 +96,7 @@ public class InitializeDatabase
                     t.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMembersToJson(), TypeDb.MySql);
 
                 }
-                else if (t.TypeDb == TypeDb.Db2)
+                else if (t.TypeDb == TypeDb.OlebDb &&t.TypeDbName=="DB2")
                 {
                     OleDbParameters oleDParameters = new();
                     if (t.ConnectionPath != null) oleDParameters.Server = t.ConnectionPath;
