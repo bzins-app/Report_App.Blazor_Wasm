@@ -7,5 +7,5 @@ public class TaskStepLog : IExcludeAuditTrail
     public int TaskId { get; set; }
     public DateTime TimeStamp { get; set; } = DateTime.Now;
     [MaxLength(1000)] public string? Step { get; set; }
-    [MaxLength(1000)] public string? Info { get; set; }
+    public string? Info { get; set; }
 }

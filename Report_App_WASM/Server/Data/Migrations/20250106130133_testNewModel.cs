@@ -171,6 +171,131 @@ namespace ReportAppWASM.Server.Migrations
                 table: "RoleClaims",
                 newName: "IX_RoleClaims_RoleId");
 
+            migrationBuilder.AlterColumn<string>(
+                name: "SmtpUserName",
+                table: "SmtpConfiguration",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "FromFullName",
+                table: "SmtpConfiguration",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "FromEmail",
+                table: "SmtpConfiguration",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ConfigurationName",
+                table: "SmtpConfiguration",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(60)",
+                oldMaxLength: 60);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ConfigurationName",
+                table: "SftpConfiguration",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(60)",
+                oldMaxLength: 60);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserName",
+                table: "LdapConfiguration",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ConfigurationName",
+                table: "LdapConfiguration",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(60)",
+                oldMaxLength: 60);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserLastName",
+                table: "Users",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserFirstName",
+                table: "Users",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ModificationUser",
+                table: "Users",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Culture",
+                table: "Users",
+                type: "nvarchar(8)",
+                maxLength: 8,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(5)",
+                oldMaxLength: 5);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "CreateUser",
+                table: "Users",
+                type: "nvarchar(250)",
+                maxLength: 250,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100,
+                oldNullable: true);
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserTokens",
                 table: "UserTokens",
@@ -217,11 +342,11 @@ namespace ReportAppWASM.Server.Migrations
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationInSeconds = table.Column<int>(type: "int", nullable: false),
                     DataProviderId = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
-                    JobDescription = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    JobDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     NbrOfRows = table.Column<int>(type: "int", nullable: false),
-                    Result = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Result = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     Error = table.Column<bool>(type: "bit", nullable: false),
                     RunBy = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
                 },
@@ -240,8 +365,8 @@ namespace ReportAppWASM.Server.Migrations
                     Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     TableName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OldValues = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    NewValues = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    OldValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NewValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AffectedColumns = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     PrimaryKey = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
@@ -261,10 +386,10 @@ namespace ReportAppWASM.Server.Migrations
                     ProviderTypeName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     IsEnabled = table.Column<bool>(type: "bit", nullable: false),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    ProviderIcon = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ProviderIcon = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ProviderRoleId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     TimeZone = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MiscParamters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    MiscParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -285,10 +410,10 @@ namespace ReportAppWASM.Server.Migrations
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationInSeconds = table.Column<int>(type: "int", nullable: false),
                     EmailTitle = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Result = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Result = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Error = table.Column<bool>(type: "bit", nullable: false),
                     NbrOfRecipients = table.Column<int>(type: "int", nullable: false),
-                    RecipientList = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
+                    RecipientList = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -301,8 +426,8 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     FileStorageLocationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ConfigurationName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    ConfigurationName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     IsReachable = table.Column<bool>(type: "bit", nullable: false),
                     TryToCreateFolder = table.Column<bool>(type: "bit", nullable: false),
                     UseSftpProtocol = table.Column<bool>(type: "bit", nullable: false),
@@ -332,9 +457,9 @@ namespace ReportAppWASM.Server.Migrations
                     Database = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CommandTimeOut = table.Column<int>(type: "int", nullable: false),
                     DataProviderId = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     QueryName = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Query = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
+                    Query = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TransferBeginDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -342,8 +467,8 @@ namespace ReportAppWASM.Server.Migrations
                     SqlExcecutionDuration = table.Column<TimeSpan>(type: "time", nullable: false),
                     DownloadDuration = table.Column<TimeSpan>(type: "time", nullable: false),
                     NbrOfRows = table.Column<int>(type: "int", nullable: false),
-                    RunBy = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    TypeJob = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    RunBy = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    TypeJob = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -359,16 +484,16 @@ namespace ReportAppWASM.Server.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     DataProviderId = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     ScheduledTaskId = table.Column<int>(type: "int", nullable: false),
-                    ReportName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    SubName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ReportName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    SubName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     FileType = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
-                    FileName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ReportPath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    FileName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    ReportPath = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     FileSizeInMb = table.Column<double>(type: "float", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    Result = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Result = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     Error = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -383,12 +508,12 @@ namespace ReportAppWASM.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TimeStampAppHour = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Browser = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    Platform = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    FullVersion = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    Host = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    Path = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    User = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Browser = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Platform = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    FullVersion = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Host = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Path = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    User = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     EventId = table.Column<int>(type: "int", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -412,8 +537,8 @@ namespace ReportAppWASM.Server.Migrations
                     AdminEmails = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     EmailPrefix = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     ErrorEmailPrefix = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ErrorEMailMessage = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    WelcomeEMailMessage = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ErrorEMailMessage = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
+                    WelcomeEMailMessage = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     AlertEmailPrefix = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LogsRetentionInDays = table.Column<int>(type: "int", nullable: false),
                     ActivateTaskSchedulerModule = table.Column<bool>(type: "bit", nullable: false),
@@ -471,10 +596,10 @@ namespace ReportAppWASM.Server.Migrations
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationInSeconds = table.Column<int>(type: "int", nullable: false),
                     DataProviderId = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    JobDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    JobDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
-                    Result = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Result = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Error = table.Column<bool>(type: "bit", nullable: false),
                     RunBy = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
@@ -493,7 +618,7 @@ namespace ReportAppWASM.Server.Migrations
                     TaskId = table.Column<int>(type: "int", nullable: false),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Step = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Info = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    Info = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -507,13 +632,13 @@ namespace ReportAppWASM.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    SaveName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Parameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    SaveName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Parameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     TypeConfiguration = table.Column<int>(type: "int", nullable: false),
                     IdIntConfiguration = table.Column<int>(type: "int", nullable: false),
                     IdStringConfiguration = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    SavedValues = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    MiscParamters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    SavedValues = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
+                    MiscParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -533,9 +658,9 @@ namespace ReportAppWASM.Server.Migrations
                     ConnectionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     TypeDb = table.Column<int>(type: "int", nullable: false),
                     TypeDbName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    DbConnectionParameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    ConnectionLogin = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    DbConnectionParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    ConnectionLogin = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CommandTimeOut = table.Column<int>(type: "int", nullable: false),
                     CommandFetchSize = table.Column<int>(type: "int", nullable: false),
                     UseTablesDescriptions = table.Column<bool>(type: "bit", nullable: false),
@@ -544,7 +669,7 @@ namespace ReportAppWASM.Server.Migrations
                     AdHocQueriesMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     TaskSchedulerMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     DataTransferMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
-                    MiscParamters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    MiscParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     DataProviderId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -568,8 +693,8 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     ScheduledTaskId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    TaskName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     IdDataProvider = table.Column<int>(type: "int", nullable: false),
                     TaskNamePrefix = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false),
@@ -582,13 +707,13 @@ namespace ReportAppWASM.Server.Migrations
                     ReportsRetentionInDays = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Tags = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    TaskHeaderParameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    CronParameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    TaskHeaderParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    CronParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     UseGlobalQueryParameters = table.Column<bool>(type: "bit", nullable: false),
-                    QueryParameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    QueryParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     LastRunDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FileStorageLocationId = table.Column<int>(type: "int", nullable: false),
-                    MiscParamters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    MiscParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     DataProviderId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -613,14 +738,14 @@ namespace ReportAppWASM.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdDataProvider = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Comment = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Tags = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     QueryName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Query = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
-                    Parameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    QueryParameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    MiscParamters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Query = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Parameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    QueryParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    MiscParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     DataProviderId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -644,12 +769,12 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TableName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    TableDescription = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    ColumnName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ColumnDescription = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    TableName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    TableDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    ColumnName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    ColumnDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     IsSnippet = table.Column<bool>(type: "bit", nullable: false),
-                    MiscParamters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    MiscParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     DatabaseConnectionId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -673,8 +798,8 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     ScheduledTaskDistributionListId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Recipients = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    EmailMessage = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: true),
+                    Recipients = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    EmailMessage = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     ScheduledTaskId = table.Column<int>(type: "int", nullable: false),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -698,10 +823,10 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     ScheduledTaskQueryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QueryName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    QueryName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Query = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    QueryParameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    ExecutionParameters = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    QueryParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    ExecutionParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     ExecutionOrder = table.Column<int>(type: "int", nullable: false),
                     LastRunDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ExecutionCount = table.Column<int>(type: "int", nullable: false),
@@ -1073,6 +1198,131 @@ namespace ReportAppWASM.Server.Migrations
                 name: "IX_RoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 newName: "IX_AspNetRoleClaims_RoleId");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "SmtpUserName",
+                table: "SmtpConfiguration",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "FromFullName",
+                table: "SmtpConfiguration",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "FromEmail",
+                table: "SmtpConfiguration",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ConfigurationName",
+                table: "SmtpConfiguration",
+                type: "nvarchar(60)",
+                maxLength: 60,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ConfigurationName",
+                table: "SftpConfiguration",
+                type: "nvarchar(60)",
+                maxLength: 60,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserName",
+                table: "LdapConfiguration",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ConfigurationName",
+                table: "LdapConfiguration",
+                type: "nvarchar(60)",
+                maxLength: 60,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserLastName",
+                table: "AspNetUsers",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserFirstName",
+                table: "AspNetUsers",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ModificationUser",
+                table: "AspNetUsers",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Culture",
+                table: "AspNetUsers",
+                type: "nvarchar(5)",
+                maxLength: 5,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(8)",
+                oldMaxLength: 8);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "CreateUser",
+                table: "AspNetUsers",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)",
+                oldMaxLength: 250,
+                oldNullable: true);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AspNetUserTokens",

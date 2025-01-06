@@ -19,9 +19,9 @@ public class DatabaseConnection : BaseTraceability
         }
     }
 
-    [Required][MaxLength(1000)] public string DbConnectionParameters { get; set; } = "[]";
-    [MaxLength(200)] public string? ConnectionLogin { get; set; }
-    [MaxLength(200)]
+    [Required][MaxLength(4000)] public string DbConnectionParameters { get; set; } = "[]";
+    [MaxLength(1000)] public string? ConnectionLogin { get; set; }
+    [MaxLength(1000)]
     public string? Password
     {
         get => _password;
@@ -42,7 +42,7 @@ public class DatabaseConnection : BaseTraceability
     public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
     public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
     public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
-    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
+    [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
 
     public virtual DataProvider? DataProvider { get; set; }
     public virtual ICollection<TableMetadata> TableMetadata { get; set; } = new List<TableMetadata>();

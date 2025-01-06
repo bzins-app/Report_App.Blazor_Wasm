@@ -7,8 +7,8 @@ public class EmailLogDto : IDto
     public DateTime EndDateTime { get; set; }
     public int DurationInSeconds { get; set; }
     [MaxLength(1000)] public string? EmailTitle { get; set; }
-    [MaxLength(1000)] public string? Result { get; set; }
+    public string? Result { get; set; }
     public bool Error { get; set; }
     public int NbrOfRecipients { get; set; }
-    [MaxLength(2000)] public string? RecipientList { get; set; }
+    public string? RecipientList { get; set; }
 }
