@@ -21,7 +21,7 @@ public class ActivityDbConnection : BaseTraceability
         }
     }
 
-    [Required] public string? ConnectionPath { get; set; }
+    public string? ConnectionPath { get; set; }=string.Empty;
 
     public int Port { get; set; }
 

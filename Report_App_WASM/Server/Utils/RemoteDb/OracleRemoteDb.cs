@@ -1,5 +1,6 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -14,9 +15,13 @@ public class OracleRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = dbInfo.UseDbSchema
-                ? $"SELECT 'Table' as tab_type, table_name FROM all_tables where owner='{dbInfo.DbSchema}' \r\nunion all\r\nSELECT 'View' as tab_type,  View_name FROM all_views where owner='{dbInfo.DbSchema}' \r\norder by 1,2"
+        {
+            var dbparam=(OracleParameters)DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            script = dbparam.UseDbSchema
+                ? $"SELECT 'Table' as tab_type, table_name FROM all_tables where owner='{dbparam.Schema}' \r\nunion all\r\nSELECT 'View' as tab_type,  View_name FROM all_views where owner='{dbparam.Schema}' \r\norder by 1,2"
                 : "SELECT 'Table' as TypeValue, table_name FROM all_tables  \r\nunion all\r\nSELECT 'View' as TypeValue,  View_name FROM all_views \r\norder by 1,2";
+        }
+
         return script;
     }
 
@@ -24,9 +29,13 @@ public class OracleRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = dbInfo.UseDbSchema
-                ? $"SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS where owner='{dbInfo.DbSchema}' order by 1,2"
+        {
+            var dbparam=(OracleParameters)DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            script = dbparam.UseDbSchema
+                ? $"SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS where owner='{dbparam.Schema}' order by 1,2"
                 : "SELECT Table_name as Table_Name,column_name as Column_Name FROM ALL_TAB_COLUMNS order by 1,2";
+        }
+
         return script;
     }
 
@@ -34,9 +43,13 @@ public class OracleRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-            script = dbInfo.UseDbSchema
-                ? $"select 'Col' as tab_type,Column_name,Data_Type,Column_id from ALL_TAB_COLUMNS where table_name='{tableName}' and owner='{dbInfo.DbSchema}' order by Column_id"
+        {
+            var dbparam=(OracleParameters)DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            script = dbparam.UseDbSchema
+                ? $"select 'Col' as tab_type,Column_name,Data_Type,Column_id from ALL_TAB_COLUMNS where table_name='{tableName}' and owner='{dbparam.Schema}' order by Column_id"
                 : $"select\r\n'Col' as TypeValue,\r\nColumn_name,\r\nData_Type,\r\nColumn_id\r\nfrom ALL_TAB_COLUMNS \r\nwhere table_name='{tableName}' \r\norder by Column_id";
+        }
+
         return script;
     }
 
@@ -44,6 +57,13 @@ public class OracleRemoteDb : IRemoteDb
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new OracleConnection(param.ConnnectionString);
+        await conn.OpenAsync();
+        await conn.DisposeAsync();
+    }
+
+    public async Task TryConnectAsync(string ConnnectionString)
+    {
+        DbConnection conn = new OracleConnection(ConnnectionString);
         await conn.OpenAsync();
         await conn.DisposeAsync();
     }
@@ -158,15 +178,15 @@ public class OracleRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
+        var dbparam=(OracleParameters)DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
-            Schema = dbInfo.DbSchema,
-            UseDbSchema = dbInfo.UseDbSchema,
+            Schema = dbparam.Schema,
+            UseDbSchema = dbparam.UseDbSchema,
             TypeDb = dbInfo.TypeDb,
             CommandFetchSize = dbInfo.CommandFetchSize,
             CommandTimeOut = dbInfo.CommandTimeOut,
-            ConnnectionString =
-                $"User ID={dbInfo.ConnectionLogin};Password={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)}; Data Source={dbInfo.ConnectionPath};"
+            ConnnectionString =dbparam.BuildConnectionString()
         };
 
         return value;

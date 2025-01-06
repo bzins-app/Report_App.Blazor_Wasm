@@ -6,7 +6,6 @@ public interface IRemoteDb : IDisposable
     string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo);
     string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName);
     Task TryConnectAsync(ActivityDbConnection dbInfo);
-
-    Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts);
+    Task TryConnectAsync(string ConnnectionString);
+    Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run, ActivityDbConnection dbInfo, CancellationToken cts);
 }

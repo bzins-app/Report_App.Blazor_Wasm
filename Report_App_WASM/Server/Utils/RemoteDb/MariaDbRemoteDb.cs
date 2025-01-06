@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
 
@@ -13,11 +14,13 @@ public class MariaDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
+        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"		
         SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 		FROM information_schema.tables t  
-                where TABLE_SCHEMA='{dbInfo.DbSchema}' 
+                where TABLE_SCHEMA='{dbparam.Database}' 
                 order by 1,2";
+        }
         return script;
     }
 
@@ -25,6 +28,7 @@ public class MariaDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
+        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select 
                             tab.table_name as table_name,
                             col.column_name as column_name
@@ -33,7 +37,9 @@ public class MariaDbRemoteDb : IRemoteDb
                                 on col.table_schema = tab.table_schema
                                 and col.table_name = tab.table_name
                         where tab.table_type = 'BASE TABLE'
-                            and tab.table_schema ='{dbInfo.DbSchema}' order by 1";
+                            and tab.table_schema ='{dbparam.Database}' order by 1";
+        }
+
         return script;
     }
 
@@ -41,6 +47,7 @@ public class MariaDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
+        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select
 				'Col' as Valuetype,
 				c.COLUMN_NAME,
@@ -49,8 +56,10 @@ public class MariaDbRemoteDb : IRemoteDb
 				from INFORMATION_SCHEMA.COLUMNS c
                 join information_schema.tables t  on t.TABLE_NAME=c.TABLE_NAME
 				where c.TABLE_NAME ='{tableName}'
-                and t.TABLE_SCHEMA='{dbInfo.DbSchema}' 
+                and t.TABLE_SCHEMA='{dbparam.Database}' 
 				order by ColOrder";
+        }
+
         return script;
     }
 
@@ -58,6 +67,13 @@ public class MariaDbRemoteDb : IRemoteDb
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new MySqlConnection(param.ConnnectionString);
+        await conn.OpenAsync();
+        await conn.DisposeAsync();
+    }
+
+    public async Task TryConnectAsync(string ConnnectionString)
+    {
+        DbConnection conn = new MySqlConnection(ConnnectionString);
         await conn.OpenAsync();
         await conn.DisposeAsync();
     }
@@ -156,20 +172,14 @@ public class MariaDbRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
     {
+        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
-            Schema = dbInfo.DbSchema,
-            UseDbSchema = dbInfo.UseDbSchema,
             TypeDb = dbInfo.TypeDb,
             CommandFetchSize = dbInfo.CommandFetchSize,
-            CommandTimeOut = dbInfo.CommandTimeOut
+            CommandTimeOut = dbInfo.CommandTimeOut,
+            ConnnectionString = dbparam.BuildConnectionString()
         };
-
-        dbInfo.UseDbSchema = true;
-        var databaseInfo = "";
-        if (dbInfo.UseDbSchema) databaseInfo = $";database={dbInfo.DbSchema}";
-        value.ConnnectionString =
-            $"server={dbInfo.ConnectionPath};port={dbInfo.Port}{databaseInfo};uid={dbInfo.ConnectionLogin};Pwd={EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password)};SslMode=Preferred;";
 
         return value;
     }
