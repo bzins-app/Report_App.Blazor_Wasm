@@ -283,7 +283,7 @@ public class SqlServerRemoteDb : IRemoteDb
         var remoteConnection = CreateConnectionString(dbInfo);
         using var bulkCopy = new SqlBulkCopy(remoteConnection.ConnnectionString);
         bulkCopy.DestinationTableName = "dbo." + targetTable;
-        bulkCopy.BulkCopyTimeout = 300;
+        bulkCopy.BulkCopyTimeout = dbInfo.CommandTimeOut;
 
         var totalRows = data.Rows.Count;
 
