@@ -187,6 +187,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query, conn);
+        sqlCommand.CommandTimeout = dbInfo.CommandTimeOut;
         var reader = await sqlCommand.ExecuteReaderAsync();
 
         if (reader.HasRows)
@@ -220,6 +221,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query.ToString(), conn);
+        sqlCommand.CommandTimeout = dbInfo.CommandTimeOut;
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
@@ -229,6 +231,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query, conn);
+        sqlCommand.CommandTimeout = dbInfo.CommandTimeOut;
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
@@ -239,6 +242,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await conn.OpenAsync();
 
         var mergeCommand = new SqlCommand(query, conn);
+        mergeCommand.CommandTimeout = dbInfo.CommandTimeOut;
         var reader = await mergeCommand.ExecuteReaderAsync();
         var result = new MergeResult();
 
@@ -277,26 +281,22 @@ public class SqlServerRemoteDb : IRemoteDb
     public async Task LoadDatatableToTable(ActivityDbConnection dbInfo, DataTable data, string? targetTable)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
-        await using SqlConnection conn = new(remoteConnection.ConnnectionString);
-        await conn.OpenAsync();
-        using (var bulkCopy = new SqlBulkCopy(conn))
+        using var bulkCopy = new SqlBulkCopy(remoteConnection.ConnnectionString);
+        bulkCopy.DestinationTableName = "dbo." + targetTable;
+        bulkCopy.BulkCopyTimeout = 300;
+
+        var totalRows = data.Rows.Count;
+
+        if (totalRows > 1000000)
         {
-            bulkCopy.DestinationTableName = "dbo." + targetTable;
-            bulkCopy.BulkCopyTimeout = 300;
-
-            var totalRows = data.Rows.Count;
-
-            if (totalRows > 1000000)
-            {
-                var batchsize = 1000000;
-                for (var i = 0; i <= totalRows; i += batchsize)
-                    await bulkCopy.WriteToServerAsync(data.AsEnumerable().Distinct().Skip(i).Take(batchsize)
-                        .CopyToDataTable());
-            }
-            else
-            {
-                await bulkCopy.WriteToServerAsync(data);
-            }
+            var batchsize = 1000000;
+            for (var i = 0; i <= totalRows; i += batchsize)
+                await bulkCopy.WriteToServerAsync(data.AsEnumerable().Distinct().Skip(i).Take(batchsize)
+                    .CopyToDataTable());
+        }
+        else
+        {
+            await bulkCopy.WriteToServerAsync(data);
         }
     }
 }
