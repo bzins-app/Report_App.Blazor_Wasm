@@ -57,7 +57,7 @@ public class BackgroundTaskHandler : IDisposable
         TaskLog logTask = new()
         {
             DataProviderId = _header.DataProvider.DataProviderId, ProviderName = _header.ProviderName, StartDateTime = DateTime.Now,
-            JobDescription = _header.TaskName, Type = _header.Type + " service", Result = "Running",
+            JobDescription = _header.TaskName, Type = _header.Type + " service", Result = "Running",ScheduledTaskId = parameters.ScheduledTaskId,
             RunBy = _jobParameters.RunBy, EndDateTime = DateTime.Now
         };
 
@@ -74,8 +74,6 @@ public class BackgroundTaskHandler : IDisposable
 
         await _context.AddAsync(logTask);
         await _context.SaveChangesAsync("backgroundworker");
-        logTask.TaskId = logTask.TaskLogId;
-        _context.Update(logTask);
         _taskId = logTask.TaskLogId;
         await _context.AddAsync(new TaskStepLog
             { TaskId = _taskId, Step = "Initialization", Info = "Nbr of queries:" + _header.TaskQueries.Count });
@@ -149,7 +147,6 @@ public class BackgroundTaskHandler : IDisposable
 
             logTask.Error = false;
             logTask.Result = "Ok";
-            logTask.TaskId = logTask.TaskLogId;
             logTask.EndDateTime = DateTime.Now;
             logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
             if (parameters.GenerateFiles)

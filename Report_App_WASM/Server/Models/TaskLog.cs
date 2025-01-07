@@ -3,7 +3,7 @@
 public class TaskLog : IExcludeAuditTrail
 {
     public int TaskLogId { get; set; }
-    public int TaskId { get; set; }
+    public int ScheduledTaskId { get; set; }
     public DateTime StartDateTime { get; set; }
     public DateTime EndDateTime { get; set; }
     public int DurationInSeconds { get; set; }
