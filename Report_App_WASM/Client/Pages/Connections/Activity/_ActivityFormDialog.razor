@@ -334,7 +334,7 @@
 
     [Parameter] public CrudAction Action { get; set; }
 
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string _deletionValidation = null!;
 
     private ActivityDbConnectionDto DbCon { get; set; } = new();
@@ -373,49 +373,49 @@
             await _form.Validate();
             if (_form.IsValid && DbCon.TypeDb > 0)
             {
-                if (DbCon.TypeDb == TypeDb.PostgreSql)
-                {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
-                    DbCon.Password = PostgreParameters.Password;
-                    DbCon.ConnectionLogin = PostgreParameters.UserId;
-                }
-                else if (DbCon.TypeDb == TypeDb.MariaDb)
-                {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMembersToJson(), TypeDb.MariaDb);
-                    DbCon.Password = MariaParameters.Password;
-                    DbCon.ConnectionLogin = MariaParameters.UserId;
-                }
-                else if (DbCon.TypeDb == TypeDb.MySql)
-                {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMembersToJson(), TypeDb.MySql);
-                    DbCon.Password = MyParameters.Password;
-                    DbCon.ConnectionLogin = MyParameters.UserId;
-                }
-                else if (DbCon.TypeDb == TypeDb.OlebDb)
-                {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMembersToJson(), TypeDb.OlebDb);
-                    DbCon.Password = oleDParameters.Password;
-                    DbCon.ConnectionLogin = oleDParameters.UserId;
-                }
-                else if (DbCon.TypeDb == TypeDb.Oracle)
-                {
-                    OParameters.Database = OParameters.Schema??string.Empty;
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
-                    DbCon.Password = OParameters.Password;
-                    DbCon.ConnectionLogin = OParameters.UserId;
-                }
-                else if (DbCon.TypeDb == TypeDb.SqlServer)
-                {
-                    DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMembersToJson(), TypeDb.SqlServer);
-                    DbCon.Password = sqlServerParameters.Password;
-                    DbCon.ConnectionLogin = sqlServerParameters.UserId;
-                }
-
+                SetDbConnectionParameters();
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
     }
 
+    private void SetDbConnectionParameters()
+    {
+        switch (DbCon.TypeDb)
+        {
+            case TypeDb.PostgreSql:
+                DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
+                DbCon.Password = PostgreParameters.Password;
+                DbCon.ConnectionLogin = PostgreParameters.UserId;
+                break;
+            case TypeDb.MariaDb:
+                DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMembersToJson(), TypeDb.MariaDb);
+                DbCon.Password = MariaParameters.Password;
+                DbCon.ConnectionLogin = MariaParameters.UserId;
+                break;
+            case TypeDb.MySql:
+                DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMembersToJson(), TypeDb.MySql);
+                DbCon.Password = MyParameters.Password;
+                DbCon.ConnectionLogin = MyParameters.UserId;
+                break;
+            case TypeDb.OlebDb:
+                DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMembersToJson(), TypeDb.OlebDb);
+                DbCon.Password = oleDParameters.Password;
+                DbCon.ConnectionLogin = oleDParameters.UserId;
+                break;
+            case TypeDb.Oracle:
+                OParameters.Database = OParameters.Schema ?? string.Empty;
+                DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
+                DbCon.Password = OParameters.Password;
+                DbCon.ConnectionLogin = OParameters.UserId;
+                break;
+            case TypeDb.SqlServer:
+                DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMembersToJson(), TypeDb.SqlServer);
+                DbCon.Password = sqlServerParameters.Password;
+                DbCon.ConnectionLogin = sqlServerParameters.UserId;
+                break;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -423,34 +423,41 @@
         if (Item!.ActivityDbConnections.Any())
         {
             DbCon = Item.ActivityDbConnections.First();
-            if (DbCon.TypeDb == TypeDb.PostgreSql && DbCon.DbConnectionParameters != "[]")
-            {
-                PostgreParameters = (PostgreSqlParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
-            }
-            else if (DbCon.TypeDb == TypeDb.MariaDb && DbCon.DbConnectionParameters != "[]")
-            {
-                MariaParameters = (MariaDbParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
-            }
-            else if (DbCon.TypeDb == TypeDb.MySql && DbCon.DbConnectionParameters != "[]")
-            {
-                MyParameters = (MySqlParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
-            }
-            else if (DbCon.TypeDb == TypeDb.OlebDb && DbCon.DbConnectionParameters != "[]")
-            {
-                oleDParameters = (OleDbParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
-            }
-            else if (DbCon.TypeDb == TypeDb.Oracle && DbCon.DbConnectionParameters != "[]")
-            {
-                OParameters = (OracleParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
-            }
-            else if (DbCon.TypeDb == TypeDb.SqlServer && DbCon.DbConnectionParameters != "[]")
-            {
-                sqlServerParameters = (SqlServerParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
-            }
+            DeserializeDbConnectionParameters();
         }
 
         _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _loading = false;
+    }
+
+    private void DeserializeDbConnectionParameters()
+    {
+        if (DbCon.DbConnectionParameters == "[]") return;
+
+        var _login = DbCon.ConnectionLogin??string.Empty;
+        var _password = DbCon.Password ?? string.Empty;
+
+        switch (DbCon.TypeDb)
+        {
+            case TypeDb.PostgreSql:
+                PostgreParameters = (PostgreSqlParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, _login, _password);
+                break;
+            case TypeDb.MariaDb:
+                MariaParameters = (MariaDbParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, _login, _password);
+                break;
+            case TypeDb.MySql:
+                MyParameters = (MySqlParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, _login, _password);
+                break;
+            case TypeDb.OlebDb:
+                oleDParameters = (OleDbParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, _login, _password);
+                break;
+            case TypeDb.Oracle:
+                OParameters = (OracleParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, _login, _password);
+                break;
+            case TypeDb.SqlServer:
+                sqlServerParameters = (SqlServerParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, _login, _password);
+                break;
+        }
     }
 
     private async Task OnClickConnectionTest()
@@ -462,42 +469,7 @@
 
     private async Task ConnectionTest()
     {
-        if (DbCon.TypeDb == TypeDb.PostgreSql)
-        {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(PostgreParameters.SerializeMembersToJson(), TypeDb.PostgreSql);
-            DbCon.Password = PostgreParameters.Password;
-            DbCon.ConnectionLogin = PostgreParameters.UserId;
-        }
-        else if (DbCon.TypeDb == TypeDb.MariaDb)
-        {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MariaParameters.SerializeMembersToJson(), TypeDb.MariaDb);
-            DbCon.Password = MariaParameters.Password;
-            DbCon.ConnectionLogin = MariaParameters.UserId;
-        }
-        else if (DbCon.TypeDb == TypeDb.MySql)
-        {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(MyParameters.SerializeMembersToJson(), TypeDb.MySql);
-            DbCon.Password = MyParameters.Password;
-            DbCon.ConnectionLogin = MyParameters.UserId;
-        }
-        else if (DbCon.TypeDb == TypeDb.OlebDb)
-        {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(oleDParameters.SerializeMembersToJson(), TypeDb.OlebDb);
-            DbCon.Password = oleDParameters.Password;
-            DbCon.ConnectionLogin = oleDParameters.UserId;
-        }
-        else if (DbCon.TypeDb == TypeDb.Oracle)
-        {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
-            DbCon.Password = OParameters.Password;
-            DbCon.ConnectionLogin = OParameters.UserId;
-        }
-        else if (DbCon.TypeDb == TypeDb.SqlServer)
-        {
-            DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(sqlServerParameters.SerializeMembersToJson(), TypeDb.SqlServer);
-            DbCon.Password = sqlServerParameters.Password;
-            DbCon.ConnectionLogin = sqlServerParameters.UserId;
-        }
+        SetDbConnectionParameters();
 
         var tryConn = new ActivityDbConnectionDto
             {
@@ -584,5 +556,6 @@
 
         _extractDescriptions = false;
     }
+
 
 }
