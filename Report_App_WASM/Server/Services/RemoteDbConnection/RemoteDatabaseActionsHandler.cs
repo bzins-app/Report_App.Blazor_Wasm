@@ -154,13 +154,16 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
                         ScheduledTaskId = run.ScheduledTaskId
                     };
                     await _context.AddAsync(logQuery, cts);
-                    await _context.AddAsync(new TaskStepLog
+                    await _context.SaveChangesAsync("backgroundworker");
+                    var _qstep = new TaskStepLog
                     {
                         TaskLogId = taskId,
                         Step = "Fetch data completed",
-                        Info = run.QueryInfo + "- Nbr of rows:" + values.Rows.Count, RelatedLogType = LogType.QueryExecutionLog,RelatedLogId = logQuery.Id
-                    }, cts);
-                    await _context.SaveChangesAsync();
+                        Info = run.QueryInfo + "- Nbr of rows:" + values.Rows.Count,
+                        RelatedLogType = LogType.QueryExecutionLog, RelatedLogId = logQuery.Id
+                    };
+                    await _context.AddAsync(_qstep, cts);
+                    await _context.SaveChangesAsync("backgroundworker");
                 }
 
                 remote.Dispose();

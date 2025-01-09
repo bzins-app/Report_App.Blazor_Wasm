@@ -62,9 +62,9 @@ public class ApplicationDbContext : AuditableIdentityContext
         LogModelBuilderHelper.Build(modelBuilder.Entity<SystemLog>());
 
         //Entity relations and behaviours
-        modelBuilder.Entity<DataProvider>()
-            .HasOne(b => b.DatabaseConnection)
-            .WithOne(t => t.DataProvider).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<DatabaseConnection>()
+            .HasOne(b => b.DataProvider)
+            .WithOne(t => t.DatabaseConnection).HasForeignKey<DataProvider>(b => b.DataProviderId).OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<DataProvider>()
             .HasMany(b => b.ScheduledTasks)
             .WithOne(t => t.DataProvider).IsRequired().OnDelete(DeleteBehavior.Cascade);

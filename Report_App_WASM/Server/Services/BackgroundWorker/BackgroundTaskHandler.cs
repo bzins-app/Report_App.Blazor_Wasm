@@ -91,6 +91,7 @@ public class BackgroundTaskHandler : IDisposable
         }
 
         await UpdateTaskLogAsync(_logTask);
+        await _context.SaveChangesAsync("backgroundworker");
     }
 
     private async Task<ScheduledTask> GetScheduledTaskAsync(int scheduledTaskId)
@@ -146,6 +147,7 @@ public class BackgroundTaskHandler : IDisposable
     {
         _logTask.HasSteps = true;
         await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info });
+        await _context.SaveChangesAsync("backgroundworker");
     }
 
     private async Task HandleNonDataTransferTaskAsync(DatabaseConnection _activityConnect)
@@ -231,7 +233,7 @@ public class BackgroundTaskHandler : IDisposable
     private async ValueTask FetchData(ScheduledTaskQuery detail, int maxRows = 100000)
     {
         using var remoteDb = new RemoteDatabaseActionsHandler(_context, _mapper);
-        var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(detail.QueryParameters!, _jsonOpt);
+        var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(detail.ExecutionParameters!, _jsonOpt);
         List<QueryCommandParameter>? param = new();
         if (_jobParameters.CustomQueryParameters!.Any())
             param = _jobParameters.CustomQueryParameters;
@@ -295,6 +297,7 @@ public class BackgroundTaskHandler : IDisposable
             FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.Content.Length)
         };
         await _context.AddAsync(filecreationLocal);
+        await _context.SaveChangesAsync("backgroundworker");
         _logTask.HasSteps = true;
         await _context.AddAsync(new TaskStepLog
         { TaskLogId = _taskId, Step = "File local storage", Info = "Ok" , RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationLocal.Id});
@@ -320,6 +323,7 @@ public class BackgroundTaskHandler : IDisposable
                 FileSizeInMb = filecreationLocal.FileSizeInMb
             };
             await _context.AddAsync(filecreationRemote);
+            await _context.SaveChangesAsync("backgroundworker");
             if (config is { SftpConfiguration: not null, UseSftpProtocol: true })
             {
                 var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
@@ -364,6 +368,7 @@ public class BackgroundTaskHandler : IDisposable
             filecreationRemote.Result = resultDeposit.Message;
 
             _context.Update(filecreationRemote);
+            await _context.SaveChangesAsync("backgroundworker");
 
         }
     }
@@ -379,7 +384,7 @@ public class BackgroundTaskHandler : IDisposable
         foreach (var d in _fetchedData)
         {
             MemoryFileContainer fileCreated;
-            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(d.Key.QueryParameters!, _jsonOpt);
+            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(d.Key.ExecutionParameters!, _jsonOpt);
             if (string.IsNullOrEmpty(detailParam?.FileName))
                 fName =
                     $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
@@ -604,7 +609,7 @@ public class BackgroundTaskHandler : IDisposable
     {
         if (data.Rows.Count > 0)
         {
-            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(a.QueryParameters!);
+            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(a.ExecutionParameters!);
             var checkTableQuery = $@"IF (EXISTS (SELECT *
                                                        FROM INFORMATION_SCHEMA.TABLES
                                                        WHERE TABLE_SCHEMA = 'dbo'

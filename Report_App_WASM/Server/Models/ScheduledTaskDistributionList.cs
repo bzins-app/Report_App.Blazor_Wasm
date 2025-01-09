@@ -5,5 +5,6 @@ public class ScheduledTaskDistributionList : BaseTraceability
     public int ScheduledTaskDistributionListId { get; set; }
     [MaxLength(4000)] public string Recipients { get; set; } = "[]";
     [MaxLength(4000)] public string? EmailMessage { get; set; }
+    [MaxLength(250)] public string? MiscValue { get; set; }
     public virtual ScheduledTask? ScheduledTask { get; set; }
 }
