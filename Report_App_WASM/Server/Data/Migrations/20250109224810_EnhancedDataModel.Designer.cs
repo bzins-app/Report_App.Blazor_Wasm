@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250109202622_EnhancedDataModel")]
+    [Migration("20250109224810_EnhancedDataModel")]
     partial class EnhancedDataModel
     {
         /// <inheritdoc />
