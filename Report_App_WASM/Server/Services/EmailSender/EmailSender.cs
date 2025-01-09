@@ -91,6 +91,7 @@ public class EmailSender : IEmailSender
             await Context.AddAsync(log);
             await Context.SaveChangesAsync();
             result.Success = true;
+            result.KeyValue = log.Id;
         }
         else
         {

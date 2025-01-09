@@ -136,7 +136,7 @@
         {
                 ProviderName = value.ProviderName,
                 ProviderIcon = value.ProviderIcon,
-            DatabaseConnections = await DataService.GetValues<DatabaseConnectionDto>(uri)
+                DatabaseConnection = (await DataService.GetValues<DatabaseConnectionDto>(uri)).FirstOrDefault()
         };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -148,7 +148,7 @@
             _errorMessage = string.Empty;
             value.ProviderName = item.ProviderName;
             value.ProviderIcon = item.ProviderIcon;
-            value.DatabaseConnections = item.DatabaseConnections;
+            value.DatabaseConnection = item.DatabaseConnection;
 
             var result = await DataService.PostValues(value, "ActivityUpdate");
             if (result.Success)
@@ -167,7 +167,7 @@
     private async Task OpenDeleteDialog(DataProviderDto value)
     {
         var uri = $"GetActivityDbConnection?DataProviderId={value.DataProviderId}";
-        value.DatabaseConnections = await DataService.GetValues<DatabaseConnectionDto>(uri);
+        value.DatabaseConnection = (await DataService.GetValues<DatabaseConnectionDto>(uri)).FirstOrDefault();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
         var dialog = await DialogService.ShowAsync<_DataTransferFormDialog>("Delete", parameters, _dialogOptions);
@@ -192,7 +192,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new DataProviderDto { DatabaseConnections = new List<DatabaseConnectionDto> { new() }, ProviderType = ProviderType.TargetDatabase };
+        var value = new DataProviderDto { DatabaseConnection = new() , ProviderType = ProviderType.TargetDatabase };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_DataTransferFormDialog>("Create", parameters, _dialogOptions);

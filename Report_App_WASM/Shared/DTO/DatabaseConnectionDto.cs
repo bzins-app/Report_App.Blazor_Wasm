@@ -17,8 +17,8 @@ public class DatabaseConnectionDto : BaseTraceabilityDto, IDto
     public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
     public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
     public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
+    [MaxLength(4000)] public string RetryPatternParamters { get; set; } = "[]";
     [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
     public virtual DataProviderDto? DataProvider { get; set; }
-    public virtual ICollection<TableMetadataDto>? TableMetadata { get; set; } =
-        new List<TableMetadataDto>();
+    public virtual ICollection<TableMetadataDto>? TableMetadata { get; set; } = new List<TableMetadataDto>();
 }

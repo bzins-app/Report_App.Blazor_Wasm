@@ -11,7 +11,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker;
 public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 {
     private readonly ApplicationDbContext _context;
-    private readonly IRemoteDbConnection _dbReader;
+    private readonly IRemoteDatabaseActionsHandler _dbReader;
     private readonly IEmailSender _emailSender;
     private readonly LocalFilesService _fileDeposit;
     private readonly IWebHostEnvironment _hostingEnvironment;
@@ -19,7 +19,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     private readonly IServiceScopeFactory _scopeFactory;
 
     public BackgroundWorkers(
-        ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader,
+        ApplicationDbContext context, IEmailSender emailSender, IRemoteDatabaseActionsHandler dbReader,
         LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment,
         IServiceScopeFactory scopeFactory)
     {

@@ -13,5 +13,6 @@ public class TaskLogDto : IDto
     [MaxLength(60)] public string? Type { get; set; }
     public string? Result { get; set; }
     public bool Error { get; set; }
+    public bool HasSteps { get; set; }
     [MaxLength(200)] public string? RunBy { get; set; }
 }

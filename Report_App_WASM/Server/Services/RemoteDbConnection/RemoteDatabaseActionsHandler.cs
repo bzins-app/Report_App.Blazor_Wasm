@@ -3,7 +3,7 @@ using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Services.RemoteDb;
 
-public class RemoteDbConnection : IRemoteDbConnection, IDisposable
+public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -11,7 +11,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
 
     private bool _first = true;
 
-    public RemoteDbConnection(ApplicationDbContext context, IMapper mapper)
+    public RemoteDatabaseActionsHandler(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
@@ -111,7 +111,7 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
             var _dbInfo = await GetDbInfo(run.DataProviderId);
             var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(_dbInfo.DbConnectionParameters, "", "");
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
-            var logTask = new TaskStepLog { TaskId = taskId, Step = "Fetch data", Info = run.QueryInfo };
+            var _logTaskStep = new TaskStepLog { TaskLogId = taskId, Step = "Fetch data", Info = run.QueryInfo };
             try
             {
                 attempts++;
@@ -147,10 +147,19 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                         TransferBeginDateTime = fill,
                         QueryName = run.QueryInfo,
                         Query = run.QueryToRun,
-                        NbrOfRows = values.Rows.Count,
-                        ProviderName = activityName
+                        RowsFetched = values.Rows.Count,
+                        ProviderName = activityName,
+                        TaskLogId = taskId,
+                        ScheduledTaskQueryId = run.ScheduledTaskQueryId,
+                        ScheduledTaskId = run.ScheduledTaskId
                     };
-                    await _context.AddAsync(logQuery);
+                    await _context.AddAsync(logQuery, cts);
+                    await _context.AddAsync(new TaskStepLog
+                    {
+                        TaskLogId = taskId,
+                        Step = "Fetch data completed",
+                        Info = run.QueryInfo + "- Nbr of rows:" + values.Rows.Count, RelatedLogType = LogType.QueryExecutionLog,RelatedLogId = logQuery.Id
+                    }, cts);
                     await _context.SaveChangesAsync();
                 }
 
@@ -175,11 +184,11 @@ public class RemoteDbConnection : IRemoteDbConnection, IDisposable
                 };
                 if (!run.Test)
                 {
-                    logTask.Info +=
+                    _logTaskStep.Info +=
                         $" Exception caught on attempt {attempts} - will retry after delay in {delay / 1000} seconds " +
                         ex.Message;
-                    logTask.Step += $": attempt {attempts}";
-                    await _context.AddAsync(logTask);
+                    _logTaskStep.Step += $": attempt {attempts}";
+                    await _context.AddAsync(_logTaskStep, cts);
                     await _context.SaveChangesAsync();
                     await Task.Delay(delay, cts).WaitAsync(cts);
                 }

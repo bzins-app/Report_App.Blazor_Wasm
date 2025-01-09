@@ -7,3 +7,15 @@ public enum TaskType
     Alert = 1,
     DataTransfer = 2
 }
+
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum LogType
+{
+    NotSet = 0,
+    TaskLog = 10,
+    TaskStepLog = 20,
+    QueryExecutionLog = 30,
+    EmailLog = 40,
+    ReportGenerationLog=50
+}

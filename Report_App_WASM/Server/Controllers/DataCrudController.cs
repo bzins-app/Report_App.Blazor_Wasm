@@ -39,7 +39,7 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         return await _context.TaskStepLog
             .AsNoTracking()
-            .Where(a => a.TaskId == logTaskHeaderId)
+            .Where(a => a.TaskLogId == logTaskHeaderId)
             .ToArrayAsync();
     }
 
@@ -162,22 +162,19 @@ public class DataCrudController : ControllerBase, IDisposable
     public async Task<DataProvider> GetDataTransferInfoAsync()
     {
         var targetInfo = await _context.DataProvider
-            .Include(a => a.DatabaseConnections)
+            .Include(a => a.DatabaseConnection)
             .AsNoTracking()
             .FirstOrDefaultAsync(( a) => a.ProviderType == Shared.ProviderType.TargetDatabase);
 
         if (targetInfo != null) return targetInfo;
 
-        var connections = new List<DatabaseConnection>
-        {
-            new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer }
-        };
+        var connections =  new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer };
 
         targetInfo = new DataProvider
         {
             ProviderName = "Data transfer",
             ProviderType = Shared.ProviderType.TargetDatabase,
-            DatabaseConnections = connections
+            DatabaseConnection = connections
         };
 
         return targetInfo;
@@ -396,12 +393,9 @@ public class DataCrudController : ControllerBase, IDisposable
                 }
             }
 
-            if (values.EntityValue.DatabaseConnections != null)
+            if (values.EntityValue.DatabaseConnection != null)
             {
-                foreach (var connect in values.EntityValue.DatabaseConnections)
-                {
-                    await UpdateEntity(connect, values.UserName!);
-                }
+                await UpdateEntity(values.EntityValue.DatabaseConnection, values.UserName!);
             }
 
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));

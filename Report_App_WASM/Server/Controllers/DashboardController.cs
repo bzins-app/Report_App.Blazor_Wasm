@@ -131,7 +131,7 @@ public class DashboardController : ControllerBase, IDisposable
             .Where(a => a.EndDateTime > dateThreshold)
             .GroupBy(a => new DateTime(a.EndDateTime.Year, a.EndDateTime.Month, a.EndDateTime.Day, a.EndDateTime.Hour,
                 a.EndDateTime.Minute, 0))
-            .Select(a => new DbLinesQuery { Date = a.Key, NbrOfRows = a.Sum(b => b.NbrOfRows) })
+            .Select(a => new DbLinesQuery { Date = a.Key, RowsFetched = a.Sum(b => b.RowsFetched) })
             .ToListAsync();
     }
 }

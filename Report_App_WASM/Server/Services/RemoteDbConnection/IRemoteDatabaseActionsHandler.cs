@@ -1,6 +1,6 @@
 ﻿namespace Report_App_WASM.Server.Services.RemoteDb;
 
-public interface IRemoteDbConnection
+public interface IRemoteDatabaseActionsHandler
 {
     Task<SubmitResult> TestConnectionAsync(DatabaseConnection parameter);
     Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts, int taskId = 0);

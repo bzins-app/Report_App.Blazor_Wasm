@@ -41,7 +41,7 @@ builder.Services.Configure<IdentityDefaultOptions>(identityDefaultOptionsConfigu
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-builder.Services.AddScoped<IRemoteDbConnection, RemoteDbConnection>();
+builder.Services.AddScoped<IRemoteDatabaseActionsHandler, RemoteDatabaseActionsHandler>();
 builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
 builder.Services.AddTransient<LocalFilesService>();
 builder.Services.AddTransient<InitializeDatabase>();

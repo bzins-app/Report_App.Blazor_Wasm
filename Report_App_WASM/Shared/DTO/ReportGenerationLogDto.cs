@@ -8,6 +8,7 @@ public class ReportGenerationLogDto : IDto
     [MaxLength(200)] public string? CreatedBy { get; set; }
     public int DataProviderId { get; set; }
     [MaxLength(250)] public string? ProviderName { get; set; }
+    public int TaskLogId { get; set; }
     public int ScheduledTaskId { get; set; }
     [MaxLength(600)] public string? ReportName { get; set; }
     [MaxLength(600)] public string? SubName { get; set; }

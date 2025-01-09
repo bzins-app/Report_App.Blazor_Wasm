@@ -9,7 +9,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker;
 public class BackgroundTaskHandler : IDisposable
 {
     private readonly ApplicationDbContext _context;
-    private readonly IRemoteDbConnection _dbReader;
+    private readonly IRemoteDatabaseActionsHandler _dbReader;
     private readonly IEmailSender _emailSender;
     private readonly LocalFilesService _fileDeposit;
     private readonly IWebHostEnvironment _hostingEnvironment;
@@ -25,12 +25,19 @@ public class BackgroundTaskHandler : IDisposable
     {
         PropertyNameCaseInsensitive = true
     };
-
     private int _taskId;
+    private TaskLog _logTask;
 
-    public BackgroundTaskHandler(
-        ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader,
-        LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment)
+    private class DataTransferRowsStats
+    {
+        public int BulkInserted { get; set; }
+        public int Inserted { get; set; }
+        public int Updated { get; set; }
+        public int Deleted { get; set; }
+    }
+    DataTransferRowsStats _dataTransferStat = new DataTransferRowsStats();
+
+    public BackgroundTaskHandler(ApplicationDbContext context, IEmailSender emailSender, IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment)
     {
         _context = context;
         _emailSender = emailSender;
@@ -51,20 +58,21 @@ public class BackgroundTaskHandler : IDisposable
         _header = await GetScheduledTaskAsync(parameters.ScheduledTaskId);
         var _activityConnect = await GetDatabaseConnectionAsync(_header.IdDataProvider);
 
-        var logTask = CreateTaskLog(parameters);
-        await InsertLogTaskAsync(logTask);
+        _logTask = CreateTaskLog(parameters);
+        await InsertLogTaskAsync(_logTask);
 
         if (!_header.TaskQueries.Any())
         {
-            await HandleNoQueriesAsync(logTask);
+            await HandleNoQueriesAsync(_logTask);
             return;
         }
 
-        _taskId = logTask.TaskLogId;
+        _taskId = _logTask.TaskLogId;
         await InsertLogTaskStepAsync("Initialization", $"Nbr of queries: {_header.TaskQueries.Count}");
 
         try
         {
+            var _resultInfo = "Ok";
             if (_header.Type != TaskType.DataTransfer)
             {
                 await HandleNonDataTransferTaskAsync(_activityConnect);
@@ -72,16 +80,17 @@ public class BackgroundTaskHandler : IDisposable
             else
             {
                 await HandleDataTransferTaskAsync(_activityConnect);
+                _resultInfo = $"Rows bulkinserted: {_dataTransferStat.BulkInserted},Rows inserted: {_dataTransferStat.Inserted},Rows updated: {_dataTransferStat.Updated},Rows deleted: {_dataTransferStat.Deleted}";
             }
 
-            await FinalizeTaskAsync(logTask, parameters.GenerateFiles);
+            await FinalizeTaskAsync(_logTask, parameters.GenerateFiles, _resultInfo);
         }
         catch (Exception ex)
         {
-            await HandleTaskErrorAsync(logTask, ex);
+            await HandleTaskErrorAsync(_logTask, ex);
         }
 
-        await UpdateTaskLogAsync(logTask);
+        await UpdateTaskLogAsync(_logTask);
     }
 
     private async Task<ScheduledTask> GetScheduledTaskAsync(int scheduledTaskId)
@@ -135,7 +144,8 @@ public class BackgroundTaskHandler : IDisposable
 
     private async Task InsertLogTaskStepAsync(string step, string info)
     {
-        await _context.AddAsync(new TaskStepLog { TaskId = _taskId, Step = step, Info = info });
+        _logTask.HasSteps = true;
+        await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info });
     }
 
     private async Task HandleNonDataTransferTaskAsync(DatabaseConnection _activityConnect)
@@ -171,56 +181,24 @@ public class BackgroundTaskHandler : IDisposable
     {
         foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
         {
-            var log = CreateTaskLogForDetail(detail);
             await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
-            await _context.AddAsync(log);
-            await _context.SaveChangesAsync("backgroundworker");
 
             var _headerParameters = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskHeaderParameters);
             int i = 0;
             foreach (var value in _fetchedData)
             {
-                await HandleDataTransferTask(detail, value.Value, log, _headerParameters.DataTransferId, i);
+                await HandleDataTransferTask(detail, value.Value, _headerParameters.DataTransferId, i);
                 i++;
             }
 
-            await FinalizeDetailLogAsync(log);
             _fetchedData.Clear();
         }
     }
-
-    private TaskLog CreateTaskLogForDetail(ScheduledTaskQuery detail)
-    {
-        return new TaskLog
-        {
-            DataProviderId = _header.DataProvider.DataProviderId,
-            ProviderName = _header.ProviderName,
-            StartDateTime = DateTime.Now,
-            JobDescription = detail.QueryName,
-            Type = _header.Type + " service",
-            Error = false,
-            RunBy = _jobParameters.RunBy,
-            Result = "Running"
-        };
-    }
-
-    private async Task FinalizeDetailLogAsync(TaskLog log)
-    {
-        log.EndDateTime = DateTime.Now;
-        log.DurationInSeconds = (int)(log.EndDateTime - log.StartDateTime).TotalSeconds;
-        if (log.Result == "Running")
-        {
-            log.Result = "No lines fetched";
-        }
-
-        _context.Update(log);
-        await _context.SaveChangesAsync("backgroundworker");
-    }
-
-    private async Task FinalizeTaskAsync(TaskLog logTask, bool generateFiles)
+    
+    private async Task FinalizeTaskAsync(TaskLog logTask, bool generateFiles, string _result="Ok")
     {
         logTask.Error = false;
-        logTask.Result = "Ok";
+        logTask.Result = _result;
         logTask.EndDateTime = DateTime.Now;
         logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
         if (generateFiles)
@@ -250,11 +228,9 @@ public class BackgroundTaskHandler : IDisposable
         await _context.SaveChangesAsync("backgroundworker");
     }
 
-
-
     private async ValueTask FetchData(ScheduledTaskQuery detail, int maxRows = 100000)
     {
-        using var remoteDb = new RemoteDbConnection(_context, _mapper);
+        using var remoteDb = new RemoteDatabaseActionsHandler(_context, _mapper);
         var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(detail.QueryParameters!, _jsonOpt);
         List<QueryCommandParameter>? param = new();
         if (_jobParameters.CustomQueryParameters!.Any())
@@ -275,6 +251,8 @@ public class BackgroundTaskHandler : IDisposable
             new RemoteDbCommandParameters
             {
                 DataProviderId = _header.DataProvider.DataProviderId,
+                ScheduledTaskId = _header.ScheduledTaskId,
+                ScheduledTaskQueryId = detail.ScheduledTaskQueryId,
                 QueryToRun = detail.Query,
                 QueryInfo = detail.QueryName,
                 PaginatedResult = true,
@@ -282,12 +260,7 @@ public class BackgroundTaskHandler : IDisposable
                 QueryCommandParameters = param,
                 MaxSize = maxRows
             }, _jobParameters.Cts, _taskId);
-        await _context.AddAsync(new TaskStepLog
-        {
-            TaskId = _taskId,
-            Step = "Fetch data completed",
-            Info = detail.QueryName + "- Nbr of rows:" + table.Rows.Count
-        });
+        _logTask.HasSteps = true; 
 
         if (detailParam!.GenerateIfEmpty || table.Rows.Count > 0) _fetchedData.Add(detail, table);
 
@@ -298,8 +271,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName, bool useDepositConfiguration,
-        string? subName = null)
+    private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName, bool useDepositConfiguration, string? subName = null)
     {
         var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
         if (!localFileResult.Success)
@@ -323,8 +295,9 @@ public class BackgroundTaskHandler : IDisposable
             FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.Content.Length)
         };
         await _context.AddAsync(filecreationLocal);
+        _logTask.HasSteps = true;
         await _context.AddAsync(new TaskStepLog
-        { TaskId = _taskId, Step = "File local storage", Info = "Ok" });
+        { TaskLogId = _taskId, Step = "File local storage", Info = "Ok" , RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationLocal.Id});
 
         if (_header.FileStorageLocationId != 0 && useDepositConfiguration && localFileResult.Success)
         {
@@ -332,6 +305,21 @@ public class BackgroundTaskHandler : IDisposable
             SubmitResult resultDeposit;
             var config = await _context.FileStorageLocation.Include(a => a.SftpConfiguration).AsNoTracking()
                 .FirstAsync(a => a.FileStorageLocationId == _header.FileStorageLocationId);
+            ReportGenerationLog filecreationRemote = new()
+            {
+                DataProviderId = _header.DataProvider.DataProviderId,
+                ProviderName = _header.ProviderName,
+                CreatedAt = DateTime.Now,
+                CreatedBy = "Report Service",
+                ScheduledTaskId = _header.ScheduledTaskId,
+                ReportName = _header.TaskName,
+                SubName = "TaskId:" + _taskId,
+                FileType = _header.TypeFile.ToString(),
+                FileName = fName,
+                IsAvailable = false,
+                FileSizeInMb = filecreationLocal.FileSizeInMb
+            };
+            await _context.AddAsync(filecreationRemote);
             if (config is { SftpConfiguration: not null, UseSftpProtocol: true })
             {
                 var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
@@ -343,7 +331,7 @@ public class BackgroundTaskHandler : IDisposable
                     resultDeposit = await ftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
                         localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                     await _context.AddAsync(new TaskStepLog
-                    { TaskId = _taskId, Step = "File FTP drop", Info = config.FilePath });
+                    { TaskLogId = _taskId, Step = "File FTP drop", Info = config.FilePath, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id });
                 }
                 else
                 {
@@ -352,7 +340,7 @@ public class BackgroundTaskHandler : IDisposable
                     resultDeposit = await sftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
                         localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                     await _context.AddAsync(new TaskStepLog
-                    { TaskId = _taskId, Step = "File Sftp drop", Info = config.FilePath });
+                    { TaskLogId = _taskId, Step = "File Sftp drop", Info = config.FilePath, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id });
                 }
             }
             else
@@ -361,193 +349,22 @@ public class BackgroundTaskHandler : IDisposable
                 resultDeposit =
                     await _fileDeposit.SaveFileAsync(fileResult, fName, config.FilePath, config.TryToCreateFolder);
                 await _context.AddAsync(new TaskStepLog
-                { TaskId = _taskId, Step = "File folder drop", Info = config.FilePath });
+                { TaskLogId = _taskId, Step = "File folder drop", Info = config.FilePath, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id });
             }
 
             if (!resultDeposit.Success)
             {
                 await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message, "File deposit: ");
                 await _context.AddAsync(new TaskStepLog
-                { TaskId = _taskId, Step = "Error", Info = resultDeposit.Message });
+                { TaskLogId = _taskId, Step = "Error", Info = resultDeposit.Message, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id});
             }
 
+            filecreationRemote.ReportPath = completePath;
+            filecreationRemote.Error = !resultDeposit.Success;
+            filecreationRemote.Result = resultDeposit.Message;
 
-            ReportGenerationLog filecreationRemote = new()
-            {
-                DataProviderId = _header.DataProvider.DataProviderId,
-                ProviderName = _header.ProviderName,
-                CreatedAt = DateTime.Now,
-                CreatedBy = "Report Service",
-                ScheduledTaskId = _header.ScheduledTaskId,
-                ReportName = _header.TaskName,
-                SubName = "TaskId:" + _taskId,
-                FileType = _header.TypeFile.ToString(),
-                ReportPath = completePath,
-                FileName = fName,
-                IsAvailable = false,
-                Error = !resultDeposit.Success,
-                Result = resultDeposit.Message,
-                FileSizeInMb = filecreationLocal.FileSizeInMb
-            };
-            await _context.AddAsync(filecreationRemote);
-        }
-    }
+            _context.Update(filecreationRemote);
 
-    private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, TaskLog logTask,
-        int activityIdTransfer, int loopNumber)
-    {
-        if (data.Rows.Count > 0)
-        {
-            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(a.QueryParameters!);
-            var checkTableQuery = $@"IF (EXISTS (SELECT *
-                                                       FROM INFORMATION_SCHEMA.TABLES
-                                                       WHERE TABLE_SCHEMA = 'dbo'
-                                                       AND TABLE_NAME = '{detailParam?.DataTransferTargetTableName}'))
-                                                       BEGIN
-                                                          select 1
-                                                       END;
-                                                    ELSE
-                                                       BEGIN
-                                                          select 0
-                                                       END;";
-            var result = await _dbReader.CkeckTableExists(checkTableQuery, activityIdTransfer);
-
-            if (!result)
-            {
-                string queryCreate;
-                if (detailParam!.DataTransferUsePk)
-                {
-                    queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                        detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPk);
-                }
-                else
-                {
-                    if (detailParam.DataTransferCommandBehaviour == DataTransferBasicBehaviour.Append.ToString())
-                        queryCreate =
-                            CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                                detailParam.DataTransferTargetTableName, false);
-                    else
-                        queryCreate =
-                            CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                                detailParam.DataTransferTargetTableName, loopNumber == 0 ? true : false);
-                }
-
-                await _dbReader.CreateTable(queryCreate, activityIdTransfer);
-            }
-
-            if (!detailParam!.DataTransferUsePk)
-            {
-                logTask.Result = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " +
-                                 data.Rows.Count;
-                await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName, activityIdTransfer);
-                await _context.AddAsync(new TaskStepLog
-                {
-                    TaskId = _taskId,
-                    Step = "Bulk insert completed",
-                    Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " +
-                           data.Rows.Count
-                });
-            }
-            else
-            {
-                var tempTable = "tmp_" + detailParam.DataTransferTargetTableName +
-                                DateTime.Now.ToString("yyyyMMddHHmmss");
-                var columnNames = new HashSet<string>(data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
-                var queryCreate =
-                    CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true,
-                        detailParam.DataTransferPk);
-
-                await _dbReader.CreateTable(queryCreate, activityIdTransfer);
-                try
-                {
-                    await _dbReader.LoadDatatableToTable(data, tempTable, activityIdTransfer);
-                    await _context.AddAsync(new TaskStepLog
-                    {
-                        TaskId = _taskId,
-                        Step = "Bulk insert completed",
-                        Info = "Lines inserted (command:" + detailParam.DataTransferCommandBehaviour + "): " +
-                               data.Rows.Count
-                    });
-                }
-                catch (Exception)
-                {
-                    await _dbReader.DeleteTable(tempTable, activityIdTransfer);
-                    throw;
-                }
-
-                var mergeSql = new
-                {
-                    MERGE_FIELD_NAME = string.Join(" and ",
-                        detailParam.DataTransferPk!.Select(name => $"target.[{name}] = source.[{name}]")),
-                    FIELD_LIST = string.Join(", ", columnNames.Select(name => $"[{name}]")),
-                    SOURCE_TABLE_NAME = tempTable,
-                    TARGET_TABLE_NAME = detailParam.DataTransferTargetTableName,
-                    UPDATES_LIST = string.Join(", ", columnNames.Select(name => $"target.[{name}] = source.[{name}]")),
-                    SOURCE_FIELD_LIST = string.Join(", ", columnNames.Select(name => $"source.[{name}]")),
-                    UPDATE_REQUIRED_EXPRESSION = string.Join(" OR ",
-                        columnNames.Select(name =>
-                            $"IIF((target.[{name}] IS NULL AND source.[{name}] IS NULL) OR target.[{name}] = source.[{name}], 1, 0) = 0")) // Take care around null values
-                };
-
-                string mergeSqlTemplate;
-
-                if (detailParam.DataTransferCommandBehaviour == DataTransferAdvancedBehaviour.Insert.ToString())
-                    mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
-                                             MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
-                                             USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
-                                             ON ({mergeSql.MERGE_FIELD_NAME})
-                                             WHEN NOT MATCHED THEN
-                                                 INSERT ({mergeSql.FIELD_LIST}) VALUES ({mergeSql.SOURCE_FIELD_LIST})
-                                             OUTPUT $action INTO @SummaryOfChanges;
-
-                                             SELECT Change, COUNT(1) AS CountPerChange
-                                             FROM @SummaryOfChanges
-                                             GROUP BY Change;";
-                else if (detailParam.DataTransferCommandBehaviour ==
-                         DataTransferAdvancedBehaviour.InsertOrUpdateOrDelete.ToString())
-                    mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
-                                             MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
-                                             USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
-                                             ON ({mergeSql.MERGE_FIELD_NAME})
-                                             WHEN MATCHED AND ({mergeSql.UPDATE_REQUIRED_EXPRESSION}) THEN
-                                                 UPDATE SET {mergeSql.UPDATES_LIST}
-                                             WHEN NOT MATCHED THEN
-                                                 INSERT ({mergeSql.FIELD_LIST}) VALUES ({mergeSql.SOURCE_FIELD_LIST})
-                                             WHEN NOT MATCHED BY SOURCE THEN
-                                                 DELETE
-                                             OUTPUT $action INTO @SummaryOfChanges;
-
-                                             SELECT Change, COUNT(1) AS CountPerChange
-                                             FROM @SummaryOfChanges
-                                             GROUP BY Change;";
-                else
-                    mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
-                                             MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
-                                             USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
-                                             ON ({mergeSql.MERGE_FIELD_NAME})
-                                             WHEN MATCHED AND ({mergeSql.UPDATE_REQUIRED_EXPRESSION}) THEN
-                                                 UPDATE SET {mergeSql.UPDATES_LIST}
-                                             WHEN NOT MATCHED THEN
-                                                 INSERT ({mergeSql.FIELD_LIST}) VALUES ({mergeSql.SOURCE_FIELD_LIST})
-                                             OUTPUT $action INTO @SummaryOfChanges;
-
-                                             SELECT Change, COUNT(1) AS CountPerChange
-                                             FROM @SummaryOfChanges
-                                             GROUP BY Change;";
-
-                var mergeResult = await _dbReader.MergeTables(mergeSqlTemplate, activityIdTransfer);
-
-                logTask.Result = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " +
-                                 mergeResult.UpdatedCount + " Nbr lines deleted: " + mergeResult.DeletedCount;
-                await _dbReader.DeleteTable(tempTable, activityIdTransfer);
-                await _context.AddAsync(new TaskStepLog
-                {
-                    TaskId = _taskId,
-                    Step = "Merge completed",
-                    Info = "Nbr lines inserted: " + mergeResult.InsertedCount + " Nbr lines updated: " +
-                           mergeResult.UpdatedCount + " Nbr lines deleted: " + mergeResult.DeletedCount
-                });
-            }
         }
     }
 
@@ -636,7 +453,7 @@ public class BackgroundTaskHandler : IDisposable
 
             _fileResults.Add(fileCreated);
             await _context.AddAsync(new TaskStepLog
-            { TaskId = _taskId, Step = "File created", Info = fName });
+            { TaskLogId = _taskId, Step = "File created", Info = fName });
         }
 
         if (excelMultipleTabs.Any())
@@ -676,7 +493,7 @@ public class BackgroundTaskHandler : IDisposable
             _fileResults.Add(fileCreated);
             excelMultipleTabs.Clear();
             await _context.AddAsync(new TaskStepLog
-            { TaskId = _taskId, Step = "File created", Info = fName });
+            { TaskLogId = _taskId, Step = "File created", Info = fName });
         }
 
         _fetchedData.Clear();
@@ -734,10 +551,10 @@ public class BackgroundTaskHandler : IDisposable
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
                         await _context.AddAsync(new TaskStepLog
-                        { TaskId = _taskId, Step = "Email sent", Info = subject });
+                        { TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog, RelatedLogId = result.KeyValue});
                     else
                         await _context.AddAsync(new TaskStepLog
-                        { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
+                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message });
 
                     listAttach.Clear();
                 }
@@ -775,11 +592,172 @@ public class BackgroundTaskHandler : IDisposable
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
                         await _context.AddAsync(new TaskStepLog
-                        { TaskId = _taskId, Step = "Email sent", Info = subject });
+                        { TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog, RelatedLogId = result.KeyValue});
                     else
                         await _context.AddAsync(new TaskStepLog
-                        { TaskId = _taskId, Step = "Email not sent", Info = result.Message });
+                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message });
                 }
+        }
+    }
+
+    private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, int activityIdTransfer, int loopNumber)
+    {
+        if (data.Rows.Count > 0)
+        {
+            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(a.QueryParameters!);
+            var checkTableQuery = $@"IF (EXISTS (SELECT *
+                                                       FROM INFORMATION_SCHEMA.TABLES
+                                                       WHERE TABLE_SCHEMA = 'dbo'
+                                                       AND TABLE_NAME = '{detailParam?.DataTransferTargetTableName}'))
+                                                       BEGIN
+                                                          select 1
+                                                       END;
+                                                    ELSE
+                                                       BEGIN
+                                                          select 0
+                                                       END;";
+            var result = await _dbReader.CkeckTableExists(checkTableQuery, activityIdTransfer);
+
+            if (!result)
+            {
+                string queryCreate;
+                if (detailParam!.DataTransferUsePk)
+                {
+                    queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
+                        detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPk);
+                }
+                else
+                {
+                    if (detailParam.DataTransferCommandBehaviour == DataTransferBasicBehaviour.Append.ToString())
+                        queryCreate =
+                            CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
+                                detailParam.DataTransferTargetTableName, false);
+                    else
+                        queryCreate =
+                            CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
+                                detailParam.DataTransferTargetTableName, loopNumber == 0 ? true : false);
+                }
+
+                await _dbReader.CreateTable(queryCreate, activityIdTransfer);
+            }
+
+            if (!detailParam!.DataTransferUsePk)
+            {
+                await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName, activityIdTransfer);
+                _logTask.HasSteps = true;
+                _dataTransferStat.Inserted=+data.Rows.Count;
+                _dataTransferStat.BulkInserted=+data.Rows.Count;
+                await _context.AddAsync(new TaskStepLog
+                {
+                    TaskLogId = _taskId,
+                    Step = "Bulk insert completed",
+                    Info = "Rows (command:" + detailParam.DataTransferCommandBehaviour + "): " +
+                           data.Rows.Count
+                });
+            }
+            else
+            {
+                var tempTable = "tmp_" + detailParam.DataTransferTargetTableName +
+                                DateTime.Now.ToString("yyyyMMddHHmmss");
+                var columnNames = new HashSet<string>(data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
+                var queryCreate =
+                    CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true,
+                        detailParam.DataTransferPk);
+
+                await _dbReader.CreateTable(queryCreate, activityIdTransfer);
+                try
+                {
+                    await _dbReader.LoadDatatableToTable(data, tempTable, activityIdTransfer);
+
+                    _dataTransferStat.BulkInserted=+data.Rows.Count;
+                    await _context.AddAsync(new TaskStepLog
+                    {
+                        TaskLogId = _taskId,
+                        Step = "Bulk insert completed",
+                        Info = "Rows (command:" + detailParam.DataTransferCommandBehaviour + "): " +
+                               data.Rows.Count
+                    });
+                }
+                catch (Exception)
+                {
+                    await _dbReader.DeleteTable(tempTable, activityIdTransfer);
+                    throw;
+                }
+
+                var mergeSql = new
+                {
+                    MERGE_FIELD_NAME = string.Join(" and ",
+                        detailParam.DataTransferPk!.Select(name => $"target.[{name}] = source.[{name}]")),
+                    FIELD_LIST = string.Join(", ", columnNames.Select(name => $"[{name}]")),
+                    SOURCE_TABLE_NAME = tempTable,
+                    TARGET_TABLE_NAME = detailParam.DataTransferTargetTableName,
+                    UPDATES_LIST = string.Join(", ", columnNames.Select(name => $"target.[{name}] = source.[{name}]")),
+                    SOURCE_FIELD_LIST = string.Join(", ", columnNames.Select(name => $"source.[{name}]")),
+                    UPDATE_REQUIRED_EXPRESSION = string.Join(" OR ",
+                        columnNames.Select(name =>
+                            $"IIF((target.[{name}] IS NULL AND source.[{name}] IS NULL) OR target.[{name}] = source.[{name}], 1, 0) = 0")) // Take care around null values
+                };
+
+                string mergeSqlTemplate;
+
+                if (detailParam.DataTransferCommandBehaviour == DataTransferAdvancedBehaviour.Insert.ToString())
+                    mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
+                                             MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
+                                             USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
+                                             ON ({mergeSql.MERGE_FIELD_NAME})
+                                             WHEN NOT MATCHED THEN
+                                                 INSERT ({mergeSql.FIELD_LIST}) VALUES ({mergeSql.SOURCE_FIELD_LIST})
+                                             OUTPUT $action INTO @SummaryOfChanges;
+
+                                             SELECT Change, COUNT(1) AS CountPerChange
+                                             FROM @SummaryOfChanges
+                                             GROUP BY Change;";
+                else if (detailParam.DataTransferCommandBehaviour ==
+                         DataTransferAdvancedBehaviour.InsertOrUpdateOrDelete.ToString())
+                    mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
+                                             MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
+                                             USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
+                                             ON ({mergeSql.MERGE_FIELD_NAME})
+                                             WHEN MATCHED AND ({mergeSql.UPDATE_REQUIRED_EXPRESSION}) THEN
+                                                 UPDATE SET {mergeSql.UPDATES_LIST}
+                                             WHEN NOT MATCHED THEN
+                                                 INSERT ({mergeSql.FIELD_LIST}) VALUES ({mergeSql.SOURCE_FIELD_LIST})
+                                             WHEN NOT MATCHED BY SOURCE THEN
+                                                 DELETE
+                                             OUTPUT $action INTO @SummaryOfChanges;
+
+                                             SELECT Change, COUNT(1) AS CountPerChange
+                                             FROM @SummaryOfChanges
+                                             GROUP BY Change;";
+                else
+                    mergeSqlTemplate = @$"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
+                                             MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
+                                             USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
+                                             ON ({mergeSql.MERGE_FIELD_NAME})
+                                             WHEN MATCHED AND ({mergeSql.UPDATE_REQUIRED_EXPRESSION}) THEN
+                                                 UPDATE SET {mergeSql.UPDATES_LIST}
+                                             WHEN NOT MATCHED THEN
+                                                 INSERT ({mergeSql.FIELD_LIST}) VALUES ({mergeSql.SOURCE_FIELD_LIST})
+                                             OUTPUT $action INTO @SummaryOfChanges;
+
+                                             SELECT Change, COUNT(1) AS CountPerChange
+                                             FROM @SummaryOfChanges
+                                             GROUP BY Change;";
+
+                var mergeResult = await _dbReader.MergeTables(mergeSqlTemplate, activityIdTransfer);
+
+                _dataTransferStat.Inserted=+mergeResult.InsertedCount;
+                _dataTransferStat.Updated=+mergeResult.UpdatedCount;
+                _dataTransferStat.Deleted=+mergeResult.DeletedCount;
+                await _dbReader.DeleteTable(tempTable, activityIdTransfer);
+                await _context.AddAsync(new TaskStepLog
+                {
+                    TaskLogId = _taskId,
+                    Step = "Merge completed",
+                    Info = "Rows inserted: " + mergeResult.InsertedCount + " Rows updated: " +
+                           mergeResult.UpdatedCount + " Rows deleted: " + mergeResult.DeletedCount
+                });
+            }
         }
     }
 }

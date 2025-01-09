@@ -178,7 +178,7 @@ public class DataGridController : ODataController, IDisposable
     public IQueryable<DataProvider> GetActivities()
     {
         return _context.DataProvider.Where(a => a.ProviderType == ProviderType.SourceDatabase)
-            .Include(a => a.DatabaseConnections).AsNoTracking();
+            .Include(a => a.DatabaseConnection).AsNoTracking();
     }
 
     [EnableQuery]
@@ -186,7 +186,7 @@ public class DataGridController : ODataController, IDisposable
     public IQueryable<DataProvider> GetDataTransfers()
     {
         return _context.DataProvider.Where(a => a.ProviderType == ProviderType.TargetDatabase)
-            .Include(a => a.DatabaseConnections).AsNoTracking();
+            .Include(a => a.DatabaseConnection).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]

@@ -32,7 +32,7 @@
     //    [MaxLength(100)] public string TimeZone { get; set; } = TimeZoneInfo.Local.Id;
     //    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
 
-    //    public virtual ICollection<DatabaseConnection> DatabaseConnections { get; set; } = new List<DatabaseConnection>();
+    //    public virtual ICollection<DatabaseConnection> DatabaseConnection { get; set; } = new List<DatabaseConnection>();
     //    public virtual ICollection<ScheduledTask> ScheduledTasks { get; set; } = new List<ScheduledTask>();
     //    public virtual ICollection<StoredQuery> StoredQueries { get; set; } = new List<StoredQuery>();
     //}

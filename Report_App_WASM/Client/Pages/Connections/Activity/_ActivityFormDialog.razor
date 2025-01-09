@@ -419,9 +419,9 @@
     protected override async Task OnInitializedAsync()
     {
         _appConst = await AppService.GetApplicationConstantsValues();
-        if (Item!.DatabaseConnections.Any())
+        if (Item!.DatabaseConnection is not null)
         {
-            DbCon = Item.DatabaseConnections.First();
+            DbCon = Item.DatabaseConnection;
             DeserializeDbConnectionParameters();
         }
 

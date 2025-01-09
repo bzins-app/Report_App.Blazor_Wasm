@@ -63,7 +63,7 @@ public class ApplicationDbContext : AuditableIdentityContext
 
         //Entity relations and behaviours
         modelBuilder.Entity<DataProvider>()
-            .HasMany(b => b.DatabaseConnections)
+            .HasOne(b => b.DatabaseConnection)
             .WithOne(t => t.DataProvider).IsRequired().OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<DataProvider>()
             .HasMany(b => b.ScheduledTasks)
@@ -122,7 +122,7 @@ public class ApplicationDbContext : AuditableIdentityContext
         modelBuilder.Entity<SystemLog>().HasIndex(r => r.Level);
         modelBuilder.Entity<TaskLog>().HasIndex(b => b.EndDateTime);
         modelBuilder.Entity<TaskLog>().HasIndex(b => new { b.Error, b.Result });
-        modelBuilder.Entity<TaskStepLog>().HasIndex(b => new { b.TaskId, b.TimeStamp });
+        modelBuilder.Entity<TaskStepLog>().HasIndex(b => new { b.Id, b.TimeStamp });
         modelBuilder.Entity<TaskStepLog>().HasIndex(b => new { b.TaskLogId, b.TimeStamp });
         modelBuilder.Entity<EmailLog>().HasIndex(b => b.EndDateTime);
         modelBuilder.Entity<EmailLog>().HasIndex(b => new { b.Error, b.Result });
@@ -134,7 +134,7 @@ public class ApplicationDbContext : AuditableIdentityContext
         modelBuilder.Entity<AuditTrail>().HasIndex(b => b.UserId);
         modelBuilder.Entity<AuditTrail>().HasIndex(b => new { b.Type, b.TableName });
         modelBuilder.Entity<StoredQuery>().HasIndex(b => new { b.QueryName });
-        modelBuilder.Entity<TaskStepLog>().HasIndex(b => new { b.TaskId, b.Id });
+        modelBuilder.Entity<TaskStepLog>().HasIndex(b => new { b.TaskLogId, b.Id });
         modelBuilder.Entity<TableMetadata>().HasIndex(b => new { b.TableName, b.ColumnName });
         modelBuilder.Entity<UserPreferences>()
             .HasIndex(b => new { b.UserId, b.TypeConfiguration, b.IdIntConfiguration });

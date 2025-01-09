@@ -12,9 +12,9 @@ public class RemoteDbController : ControllerBase, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<RemoteDbController> _logger;
-    private readonly IRemoteDbConnection _remoteDb;
+    private readonly IRemoteDatabaseActionsHandler _remoteDb;
 
-    public RemoteDbController(IRemoteDbConnection remoteDb, ILogger<RemoteDbController> logger,
+    public RemoteDbController(IRemoteDatabaseActionsHandler remoteDb, ILogger<RemoteDbController> logger,
         ApplicationDbContext context)
     {
         _remoteDb = remoteDb;
