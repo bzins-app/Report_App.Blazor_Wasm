@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250110030403_EnhancedDataModel")]
+    [Migration("20250110043424_EnhancedDataModel")]
     partial class EnhancedDataModel
     {
         /// <inheritdoc />
@@ -381,7 +381,7 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<bool>("IsVisible")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MiscParamters")
+                    b.Property<string>("MiscParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -471,7 +471,7 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<int>("IdDescriptions")
                         .HasColumnType("int");
 
-                    b.Property<string>("MiscParamters")
+                    b.Property<string>("MiscParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -853,7 +853,7 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<DateTime?>("LastRunDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MiscParamters")
+                    b.Property<string>("MiscParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -1183,7 +1183,7 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<int>("IdDataProvider")
                         .HasColumnType("int");
 
-                    b.Property<string>("MiscParamters")
+                    b.Property<string>("MiscParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -1461,7 +1461,7 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<bool>("IsSnippet")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MiscParamters")
+                    b.Property<string>("MiscParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -1615,7 +1615,7 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("MiscParamters")
+                    b.Property<string>("MiscParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");

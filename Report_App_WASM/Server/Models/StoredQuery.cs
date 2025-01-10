@@ -11,6 +11,6 @@ public class StoredQuery : BaseTraceability
     public string? Query { get; set; }
     [MaxLength(4000)] public string Parameters { get; set; } = "[]";
     [MaxLength(4000)] public string QueryParameters { get; set; } = "[]";
-    [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
+    [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
     public virtual DataProvider? DataProvider { get; set; }
 }

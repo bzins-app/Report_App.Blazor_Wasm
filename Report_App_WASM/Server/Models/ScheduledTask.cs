@@ -46,7 +46,7 @@
         [MaxLength(4000)] public string QueryParameters { get; set; } = "[]";
         public DateTime? LastRunDateTime { get; set; } = null;
         public int FileStorageLocationId { get; set; }
-        [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
+        [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
         public ICollection<ScheduledTaskQuery> TaskQueries { get; set; } = new List<ScheduledTaskQuery>();
         public ICollection<ScheduledTaskDistributionList> DistributionLists { get; set; } = new List<ScheduledTaskDistributionList>();
         public DataProvider DataProvider { get; set; } = null!;

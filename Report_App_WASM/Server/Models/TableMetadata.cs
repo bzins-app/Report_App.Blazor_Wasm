@@ -8,6 +8,6 @@ public class TableMetadata : BaseTraceability, IExcludeAuditTrail
     [MaxLength(600)] public string? ColumnName { get; set; }
     [MaxLength(600)] public string? ColumnDescription { get; set; }
     public bool IsSnippet { get; set; }
-    [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
+    [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
     public virtual DatabaseConnection? DatabaseConnection { get; set; }
 }

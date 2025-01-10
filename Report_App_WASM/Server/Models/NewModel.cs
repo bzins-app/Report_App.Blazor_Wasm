@@ -30,7 +30,7 @@
     //    [MaxLength(200)] public string? ProviderIcon { get; set; } // Added MaxLength attribute
     //    [MaxLength(100)] public string? ProviderRoleId { get; set; }
     //    [MaxLength(100)] public string TimeZone { get; set; } = TimeZoneInfo.Local.Id;
-    //    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
+    //    [MaxLength(1000)] public string MiscParameters { get; set; } = "[]";
 
     //    public virtual ICollection<DatabaseConnection> DatabaseConnection { get; set; } = new List<DatabaseConnection>();
     //    public virtual ICollection<ScheduledTask> ScheduledTasks { get; set; } = new List<ScheduledTask>();
@@ -79,7 +79,7 @@
     //    public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
     //    public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
     //    public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
-    //    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
+    //    [MaxLength(1000)] public string MiscParameters { get; set; } = "[]";
 
     //    public virtual DataProvider? DataProvider { get; set; }
     //    public virtual ICollection<TableMetadata> TableMetadata { get; set; } = new List<TableMetadata>();
@@ -132,7 +132,7 @@
     //    [MaxLength(1000)] public string QueryParameters { get; set; } = "[]";
     //    public DateTime? LastRunDateTime { get; set; } = null;
     //    public int FileStorageLocationId { get; set; }
-    //    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
+    //    [MaxLength(1000)] public string MiscParameters { get; set; } = "[]";
 
     //    public ICollection<ScheduledTaskQuery> TaskQueries { get; set; } = new List<ScheduledTaskQuery>();
     //    public ICollection<ScheduledTaskDistributionList> DistributionLists { get; set; } = new List<ScheduledTaskDistributionList>();
@@ -171,7 +171,7 @@
     //    [MaxLength(4000)] public string? Query { get; set; }
     //    [MaxLength(1000)] public string Parameters { get; set; } = "[]";
     //    [MaxLength(1000)] public string QueryParameters { get; set; } = "[]";
-    //    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
+    //    [MaxLength(1000)] public string MiscParameters { get; set; } = "[]";
     //    public virtual DataProvider? DataProvider { get; set; }
     //}
 
@@ -183,7 +183,7 @@
     //    [MaxLength(200)] public string? ColumnName { get; set; }
     //    [MaxLength(400)] public string? ColumnDescription { get; set; }
     //    public bool IsSnippet { get; set; }
-    //    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
+    //    [MaxLength(1000)] public string MiscParameters { get; set; } = "[]";
     //    public virtual DatabaseConnection? DatabaseConnection { get; set; }
     //}
 
@@ -416,6 +416,6 @@
     //    public int IdIntConfiguration { get; set; }
     //    [MaxLength(100)]public string? IdStringConfiguration { get; set; }
     //    [MaxLength(1000)] public string? SavedValues { get; set; }
-    //    [MaxLength(1000)] public string MiscParamters { get; set; } = "[]";
+    //    [MaxLength(1000)] public string MiscParameters { get; set; } = "[]";
     //}
 }

@@ -10,5 +10,5 @@ public class UserPreferencesDto : BaseTraceabilityDto, IDto
     public int IdIntConfiguration { get; set; }
     [MaxLength(100)]public string? IdStringConfiguration { get; set; }
     [MaxLength(4000)] public string? SavedValues { get; set; }
-    [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
+    [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
 }
