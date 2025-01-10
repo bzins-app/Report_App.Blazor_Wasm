@@ -421,7 +421,7 @@
         _appConst = await AppService.GetApplicationConstantsValues();
         if (Item!.DatabaseConnection is not null)
         {
-            DbCon = Item.DatabaseConnection;
+            DbCon = Item.DatabaseConnection.FirstOrDefault();
             DeserializeDbConnectionParameters();
         }
 

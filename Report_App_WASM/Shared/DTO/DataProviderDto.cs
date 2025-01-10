@@ -12,7 +12,7 @@ public class DataProviderDto : BaseTraceabilityDto, IDto
     [MaxLength(100)] public string? ProviderRoleId { get; set; }
     [MaxLength(100)] public string? TimeZone { get; set; } = TimeZoneInfo.Local.Id;
     [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
-    public virtual DatabaseConnectionDto? DatabaseConnection { get; set; } 
+    public virtual ICollection<DatabaseConnectionDto> DatabaseConnection { get; set; } = new List<DatabaseConnectionDto>();
     public virtual ICollection<ScheduledTaskDto> ScheduledTasks { get; set; } = new List<ScheduledTaskDto>();
     public virtual ICollection<StoredQueryDto> StoredQueries { get; set; } = new List<StoredQueryDto>();
 }

@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250110052621_EnhancedDataModel")]
+    [Migration("20250110061758_EnhancedDataModel")]
     partial class EnhancedDataModel
     {
         /// <inheritdoc />
@@ -432,7 +432,10 @@ namespace ReportAppWASM.Server.Migrations
             modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
                 {
                     b.Property<int>("DatabaseConnectionId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DatabaseConnectionId"));
 
                     b.Property<int>("AdHocQueriesMaxNbrofRowsFetched")
                         .HasColumnType("int");
@@ -458,6 +461,9 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<string>("CreateUser")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("DataProviderId")
+                        .HasColumnType("int");
 
                     b.Property<int>("DataTransferMaxNbrofRowsFetched")
                         .HasColumnType("int");
@@ -512,6 +518,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("DatabaseConnectionId");
+
+                    b.HasIndex("DataProviderId");
 
                     b.ToTable("DatabaseConnection");
                 });
@@ -1709,8 +1717,8 @@ namespace ReportAppWASM.Server.Migrations
             modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
                 {
                     b.HasOne("Report_App_WASM.Server.Models.DataProvider", "DataProvider")
-                        .WithOne("DatabaseConnection")
-                        .HasForeignKey("Report_App_WASM.Server.Models.DatabaseConnection", "DatabaseConnectionId")
+                        .WithMany("DatabaseConnection")
+                        .HasForeignKey("DataProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

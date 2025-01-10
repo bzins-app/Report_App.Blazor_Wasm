@@ -159,7 +159,7 @@
         _appConst = await AppService.GetApplicationConstantsValues();
         if (Item!.DatabaseConnection is not null)
         {
-            DbCon = Item.DatabaseConnection;
+            DbCon = Item.DatabaseConnection.FirstOrDefault();
             if (DbCon.TypeDb == TypeDb.SqlServer && DbCon.DbConnectionParameters != "[]")
             {
                 sqlServerParameters = (SqlServerParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);

@@ -686,7 +686,8 @@ namespace ReportAppWASM.Server.Migrations
                 name: "DatabaseConnection",
                 columns: table => new
                 {
-                    DatabaseConnectionId = table.Column<int>(type: "int", nullable: false),
+                    DatabaseConnectionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ConnectionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     TypeDb = table.Column<int>(type: "int", nullable: false),
                     TypeDbName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
@@ -703,6 +704,7 @@ namespace ReportAppWASM.Server.Migrations
                     DataTransferMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     RetryPatternParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    DataProviderId = table.Column<int>(type: "int", nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -713,8 +715,8 @@ namespace ReportAppWASM.Server.Migrations
                 {
                     table.PrimaryKey("PK_DatabaseConnection", x => x.DatabaseConnectionId);
                     table.ForeignKey(
-                        name: "FK_DatabaseConnection_DataProvider_DatabaseConnectionId",
-                        column: x => x.DatabaseConnectionId,
+                        name: "FK_DatabaseConnection_DataProvider_DataProviderId",
+                        column: x => x.DataProviderId,
                         principalTable: "DataProvider",
                         principalColumn: "DataProviderId",
                         onDelete: ReferentialAction.Cascade);
@@ -904,6 +906,11 @@ namespace ReportAppWASM.Server.Migrations
                 name: "IX_AuditTrail_UserId",
                 table: "AuditTrail",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DatabaseConnection_DataProviderId",
+                table: "DatabaseConnection",
+                column: "DataProviderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmailLog_EndDateTime",

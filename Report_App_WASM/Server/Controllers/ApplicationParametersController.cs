@@ -37,7 +37,7 @@ public class ApplicationParametersController : ControllerBase, IDisposable
                 IsVisible = a.IsVisible,
                 LogoPath = a.ProviderIcon,
                 IsActivated = a.IsEnabled,
-                DatabaseConnectionId = a.DatabaseConnection.DatabaseConnectionId
+                DatabaseConnectionId = a.DatabaseConnection.FirstOrDefault().DatabaseConnectionId
             })
             .ToArrayAsync();
     }
@@ -57,7 +57,7 @@ public class ApplicationParametersController : ControllerBase, IDisposable
                 IsVisible = a.IsVisible,
                 LogoPath = a.ProviderIcon,
                 IsActivated = a.IsEnabled,
-                DatabaseConnectionId = a.DatabaseConnection.DatabaseConnectionId
+                DatabaseConnectionId = a.DatabaseConnection.FirstOrDefault().DatabaseConnectionId
             })
             .ToArrayAsync();
     }
