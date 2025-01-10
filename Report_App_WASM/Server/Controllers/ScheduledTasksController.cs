@@ -84,8 +84,8 @@ public class ScheduledTasksController : ControllerBase
             }
         }
 
-        var parameters = !string.IsNullOrEmpty(taskHeader.QueryParameters)
-            ? JsonSerializer.Deserialize<List<QueryCommandParameter>>(taskHeader.QueryParameters) ??
+        var parameters = !string.IsNullOrEmpty(taskHeader.GlobalQueryParameters)
+            ? JsonSerializer.Deserialize<List<QueryCommandParameter>>(taskHeader.GlobalQueryParameters) ??
               new List<QueryCommandParameter>()
             : new List<QueryCommandParameter>();
 

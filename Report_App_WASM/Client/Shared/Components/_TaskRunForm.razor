@@ -32,9 +32,9 @@
         }
 
         var queryParameters = new List<QueryCommandParameter>();
-        if (Item?.QueryParameters != "[]" && !string.IsNullOrEmpty(Item?.QueryParameters))
+        if (Item?.GlobalQueryParameters != "[]" && !string.IsNullOrEmpty(Item?.GlobalQueryParameters))
         {
-            queryParameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
+            queryParameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.GlobalQueryParameters);
         }
 
         var parameters = new DialogParameters { ["userEmail"] = userEmail, ["recipientsEmails"] = recipientsEmails, ["queryParameters"] = queryParameters };

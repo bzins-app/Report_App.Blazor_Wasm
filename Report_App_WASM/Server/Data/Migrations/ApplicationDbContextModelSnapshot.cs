@@ -363,7 +363,10 @@ namespace ReportAppWASM.Server.Migrations
             modelBuilder.Entity("Report_App_WASM.Server.Models.DataProvider", b =>
                 {
                     b.Property<int>("DataProviderId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DataProviderId"));
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -415,7 +418,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TimeZone")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -427,10 +429,7 @@ namespace ReportAppWASM.Server.Migrations
             modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
                 {
                     b.Property<int>("DatabaseConnectionId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DatabaseConnectionId"));
 
                     b.Property<int>("AdHocQueriesMaxNbrofRowsFetched")
                         .HasColumnType("int");
@@ -841,6 +840,11 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<int>("FileStorageLocationId")
                         .HasColumnType("int");
 
+                    b.Property<string>("GlobalQueryParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
                     b.Property<int>("IdDataProvider")
                         .HasColumnType("int");
 
@@ -871,11 +875,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("QueryParameters")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
                     b.Property<int>("ReportsRetentionInDays")
                         .HasColumnType("int");
 
@@ -887,11 +886,6 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("TaskHeaderParameters")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
                     b.Property<string>("TaskName")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -901,8 +895,12 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
-                    b.Property<string>("TimeZone")
+                    b.Property<string>("TaskParameters")
                         .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("TimeZone")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -1705,15 +1703,15 @@ namespace ReportAppWASM.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.DataProvider", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
                 {
-                    b.HasOne("Report_App_WASM.Server.Models.DatabaseConnection", "DatabaseConnection")
-                        .WithOne("DataProvider")
-                        .HasForeignKey("Report_App_WASM.Server.Models.DataProvider", "DataProviderId")
+                    b.HasOne("Report_App_WASM.Server.Models.DataProvider", "DataProvider")
+                        .WithOne("DatabaseConnection")
+                        .HasForeignKey("Report_App_WASM.Server.Models.DatabaseConnection", "DatabaseConnectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DatabaseConnection");
+                    b.Navigation("DataProvider");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageLocation", b =>
@@ -1782,6 +1780,8 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.DataProvider", b =>
                 {
+                    b.Navigation("DatabaseConnection");
+
                     b.Navigation("ScheduledTasks");
 
                     b.Navigation("StoredQueries");
@@ -1789,8 +1789,6 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
                 {
-                    b.Navigation("DataProvider");
-
                     b.Navigation("TableMetadata");
                 });
 

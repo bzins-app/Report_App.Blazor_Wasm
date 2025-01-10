@@ -13,7 +13,6 @@ public sealed class ScheduledTaskDto : BaseTraceabilityDto, IDto
     [Required][MaxLength(250)] public string ProviderName { get; set; }
     public int IdDataProvider { get; set; }
     [MaxLength(60)] public string? TaskNamePrefix { get; set; }
-    [MaxLength(100)] public string TimeZone { get; set; } = TimeZoneInfo.Local.Id;
     public TaskType Type { get; set; }
     [MaxLength(20)] public string? TypeName { get; set; }
     public FileType TypeFile { get; set; }
@@ -23,10 +22,11 @@ public sealed class ScheduledTaskDto : BaseTraceabilityDto, IDto
     public int ReportsRetentionInDays { get; set; } = 90;
     [MaxLength(1000)] public string? Comment { get; set; }
     [MaxLength(1000)] public string Tags { get; set; } = "[]";
-    [MaxLength(4000)] public string TaskHeaderParameters { get; set; } = "[]";
+    [MaxLength(4000)] public string TaskParameters { get; set; } = "[]";
     [MaxLength(4000)] public string CronParameters { get; set; } = "[]";
     public bool UseGlobalQueryParameters { get; set; } = false;
-    [MaxLength(4000)] public string QueryParameters { get; set; } = "[]";
+    [MaxLength(4000)] public string GlobalQueryParameters { get; set; } = "[]";
+    [MaxLength(100)] public string? TimeZone { get; set; } = TimeZoneInfo.Local.Id;
     public DateTime? LastRunDateTime { get; set; } = null;
     public int FileStorageLocationId { get; set; }
     [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";

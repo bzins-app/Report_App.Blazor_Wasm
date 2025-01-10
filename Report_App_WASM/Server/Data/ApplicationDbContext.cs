@@ -64,7 +64,7 @@ public class ApplicationDbContext : AuditableIdentityContext
         //Entity relations and behaviours
         modelBuilder.Entity<DataProvider>()
             .HasOne(b => b.DatabaseConnection)
-            .WithOne(t => t.DataProvider).HasForeignKey<DataProvider>(b => b.DataProviderId).OnDelete(DeleteBehavior.Cascade);
+            .WithOne(t => t.DataProvider).HasForeignKey<DatabaseConnection>(b => b.DatabaseConnectionId).OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<DataProvider>()
             .HasMany(b => b.ScheduledTasks)
             .WithOne(t => t.DataProvider).IsRequired().OnDelete(DeleteBehavior.Cascade);

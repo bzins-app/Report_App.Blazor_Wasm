@@ -397,26 +397,19 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DatabaseConnection",
+                name: "DataProvider",
                 columns: table => new
                 {
-                    DatabaseConnectionId = table.Column<int>(type: "int", nullable: false)
+                    DataProviderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ConnectionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    TypeDb = table.Column<int>(type: "int", nullable: false),
-                    TypeDbName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    DbConnectionParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    ConnectionLogin = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    CommandTimeOut = table.Column<int>(type: "int", nullable: false),
-                    CommandFetchSize = table.Column<int>(type: "int", nullable: false),
-                    UseTablesDescriptions = table.Column<bool>(type: "bit", nullable: false),
-                    UseDescriptionsFromAnotherProvider = table.Column<bool>(type: "bit", nullable: false),
-                    IdDescriptions = table.Column<int>(type: "int", nullable: false),
-                    AdHocQueriesMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
-                    TaskSchedulerMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
-                    DataTransferMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
-                    RetryPatternParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    ProviderType = table.Column<int>(type: "int", nullable: false),
+                    ProviderTypeName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
+                    ProviderIcon = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ProviderRoleId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    TimeZone = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -426,7 +419,7 @@ namespace ReportAppWASM.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DatabaseConnection", x => x.DatabaseConnectionId);
+                    table.PrimaryKey("PK_DataProvider", x => x.DataProviderId);
                 });
 
             migrationBuilder.CreateTable(
@@ -690,49 +683,26 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DataProvider",
+                name: "DatabaseConnection",
                 columns: table => new
                 {
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    ProviderType = table.Column<int>(type: "int", nullable: false),
-                    ProviderTypeName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    ProviderIcon = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    ProviderRoleId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    TimeZone = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DataProvider", x => x.DataProviderId);
-                    table.ForeignKey(
-                        name: "FK_DataProvider_DatabaseConnection_DataProviderId",
-                        column: x => x.DataProviderId,
-                        principalTable: "DatabaseConnection",
-                        principalColumn: "DatabaseConnectionId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TableMetadata",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TableName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    TableDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    ColumnName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    ColumnDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    IsSnippet = table.Column<bool>(type: "bit", nullable: false),
-                    MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     DatabaseConnectionId = table.Column<int>(type: "int", nullable: false),
+                    ConnectionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TypeDb = table.Column<int>(type: "int", nullable: false),
+                    TypeDbName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    DbConnectionParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    ConnectionLogin = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CommandTimeOut = table.Column<int>(type: "int", nullable: false),
+                    CommandFetchSize = table.Column<int>(type: "int", nullable: false),
+                    UseTablesDescriptions = table.Column<bool>(type: "bit", nullable: false),
+                    UseDescriptionsFromAnotherProvider = table.Column<bool>(type: "bit", nullable: false),
+                    IdDescriptions = table.Column<int>(type: "int", nullable: false),
+                    AdHocQueriesMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
+                    TaskSchedulerMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
+                    DataTransferMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
+                    RetryPatternParamters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -741,12 +711,12 @@ namespace ReportAppWASM.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TableMetadata", x => x.Id);
+                    table.PrimaryKey("PK_DatabaseConnection", x => x.DatabaseConnectionId);
                     table.ForeignKey(
-                        name: "FK_TableMetadata_DatabaseConnection_DatabaseConnectionId",
+                        name: "FK_DatabaseConnection_DataProvider_DatabaseConnectionId",
                         column: x => x.DatabaseConnectionId,
-                        principalTable: "DatabaseConnection",
-                        principalColumn: "DatabaseConnectionId",
+                        principalTable: "DataProvider",
+                        principalColumn: "DataProviderId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -761,7 +731,6 @@ namespace ReportAppWASM.Server.Migrations
                     IdDataProvider = table.Column<int>(type: "int", nullable: false),
                     TaskNamePrefix = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    TimeZone = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     TypeName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     TypeFile = table.Column<int>(type: "int", nullable: false),
                     TypeFileName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
@@ -770,10 +739,11 @@ namespace ReportAppWASM.Server.Migrations
                     ReportsRetentionInDays = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Tags = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    TaskHeaderParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    TaskParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     CronParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     UseGlobalQueryParameters = table.Column<bool>(type: "bit", nullable: false),
-                    QueryParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    GlobalQueryParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    TimeZone = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     LastRunDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FileStorageLocationId = table.Column<int>(type: "int", nullable: false),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
@@ -825,6 +795,36 @@ namespace ReportAppWASM.Server.Migrations
                         column: x => x.DataProviderId,
                         principalTable: "DataProvider",
                         principalColumn: "DataProviderId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TableMetadata",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TableName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    TableDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    ColumnName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    ColumnDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    IsSnippet = table.Column<bool>(type: "bit", nullable: false),
+                    MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    DatabaseConnectionId = table.Column<int>(type: "int", nullable: false),
+                    MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TableMetadata", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TableMetadata_DatabaseConnection_DatabaseConnectionId",
+                        column: x => x.DatabaseConnectionId,
+                        principalTable: "DatabaseConnection",
+                        principalColumn: "DatabaseConnectionId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -1151,10 +1151,10 @@ namespace ReportAppWASM.Server.Migrations
                 name: "ScheduledTask");
 
             migrationBuilder.DropTable(
-                name: "DataProvider");
+                name: "DatabaseConnection");
 
             migrationBuilder.DropTable(
-                name: "DatabaseConnection");
+                name: "DataProvider");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_UserTokens",

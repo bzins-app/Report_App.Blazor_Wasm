@@ -235,9 +235,9 @@
             _param = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(Item.ExecutionParameters, _jsonOpt)!;
         }
 
-        if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
+        if (Header?.TaskParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskParameters))
         {
-            _paramHeader = JsonSerializer.Deserialize<ScheduledTaskParameters>(Header.TaskHeaderParameters, _jsonOpt);
+            _paramHeader = JsonSerializer.Deserialize<ScheduledTaskParameters>(Header.TaskParameters, _jsonOpt);
         }
 
         _useExcelTemplate = _paramHeader!.UseAnExcelTemplate;
@@ -298,10 +298,10 @@
             _cts = new CancellationTokenSource();
             List<QueryCommandParameter>? param = new();
             _refQuery?.UpdateParameters();
-            if ((Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]") ||
-                !string.IsNullOrEmpty(Header.QueryParameters))
+            if ((Header!.UseGlobalQueryParameters && Header.GlobalQueryParameters != "[]") ||
+                !string.IsNullOrEmpty(Header.GlobalQueryParameters))
             {
-                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.QueryParameters);
+                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.GlobalQueryParameters);
             }
 
             if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))

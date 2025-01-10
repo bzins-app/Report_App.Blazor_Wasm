@@ -20,7 +20,7 @@ public class DataProvider : BaseTraceability
     public bool IsVisible { get; set; }
     [MaxLength(1000)] public string? ProviderIcon { get; set; } // Added MaxLength attribute
     [MaxLength(100)] public string? ProviderRoleId { get; set; }
-    [MaxLength(100)] public string TimeZone { get; set; } = TimeZoneInfo.Local.Id;
+    [MaxLength(100)] public string? TimeZone { get; set; } = TimeZoneInfo.Local.Id;
     [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
     public virtual DatabaseConnection? DatabaseConnection { get; set; }
     public virtual ICollection<ScheduledTask> ScheduledTasks { get; set; } = new List<ScheduledTask>();

@@ -185,7 +185,7 @@ public class BackgroundTaskHandler : IDisposable
         {
             await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
 
-            var _headerParameters = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskHeaderParameters);
+            var _headerParameters = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskParameters);
             int i = 0;
             foreach (var value in _fetchedData)
             {
@@ -237,9 +237,9 @@ public class BackgroundTaskHandler : IDisposable
         List<QueryCommandParameter>? param = new();
         if (_jobParameters.CustomQueryParameters!.Any())
             param = _jobParameters.CustomQueryParameters;
-        else if (_header.UseGlobalQueryParameters && _header.QueryParameters != "[]" &&
-                 !string.IsNullOrEmpty(_header.QueryParameters))
-            param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.QueryParameters, _jsonOpt);
+        else if (_header.UseGlobalQueryParameters && _header.GlobalQueryParameters != "[]" &&
+                 !string.IsNullOrEmpty(_header.GlobalQueryParameters))
+            param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.GlobalQueryParameters, _jsonOpt);
 
         if (detail.QueryParameters != "[]" && !string.IsNullOrEmpty(detail.QueryParameters))
         {
@@ -379,7 +379,7 @@ public class BackgroundTaskHandler : IDisposable
         string fExtension;
         var informationSheet = false;
         List<ExcelCreationDatatable> excelMultipleTabs = new();
-        var headerParam = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskHeaderParameters, _jsonOpt);
+        var headerParam = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskParameters, _jsonOpt);
 
         foreach (var d in _fetchedData)
         {
@@ -506,7 +506,7 @@ public class BackgroundTaskHandler : IDisposable
 
     private async ValueTask HandleTaskAlertAsync()
     {
-        var headerParam = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskHeaderParameters, _jsonOpt);
+        var headerParam = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskParameters, _jsonOpt);
         if (_fetchedData.Any())
         {
             var sendEmail = false;

@@ -272,9 +272,9 @@
         var controllerActionDepositPath = "DepositPathInfo";
         _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
 
-        if (!string.IsNullOrEmpty(Item.TaskHeaderParameters) && Item.TaskHeaderParameters != "[]")
+        if (!string.IsNullOrEmpty(Item.TaskParameters) && Item.TaskParameters != "[]")
         {
-            _param = JsonSerializer.Deserialize<ScheduledTaskParameters>(Item.TaskHeaderParameters, _jsonOpt);
+            _param = JsonSerializer.Deserialize<ScheduledTaskParameters>(Item.TaskParameters, _jsonOpt);
         }
 
         if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
@@ -334,7 +334,7 @@
                 Item.DistributionLists = new List<ScheduledTaskDistributionListDto> { recipients };
             }
 
-            Item.TaskHeaderParameters = JsonSerializer.Serialize(_param);
+            Item.TaskParameters = JsonSerializer.Serialize(_param);
             Item.Tags = JsonSerializer.Serialize(_tags);
 
             if (Item.CronParameters == "[]" || string.IsNullOrEmpty(Item.CronParameters))
@@ -342,7 +342,7 @@
                 Item.IsEnabled = false;
             }
 
-            if (Item.QueryParameters == "[]" || string.IsNullOrEmpty(Item.QueryParameters))
+            if (Item.GlobalQueryParameters == "[]" || string.IsNullOrEmpty(Item.GlobalQueryParameters))
             {
                 Item.UseGlobalQueryParameters = false;
             }
