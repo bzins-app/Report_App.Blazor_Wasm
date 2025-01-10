@@ -64,8 +64,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         {
             var parts = new List<string>
             {
-                AddParameterIfNotEmpty("Server", Server),
-                AddParameterIfNotDefault("Port", Port, 1433),
+                AddParameterIfNotEmpty("Server", Port==1433||Port==0?Server:Server+","+Port),
                 AddParameterIfNotEmpty("Database", Database),
                 AddParameterIfNotEmpty("User Id", UserId),
                 AddParameterIfNotEmpty("Password", Password),
