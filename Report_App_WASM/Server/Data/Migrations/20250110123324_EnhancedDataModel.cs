@@ -965,6 +965,7 @@ SELECT [StartDateTime]
            ,[CreateDateTime]
            ,[CreateUser]
            ,[ModDateTime]
+           ,[MiscParameters]
            ,[ModificationUser])
 SELECT [UserId]
       ,[SaveName]
@@ -976,6 +977,7 @@ SELECT [UserId]
       ,[CreateDateTime]
       ,[CreateUser]
       ,[ModDateTime]
+       ,'[]'
       ,[ModificationUser]
   FROM [dbo].[UserSavedConfiguration]
 ");
@@ -1015,6 +1017,7 @@ SELECT [ConfigurationName]
            ,[CreateDateTime]
            ,[CreateUser]
            ,[ModDateTime]
+            ,[MiscParameters]
            ,[ModificationUser])
 SELECT [ActivityName]
       ,[ActivityType]
@@ -1027,6 +1030,7 @@ SELECT [ActivityName]
       ,[CreateDateTime]
       ,[CreateUser]
       ,[ModDateTime]
+        ,'[]'
       ,[ModificationUser]
   FROM [dbo].[Activity]
 ");
@@ -1050,6 +1054,8 @@ SELECT [ActivityName]
            ,[CreateDateTime]
            ,[CreateUser]
            ,[ModDateTime]
+            ,[MiscParameters]
+            ,[RetryPatternParameters]
            ,[ModificationUser])
 SELECT adc.[ConnectionType]
       ,adc.[TypeDb]
@@ -1070,6 +1076,8 @@ SELECT adc.[ConnectionType]
       ,adc.[CreateDateTime]
       ,adc.[CreateUser]
       ,adc.[ModDateTime]
+        ,'[]'
+        ,'[]'
       ,adc.[ModificationUser]         
   FROM [dbo].[ActivityDbConnection] adc
   join [dbo].[DataProvider] dpv on dpv.MiscValue=adc.[ActivityId]
@@ -1099,6 +1107,7 @@ SELECT adc.[ConnectionType]
            ,[CreateDateTime]
            ,[CreateUser]
            ,[ModDateTime]
+            ,[MiscParameters]
            ,[ModificationUser])
 SELECT th.[TaskName]
       ,th.[ActivityName]
@@ -1118,12 +1127,13 @@ SELECT th.[TaskName]
       ,th.[UseGlobalQueryParameters]
       ,th.[QueryParameters]
       ,th.[LastRunDateTime]
-      ,fsl.FileStorageLocationId
+      ,coalesce(fsl.FileStorageLocationId,0)
       ,dpv.[DataProviderId]
 	  ,th.[TaskHeaderId]
       ,th.[CreateDateTime]
       ,th.[CreateUser]
       ,th.[ModDateTime]
+        ,'[]'
       ,th.[ModificationUser]   
   FROM [dbo].[TaskHeader] th
   join [dbo].[DataProvider] dpv on dpv.MiscValue=th.[ActivityId]
@@ -1193,6 +1203,7 @@ SELECT td.[QueryName]
            ,[CreateDateTime]
            ,[CreateUser]
            ,[ModDateTime]
+            ,[MiscParameters]
            ,[ModificationUser])
 SELECT 
       dpv.DataProviderId
@@ -1208,6 +1219,7 @@ SELECT
       ,qs.[CreateDateTime]
       ,qs.[CreateUser]
       ,qs.[ModDateTime]
+        ,'[]'
       ,qs.[ModificationUser]        
   FROM [dbo].[QueryStore] qs
   join [dbo].[DataProvider] dpv on dpv.MiscValue=qs.[ActivityId]");
@@ -1222,6 +1234,7 @@ SELECT
            ,[CreateDateTime]
            ,[CreateUser]
            ,[ModDateTime]
+            ,[MiscParameters]
            ,[ModificationUser])
 SELECT td.[TableName]
       ,td.[TableDescription]
@@ -1233,6 +1246,7 @@ SELECT td.[TableName]
       ,td.[CreateDateTime]
       ,td.[CreateUser]
       ,td.[ModDateTime]
+        ,'[]'
       ,td.[ModificationUser]    
   FROM [dbo].[DbTableDescriptions] td
 	left join [dbo].[DatabaseConnection] dpvm on dpvm.MiscValue=td.[ActivityDbConnectionId]
