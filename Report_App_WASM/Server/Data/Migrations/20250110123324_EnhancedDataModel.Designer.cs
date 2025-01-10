@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250110061758_EnhancedDataModel")]
+    [Migration("20250110123324_EnhancedDataModel")]
     partial class EnhancedDataModel
     {
         /// <inheritdoc />
@@ -473,7 +473,7 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("IdDescriptions")
+                    b.Property<int>("IdTableMetaData")
                         .HasColumnType("int");
 
                     b.Property<string>("MiscParameters")
@@ -496,7 +496,7 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("RetryPatternParamters")
+                    b.Property<string>("RetryPatternParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -511,10 +511,10 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<bool>("UseDescriptionsFromAnotherProvider")
+                    b.Property<bool>("UseTableMetaData")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("UseTablesDescriptions")
+                    b.Property<bool>("UseTableMetaDataFromAnotherProvider")
                         .HasColumnType("bit");
 
                     b.HasKey("DatabaseConnectionId");

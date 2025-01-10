@@ -276,10 +276,10 @@
                     </MudGrid>
                     <MudGrid>
                         <MudItem>
-                            <MudSwitch @bind-Value="DbCon.UseTablesDescriptions" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
+                            <MudSwitch @bind-Value="DbCon.UseTableMetaData" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
                         </MudItem>
                         <MudItem>
-                            @if (DbCon.UseTablesDescriptions)
+                            @if (DbCon.UseTableMetaData)
                             {
                                 <MudLoadingButton @bind-Loading="_extractDescriptions" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ExtractDescriptions" Variant="Variant.Filled" Color="Color.Primary">
                                     <LoadingContent>
@@ -296,13 +296,13 @@
                         @if (_activities.Any())
                         {
                             <MudItem md="6">
-                                <MudSwitch @bind-Value="DbCon.UseDescriptionsFromAnotherProvider" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="DbCon.UseTableMetaDataFromAnotherProvider" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary" />
                             </MudItem>
                             <MudItem md="6">
-                                <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdDescriptions" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseDescriptionsFromAnotherProvider">
-                                    @if (DbCon.IdDescriptions == 0)
+                                <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdTableMetaData" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseTableMetaDataFromAnotherProvider">
+                                    @if (DbCon.IdTableMetaData == 0)
                                     {
-                                        <MudSelectItem Value="DbCon.IdDescriptions">@Localizer.Get("Activity name")</MudSelectItem>
+                                        <MudSelectItem Value="DbCon.IdTableMetaData">@Localizer.Get("Activity name")</MudSelectItem>
                                     }
                                     @foreach (var item in _activities.Where(a => Item != null && a.ProviderName != Item.ProviderName))
                                     {
@@ -536,7 +536,7 @@
     {
         _extractDescriptions = true;
         var uri = $"{ApiControllers.RemoteDbApi}ExtractDbDescriptions";
-        var DbconectId = DbCon.UseDescriptionsFromAnotherProvider ? DbCon.IdDescriptions : DbCon.DatabaseConnectionId;
+        var DbconectId = DbCon.UseTableMetaDataFromAnotherProvider ? DbCon.IdTableMetaData : DbCon.DatabaseConnectionId;
         var response = await Http.PostAsJsonAsync(uri, DbconectId);
         if (response.IsSuccessStatusCode)
         {

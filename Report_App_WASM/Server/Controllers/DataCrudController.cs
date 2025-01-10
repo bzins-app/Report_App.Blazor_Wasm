@@ -742,7 +742,7 @@ public class DataCrudController : ControllerBase, IDisposable
             }
 
             _dbConnect.TableMetadata = _descriptions;
-            _dbConnect.UseTablesDescriptions = true;
+            _dbConnect.UseTableMetaData = true;
             _context.Entry(_dbConnect).State = EntityState.Modified;
             await SaveDbAsync(value.UserName);
 

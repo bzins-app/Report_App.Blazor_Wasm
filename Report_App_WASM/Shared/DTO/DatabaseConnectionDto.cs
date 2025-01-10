@@ -11,13 +11,13 @@ public class DatabaseConnectionDto : BaseTraceabilityDto, IDto
     public string? Password { get; set; }
     public int CommandTimeOut { get; set; } = 300;
     public int CommandFetchSize { get; set; } = 131072;
-    public bool UseTablesDescriptions { get; set; } = false;
-    public bool UseDescriptionsFromAnotherProvider { get; set; } = false;
-    public int IdDescriptions { get; set; }
+    public bool UseTableMetaData { get; set; } = false;
+    public bool UseTableMetaDataFromAnotherProvider { get; set; } = false;
+    public int IdTableMetaData { get; set; }
     public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
     public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
     public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
-    [MaxLength(4000)] public string RetryPatternParamters { get; set; } = "[]";
+    [MaxLength(4000)] public string RetryPatternParameters { get; set; } = "[]";
     [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
     public virtual DataProviderDto? DataProvider { get; set; }
     public virtual ICollection<TableMetadataDto>? TableMetadata { get; set; } = new List<TableMetadataDto>();

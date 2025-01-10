@@ -268,9 +268,9 @@ public class RemoteDbController : ControllerBase, IDisposable
                     .AsNoTracking()
                     .Select(a => new
                     {
-                        tableDesc = a.UseTablesDescriptions,
-                        a.UseDescriptionsFromAnotherProvider,
-                        ConnectId = a.UseDescriptionsFromAnotherProvider ? a.IdDescriptions : a.DatabaseConnectionId
+                        tableDesc = a.UseTableMetaData,
+                        a.UseTableMetaDataFromAnotherProvider,
+                        ConnectId = a.UseTableMetaDataFromAnotherProvider ? a.IdTableMetaData : a.DatabaseConnectionId
                     })
                     .FirstOrDefaultAsync(ct);
 
@@ -278,7 +278,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                     { TypeValue = r.Field<string>(0), Name = r.Field<string>(1) }).ToList();
                 if (tables != null)
                 {
-                    if (description.tableDesc || description.UseDescriptionsFromAnotherProvider)
+                    if (description.tableDesc || description.UseTableMetaDataFromAnotherProvider)
                     {
                         var prework = await _context.TableMetadata
                             .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId)
@@ -326,9 +326,9 @@ public class RemoteDbController : ControllerBase, IDisposable
                     .AsNoTracking()
                     .Select(a => new
                     {
-                        tableDesc = a.UseTablesDescriptions,
-                        a.UseDescriptionsFromAnotherProvider,
-                        ConnectId = a.UseDescriptionsFromAnotherProvider ? a.IdDescriptions : a.DatabaseConnectionId
+                        tableDesc = a.UseTableMetaData,
+                        a.UseTableMetaDataFromAnotherProvider,
+                        ConnectId = a.UseTableMetaDataFromAnotherProvider ? a.IdTableMetaData : a.DatabaseConnectionId
                     })
                     .FirstOrDefaultAsync(ct);
 
@@ -339,7 +339,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                         .ToList();
                     if (cols != null)
                     {
-                        if ((description.tableDesc || description.UseDescriptionsFromAnotherProvider) && await _context
+                        if ((description.tableDesc || description.UseTableMetaDataFromAnotherProvider) && await _context
                                 .TableMetadata
                                 .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId && a.TableName == table)
                                 .AnyAsync(ct))
