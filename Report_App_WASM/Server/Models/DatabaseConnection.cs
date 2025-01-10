@@ -44,7 +44,6 @@ public class DatabaseConnection : BaseTraceability
     public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;
     [MaxLength(4000)] public string RetryPatternParamters { get; set; } = "[]";
     [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
-    [MaxLength(250)] public string? MiscValue { get; set; }
     public virtual DataProvider? DataProvider { get; set; }
     public virtual ICollection<TableMetadata> TableMetadata { get; set; } = new List<TableMetadata>();
 }

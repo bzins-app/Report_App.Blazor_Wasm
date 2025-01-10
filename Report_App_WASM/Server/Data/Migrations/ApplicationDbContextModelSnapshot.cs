@@ -322,8 +322,7 @@ namespace ReportAppWASM.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AffectedColumns")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
@@ -335,20 +334,20 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrimaryKey")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("TableName")
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
 
                     b.Property<string>("Type")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("UserId")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
 
@@ -585,6 +584,10 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<bool>("IsReachable")
                         .HasColumnType("bit");
 
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
 
@@ -634,6 +637,10 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<bool>("IsActivated")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1054,6 +1061,10 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<string>("Host")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
 
@@ -1110,6 +1121,10 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<bool>("IsActivated")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1169,6 +1184,10 @@ namespace ReportAppWASM.Server.Migrations
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1333,6 +1352,10 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<int>("LogsRetentionInDays")
                         .HasColumnType("int");
 
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
 
@@ -1375,6 +1398,10 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<bool>("EmailService")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1435,6 +1462,10 @@ namespace ReportAppWASM.Server.Migrations
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1585,6 +1616,10 @@ namespace ReportAppWASM.Server.Migrations
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");

@@ -25,7 +25,7 @@
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn >
-                        <MudIconButton Style="padding: 0px !important" Icon="@Icons.Material.Outlined.Article" OnClick="() => OpenDetails(context.TaskLogId)" title="@Localizer.Get("Display details")" Disabled="context.ScheduledTaskId == 0"/>
+                        <MudIconButton Style="padding: 0px !important" Icon="@Icons.Material.Outlined.Article" OnClick="() => OpenDetails(context.TaskLogId)" title="@Localizer.Get("Display details")" Disabled="!context.HasSteps"/>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>

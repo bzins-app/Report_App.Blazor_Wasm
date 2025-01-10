@@ -10,6 +10,5 @@ public class ScheduledTaskQuery : BaseTraceability
     public int ExecutionOrder { get; set; } = 99;
     public DateTime? LastRunDateTime { get; set; } = null;
     public int ExecutionCount { get; set; }
-    [MaxLength(250)] public string? MiscValue { get; set; }
     public virtual ScheduledTask? ScheduledTask { get; set; }
 }

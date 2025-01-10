@@ -30,7 +30,6 @@ public sealed class ScheduledTaskDto : BaseTraceabilityDto, IDto
     public DateTime? LastRunDateTime { get; set; } = null;
     public int FileStorageLocationId { get; set; }
     [MaxLength(4000)] public string MiscParamters { get; set; } = "[]";
-    [MaxLength(250)] public string? MiscValue { get; set; }
     public ICollection<ScheduledTaskQueryDto> TaskQueries { get; set; } = new List<ScheduledTaskQueryDto>();
     public ICollection<ScheduledTaskDistributionListDto> DistributionLists { get; set; } = new List<ScheduledTaskDistributionListDto>();
     public DataProviderDto DataProvider { get; set; } = null!;
