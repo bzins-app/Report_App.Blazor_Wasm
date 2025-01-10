@@ -35,65 +35,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                 table: "AspNetUserTokens");
 
-            migrationBuilder.DropTable(
-                name: "ApplicationAuditTrail");
 
-            migrationBuilder.DropTable(
-                name: "ApplicationLogAdHocQueries");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationLogEmailSender");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationLogQueryExecution");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationLogReportResult");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationLogSystem");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationLogTask");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationLogTaskDetails");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationParameters");
-
-            migrationBuilder.DropTable(
-                name: "ApplicationUniqueKey");
-
-            migrationBuilder.DropTable(
-                name: "DbTableDescriptions");
-
-            migrationBuilder.DropTable(
-                name: "FileDepositPathConfiguration");
-
-            migrationBuilder.DropTable(
-                name: "QueryStore");
-
-            migrationBuilder.DropTable(
-                name: "ServicesStatus");
-
-            migrationBuilder.DropTable(
-                name: "TaskDetail");
-
-            migrationBuilder.DropTable(
-                name: "TaskEmailRecipient");
-
-            migrationBuilder.DropTable(
-                name: "UserSavedConfiguration");
-
-            migrationBuilder.DropTable(
-                name: "ActivityDbConnection");
-
-            migrationBuilder.DropTable(
-                name: "TaskHeader");
-
-            migrationBuilder.DropTable(
-                name: "Activity");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_AspNetUserTokens",
@@ -887,6 +829,564 @@ namespace ReportAppWASM.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[SystemUniqueKey]
+           ([Id])    
+           SELECT [Id]
+  FROM [dbo].[ApplicationUniqueKey]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[SystemServicesStatus]
+           ([EmailService]
+           ,[ReportService]
+           ,[AlertService]
+           ,[DataTransferService]
+           ,[CleanerService]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT [EmailService]
+      ,[ReportService]
+      ,[AlertService]
+      ,[DataTransferService]
+      ,[CleanerService]
+      ,[CreateDateTime]
+      ,[CreateUser]
+      ,[ModDateTime]
+      ,[ModificationUser]
+  FROM [dbo].[ServicesStatus]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[SystemParameters]
+           ([ApplicationName]
+           ,[ApplicationLogo]
+           ,[LoginScreenBackgroundImage]
+           ,[AdminEmails]
+           ,[EmailPrefix]
+           ,[ErrorEmailPrefix]
+           ,[ErrorEMailMessage]
+           ,[WelcomeEMailMessage]
+           ,[AlertEmailPrefix]
+           ,[LogsRetentionInDays]
+           ,[ActivateTaskSchedulerModule]
+           ,[ActivateAdHocQueriesModule]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT [ApplicationName]
+      ,[ApplicationLogo]
+      ,[LoginScreenBackgroundImage]
+      ,[AdminEmails]
+      ,[EmailPrefix]
+      ,[ErrorEmailPrefix]
+      ,[ErrorEMailMessage]
+      ,[WelcomeEMailMessage]
+      ,[AlertEmailPrefix]
+      ,[LogsRetentionInDays]
+      ,[ActivateTaskSchedulerModule]
+      ,[ActivateAdHocQueriesModule]
+      ,[CreateDateTime]
+      ,[CreateUser]
+      ,[ModDateTime]
+      ,[ModificationUser]
+  FROM [dbo].[ApplicationParameters]
+");
+            migrationBuilder.Sql(@"
+INSERT INTO [dbo].[SystemLog]
+           ([TimeStampAppHour]
+           ,[Browser]
+           ,[Platform]
+           ,[FullVersion]
+           ,[Host]
+           ,[Path]
+           ,[User]
+           ,[EventId]
+           ,[Level]
+           ,[Message]
+           ,[Name]
+           ,[TimeStamp])
+SELECT 
+      [TimeStampAppHour]
+      ,[Browser]
+      ,[Platform]
+      ,[FullVersion]
+      ,[Host]
+      ,[Path]
+      ,[User]
+      ,[EventId]
+      ,[Level]
+      ,[Message]
+      ,[Name]
+      ,[TimeStamp]
+  FROM [dbo].[ApplicationLogSystem]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[AuditTrail]
+           ([UserId]
+           ,[Type]
+           ,[TableName]
+           ,[DateTime]
+           ,[OldValues]
+           ,[NewValues]
+           ,[AffectedColumns]
+           ,[PrimaryKey])
+SELECT [UserId]
+      ,[Type]
+      ,[TableName]
+      ,[DateTime]
+      ,[OldValues]
+      ,[NewValues]
+      ,[AffectedColumns]
+      ,[PrimaryKey]
+  FROM [dbo].[ApplicationAuditTrail]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[EmailLog]
+           ([StartDateTime]
+           ,[EndDateTime]
+           ,[DurationInSeconds]
+           ,[EmailTitle]
+           ,[Result]
+           ,[Error]
+           ,[NbrOfRecipients]
+           ,[RecipientList])
+SELECT [StartDateTime]
+      ,[EndDateTime]
+      ,[DurationInSeconds]
+      ,[EmailTitle]
+      ,[Result]
+      ,[Error]
+      ,[NbrOfRecipients]
+      ,[RecipientList]
+  FROM [dbo].[ApplicationLogEmailSender]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[UserPreferences]
+           ([UserId]
+           ,[SaveName]
+           ,[Parameters]
+           ,[TypeConfiguration]
+           ,[IdIntConfiguration]
+           ,[IdStringConfiguration]
+           ,[SavedValues]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT [UserId]
+      ,[SaveName]
+      ,[Parameters]
+      ,[TypeConfiguration]
+      ,[IdIntConfiguration]
+      ,[IdStringConfiguration]
+      ,[SavedValues]
+      ,[CreateDateTime]
+      ,[CreateUser]
+      ,[ModDateTime]
+      ,[ModificationUser]
+  FROM [dbo].[UserSavedConfiguration]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[FileStorageLocation]
+           ([ConfigurationName]
+           ,[FilePath]
+           ,[IsReachable]
+           ,[TryToCreateFolder]
+           ,[UseSftpProtocol]
+           ,[SftpConfigurationId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT [ConfigurationName]
+      ,[FilePath]
+      ,[IsReachable]
+      ,[TryToCreateFolder]
+      ,[UseSftpProtocol]
+      ,[SftpConfigurationId]
+	  ,[FileDepositPathConfigurationId]
+      ,[CreateDateTime]
+      ,[CreateUser]
+      ,[ModDateTime]
+      ,[ModificationUser]
+  FROM [dbo].[FileDepositPathConfiguration]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[DataProvider]
+           ([ProviderName]
+           ,[ProviderType]
+           ,[ProviderTypeName]
+           ,[IsEnabled]
+           ,[IsVisible]
+           ,[ProviderIcon]
+           ,[ProviderRoleId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT [ActivityName]
+      ,[ActivityType]
+      ,[ActivityTypeName]
+      ,[IsActivated]
+      ,[Display]
+      ,[ActivityLogo]
+      ,[ActivityRoleId]
+	  ,[ActivityId]
+      ,[CreateDateTime]
+      ,[CreateUser]
+      ,[ModDateTime]
+      ,[ModificationUser]
+  FROM [dbo].[Activity]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[DatabaseConnection]
+           ([ConnectionType]
+           ,[TypeDb]
+           ,[TypeDbName]
+           ,[DbConnectionParameters]
+           ,[ConnectionLogin]
+           ,[Password]
+           ,[CommandTimeOut]
+           ,[CommandFetchSize]
+		  ,[UseTableMetaData]
+		  ,[UseTableMetaDataFromAnotherProvider]
+		  ,[IdTableMetaData]
+           ,[AdHocQueriesMaxNbrofRowsFetched]
+           ,[TaskSchedulerMaxNbrofRowsFetched]
+           ,[DataTransferMaxNbrofRowsFetched]
+           ,[DataProviderId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT adc.[ConnectionType]
+      ,adc.[TypeDb]
+      ,adc.[TypeDbName]
+	  ,adc.[DbConnectionParameters]
+      ,adc.[ConnectionLogin]
+      ,adc.[Password]
+      ,adc.[CommandTimeOut]
+      ,adc.[CommandFetchSize]    
+      ,adc.[UseTablesDescriptions]
+	  ,adc.[UseDescriptionsFromAnotherActivity]
+	  , coalesce (dpvm.[Id],0)  
+      ,adc.[AdHocQueriesMaxNbrofRowsFetched]
+      ,adc.[TaskSchedulerMaxNbrofRowsFetched]
+      ,adc.[DataTransferMaxNbrofRowsFetched]
+      ,dpv.DataProviderId
+	  ,adc.[Id]
+      ,adc.[CreateDateTime]
+      ,adc.[CreateUser]
+      ,adc.[ModDateTime]
+      ,adc.[ModificationUser]         
+  FROM [dbo].[ActivityDbConnection] adc
+  join [dbo].[DataProvider] dpv on dpv.MiscValue=adc.[ActivityId]
+  left join [dbo].[ActivityDbConnection] dpvm on dpvm.[Id]=adc.[IdDescriptions]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[ScheduledTask]
+           ([TaskName]
+           ,[ProviderName]
+           ,[IdDataProvider]
+           ,[TaskNamePrefix]
+           ,[Type]
+           ,[TypeName]
+           ,[TypeFile]
+           ,[TypeFileName]
+           ,[IsEnabled]
+           ,[SendByEmail]
+           ,[ReportsRetentionInDays]
+           ,[Comment]
+           ,[Tags]
+           ,[TaskParameters]
+           ,[CronParameters]
+           ,[UseGlobalQueryParameters]
+           ,[GlobalQueryParameters]
+           ,[LastRunDateTime]
+           ,[FileStorageLocationId]
+           ,[DataProviderId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT th.[TaskName]
+      ,th.[ActivityName]
+      ,dpv.[DataProviderId]
+      ,th.[TaskNamePrefix]
+      ,th.[Type]
+      ,th.[TypeName]
+      ,th.[TypeFile]
+      ,th.[TypeFileName]
+      ,th.[IsActivated]
+      ,th.[SendByEmail]
+      ,th.[ReportsRetentionInDays]
+      ,th.[Comment]
+	  ,th.[Tags]
+      ,th.[TaskHeaderParameters]
+      ,th.[CronParameters]
+      ,th.[UseGlobalQueryParameters]
+      ,th.[QueryParameters]
+      ,th.[LastRunDateTime]
+      ,fsl.FileStorageLocationId
+      ,dpv.[DataProviderId]
+	  ,th.[TaskHeaderId]
+      ,th.[CreateDateTime]
+      ,th.[CreateUser]
+      ,th.[ModDateTime]
+      ,th.[ModificationUser]   
+  FROM [dbo].[TaskHeader] th
+  join [dbo].[DataProvider] dpv on dpv.MiscValue=th.[ActivityId]
+  left join  [dbo].[FileStorageLocation] fsl on fsl.MiscValue=th.[FileDepositPathConfigurationId]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[ScheduledTaskDistributionList]
+           ([Recipients]
+           ,[EmailMessage]
+           ,[ScheduledTaskId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT 
+     dl.[Email]
+      ,dl.[Message]
+      ,th.[ScheduledTaskId]
+	  ,dl.[TaskEmailRecipientId]
+      ,dl.[CreateDateTime]
+      ,dl.[CreateUser]
+      ,dl.[ModDateTime]
+      ,dl.[ModificationUser]
+  FROM [dbo].[TaskEmailRecipient] dl
+  join [dbo].[ScheduledTask] th on th.MiscValue=dl.[TaskHeaderId]");
+            migrationBuilder.Sql(@"  INSERT INTO [dbo].[ScheduledTaskQuery]
+           ([QueryName]
+           ,[Query]
+           ,[QueryParameters]
+           ,[ExecutionParameters]
+           ,[ExecutionOrder]
+           ,[LastRunDateTime]
+           ,[ExecutionCount]
+           ,[ScheduledTaskId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT td.[QueryName]
+      ,td.[Query]
+	  ,td.[QueryParameters]
+      ,td.[TaskDetailParameters]
+      ,td.[DetailSequence]
+      ,td.[LastRunDateTime]
+      ,td.[NbrOfCumulativeOccurences]
+      ,th.[ScheduledTaskId]  
+      ,td.[TaskDetailId]
+      ,td.[CreateDateTime]
+      ,td.[CreateUser]
+      ,td.[ModDateTime]
+      ,td.[ModificationUser]
+  FROM [dbo].[TaskDetail] td
+   join [dbo].[ScheduledTask] th on th.MiscValue=td.[TaskHeaderId]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[StoredQuery]
+           ([IdDataProvider]
+           ,[ProviderName]
+           ,[Comment]
+           ,[Tags]
+           ,[QueryName]
+           ,[Query]
+           ,[Parameters]
+           ,[QueryParameters]
+           ,[DataProviderId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT 
+      dpv.DataProviderId
+	  ,qs.[ActivityName]
+	  ,qs.[Comment]
+      ,qs.[Tags]
+      ,qs.[QueryName]
+      ,qs.[Query]
+	  ,qs.[Parameters]  
+      ,qs.[QueryParameters]
+      ,dpv.DataProviderId
+	  ,qs.[Id]
+      ,qs.[CreateDateTime]
+      ,qs.[CreateUser]
+      ,qs.[ModDateTime]
+      ,qs.[ModificationUser]        
+  FROM [dbo].[QueryStore] qs
+  join [dbo].[DataProvider] dpv on dpv.MiscValue=qs.[ActivityId]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[TableMetadata]
+           ([TableName]
+           ,[TableDescription]
+           ,[ColumnName]
+           ,[ColumnDescription]
+           ,[IsSnippet]
+           ,[DatabaseConnectionId]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT td.[TableName]
+      ,td.[TableDescription]
+      ,td.[ColumnName]
+      ,td.[ColumnDescription]
+	  ,td.[IsSnippet]
+      ,dpvm.[DatabaseConnectionId]  
+	  ,td.[Id]
+      ,td.[CreateDateTime]
+      ,td.[CreateUser]
+      ,td.[ModDateTime]
+      ,td.[ModificationUser]    
+  FROM [dbo].[DbTableDescriptions] td
+	left join [dbo].[DatabaseConnection] dpvm on dpvm.MiscValue=td.[ActivityDbConnectionId]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[TaskLog]
+           ([ScheduledTaskId]
+           ,[StartDateTime]
+           ,[EndDateTime]
+           ,[DurationInSeconds]
+           ,[DataProviderId]
+           ,[ProviderName]
+           ,[JobDescription]
+           ,[Type]
+           ,[Result]
+           ,[Error]
+           ,[HasSteps]
+           ,[MiscValue]
+           ,[RunBy])
+SELECT 
+      coalesce(th.ScheduledTaskId,0)
+      ,lt.[StartDateTime]
+      ,lt.[EndDateTime]
+      ,lt.[DurationInSeconds]
+      ,coalesce(dpv.[DataProviderId],0)
+      ,lt.[ActivityName]
+      ,lt.[JobDescription]
+      ,lt.[Type]
+      ,lt.[Result]
+      ,lt.[Error]
+	  , case when lt.[TaskId]=0 then 0 else 1 end
+	  ,lt.[Id]
+      ,lt.[RunBy]
+  FROM [dbo].[ApplicationLogTask] lt
+  left join [dbo].[ScheduledTask] th on th.MiscValue=lt.[TaskId]
+  left join [dbo].[DataProvider] dpv on dpv.MiscValue=lt.[ActivityId]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[TaskStepLog]
+           ([TaskLogId]
+           ,[TimeStamp]
+           ,[Step]
+           ,[Info]
+           ,[RelatedLogType]
+           ,[RelatedLogId])
+SELECT  coalesce(tl.TaskLogId,0)
+      ,atd.[TimeStamp]
+      ,atd.[Step]
+      ,atd.[Info]
+	  ,0,0
+  FROM [dbo].[ApplicationLogTaskDetails] atd
+  left join [dbo].[TaskLog] tl on tl.[MiscValue]=atd.TaskId");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[AdHocQueryExecutionLog]
+           ([QueryId]
+           ,[StartDateTime]
+           ,[EndDateTime]
+           ,[DurationInSeconds]
+           ,[DataProviderId]
+           ,[ProviderName]
+           ,[JobDescription]
+           ,[Type]
+           ,[NbrOfRows]
+           ,[Result]
+           ,[Error]
+           ,[RunBy])
+SELECT 
+      qs.[Id]
+      ,aql.[StartDateTime]
+      ,aql.[EndDateTime]
+      ,aql.[DurationInSeconds]
+      ,dpv.DataProviderId
+      ,aql.[ActivityName]
+      ,aql.[JobDescription]
+      ,aql.[Type]
+      ,aql.[NbrOfRows]
+      ,aql.[Result]
+      ,aql.[Error]
+      ,aql.[RunBy]
+  FROM [dbo].[ApplicationLogAdHocQueries] aql
+	join [dbo].[DataProvider] dpv on dpv.MiscValue=aql.[ActivityId]
+	join [dbo].[StoredQuery] qs on qs.MiscValue=aql.[QueryId]
+");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[QueryExecutionLog]
+           ([TypeDb]
+           ,[Database]
+           ,[CommandTimeOut]
+           ,[DataProviderId]
+           ,[ProviderName]
+           ,[TaskLogId]
+           ,[ScheduledTaskId]
+           ,[ScheduledTaskQueryId]
+           ,[QueryName]
+           ,[Query]
+           ,[StartDateTime]
+           ,[TransferBeginDateTime]
+           ,[EndDateTime]
+           ,[TotalDuration]
+           ,[SqlExcecutionDuration]
+           ,[DownloadDuration]
+           ,[RowsFetched]
+           ,[RunBy]
+           ,[TypeJob])
+SELECT qel.[TypeDb]
+      ,qel.[Database]
+      ,qel.[CommandTimeOut]
+      ,dpv.DataProviderId
+      ,qel.[ActivityName]
+	  ,0,0,0
+      ,qel.[QueryName]
+      ,qel.[Query]
+      ,qel.[StartDateTime]
+      ,qel.[TransferBeginDateTime]
+      ,qel.[EndDateTime]
+      ,qel.[TotalDuration]
+      ,qel.[SqlExcecutionDuration]
+      ,qel.[DownloadDuration]
+      ,qel.[NbrOfRows]
+      ,qel.[RunBy]
+      ,qel.[TypeJob]
+  FROM [dbo].[ApplicationLogQueryExecution] qel
+  join [dbo].[DataProvider] dpv on dpv.MiscValue=qel.[ActivityId]");
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[ReportGenerationLog]
+           ([CreatedAt]
+           ,[CreatedBy]
+           ,[DataProviderId]
+           ,[ProviderName]
+           ,[TaskLogId]
+           ,[ScheduledTaskId]
+           ,[ReportName]
+           ,[SubName]
+           ,[FileType]
+           ,[FileName]
+           ,[ReportPath]
+           ,[FileSizeInMb]
+           ,[IsAvailable]
+           ,[Result]
+           ,[Error])
+SELECT rlr.[CreatedAt]
+      ,rlr.[CreatedBy]
+      ,dpv.DataProviderId
+      ,rlr.[ActivityName]
+	  ,0
+      ,th.ScheduledTaskId
+      ,rlr.[ReportName]
+      ,rlr.[SubName]
+      ,rlr.[FileType]
+      ,rlr.[FileName]
+      ,rlr.[ReportPath]
+      ,rlr.[FileSizeInMb]
+      ,rlr.[IsAvailable]
+      ,rlr.[Result]
+      ,rlr.[Error]
+  FROM [dbo].[ApplicationLogReportResult] rlr
+join [dbo].[DataProvider] dpv on dpv.MiscValue=rlr.[ActivityId]
+left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
+
+
             migrationBuilder.CreateIndex(
                 name: "IX_AdHocQueryExecutionLog_DataProviderId_QueryId_JobDescription",
                 table: "AdHocQueryExecutionLog",
@@ -1074,6 +1574,67 @@ namespace ReportAppWASM.Server.Migrations
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+
+            migrationBuilder.DropTable(
+                name: "ApplicationAuditTrail");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogAdHocQueries");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogEmailSender");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogQueryExecution");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogReportResult");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogSystem");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogTask");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogTaskDetails");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationParameters");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationUniqueKey");
+
+            migrationBuilder.DropTable(
+                name: "DbTableDescriptions");
+
+            migrationBuilder.DropTable(
+                name: "FileDepositPathConfiguration");
+
+            migrationBuilder.DropTable(
+                name: "QueryStore");
+
+            migrationBuilder.DropTable(
+                name: "ServicesStatus");
+
+            migrationBuilder.DropTable(
+                name: "TaskDetail");
+
+            migrationBuilder.DropTable(
+                name: "TaskEmailRecipient");
+
+            migrationBuilder.DropTable(
+                name: "UserSavedConfiguration");
+
+            migrationBuilder.DropTable(
+                name: "ActivityDbConnection");
+
+            migrationBuilder.DropTable(
+                name: "TaskHeader");
+
+            migrationBuilder.DropTable(
+                name: "Activity");
         }
 
         /// <inheritdoc />
