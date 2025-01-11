@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250110123324_EnhancedDataModel")]
+    [Migration("20250111160028_EnhancedDataModel")]
     partial class EnhancedDataModel
     {
         /// <inheritdoc />
@@ -50,7 +50,7 @@ namespace ReportAppWASM.Server.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -74,7 +74,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims", (string)null);
+                    b.ToTable("RoleClaims", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -98,7 +98,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaims", (string)null);
+                    b.ToTable("UserClaims", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -121,7 +121,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogins", (string)null);
+                    b.ToTable("UserLogins", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -136,7 +136,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -157,7 +157,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens", (string)null);
+                    b.ToTable("UserTokens", "auth");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.AdHocQueryExecutionLog", b =>
@@ -313,7 +313,7 @@ namespace ReportAppWASM.Server.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users", "auth");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.AuditTrail", b =>
@@ -1418,6 +1418,11 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<string>("ModificationUser")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Parameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<bool>("ReportService")
                         .HasColumnType("bit");

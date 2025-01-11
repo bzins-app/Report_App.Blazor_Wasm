@@ -8,8 +8,5 @@ public class SystemServicesStatusDto : BaseTraceabilityDto, IDto
     public bool AlertService { get; set; }
     public bool DataTransferService { get; set; }
     public bool CleanerService { get; set; }
-
-    //public int Id { get; set; }
-    //[MaxLength(200)] public string ServiceName { get; set; }
-    //public bool IsEnabled { get; set; }
+    [MaxLength(4000)] public string Parameters { get; set; } = "[]";
 }

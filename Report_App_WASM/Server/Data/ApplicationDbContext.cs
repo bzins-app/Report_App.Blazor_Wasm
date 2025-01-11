@@ -83,37 +83,37 @@ public class ApplicationDbContext : AuditableIdentityContext
 
         modelBuilder.Entity<ApplicationUser>(b =>
         {
-            b.ToTable("Users");
+            b.ToTable("Users", schema:"auth");
         });
 
         modelBuilder.Entity<IdentityUserClaim<Guid>>(b =>
         {
-            b.ToTable("UserClaims");
+            b.ToTable("UserClaims", schema:"auth");
         });
 
         modelBuilder.Entity<IdentityUserLogin<Guid>>(b =>
         {
-            b.ToTable("UserLogins");
+            b.ToTable("UserLogins", schema:"auth");
         });
 
         modelBuilder.Entity<IdentityUserToken<Guid>>(b =>
         {
-            b.ToTable("UserTokens");
+            b.ToTable("UserTokens", schema: "auth");
         });
 
         modelBuilder.Entity<IdentityRole<Guid>>(b =>
         {
-            b.ToTable("Roles");
+            b.ToTable("Roles", schema:"auth");
         });
 
         modelBuilder.Entity<IdentityRoleClaim<Guid>>(b =>
         {
-            b.ToTable("RoleClaims");
+            b.ToTable("RoleClaims", schema: "auth");
         });
 
         modelBuilder.Entity<IdentityUserRole<Guid>>(b =>
         {
-            b.ToTable("UserRoles");
+            b.ToTable("UserRoles", schema: "auth");
         });
 
         //custom indexes

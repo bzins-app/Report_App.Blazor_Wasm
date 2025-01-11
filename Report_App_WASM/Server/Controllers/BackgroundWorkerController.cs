@@ -74,10 +74,10 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     private async Task<IActionResult> ActivateServiceAsync(ApiCrudPayload<ApiBackgroundWorkerPayload> value,
-        BackgroundTaskType type, Action<SystemServicesStatus, bool> updateServiceStatus)
+        BackgroundTaskType type, Action<SystemServicesStatus, bool> changeStatus)
     {
         var item = await GetServiceStatusAsync();
-        updateServiceStatus(item, value.EntityValue!.Activate);
+        changeStatus(item, value.EntityValue!.Activate);
         var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, type);
         await UpdateServicesAsync(item, value.UserName);
         return Ok(result);

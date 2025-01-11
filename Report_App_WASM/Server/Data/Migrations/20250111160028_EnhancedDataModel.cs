@@ -36,7 +36,6 @@ namespace ReportAppWASM.Server.Migrations
                 table: "AspNetUserTokens");
 
 
-
             migrationBuilder.DropPrimaryKey(
                 name: "PK_AspNetUserTokens",
                 table: "AspNetUserTokens");
@@ -65,51 +64,65 @@ namespace ReportAppWASM.Server.Migrations
                 name: "PK_AspNetRoleClaims",
                 table: "AspNetRoleClaims");
 
+            migrationBuilder.EnsureSchema(
+                name: "auth");
+
             migrationBuilder.RenameTable(
                 name: "AspNetUserTokens",
-                newName: "UserTokens");
+                newName: "UserTokens",
+                newSchema: "auth");
 
             migrationBuilder.RenameTable(
                 name: "AspNetUsers",
-                newName: "Users");
+                newName: "Users",
+                newSchema: "auth");
 
             migrationBuilder.RenameTable(
                 name: "AspNetUserRoles",
-                newName: "UserRoles");
+                newName: "UserRoles",
+                newSchema: "auth");
 
             migrationBuilder.RenameTable(
                 name: "AspNetUserLogins",
-                newName: "UserLogins");
+                newName: "UserLogins",
+                newSchema: "auth");
 
             migrationBuilder.RenameTable(
                 name: "AspNetUserClaims",
-                newName: "UserClaims");
+                newName: "UserClaims",
+                newSchema: "auth");
 
             migrationBuilder.RenameTable(
                 name: "AspNetRoles",
-                newName: "Roles");
+                newName: "Roles",
+                newSchema: "auth");
 
             migrationBuilder.RenameTable(
                 name: "AspNetRoleClaims",
-                newName: "RoleClaims");
+                newName: "RoleClaims",
+                newSchema: "auth");
 
             migrationBuilder.RenameIndex(
                 name: "IX_AspNetUserRoles_RoleId",
+                schema: "auth",
                 table: "UserRoles",
                 newName: "IX_UserRoles_RoleId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_AspNetUserLogins_UserId",
+                schema: "auth",
                 table: "UserLogins",
                 newName: "IX_UserLogins_UserId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_AspNetUserClaims_UserId",
+                schema: "auth",
                 table: "UserClaims",
                 newName: "IX_UserClaims_UserId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
+                schema: "auth",
                 table: "RoleClaims",
                 newName: "IX_RoleClaims_RoleId");
 
@@ -208,6 +221,7 @@ namespace ReportAppWASM.Server.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "UserLastName",
+                schema: "auth",
                 table: "Users",
                 type: "nvarchar(250)",
                 maxLength: 250,
@@ -219,6 +233,7 @@ namespace ReportAppWASM.Server.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "UserFirstName",
+                schema: "auth",
                 table: "Users",
                 type: "nvarchar(250)",
                 maxLength: 250,
@@ -230,6 +245,7 @@ namespace ReportAppWASM.Server.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "ModificationUser",
+                schema: "auth",
                 table: "Users",
                 type: "nvarchar(250)",
                 maxLength: 250,
@@ -240,6 +256,7 @@ namespace ReportAppWASM.Server.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Culture",
+                schema: "auth",
                 table: "Users",
                 type: "nvarchar(8)",
                 maxLength: 8,
@@ -250,6 +267,7 @@ namespace ReportAppWASM.Server.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "CreateUser",
+                schema: "auth",
                 table: "Users",
                 type: "nvarchar(250)",
                 maxLength: 250,
@@ -261,36 +279,43 @@ namespace ReportAppWASM.Server.Migrations
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserTokens",
+                schema: "auth",
                 table: "UserTokens",
                 columns: new[] { "UserId", "LoginProvider", "Name" });
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Users",
+                schema: "auth",
                 table: "Users",
                 column: "Id");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserRoles",
+                schema: "auth",
                 table: "UserRoles",
                 columns: new[] { "UserId", "RoleId" });
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserLogins",
+                schema: "auth",
                 table: "UserLogins",
                 columns: new[] { "LoginProvider", "ProviderKey" });
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserClaims",
+                schema: "auth",
                 table: "UserClaims",
                 column: "Id");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Roles",
+                schema: "auth",
                 table: "Roles",
                 column: "Id");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_RoleClaims",
+                schema: "auth",
                 table: "RoleClaims",
                 column: "Id");
 
@@ -534,6 +559,7 @@ namespace ReportAppWASM.Server.Migrations
                     AlertService = table.Column<bool>(type: "bit", nullable: false),
                     DataTransferService = table.Column<bool>(type: "bit", nullable: false),
                     CleanerService = table.Column<bool>(type: "bit", nullable: false),
+                    Parameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -828,6 +854,60 @@ namespace ReportAppWASM.Server.Migrations
                         principalColumn: "ScheduledTaskId",
                         onDelete: ReferentialAction.Cascade);
                 });
+            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_NAME = N'set' and TABLE_SCHEMA=N'HangFire')
+BEGIN
+delete from [HangFire].[Set];
+delete from [HangFire].[Hash];
+END
+");
+            migrationBuilder.Sql(@" update t set t.DbConnectionParameters=
+(select
+[TypeDbName] as [Type],
+case when [TypeDbName]='SqlServer' then CAST(AdAuthentication as bit) end  as [Parameters.TrustedConnection],
+case when [TypeDbName]='SqlServer' then CAST(0 as bit) end  as [Parameters.Encrypt],
+case when [TypeDbName]='SqlServer' then CAST(0 as bit) end  as [Parameters.TrustServerCertificate],
+case when [TypeDbName]='SqlServer' then cast (IntentReadOnly as int) end  as [Parameters.ApplicationIntent],
+case when [TypeDbName] in ('SqlServer','PostgreSql') then '' end  as [Parameters.ApplicationName],
+case when [TypeDbName]='SqlServer' then 8000 end  as [Parameters.PacketSize],
+case when [TypeDbName]='SqlServer' then CAST(1 as bit) end  as [Parameters.MultipleActiveResultSets],
+
+case when [TypeDbName] in ('MariaDb','MySql') then 'utf8mb4' end  as [Parameters.Charset],
+case when [TypeDbName] in ('MariaDb','MySql') then CAST(0 as bit) end  as [Parameters.UseCompression],
+case when [TypeDbName] in ('MariaDb','MySql','PostgreSql') then CAST(0 as bit) end  as [Parameters.UseSSL],
+case when [TypeDbName] in ('MariaDb','MySql') then CAST(0 as bit) end  as [Parameters.AllowUserVariables],
+
+case when [TypeDbName] in ('MySql') then CAST(0 as bit) end  as [Parameters.ConvertZeroDateTime],
+case when [TypeDbName] in ('MySql') then CAST(0 as bit) end  as [Parameters.PersistSecurityInfo],
+
+case when [TypeDbName] in ('MariaDb') then CAST(0 as bit) end  as [Parameters.TreatTinyAsBoolean],
+case when [TypeDbName] in ('MariaDb') then CAST(0 as bit) end  as [Parameters.InteractiveSession],
+
+case when [TypeDbName]='Oracle' then right([ConnectionPath], len([ConnectionPath])-charindex('/', [ConnectionPath])) end  as [Parameters.ServiceName],
+case when [TypeDbName]='Oracle' then CAST(0 as bit) end  as [Parameters.DedicatedAdmin],
+case when [TypeDbName]='Oracle' then 'no' end  as [Parameters.LoadBalancing],
+case when [TypeDbName]='Oracle' then CAST(UseDbSchema as bit)  end  as [Parameters.UseDbSchema],
+case when [TypeDbName]='Oracle' then DbSchema  end  as [Parameters.Schema],
+
+case when [TypeDbName]='PostgreSql' then 'public'  end  as [Parameters.SearchPath],
+
+case when [TypeDbName]='DB2' then 'DB2OLEDB.1'  end  as [Parameters.Provider],
+
+case when [TypeDbName] in ('SqlServer','Oracle','PostgreSql') then CAST(1 as bit) end  as [Parameters.Pooling],
+case when [TypeDbName] in ('SqlServer','Oracle','PostgreSql') then 0 end  as [Parameters.MinPoolSize],
+case when [TypeDbName] in ('SqlServer','Oracle','PostgreSql') then 100 end  as [Parameters.MaxPoolSize],
+
+  case when [TypeDbName]='Oracle' then left([ConnectionPath], charindex(':', [ConnectionPath]) - 1) else [ConnectionPath] end as [Parameters.Server],
+  case when [TypeDbName]='Oracle' then  SUBSTRING([ConnectionPath], CHARINDEX(':', [ConnectionPath])+1
+, CHARINDEX('/',[ConnectionPath])-1 - CHARINDEX(':', [ConnectionPath]) ) else [Port] end as [Parameters.Port],
+  DbSchema as [Parameters.Database],
+  '' as [Parameters.UserId],
+  '' as [Parameters.Password],
+  15 as [Parameters.ConnectTimeout]
+  FOR JSON path, WITHOUT_ARRAY_WRAPPER ) 
+  from [dbo].[ActivityDbConnection] t
+  where t.DbConnectionParameters is null or t.DbConnectionParameters ='[]' or t.DbConnectionParameters =''
+");
 
             migrationBuilder.Sql(@"INSERT INTO [dbo].[SystemUniqueKey]
            ([Id])    
@@ -840,20 +920,23 @@ namespace ReportAppWASM.Server.Migrations
            ,[AlertService]
            ,[DataTransferService]
            ,[CleanerService]
+	   ,[Parameters]
            ,[CreateDateTime]
            ,[CreateUser]
            ,[ModDateTime]
            ,[ModificationUser])
-SELECT [EmailService]
-      ,[ReportService]
-      ,[AlertService]
-      ,[DataTransferService]
-      ,[CleanerService]
+SELECT 0
+      ,0
+      ,0
+      ,0
+      ,0
+	,'[]'
       ,[CreateDateTime]
       ,[CreateUser]
       ,[ModDateTime]
       ,[ModificationUser]
   FROM [dbo].[ServicesStatus]");
+
             migrationBuilder.Sql(@"INSERT INTO [dbo].[SystemParameters]
            ([ApplicationName]
            ,[ApplicationLogo]
@@ -954,6 +1037,7 @@ SELECT [StartDateTime]
       ,[NbrOfRecipients]
       ,[RecipientList]
   FROM [dbo].[ApplicationLogEmailSender]");
+
             migrationBuilder.Sql(@"INSERT INTO [dbo].[UserPreferences]
            ([UserId]
            ,[SaveName]
@@ -1005,6 +1089,7 @@ SELECT [ConfigurationName]
       ,[ModDateTime]
       ,[ModificationUser]
   FROM [dbo].[FileDepositPathConfiguration]");
+
             migrationBuilder.Sql(@"INSERT INTO [dbo].[DataProvider]
            ([ProviderName]
            ,[ProviderType]
@@ -1082,6 +1167,7 @@ SELECT adc.[ConnectionType]
   FROM [dbo].[ActivityDbConnection] adc
   join [dbo].[DataProvider] dpv on dpv.MiscValue=adc.[ActivityId]
   left join [dbo].[ActivityDbConnection] dpvm on dpvm.[Id]=adc.[IdDescriptions]");
+
             migrationBuilder.Sql(@"INSERT INTO [dbo].[ScheduledTask]
            ([TaskName]
            ,[ProviderName]
@@ -1543,48 +1629,60 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RoleClaims_Roles_RoleId",
+                schema: "auth",
                 table: "RoleClaims",
                 column: "RoleId",
+                principalSchema: "auth",
                 principalTable: "Roles",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserClaims_Users_UserId",
+                schema: "auth",
                 table: "UserClaims",
                 column: "UserId",
+                principalSchema: "auth",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserLogins_Users_UserId",
+                schema: "auth",
                 table: "UserLogins",
                 column: "UserId",
+                principalSchema: "auth",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserRoles_Roles_RoleId",
+                schema: "auth",
                 table: "UserRoles",
                 column: "RoleId",
+                principalSchema: "auth",
                 principalTable: "Roles",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserRoles_Users_UserId",
+                schema: "auth",
                 table: "UserRoles",
                 column: "UserId",
+                principalSchema: "auth",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserTokens_Users_UserId",
+                schema: "auth",
                 table: "UserTokens",
                 column: "UserId",
+                principalSchema: "auth",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
@@ -1649,6 +1747,7 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
             migrationBuilder.DropTable(
                 name: "Activity");
+
         }
 
         /// <inheritdoc />
@@ -1656,26 +1755,32 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_RoleClaims_Roles_RoleId",
+                schema: "auth",
                 table: "RoleClaims");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_UserClaims_Users_UserId",
+                schema: "auth",
                 table: "UserClaims");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_UserLogins_Users_UserId",
+                schema: "auth",
                 table: "UserLogins");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_UserRoles_Roles_RoleId",
+                schema: "auth",
                 table: "UserRoles");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_UserRoles_Users_UserId",
+                schema: "auth",
                 table: "UserRoles");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_UserTokens_Users_UserId",
+                schema: "auth",
                 table: "UserTokens");
 
             migrationBuilder.DropTable(
@@ -1740,30 +1845,37 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_UserTokens",
+                schema: "auth",
                 table: "UserTokens");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Users",
+                schema: "auth",
                 table: "Users");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_UserRoles",
+                schema: "auth",
                 table: "UserRoles");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_UserLogins",
+                schema: "auth",
                 table: "UserLogins");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_UserClaims",
+                schema: "auth",
                 table: "UserClaims");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Roles",
+                schema: "auth",
                 table: "Roles");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_RoleClaims",
+                schema: "auth",
                 table: "RoleClaims");
 
             migrationBuilder.DropColumn(
@@ -1780,30 +1892,37 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
             migrationBuilder.RenameTable(
                 name: "UserTokens",
+                schema: "auth",
                 newName: "AspNetUserTokens");
 
             migrationBuilder.RenameTable(
                 name: "Users",
+                schema: "auth",
                 newName: "AspNetUsers");
 
             migrationBuilder.RenameTable(
                 name: "UserRoles",
+                schema: "auth",
                 newName: "AspNetUserRoles");
 
             migrationBuilder.RenameTable(
                 name: "UserLogins",
+                schema: "auth",
                 newName: "AspNetUserLogins");
 
             migrationBuilder.RenameTable(
                 name: "UserClaims",
+                schema: "auth",
                 newName: "AspNetUserClaims");
 
             migrationBuilder.RenameTable(
                 name: "Roles",
+                schema: "auth",
                 newName: "AspNetRoles");
 
             migrationBuilder.RenameTable(
                 name: "RoleClaims",
+                schema: "auth",
                 newName: "AspNetRoleClaims");
 
             migrationBuilder.RenameIndex(

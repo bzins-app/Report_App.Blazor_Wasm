@@ -112,7 +112,7 @@ public class InitializeDatabase
             ActivateTaskSchedulerModule = true
         };
         await _context.AddAsync(parameters);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync("DB Initialization");
     }
 
     private async Task DefaultServiceStatus()
@@ -128,6 +128,6 @@ public class InitializeDatabase
             ModificationUser = "DB Initialization"
         };
         await _context.AddAsync(serviceStat);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync("DB Initialization");
     }
 }
