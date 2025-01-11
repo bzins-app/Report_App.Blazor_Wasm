@@ -288,7 +288,6 @@ public class BackgroundTaskHandler : IDisposable
             ScheduledTaskId = _header.ScheduledTaskId,
             TaskLogId = _taskId,
             ReportName = _header.TaskName,
-            SubName = subName,
             FileType = _header.TypeFile.ToString(),
             ReportPath = "/docsstorage/" + fName,
             FileName = fName,
