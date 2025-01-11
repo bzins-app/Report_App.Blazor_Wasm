@@ -1,5 +1,5 @@
 ﻿@page "/TaskManager/{TypeTask}"
-@page "/TasksPerActivity/{TypeTask}/{DataProviderId:int}/{ProviderName}"
+@page "/TasksPerActivity/{TypeTask}/{DataProviderId:long}/{ProviderName}"
 @inject NavigationManager UriHelper
 @implements IAsyncDisposable
 @inject HttpClient Http
@@ -103,7 +103,7 @@
 
     [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int? DataProviderId { get; set; }
+    [Parameter] public long? DataProviderId { get; set; }
 
     [Parameter] [SupplyParameterFromQuery] public int? Page { get; set; }
 
@@ -216,7 +216,7 @@
         var customFilters = $"TypeName eq '{TypeTask}'";
         if (DataProviderId.HasValue)
         {
-            customFilters += $" and  IdActivity eq {DataProviderId.Value} ";
+            customFilters += $" and  IdDataProvider eq {DataProviderId.Value} ";
         }
 
         url += "$count=true";

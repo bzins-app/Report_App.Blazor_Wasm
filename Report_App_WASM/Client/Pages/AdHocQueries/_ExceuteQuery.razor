@@ -156,7 +156,7 @@ else
 
 @code {
 
-    [Parameter] public int QueryId { get; set; }
+    [Parameter] public long QueryId { get; set; }
 
     private StoredQueryDto? Item;
     private List<QueryCommandParameter> param = new();
@@ -259,7 +259,7 @@ else
         }
     }
 
-    private async Task DeleteConfig(int id)
+    private async Task DeleteConfig(long id)
     {
         await _menu.CloseMenuAsync();
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };

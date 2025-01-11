@@ -2,7 +2,7 @@
 
 public class ScheduledTaskQueryDto : BaseTraceabilityDto, IDto
 {
-    public int ScheduledTaskQueryId { get; set; }
+    public long ScheduledTaskQueryId { get; set; }
     [Required][MaxLength(200)] public string? QueryName { get; set; }
     [Required] public string? Query { get; set; }
     [MaxLength(4000)] public string QueryParameters { get; set; } = "[]";

@@ -7,10 +7,10 @@ public interface IBackgroundWorkers
     void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment>? attachment = null);
 
     void DeleteFile(string filePath);
-    Task SwitchBackgroundTasksPerActivityAsync(int activityId, bool activate);
-    Task SwitchBackgroundTaskAsync(int taskHeaderId, bool activate);
+    Task SwitchBackgroundTasksPerActivityAsync(long activityId, bool activate);
+    Task SwitchBackgroundTaskAsync(long taskHeaderId, bool activate);
     Task<SubmitResult> ActivateBackgroundWorkersAsync(bool activate, BackgroundTaskType type);
 
-    void RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient> emails,
+    void RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient> emails,
         List<QueryCommandParameter> customQueryParameters, bool generateFiles = false);
 }

@@ -1,4 +1,4 @@
-﻿@page "/DbExplorer2/{DataProviderId:int}/{ProviderName}"
+﻿@page "/DbExplorer2/{DataProviderId:long}/{ProviderName}"
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Report_App_WASM.Shared.Extensions
@@ -85,7 +85,7 @@
 
     [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int DataProviderId { get; set; }
+    [Parameter] public long DataProviderId { get; set; }
 
     private List<TablesColsInfo> TableNames = new();
     private List<TablesColsInfo> TableNamesStored = new();

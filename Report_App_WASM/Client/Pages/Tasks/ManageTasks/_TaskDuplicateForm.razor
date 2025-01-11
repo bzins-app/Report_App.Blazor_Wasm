@@ -47,7 +47,7 @@
         _visible = false;
     }
 
-    private async Task Clone(string name, int taskHeaderId)
+    private async Task Clone(string name, long taskHeaderId)
     {
         DuplicateTask payload = new() { Name = name, ScheduledTaskId = taskHeaderId };
         var result = await DataService.PostValues(payload, "TaskClone");

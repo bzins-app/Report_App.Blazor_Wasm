@@ -22,7 +22,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         GC.SuppressFinalize(this);
     }
 
-    public async Task<bool> CkeckTableExists(string query, int dataProviderIdTransfer)
+    public async Task<bool> CkeckTableExists(string query, long dataProviderIdTransfer)
     {
         var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
         var _dbInfo = await GetDbInfo(dataProviderId);
@@ -30,7 +30,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         return await remote.CkeckTableExists(_dbInfo, query);
     }
 
-    public async Task DeleteTable(string tableName, int dataProviderIdTransfer)
+    public async Task DeleteTable(string tableName, long dataProviderIdTransfer)
     {
         var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
         var _dbInfo = await GetDbInfo(dataProviderId);
@@ -38,7 +38,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         await remote.DeleteTable(_dbInfo, tableName);
     }
 
-    public async Task CreateTable(string query, int dataProviderIdTransfer)
+    public async Task CreateTable(string query, long dataProviderIdTransfer)
     {
         var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
         var _dbInfo = await GetDbInfo(dataProviderId);
@@ -46,7 +46,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         await remote.CreateTable(_dbInfo, query);
     }
 
-    public async Task<MergeResult> MergeTables(string query, int dataProviderIdTransfer)
+    public async Task<MergeResult> MergeTables(string query, long dataProviderIdTransfer)
     {
         var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
         var _dbInfo = await GetDbInfo(dataProviderId);
@@ -54,7 +54,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         return await remote.MergeTables(_dbInfo, query);
     }
 
-    public async Task LoadDatatableToTable(DataTable data, string? targetTable, int dataProviderIdTransfer)
+    public async Task LoadDatatableToTable(DataTable data, string? targetTable, long dataProviderIdTransfer)
     {
         var dataProviderId = await GetDataTransferActivity(dataProviderIdTransfer);
         var _dbInfo = await GetDbInfo(dataProviderId);
@@ -62,7 +62,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         await remote.LoadDatatableToTable(_dbInfo, data, targetTable);
     }
 
-    public async Task<string> GetAllTablesScript(int dataProviderId)
+    public async Task<string> GetAllTablesScript(long dataProviderId)
     {
         var _dbInfo = await GetDbInfo(dataProviderId);
         var remote = GetRemoteDbType(_dbInfo.TypeDb);
@@ -70,14 +70,14 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
     }
 
 
-    public async Task<string> GetAllTablesAndColumnsScript(int dataProviderId)
+    public async Task<string> GetAllTablesAndColumnsScript(long dataProviderId)
     {
         var _dbInfo = await GetDbInfo(dataProviderId);
         var remote = GetRemoteDbType(_dbInfo.TypeDb);
         return remote.GetAllTablesAndColumnsScript(_dbInfo);
     }
 
-    public async Task<string> GetTableColumnInfoScript(int dataProviderId, string tableName)
+    public async Task<string> GetTableColumnInfoScript(long dataProviderId, string tableName)
     {
         var _dbInfo = await GetDbInfo(dataProviderId);
         var remote = GetRemoteDbType(_dbInfo.TypeDb);
@@ -99,7 +99,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
     }
 
     public async Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts,
-        int taskId = 0)
+        long taskId = 0)
     {
         DataTable values;
         var attempts = 0;
@@ -199,7 +199,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         } while (true);
     }
 
-    private async Task<int> GetDataTransferActivity(int dataProviderId)
+    private async Task<long> GetDataTransferActivity(long dataProviderId)
     {
         return await _context.DataProvider.Where(a => a.ProviderType == ProviderType.TargetDatabase && a.DataProviderId == dataProviderId)
             .Select(( a) => a.DataProviderId)
@@ -219,7 +219,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
         };
     }
 
-    private async Task<DatabaseConnection> GetDbInfo(int dataProviderId)
+    private async Task<DatabaseConnection> GetDbInfo(long dataProviderId)
     {
         return (await _context.DatabaseConnection.Where(a => a.DataProvider.DataProviderId == dataProviderId)
             .FirstOrDefaultAsync())!;

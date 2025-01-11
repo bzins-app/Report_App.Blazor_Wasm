@@ -2,7 +2,7 @@
 
 public class DataProviderDto : BaseTraceabilityDto, IDto
 {
-    public int DataProviderId { get; set; }
+    public long DataProviderId { get; set; }
     [Required][MaxLength(250)] public string? ProviderName { get; set; }
     public ProviderType ProviderType { get; set; } = ProviderType.SourceDatabase;
     [MaxLength(20)] public string? ProviderTypeName { get; set; }

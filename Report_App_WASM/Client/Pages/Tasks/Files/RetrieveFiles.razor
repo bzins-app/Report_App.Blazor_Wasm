@@ -1,4 +1,4 @@
-﻿@page "/RetrieveFiles/{ProviderName}/{DataProviderId:int}"
+﻿@page "/RetrieveFiles/{ProviderName}/{DataProviderId:long}"
 @implements IAsyncDisposable
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
@@ -54,7 +54,7 @@
 
 @code
 {
-    [Parameter] public int DataProviderId { get; set; }
+    [Parameter] public long DataProviderId { get; set; }
 
     [Parameter] public string? ProviderName { get; set; }
 

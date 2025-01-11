@@ -2,15 +2,15 @@
 
 public class QueryExecutionLogDto : IDto
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     [MaxLength(60)] public string? TypeDb { get; set; }
     [MaxLength(1000)] public string? Database { get; set; }
     public int CommandTimeOut { get; set; }
-    public int DataProviderId { get; set; }
+    public long DataProviderId { get; set; }
     [MaxLength(250)] public string? ProviderName { get; set; }
-    public int TaskLogId { get; set; }
-    public int ScheduledTaskId { get; set; }
-    public int ScheduledTaskQueryId { get; set; }
+    public long TaskLogId { get; set; }
+    public long ScheduledTaskId { get; set; }
+    public long ScheduledTaskQueryId { get; set; }
     [MaxLength(1000)] public string? QueryName { get; set; }
     public string? Query { get; set; }
     public DateTime StartDateTime { get; set; }

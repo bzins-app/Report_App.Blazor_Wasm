@@ -2,7 +2,7 @@
 
 public class FileStorageLocation : BaseTraceability
 {
-    public int FileStorageLocationId { get; set; }
+    public long FileStorageLocationId { get; set; }
     [Required][MaxLength(250)] public string? ConfigurationName { get; set; }
     [Required][MaxLength(4000)] public string FilePath { get; set; } = ".";
     public bool IsReachable { get; set; }

@@ -2,7 +2,7 @@
 
 public class DatabaseConnectionDto : BaseTraceabilityDto, IDto
 {
-    public int DatabaseConnectionId { get; set; }
+    public long DatabaseConnectionId { get; set; }
     [MaxLength(20)] public string ConnectionType { get; set; } = "SQL";
     public TypeDb TypeDb { get; set; }
     [MaxLength(20)] public string? TypeDbName { get; set; }
@@ -13,7 +13,7 @@ public class DatabaseConnectionDto : BaseTraceabilityDto, IDto
     public int CommandFetchSize { get; set; } = 131072;
     public bool UseTableMetaData { get; set; } = false;
     public bool UseTableMetaDataFromAnotherProvider { get; set; } = false;
-    public int IdTableMetaData { get; set; }
+    public long IdTableMetaData { get; set; }
     public int AdHocQueriesMaxNbrofRowsFetched { get; set; } = 100000;
     public int TaskSchedulerMaxNbrofRowsFetched { get; set; } = 1000000;
     public int DataTransferMaxNbrofRowsFetched { get; set; } = 2000000;

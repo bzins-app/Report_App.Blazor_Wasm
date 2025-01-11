@@ -2,8 +2,8 @@
 
 public class StoredQuery : BaseTraceability
 {
-    public int Id { get; set; }
-    public int IdDataProvider { get; set; }
+    public long Id { get; set; }
+    public long IdDataProvider { get; set; }
     [MaxLength(250)] public string? ProviderName { get; set; }
     [MaxLength(1000)] public string? Comment { get; set; }
     [MaxLength(2000)] public string Tags { get; set; } = "[]";

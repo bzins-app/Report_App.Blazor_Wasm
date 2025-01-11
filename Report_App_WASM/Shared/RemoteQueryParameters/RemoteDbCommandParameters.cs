@@ -2,9 +2,9 @@
 
 public class RemoteDbCommandParameters
 {
-    public int DataProviderId { get; init; }
-    public int ScheduledTaskId { get; set; }
-    public int ScheduledTaskQueryId { get; set; }
+    public long DataProviderId { get; init; }
+    public long ScheduledTaskId { get; set; }
+    public long ScheduledTaskQueryId { get; set; }
     public string? FileName { get; set; }
     public string? QueryToRun { get; set; }
     public List<QueryCommandParameter>? QueryCommandParameters { get; init; } = new();

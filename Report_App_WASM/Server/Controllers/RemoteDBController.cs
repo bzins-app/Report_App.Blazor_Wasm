@@ -160,7 +160,7 @@ public class RemoteDbController : ControllerBase, IDisposable
         }
     }
 
-    private async Task<TypeDb> GetDbType(int dataProviderId)
+    private async Task<TypeDb> GetDbType(long dataProviderId)
     {
         return await _context.DatabaseConnection
             .Where(a => a.DataProvider.DataProviderId == dataProviderId)
@@ -168,7 +168,7 @@ public class RemoteDbController : ControllerBase, IDisposable
             .FirstOrDefaultAsync();
     }
 
-    private async Task<string> GetQueryTotal(int dataProviderId, string query)
+    private async Task<string> GetQueryTotal(long dataProviderId, string query)
     {
         var _typeDb = await GetDbType(dataProviderId);
 

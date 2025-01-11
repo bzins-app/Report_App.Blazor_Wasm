@@ -25,7 +25,7 @@ public class BackgroundTaskHandler : IDisposable
     {
         PropertyNameCaseInsensitive = true
     };
-    private int _taskId;
+    private long _taskId;
     private TaskLog _logTask;
 
     private class DataTransferRowsStats
@@ -94,7 +94,7 @@ public class BackgroundTaskHandler : IDisposable
         await _context.SaveChangesAsync("backgroundworker");
     }
 
-    private async Task<ScheduledTask> GetScheduledTaskAsync(int scheduledTaskId)
+    private async Task<ScheduledTask> GetScheduledTaskAsync(long scheduledTaskId)
     {
         return await _context.ScheduledTask
             .Where(a => a.ScheduledTaskId == scheduledTaskId)
@@ -104,7 +104,7 @@ public class BackgroundTaskHandler : IDisposable
             .FirstOrDefaultAsync();
     }
 
-    private async Task<DatabaseConnection> GetDatabaseConnectionAsync(int dataProviderId)
+    private async Task<DatabaseConnection> GetDatabaseConnectionAsync(long dataProviderId)
     {
         return await _context.DatabaseConnection
             .Where(a => a.DataProvider.DataProviderId == dataProviderId)

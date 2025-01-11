@@ -5,10 +5,10 @@
         private string? _typeFileName;
         private string? _typeName;
 
-        public int ScheduledTaskId { get; set; }
+        public long ScheduledTaskId { get; set; }
         [Required][MaxLength(200)] public string? TaskName { get; set; }
         [Required][MaxLength(250)] public string ProviderName { get; set; }
-        public int IdDataProvider { get; set; }
+        public long IdDataProvider { get; set; }
         [MaxLength(60)] public string? TaskNamePrefix { get; set; }
         public TaskType Type { get; set; }
         [MaxLength(20)]
@@ -45,7 +45,7 @@
         [MaxLength(4000)] public string GlobalQueryParameters { get; set; } = "[]";
         [MaxLength(100)] public string? TimeZone { get; set; } = TimeZoneInfo.Local.Id;
         public DateTime? LastRunDateTime { get; set; } = null;
-        public int FileStorageLocationId { get; set; }
+        public long FileStorageLocationId { get; set; }
         [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
         public ICollection<ScheduledTaskQuery> TaskQueries { get; set; } = new List<ScheduledTaskQuery>();
         public ICollection<ScheduledTaskDistributionList> DistributionLists { get; set; } = new List<ScheduledTaskDistributionList>();

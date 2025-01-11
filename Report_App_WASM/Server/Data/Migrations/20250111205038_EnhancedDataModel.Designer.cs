@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250111160028_EnhancedDataModel")]
+    [Migration("20250111205038_EnhancedDataModel")]
     partial class EnhancedDataModel
     {
         /// <inheritdoc />
@@ -162,14 +162,14 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.AdHocQueryExecutionLog", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("DataProviderId")
-                        .HasColumnType("int");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("DurationInSeconds")
                         .HasColumnType("int");
@@ -191,8 +191,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("QueryId")
-                        .HasColumnType("int");
+                    b.Property<long>("QueryId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Result")
                         .HasMaxLength(4000)
@@ -318,11 +318,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.AuditTrail", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("AffectedColumns")
                         .HasColumnType("nvarchar(max)");
@@ -365,11 +365,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.DataProvider", b =>
                 {
-                    b.Property<int>("DataProviderId")
+                    b.Property<long>("DataProviderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DataProviderId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("DataProviderId"));
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -431,11 +431,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
                 {
-                    b.Property<int>("DatabaseConnectionId")
+                    b.Property<long>("DatabaseConnectionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DatabaseConnectionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("DatabaseConnectionId"));
 
                     b.Property<int>("AdHocQueriesMaxNbrofRowsFetched")
                         .HasColumnType("int");
@@ -462,8 +462,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("DataProviderId")
-                        .HasColumnType("int");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("DataTransferMaxNbrofRowsFetched")
                         .HasColumnType("int");
@@ -473,8 +473,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("IdTableMetaData")
-                        .HasColumnType("int");
+                    b.Property<long>("IdTableMetaData")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("MiscParameters")
                         .IsRequired()
@@ -526,11 +526,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.EmailLog", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("DurationInSeconds")
                         .HasColumnType("int");
@@ -568,11 +568,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageLocation", b =>
                 {
-                    b.Property<int>("FileStorageLocationId")
+                    b.Property<long>("FileStorageLocationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileStorageLocationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("FileStorageLocationId"));
 
                     b.Property<string>("ConfigurationName")
                         .IsRequired()
@@ -673,17 +673,17 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.QueryExecutionLog", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("CommandTimeOut")
                         .HasColumnType("int");
 
-                    b.Property<int>("DataProviderId")
-                        .HasColumnType("int");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Database")
                         .HasMaxLength(1000)
@@ -713,11 +713,11 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("ScheduledTaskId")
-                        .HasColumnType("int");
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("ScheduledTaskQueryId")
-                        .HasColumnType("int");
+                    b.Property<long>("ScheduledTaskQueryId")
+                        .HasColumnType("bigint");
 
                     b.Property<TimeSpan>("SqlExcecutionDuration")
                         .HasColumnType("time");
@@ -725,8 +725,8 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TaskLogId")
-                        .HasColumnType("int");
+                    b.Property<long>("TaskLogId")
+                        .HasColumnType("bigint");
 
                     b.Property<TimeSpan>("TotalDuration")
                         .HasColumnType("time");
@@ -749,11 +749,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ReportGenerationLog", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -762,8 +762,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("DataProviderId")
-                        .HasColumnType("int");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Error")
                         .HasColumnType("bit");
@@ -798,15 +798,15 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("ScheduledTaskId")
-                        .HasColumnType("int");
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("SubName")
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
 
-                    b.Property<int>("TaskLogId")
-                        .HasColumnType("int");
+                    b.Property<long>("TaskLogId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -823,11 +823,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTask", b =>
                 {
-                    b.Property<int>("ScheduledTaskId")
+                    b.Property<long>("ScheduledTaskId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduledTaskId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ScheduledTaskId"));
 
                     b.Property<string>("Comment")
                         .HasMaxLength(1000)
@@ -845,19 +845,19 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("DataProviderId")
-                        .HasColumnType("int");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("FileStorageLocationId")
-                        .HasColumnType("int");
+                    b.Property<long>("FileStorageLocationId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("GlobalQueryParameters")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("IdDataProvider")
-                        .HasColumnType("int");
+                    b.Property<long>("IdDataProvider")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
@@ -941,11 +941,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTaskDistributionList", b =>
                 {
-                    b.Property<int>("ScheduledTaskDistributionListId")
+                    b.Property<long>("ScheduledTaskDistributionListId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduledTaskDistributionListId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ScheduledTaskDistributionListId"));
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -974,8 +974,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("ScheduledTaskId")
-                        .HasColumnType("int");
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("ScheduledTaskDistributionListId");
 
@@ -986,11 +986,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTaskQuery", b =>
                 {
-                    b.Property<int>("ScheduledTaskQueryId")
+                    b.Property<long>("ScheduledTaskQueryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduledTaskQueryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ScheduledTaskQueryId"));
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -1037,8 +1037,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("ScheduledTaskId")
-                        .HasColumnType("int");
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("ScheduledTaskQueryId");
 
@@ -1166,11 +1166,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.StoredQuery", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Comment")
                         .HasMaxLength(1000)
@@ -1183,11 +1183,11 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("DataProviderId")
-                        .HasColumnType("int");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdDataProvider")
-                        .HasColumnType("int");
+                    b.Property<long>("IdDataProvider")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("MiscParameters")
                         .IsRequired()
@@ -1445,11 +1445,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.TableMetadata", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ColumnDescription")
                         .HasMaxLength(600)
@@ -1466,8 +1466,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("DatabaseConnectionId")
-                        .HasColumnType("int");
+                    b.Property<long>("DatabaseConnectionId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsSnippet")
                         .HasColumnType("bit");
@@ -1507,14 +1507,14 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.TaskLog", b =>
                 {
-                    b.Property<int>("TaskLogId")
+                    b.Property<long>("TaskLogId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskLogId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TaskLogId"));
 
-                    b.Property<int>("DataProviderId")
-                        .HasColumnType("int");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("DurationInSeconds")
                         .HasColumnType("int");
@@ -1547,8 +1547,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("ScheduledTaskId")
-                        .HasColumnType("int");
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("datetime2");
@@ -1568,17 +1568,17 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.TaskStepLog", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Info")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RelatedLogId")
-                        .HasColumnType("int");
+                    b.Property<long>("RelatedLogId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("RelatedLogType")
                         .HasColumnType("int");
@@ -1587,8 +1587,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("TaskLogId")
-                        .HasColumnType("int");
+                    b.Property<long>("TaskLogId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -1606,11 +1606,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.UserPreferences", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -1619,8 +1619,8 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("IdIntConfiguration")
-                        .HasColumnType("int");
+                    b.Property<long>("IdIntConfiguration")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("IdStringConfiguration")
                         .HasMaxLength(100)

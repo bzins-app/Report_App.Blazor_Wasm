@@ -1,4 +1,4 @@
-﻿@page "/TaskEdit/{TaskHeaderId:int}"
+﻿@page "/TaskEdit/{TaskHeaderId:long}"
 @using Report_App_WASM.Shared.Extensions
 @using MudBlazor.Utilities
 @inject IDialogService DialogService
@@ -39,7 +39,7 @@
                             <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text"/>
                             @if (_activities.Any())
                             {
-                                <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-Value="@_DataProviderId"
+                                <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-Value="@_DataProviderId"
                                            AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler"
                                            Required>
                                     @foreach (var value in _activities)
@@ -147,7 +147,7 @@
                             {
                                 <AuthorizeView Roles="Admin">
                                     <Authorized>
-                                        <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId"
+                                        <MudSelect T="long" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId"
                                                    AnchorOrigin="Origin.BottomCenter"
                                                    Clearable>
                                             @if (Item.FileStorageLocationId == 0)
@@ -161,7 +161,7 @@
                                         </MudSelect>
                                     </Authorized>
                                     <NotAuthorized>
-                                        <MudSelect T="int" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId" Disabled="true"
+                                        <MudSelect T="long" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId" Disabled="true"
                                                    AnchorOrigin="Origin.BottomCenter"
                                                    Clearable>
                                             @if (Item.FileStorageLocationId == 0)
@@ -226,7 +226,7 @@
 
 @code {
 
-    [Parameter] public int TaskHeaderId { get; set; }
+    [Parameter] public long TaskHeaderId { get; set; }
 
     [Parameter] [SupplyParameterFromQuery] public bool? FromTaskManager { get; set; }
 
@@ -238,7 +238,7 @@
     private List<SelectItemDataproviderInfo> _activities = new();
     private List<SelectItemDataproviderInfo> _dataTransfers = new();
     private List<SelectItem> _depositPathSelect = new();
-    private int _DataProviderId;
+    private long _DataProviderId;
     private string? _errorMessage;
     private readonly List<ScheduledTaskQueryDto> _itemToDelete = new();
     private ScheduledTaskParameters? _param = new();
@@ -407,7 +407,7 @@
         UriHelper.NavigateTo(uri);
     }
 
-    private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
+    private void OnSelectedItemChangedHandler(IEnumerable<long> actId)
     {
         _DataProviderId = actId.FirstOrDefault();
         Item.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };

@@ -1,4 +1,4 @@
-﻿@page "/ManageQueries/{DataProviderId:int}/{ProviderName}"
+﻿@page "/ManageQueries/{DataProviderId:long}/{ProviderName}"
 @page "/ManageQueriesGlobal"
 @inject NavigationManager UriHelper
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
@@ -87,7 +87,7 @@
 
     [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int? DataProviderId { get; set; }
+    [Parameter] public long? DataProviderId { get; set; }
 
     GridItemsProvider<StoredQueryDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
@@ -100,7 +100,7 @@
     bool _UserIsSupervisor;
     List<string> _tags = new();
     IReadOnlyCollection<string>? selected;
-    int _DataProviderId;
+    long _DataProviderId;
     string _oldActivity = string.Empty;
 
     protected override async Task OnParametersSetAsync()
@@ -197,7 +197,7 @@
         var customFilters = string.Empty;
         if (DataProviderId.HasValue)
         {
-            customFilters = $"IdActivity eq {DataProviderId.Value}";
+            customFilters = $"IdDataProvider eq {DataProviderId.Value}";
         }
 
         url += "$count=true";

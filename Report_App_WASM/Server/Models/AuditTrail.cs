@@ -2,7 +2,7 @@
 
 public class AuditTrail : IBaseEntity
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     [MaxLength(250)] public string? UserId { get; set; }
     [MaxLength(250)] public string? Type { get; set; }
     [MaxLength(600)] public string? TableName { get; set; }

@@ -2,6 +2,6 @@
 
 public class DuplicateTask
 {
-    public int ScheduledTaskId { get; init; }
+    public long ScheduledTaskId { get; init; }
     public string? Name { get; init; }
 }

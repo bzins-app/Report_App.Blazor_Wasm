@@ -36,6 +36,7 @@ namespace ReportAppWASM.Server.Migrations
                 table: "AspNetUserTokens");
 
 
+
             migrationBuilder.DropPrimaryKey(
                 name: "PK_AspNetUserTokens",
                 table: "AspNetUserTokens");
@@ -323,13 +324,13 @@ namespace ReportAppWASM.Server.Migrations
                 name: "AdHocQueryExecutionLog",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QueryId = table.Column<int>(type: "int", nullable: false),
+                    QueryId = table.Column<long>(type: "bigint", nullable: false),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationInSeconds = table.Column<int>(type: "int", nullable: false),
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false),
                     ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     JobDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
@@ -347,7 +348,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "AuditTrail",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
@@ -367,7 +368,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "DataProvider",
                 columns: table => new
                 {
-                    DataProviderId = table.Column<int>(type: "int", nullable: false)
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     ProviderType = table.Column<int>(type: "int", nullable: false),
@@ -393,7 +394,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "EmailLog",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -413,7 +414,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "FileStorageLocation",
                 columns: table => new
                 {
-                    FileStorageLocationId = table.Column<int>(type: "int", nullable: false)
+                    FileStorageLocationId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConfigurationName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
@@ -441,16 +442,16 @@ namespace ReportAppWASM.Server.Migrations
                 name: "QueryExecutionLog",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TypeDb = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     Database = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CommandTimeOut = table.Column<int>(type: "int", nullable: false),
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false),
                     ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    TaskLogId = table.Column<int>(type: "int", nullable: false),
-                    ScheduledTaskId = table.Column<int>(type: "int", nullable: false),
-                    ScheduledTaskQueryId = table.Column<int>(type: "int", nullable: false),
+                    TaskLogId = table.Column<long>(type: "bigint", nullable: false),
+                    ScheduledTaskId = table.Column<long>(type: "bigint", nullable: false),
+                    ScheduledTaskQueryId = table.Column<long>(type: "bigint", nullable: false),
                     QueryName = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Query = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -472,14 +473,14 @@ namespace ReportAppWASM.Server.Migrations
                 name: "ReportGenerationLog",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false),
                     ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    TaskLogId = table.Column<int>(type: "int", nullable: false),
-                    ScheduledTaskId = table.Column<int>(type: "int", nullable: false),
+                    TaskLogId = table.Column<long>(type: "bigint", nullable: false),
+                    ScheduledTaskId = table.Column<long>(type: "bigint", nullable: false),
                     ReportName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     SubName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     FileType = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
@@ -586,13 +587,13 @@ namespace ReportAppWASM.Server.Migrations
                 name: "TaskLog",
                 columns: table => new
                 {
-                    TaskLogId = table.Column<int>(type: "int", nullable: false)
+                    TaskLogId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ScheduledTaskId = table.Column<int>(type: "int", nullable: false),
+                    ScheduledTaskId = table.Column<long>(type: "bigint", nullable: false),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationInSeconds = table.Column<int>(type: "int", nullable: false),
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false),
                     ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     JobDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
@@ -611,14 +612,14 @@ namespace ReportAppWASM.Server.Migrations
                 name: "TaskStepLog",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskLogId = table.Column<int>(type: "int", nullable: false),
+                    TaskLogId = table.Column<long>(type: "bigint", nullable: false),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Step = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Info = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RelatedLogType = table.Column<int>(type: "int", nullable: false),
-                    RelatedLogId = table.Column<int>(type: "int", nullable: false)
+                    RelatedLogId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -629,13 +630,13 @@ namespace ReportAppWASM.Server.Migrations
                 name: "UserPreferences",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     SaveName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Parameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     TypeConfiguration = table.Column<int>(type: "int", nullable: false),
-                    IdIntConfiguration = table.Column<int>(type: "int", nullable: false),
+                    IdIntConfiguration = table.Column<long>(type: "bigint", nullable: false),
                     IdStringConfiguration = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     SavedValues = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
@@ -654,7 +655,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "DatabaseConnection",
                 columns: table => new
                 {
-                    DatabaseConnectionId = table.Column<int>(type: "int", nullable: false)
+                    DatabaseConnectionId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConnectionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     TypeDb = table.Column<int>(type: "int", nullable: false),
@@ -666,13 +667,13 @@ namespace ReportAppWASM.Server.Migrations
                     CommandFetchSize = table.Column<int>(type: "int", nullable: false),
                     UseTableMetaData = table.Column<bool>(type: "bit", nullable: false),
                     UseTableMetaDataFromAnotherProvider = table.Column<bool>(type: "bit", nullable: false),
-                    IdTableMetaData = table.Column<int>(type: "int", nullable: false),
+                    IdTableMetaData = table.Column<long>(type: "bigint", nullable: false),
                     AdHocQueriesMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     TaskSchedulerMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     DataTransferMaxNbrofRowsFetched = table.Column<int>(type: "int", nullable: false),
                     RetryPatternParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -694,11 +695,11 @@ namespace ReportAppWASM.Server.Migrations
                 name: "ScheduledTask",
                 columns: table => new
                 {
-                    ScheduledTaskId = table.Column<int>(type: "int", nullable: false)
+                    ScheduledTaskId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    IdDataProvider = table.Column<int>(type: "int", nullable: false),
+                    IdDataProvider = table.Column<long>(type: "bigint", nullable: false),
                     TaskNamePrefix = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false),
                     TypeName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
@@ -715,9 +716,9 @@ namespace ReportAppWASM.Server.Migrations
                     GlobalQueryParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     TimeZone = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     LastRunDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    FileStorageLocationId = table.Column<int>(type: "int", nullable: false),
+                    FileStorageLocationId = table.Column<long>(type: "bigint", nullable: false),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -739,9 +740,9 @@ namespace ReportAppWASM.Server.Migrations
                 name: "StoredQuery",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdDataProvider = table.Column<int>(type: "int", nullable: false),
+                    IdDataProvider = table.Column<long>(type: "bigint", nullable: false),
                     ProviderName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Tags = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
@@ -750,7 +751,7 @@ namespace ReportAppWASM.Server.Migrations
                     Parameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     QueryParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    DataProviderId = table.Column<int>(type: "int", nullable: false),
+                    DataProviderId = table.Column<long>(type: "bigint", nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -772,7 +773,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "TableMetadata",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TableName = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     TableDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
@@ -780,7 +781,7 @@ namespace ReportAppWASM.Server.Migrations
                     ColumnDescription = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     IsSnippet = table.Column<bool>(type: "bit", nullable: false),
                     MiscParameters = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    DatabaseConnectionId = table.Column<int>(type: "int", nullable: false),
+                    DatabaseConnectionId = table.Column<long>(type: "bigint", nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -802,11 +803,11 @@ namespace ReportAppWASM.Server.Migrations
                 name: "ScheduledTaskDistributionList",
                 columns: table => new
                 {
-                    ScheduledTaskDistributionListId = table.Column<int>(type: "int", nullable: false)
+                    ScheduledTaskDistributionListId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Recipients = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     EmailMessage = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
-                    ScheduledTaskId = table.Column<int>(type: "int", nullable: false),
+                    ScheduledTaskId = table.Column<long>(type: "bigint", nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -828,7 +829,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "ScheduledTaskQuery",
                 columns: table => new
                 {
-                    ScheduledTaskQueryId = table.Column<int>(type: "int", nullable: false)
+                    ScheduledTaskQueryId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     QueryName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Query = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -837,7 +838,7 @@ namespace ReportAppWASM.Server.Migrations
                     ExecutionOrder = table.Column<int>(type: "int", nullable: false),
                     LastRunDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ExecutionCount = table.Column<int>(type: "int", nullable: false),
-                    ScheduledTaskId = table.Column<int>(type: "int", nullable: false),
+                    ScheduledTaskId = table.Column<long>(type: "bigint", nullable: false),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -854,6 +855,8 @@ namespace ReportAppWASM.Server.Migrations
                         principalColumn: "ScheduledTaskId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+
             migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_NAME = N'set' and TABLE_SCHEMA=N'HangFire')
 BEGIN
@@ -1487,6 +1490,7 @@ join [dbo].[DataProvider] dpv on dpv.MiscValue=rlr.[ActivityId]
 left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
 
+
             migrationBuilder.CreateIndex(
                 name: "IX_AdHocQueryExecutionLog_DataProviderId_QueryId_JobDescription",
                 table: "AdHocQueryExecutionLog",
@@ -1687,7 +1691,6 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
-
             migrationBuilder.DropTable(
                 name: "ApplicationAuditTrail");
 
@@ -1747,7 +1750,6 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
             migrationBuilder.DropTable(
                 name: "Activity");
-
         }
 
         /// <inheritdoc />

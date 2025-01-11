@@ -3,7 +3,7 @@
 public class DataProvider : BaseTraceability
 {
     private string? _providerTypeName;
-    public int DataProviderId { get; set; }
+    public long DataProviderId { get; set; }
     [Required][MaxLength(250)] public string? ProviderName { get; set; }
     public ProviderType ProviderType { get; set; } = ProviderType.SourceDatabase;
     [MaxLength(20)]

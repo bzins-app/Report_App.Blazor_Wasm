@@ -1,15 +1,17 @@
-﻿namespace Report_App_WASM.Server.Services.RemoteDb;
+﻿using System.Runtime.CompilerServices;
+
+namespace Report_App_WASM.Server.Services.RemoteDb;
 
 public interface IRemoteDatabaseActionsHandler
 {
     Task<SubmitResult> TestConnectionAsync(DatabaseConnection parameter);
-    Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts, int taskId = 0);
-    Task<bool> CkeckTableExists(string query, int activityIdTransfer);
-    Task CreateTable(string query, int activityIdTransfer);
-    Task LoadDatatableToTable(DataTable data, string? targetTable, int activityIdTransfer);
-    Task<MergeResult> MergeTables(string query, int activityIdTransfer);
-    Task DeleteTable(string tableName, int activityIdTransfer);
-    Task<string> GetAllTablesScript(int activityId);
-    Task<string> GetTableColumnInfoScript(int activityId, string tableName);
-    Task<string> GetAllTablesAndColumnsScript(int activityId);
+    Task<DataTable> RemoteDbToDatableAsync(RemoteDbCommandParameters run, CancellationToken cts, long taskId = 0);
+    Task<bool> CkeckTableExists(string query, long activityIdTransfer);
+    Task CreateTable(string query, long activityIdTransfer);
+    Task LoadDatatableToTable(DataTable data, string? targetTable, long activityIdTransfer);
+    Task<MergeResult> MergeTables(string query, long activityIdTransfer);
+    Task DeleteTable(string tableName, long activityIdTransfer);
+    Task<string> GetAllTablesScript(long activityId);
+    Task<string> GetTableColumnInfoScript(long activityId, string tableName);
+    Task<string> GetAllTablesAndColumnsScript(long activityId);
 }

@@ -3,5 +3,5 @@
 public class ApiBackgroundWorkerPayload
 {
     public bool Activate { get; init; }
-    public int Value { get; init; }
+    public long Value { get; init; }
 }

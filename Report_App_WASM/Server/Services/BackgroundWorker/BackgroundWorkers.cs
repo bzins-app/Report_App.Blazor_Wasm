@@ -46,7 +46,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             () => File.Delete(filePath), TimeSpan.FromMinutes(5));
     }
 
-    public async Task SwitchBackgroundTasksPerActivityAsync(int dataProviderId, bool activate)
+    public async Task SwitchBackgroundTasksPerActivityAsync(long dataProviderId, bool activate)
     {
         var reportHeaders = await _context.ScheduledTask.Where(a => a.IsEnabled && a.DataProvider.DataProviderId == dataProviderId)
             .Select(a => a.ScheduledTaskId).ToListAsync();
@@ -54,7 +54,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         foreach (var t in reportHeaders) await HandleTasksJobs(t, activate);
     }
 
-    public async Task SwitchBackgroundTaskAsync(int taskHeaderId, bool activate)
+    public async Task SwitchBackgroundTaskAsync(long taskHeaderId, bool activate)
     {
         await HandleTasksJobs(taskHeaderId, activate);
     }
@@ -119,7 +119,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         return result;
     }
 
-    public void RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient>? emails,
+    public void RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient>? emails,
         List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
     {
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
@@ -140,7 +140,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     }
 
 
-    private async Task HandleTasksJobs(int taskHeaderId, bool activate)
+    private async Task HandleTasksJobs(long taskHeaderId, bool activate)
     {
         var services = await _context.SystemServicesStatus
             .Select(a => new { a.AlertService, a.ReportService, a.DataTransferService })

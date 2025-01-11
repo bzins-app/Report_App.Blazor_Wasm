@@ -1,4 +1,4 @@
-﻿@page "/QueryEdit/{QueryId:int}"
+﻿@page "/QueryEdit/{QueryId:long}"
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager UriHelper
@@ -188,7 +188,7 @@
 
 @code {
 
-    [Parameter] public int QueryId { get; set; }
+    [Parameter] public long QueryId { get; set; }
 
     private StoredQueryDto? Item;
     private TypeDb _typeDbTask;

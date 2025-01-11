@@ -37,7 +37,7 @@
     private bool _visible;
     private DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Small, FullWidth = true };
     private List<SelectItemDataproviderInfo> _activities = new();
-    private int _selectedDataProviderId;
+    private long _selectedDataProviderId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,7 +64,7 @@
         _visible = false;
     }
 
-    private async Task Clone(string name, int queryId, int idActivity)
+    private async Task Clone(string name, long queryId, long idActivity)
     {
         DuplicateQueryStore payload = new() { Name = name, QueryId = queryId, DataProviderId = idActivity };
         var result = await DataService.PostValues(payload, "DuplicateQueryStore");

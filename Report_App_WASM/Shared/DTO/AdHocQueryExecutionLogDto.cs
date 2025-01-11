@@ -2,12 +2,12 @@
 
 public class AdHocQueryExecutionLogDto : IDto
 {
-    public int Id { get; set; }
-    public int QueryId { get; set; }
+    public long Id { get; set; }
+    public long QueryId { get; set; }
     public DateTime StartDateTime { get; set; } = DateTime.Now;
     public DateTime EndDateTime { get; set; }
     public int DurationInSeconds { get; set; }
-    public int DataProviderId { get; set; }
+    public long DataProviderId { get; set; }
     [MaxLength(250)] public string? ProviderName { get; set; }
     [MaxLength(250)] public string? JobDescription { get; set; }
     [MaxLength(60)] public string? Type { get; set; }

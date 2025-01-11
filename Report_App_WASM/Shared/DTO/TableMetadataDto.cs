@@ -2,7 +2,7 @@
 
 public class TableMetadataDto : BaseTraceabilityDto, IDto
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     [MaxLength(600)] public string? TableName { get; set; }
     [MaxLength(600)] public string? TableDescription { get; set; }
     [MaxLength(600)] public string? ColumnName { get; set; }
