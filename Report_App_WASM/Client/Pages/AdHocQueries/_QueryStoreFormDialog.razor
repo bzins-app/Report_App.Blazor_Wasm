@@ -15,11 +15,11 @@
             <MudTextField @bind-Value="Item!.QueryName" Label="@(Localizer.Get("Query Name"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             @if (_activities.Any())
             {
-                <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ActivityName" AnchorOrigin="Origin.BottomCenter"
+                <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ProviderName" AnchorOrigin="Origin.BottomCenter"
                            Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
                     @foreach (var value in _activities)
                     {
-                        <MudSelectItem Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
+                        <MudSelectItem Value="@value.ProviderName">@value.ProviderName</MudSelectItem>
                     }
                 </MudSelect>
             }
@@ -39,20 +39,20 @@
 
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public QueryStoreDto? Item { get; set; }
+    [Parameter] public StoredQueryDto? Item { get; set; }
 
     [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = default!;
     private string? _deletionValidation;
-    private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        if (Item.IdActivity > 0)
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        if (Item.IdDataProvider > 0)
         {
-            Item.ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault();
+            Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
         }
     }
 
@@ -67,16 +67,16 @@
         {
             if (_deletionValidation == "Validate")
             {
-                Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault() };
+                Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault() };
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
-            Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
-            Item.IdActivity = Item.Activity.ActivityId;
+            Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.ProviderName == Item.ProviderName).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = Item.ProviderName };
+            Item.IdDataProvider = Item.DataProvider.DataProviderId;
             await _form.Validate();
-            if (_form.IsValid && Item.Activity is not null)
+            if (_form.IsValid && Item.DataProvider is not null)
             {
                 MudDialog?.Close(DialogResult.Ok(Item));
             }

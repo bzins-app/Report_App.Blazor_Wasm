@@ -13,7 +13,7 @@ using Report_App_WASM.Server.Utils.SettingsConfiguration;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-builder.Logging.AddEntityFramework<ApplicationDbContext, ApplicationLogSystem>();
+builder.Logging.AddEntityFramework<ApplicationDbContext, SystemLog>();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
@@ -41,7 +41,7 @@ builder.Services.Configure<IdentityDefaultOptions>(identityDefaultOptionsConfigu
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-builder.Services.AddScoped<IRemoteDbConnection, RemoteDbConnection>();
+builder.Services.AddScoped<IRemoteDatabaseActionsHandler, RemoteDatabaseActionsHandler>();
 builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
 builder.Services.AddTransient<LocalFilesService>();
 builder.Services.AddTransient<InitializeDatabase>();
@@ -140,9 +140,9 @@ using (var scope = app.Services.CreateScope())
             var dbInit = services.GetRequiredService<InitializeDatabase>();
 
             dbInit.InitializeAsync().Wait();
-            HashKey.Key = context.ApplicationUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
+            HashKey.Key = context.SystemUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
                 .FirstOrDefault() ?? throw new InvalidOperationException("Cannot retrieve mandatory key");
-            var parameters = context.ApplicationParameters.FirstOrDefault();
+            var parameters = context.SystemParameters.FirstOrDefault();
             ApplicationConstants.ApplicationName = parameters?.ApplicationName!;
             ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
             ApplicationConstants.ActivateAdHocQueriesModule = parameters.ActivateAdHocQueriesModule;

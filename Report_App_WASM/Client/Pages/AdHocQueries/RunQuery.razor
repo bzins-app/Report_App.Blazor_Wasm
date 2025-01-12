@@ -1,4 +1,4 @@
-﻿@page "/RunQuery/{QueryId:int}/{ActivityId:int}/{ActivityName}"
+﻿@page "/RunQuery/{QueryId:long}/{DataProviderId:long}/{ProviderName}"
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
 @inject IJSRuntime JSRuntime
@@ -24,19 +24,19 @@
 
 @code {
 
-    [Parameter] public int QueryId { get; set; }
+    [Parameter] public long QueryId { get; set; }
 
-    [Parameter] public string ActivityName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int ActivityId { get; set; }
+    [Parameter] public long DataProviderId { get; set; }
 
-    private QueryStoreDto? Item;
+    private StoredQueryDto? Item;
 
 
     protected override async Task OnInitializedAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
         {
             NavigationManager.NavigateTo("/403");
         }
