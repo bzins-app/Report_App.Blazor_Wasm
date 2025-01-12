@@ -331,6 +331,12 @@
     private async Task OpenCreateDialog()
     {
         var value = new ScheduledTaskDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert, SendByEmail = TypeTask == TaskType.Alert.ToString() };
+        if (DataProviderId.HasValue)
+        {
+            value.IdDataProvider = DataProviderId.Value;
+            value.ProviderName = ProviderName;
+        }
+        
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
