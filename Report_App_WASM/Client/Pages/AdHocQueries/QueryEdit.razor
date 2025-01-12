@@ -40,7 +40,7 @@
                             <MudItem>
                                 @if (_activities.Any())
                                 {
-                                    <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
+                                    <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
                                                AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
                                                Required>
                                         @foreach (var value in _activities)
@@ -467,7 +467,7 @@
         }
     }
 
-    private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
+    private void OnSelectedItemChangedHandler(IEnumerable<long> actId)
     {
         var _DataProviderId = actId.FirstOrDefault();
         Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };

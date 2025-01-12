@@ -605,7 +605,7 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, int activityIdTransfer, int loopNumber)
+    private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, long activityIdTransfer, int loopNumber)
     {
         if (data.Rows.Count > 0)
         {
