@@ -8,5 +8,5 @@ public class FileStorageLocationDto : BaseTraceabilityDto, IDto
     public bool IsReachable { get; set; }
     public bool TryToCreateFolder { get; set; }
     public bool UseSftpProtocol { get; set; } = false;
-    public int SftpConfigurationId { get; set; }
+    public long SftpConfigurationId { get; set; }
 }

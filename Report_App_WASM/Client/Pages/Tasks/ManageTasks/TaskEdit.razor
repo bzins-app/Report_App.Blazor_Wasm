@@ -133,7 +133,7 @@
                             {
                                 @if (_dataTransfers.Any())
                                 {
-                                    <MudSelect T="int" Label="@Localizer.Get("Target data transfer")" @bind-Value="@_param.DataTransferId"
+                                    <MudSelect T="long" Label="@Localizer.Get("Target data transfer")" @bind-Value="@_param.DataTransferId"
                                                AnchorOrigin="Origin.BottomCenter"
                                                Required>
                                         @foreach (var value in _dataTransfers)
