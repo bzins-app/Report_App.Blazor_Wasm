@@ -51,14 +51,14 @@
 
 @code {
 
-    [Parameter] public int TaskId { get; set; }
+    [Parameter] public long TaskId { get; set; }
 
-    private List<ApplicationLogTaskDetailsDto> _details = new();
+    private List<TaskStepLogDto> _details = new();
 
     protected override async Task OnInitializedAsync()
     {
         var uri = $"GetLogTaskDetails?LogTaskHeaderId={TaskId}";
-        _details = await DataService.GetValues<ApplicationLogTaskDetailsDto>(uri);
+        _details = await DataService.GetValues<TaskStepLogDto>(uri);
     }
 
 }

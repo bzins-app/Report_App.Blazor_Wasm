@@ -67,7 +67,7 @@ public class LocalFilesService
         return new FileInfo(storagePath);
     }
 
-    public async Task RemoveLocalFilesAsync(List<ApplicationLogReportResult> filesInfo)
+    public async Task RemoveLocalFilesAsync(List<ReportGenerationLog> filesInfo)
     {
         var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
 

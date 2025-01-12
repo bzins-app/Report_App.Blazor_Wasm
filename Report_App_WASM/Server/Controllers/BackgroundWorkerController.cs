@@ -31,7 +31,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateServicesStatusAsync(ApiCrudPayload<ServicesStatus> status)
+    public async Task<IActionResult> UpdateServicesStatusAsync(ApiCrudPayload<SystemServicesStatus> status)
     {
         if (status.EntityValue == null)
         {
@@ -52,7 +52,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
         }
     }
 
-    private async Task<SubmitResult> UpdateServicesAsync(ServicesStatus item, string? userName)
+    private async Task<SubmitResult> UpdateServicesAsync(SystemServicesStatus item, string? userName)
     {
         try
         {
@@ -68,16 +68,16 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
         }
     }
 
-    private async Task<ServicesStatus> GetServiceStatusAsync()
+    private async Task<SystemServicesStatus> GetServiceStatusAsync()
     {
-        return await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ?? new ServicesStatus();
+        return await _context.SystemServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ?? new SystemServicesStatus();
     }
 
     private async Task<IActionResult> ActivateServiceAsync(ApiCrudPayload<ApiBackgroundWorkerPayload> value,
-        BackgroundTaskType type, Action<ServicesStatus, bool> updateServiceStatus)
+        BackgroundTaskType type, Action<SystemServicesStatus, bool> changeStatus)
     {
         var item = await GetServiceStatusAsync();
-        updateServiceStatus(item, value.EntityValue!.Activate);
+        changeStatus(item, value.EntityValue!.Activate);
         var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, type);
         await UpdateServicesAsync(item, value.UserName);
         return Ok(result);

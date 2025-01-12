@@ -1,4 +1,4 @@
-﻿@page "/DbExplorer/{ActivityId:int}/{ActivityName}"
+﻿@page "/DbExplorer/{DataProviderId:long}/{ProviderName}"
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @using Report_App_WASM.Shared.Extensions
@@ -13,7 +13,7 @@
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h6">
-                @Localizer.Get("DB explorer"): @ActivityName
+                @Localizer.Get("DB explorer"): @ProviderName
             </MudText>
         </CardHeaderContent>
     </MudCardHeader>
@@ -143,9 +143,8 @@
 
 @code {
 
-    [Parameter] public string ActivityName { get; set; } = default!;
-
-    [Parameter] public int ActivityId { get; set; }
+    [Parameter] public string ProviderName { get; set; } = default!;
+    [Parameter] public long DataProviderId { get; set; }
 
     private List<TablesColsInfo> TableNames = new();
     private List<TablesColsInfo> TableNamesStored = new();
@@ -175,7 +174,7 @@
     protected override async Task OnParametersSetAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
         {
             NavigationManager.NavigateTo("/403");
         }
@@ -187,8 +186,8 @@
         TableNamesStored = new List<TablesColsInfo>();
         ColNamesStored = new List<TablesColsInfo>();
         _table = new MudTable<Dictionary<string, object>.ValueCollection>();
-        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
-        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+        var uri = $"GetActivityDbConnection?DataProviderId={DataProviderId}";
+        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
         if (response.Any())
         {
             _typeDbTask = response.Select(a => a.TypeDb).First();
@@ -215,7 +214,7 @@
     {
         _cts = new CancellationTokenSource();
         _loading = true;
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
         TableNames = data!.Values;
         TableNamesStored = data.Values;
         _hasDesc = data.HasDescription;
@@ -227,7 +226,7 @@
         _cts = new CancellationTokenSource();
         _loading = true;
         _SelectedTable = table;
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={table}", _cts.Token);
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={table}", _cts.Token);
         ColNames = data!.Values;
         ColNamesStored = data.Values;
         _hasDescCol = data.HasDescription;
@@ -308,7 +307,7 @@
             {
                 _cts = new CancellationTokenSource();
 
-                var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = QueryRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = new List<QueryCommandParameter>() };
+                var run = new RemoteDbCommandParameters { DataProviderId = DataProviderId, QueryToRun = QueryRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = new List<QueryCommandParameter>() };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);

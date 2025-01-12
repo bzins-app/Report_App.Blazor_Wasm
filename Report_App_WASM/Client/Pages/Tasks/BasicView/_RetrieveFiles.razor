@@ -33,7 +33,7 @@
             <MudCardContent>
                 <div style="overflow: auto;text-wrap-mode: nowrap;">
                     <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreatedAt)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportName)" Title="@Localizer.Get("Report name")" Sortable="true"/>
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.SubName)" Title="@Localizer.Get("Report sub name")" Sortable="true"/>
@@ -53,28 +53,28 @@
 
 @code
 {
-    [Parameter] public int ActivityId { get; set; }
+    [Parameter] public long DataProviderId { get; set; }
 
-    [Parameter] public string? ActivityName { get; set; }
+    [Parameter] public string? ProviderName { get; set; }
 
     private string? _title;
-    GridItemsProvider<ApplicationLogReportResultDto>? _itemsProvider;
+    GridItemsProvider<ReportGenerationLogDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
     private bool _processing = false;
-    SimpleGrid<ApplicationLogReportResultDto> _grid = default!;
+    SimpleGrid<ReportGenerationLogDto> _grid = default!;
     private bool _rendering;
     private string _errorMessage = default!;
 
     protected override async Task OnParametersSetAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
         {
             NavigationManager.NavigateTo("/403");
         }
 
-        _title = ActivityName;
+        _title = ProviderName;
     }
 
     protected override void OnInitialized()
@@ -85,7 +85,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ReportGenerationLogDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -93,7 +93,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogReportResultDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDto> req)
+    private async Task<ApiResponse<ReportGenerationLogDto>?> GetRemoteData(GridItemsProviderRequest<ReportGenerationLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -101,7 +101,7 @@
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/ReportResultLogs?";
-        var customFilters = $"ActivityId eq {ActivityId} and IsAvailable eq true";
+        var customFilters = $"DataProviderId eq {DataProviderId} and IsAvailable eq true";
 
         url += "$count=true";
         if (!string.IsNullOrEmpty(odataPagination))
@@ -125,7 +125,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationLogReportResultDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<ReportGenerationLogDto>(url, req.CancellationToken);
         }
         catch
         {

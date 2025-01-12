@@ -2,7 +2,7 @@
 
 public class ApiRunTask
 {
-    public int TaksId { get; set; }
+    public int ScheduledTaskId { get; set; }
     public bool GenerateFileToFolder { get; set; }
     public bool SendEmail { get; set; }
     public bool Test { get; set; }

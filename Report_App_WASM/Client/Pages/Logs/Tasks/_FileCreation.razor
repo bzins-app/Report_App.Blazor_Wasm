@@ -24,7 +24,7 @@
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid BuildInFilter="true" FieldsContent="@_translations" ItemsProvider="@_itemsProvider" Pagination="@_pagination" @ref="_grid">
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreatedAt)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportName)" Title="@Localizer.Get("Report name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.SubName)" Title="@Localizer.Get("Report sub name")" Sortable="true"/>
@@ -49,10 +49,10 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogReportResultDto>? _itemsProvider;
+    GridItemsProvider<ReportGenerationLogDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 20 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationLogReportResultDto>? _grid;
+    SimpleGrid<ReportGenerationLogDto>? _grid;
     private bool _rendering;
 
 
@@ -64,7 +64,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogReportResultDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ReportGenerationLogDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -72,7 +72,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogReportResultDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogReportResultDto> req)
+    private async Task<ApiResponse<ReportGenerationLogDto>?> GetRemoteData(GridItemsProviderRequest<ReportGenerationLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -89,7 +89,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationLogReportResultDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<ReportGenerationLogDto>(url, req.CancellationToken);
         }
         catch
         {

@@ -30,7 +30,7 @@
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of job")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.JobDescription)" Title="@Localizer.Get("Job description")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
@@ -50,10 +50,10 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogAdHocQueriesDto>? _itemsProvider;
+    GridItemsProvider<AdHocQueryExecutionLogDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 20 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationLogAdHocQueriesDto> _grid = default!;
+    SimpleGrid<AdHocQueryExecutionLogDto> _grid = default!;
     private bool _rendering;
 
 
@@ -65,7 +65,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogAdHocQueriesDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<AdHocQueryExecutionLogDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -74,7 +74,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogAdHocQueriesDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogAdHocQueriesDto> req)
+    private async Task<ApiResponse<AdHocQueryExecutionLogDto>?> GetRemoteData(GridItemsProviderRequest<AdHocQueryExecutionLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -91,7 +91,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationLogAdHocQueriesDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<AdHocQueryExecutionLogDto>(url, req.CancellationToken);
         }
         catch
         {

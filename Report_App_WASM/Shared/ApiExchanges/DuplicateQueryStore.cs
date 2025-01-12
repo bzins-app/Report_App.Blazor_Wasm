@@ -2,7 +2,7 @@
 
 public class DuplicateQueryStore
 {
-    public int QueryId { get; init; }
+    public long QueryId { get; init; }
     public string Name { get; init; } = string.Empty;
-    public int ActivityId { get; init; }
+    public long DataProviderId { get; init; }
 }

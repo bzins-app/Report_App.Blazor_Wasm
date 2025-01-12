@@ -3,5 +3,5 @@
 public class DbLinesQuery
 {
     public DateTime Date { get; init; }
-    public int NbrOfRows { get; init; }
+    public int RowsFetched { get; init; }
 }

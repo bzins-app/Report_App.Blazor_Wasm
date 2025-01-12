@@ -12,7 +12,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker;
 public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 {
     private readonly ApplicationDbContext _context;
-    private readonly IRemoteDbConnection _dbReader;
+    private readonly IRemoteDatabaseActionsHandler _dbReader;
     private readonly IEmailSender _emailSender;
     private readonly LocalFilesService _fileDeposit;
     private readonly IWebHostEnvironment _hostingEnvironment;
@@ -20,7 +20,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     private readonly IServiceScopeFactory _scopeFactory;
 
     public BackgroundWorkers(
-        ApplicationDbContext context, IEmailSender emailSender, IRemoteDbConnection dbReader,
+        ApplicationDbContext context, IEmailSender emailSender, IRemoteDatabaseActionsHandler dbReader,
         LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment,
         IServiceScopeFactory scopeFactory)
     {
@@ -47,15 +47,15 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             () => File.Delete(filePath), TimeSpan.FromMinutes(5));
     }
 
-    public async Task SwitchBackgroundTasksPerActivityAsync(int activityId, bool activate)
+    public async Task SwitchBackgroundTasksPerActivityAsync(long dataProviderId, bool activate)
     {
-        var reportHeaders = await _context.TaskHeader.Where(a => a.IsActivated && a.Activity.ActivityId == activityId)
-            .Select(a => a.TaskHeaderId).ToListAsync();
+        var reportHeaders = await _context.ScheduledTask.Where(a => a.IsEnabled && a.DataProvider.DataProviderId == dataProviderId)
+            .Select(a => a.ScheduledTaskId).ToListAsync();
 
         foreach (var t in reportHeaders) await HandleTasksJobs(t, activate);
     }
 
-    public async Task SwitchBackgroundTaskAsync(int taskHeaderId, bool activate)
+    public async Task SwitchBackgroundTaskAsync(long taskHeaderId, bool activate)
     {
         await HandleTasksJobs(taskHeaderId, activate);
     }
@@ -81,11 +81,11 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     BackgroundTaskType.Alert => TaskType.Alert,
                     _ => TaskType.Report
                 };
-                await _context.TaskHeader
-                    .Where(a => a.IsActivated == true && a.Type == typeTask && a.Activity.IsActivated).ForEachAsync(
+                await _context.ScheduledTask
+                    .Where(a => a.IsEnabled == true && a.Type == typeTask && a.DataProvider.IsEnabled).ForEachAsync(
                         a =>
                         {
-                            var jobName = a.TypeName + " Id:" + a.TaskHeaderId;
+                            var jobName = a.TypeName + " Id:" + a.ScheduledTaskId;
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
@@ -94,7 +94,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                                 {
                                     var jobParam = new TaskJobParameters
                                     {
-                                        TaskHeaderId = a.TaskHeaderId,
+                                        ScheduledTaskId = a.ScheduledTaskId,
                                         Cts = CancellationToken.None,
                                         GenerateFiles = true
                                     };
@@ -120,12 +120,12 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         return result;
     }
 
-    public void RunManuallyTask(int taskHeaderId, string? runBy, List<EmailRecipient>? emails,
+    public void RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient>? emails,
         List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
     {
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
         {
-            TaskHeaderId = taskHeaderId,
+            ScheduledTaskId = taskHeaderId,
             Cts = CancellationToken.None,
             GenerateFiles = generateFiles,
             CustomEmails = emails ?? new List<EmailRecipient>(),
@@ -141,16 +141,16 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     }
 
 
-    private async Task HandleTasksJobs(int taskHeaderId, bool activate)
+    private async Task HandleTasksJobs(long taskHeaderId, bool activate)
     {
-        var services = await _context.ServicesStatus
+        var services = await _context.SystemServicesStatus
             .Select(a => new { a.AlertService, a.ReportService, a.DataTransferService })
             .FirstOrDefaultAsync();
 
-        var taskHeader = await _context.TaskHeader
+        var taskHeader = await _context.ScheduledTask
             .AsNoTrackingWithIdentityResolution()
-            .Where(a => a.TaskHeaderId == taskHeaderId)
-            .Select(a => new { a.TaskName, a.Type, a.TypeName, a.Activity.ActivityName, a.CronParameters })
+            .Where(a => a.ScheduledTaskId == taskHeaderId)
+            .Select(a => new { a.TaskName, a.Type, a.TypeName, a.DataProvider.ProviderName, a.CronParameters })
             .FirstOrDefaultAsync();
 
         var jobName = taskHeader!.TypeName + " Id:" + taskHeaderId;
@@ -167,7 +167,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     var jobId = jobName + "_" + cronId;
                     var jobParam = new TaskJobParameters
                     {
-                        TaskHeaderId = taskHeaderId,
+                        ScheduledTaskId = taskHeaderId,
                         Cts = CancellationToken.None,
                         GenerateFiles = true
                     };
@@ -220,14 +220,14 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     public async Task DeleteLocalFilesAsync()
     {
-        ApplicationLogTask logTask = new()
+        TaskLog logTask = new()
             { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
         try
         {
-            var qry = _context.ApplicationLogReportResult.Where(a => a.IsAvailable == true).GroupJoin(
-                    _context.TaskHeader,
-                    rr => rr.TaskHeaderId,
-                    rh => rh.TaskHeaderId,
+            var qry = _context.ReportGenerationLog.Where(a => a.IsAvailable == true).GroupJoin(
+                    _context.ScheduledTask,
+                    rr => rr.ScheduledTaskId,
+                    rh => rh.ScheduledTaskId,
                     (x, y) => new { rResults = x, rHeader = y })
                 .SelectMany(
                     x => x.rHeader.DefaultIfEmpty(),
@@ -262,7 +262,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     private async Task DeleteDemoSFTPDirectory()
     {
-        var data = await _context.FileDepositPathConfiguration.Where(a=>a.UseSftpProtocol)
+        var data = await _context.FileStorageLocation.Where(a=>a.UseSftpProtocol)
             .Select(a => new { SftpConfId = a.SftpConfiguration.SftpConfigurationId, Path = a.FilePath })
             .Distinct()
             .ToListAsync();
@@ -283,47 +283,47 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     public async Task DeleteLogsAsync()
     {
-        var logTask = new ApplicationLogTask
+        var logTask = new TaskLog
         {
             StartDateTime = DateTime.Now,
             JobDescription = "Logs cleaner",
             Type = "Cleaner service"
         };
 
-        var retentionDays = await _context.ApplicationParameters
+        var retentionDays = await _context.SystemParameters
             .Select(a => a.LogsRetentionInDays)
             .FirstOrDefaultAsync();
 
 
-        await _context.ApplicationLogSystem
+        await _context.SystemLog
             .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
-        await _context.ApplicationLogTask
+        await _context.TaskLog
             .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
-        await _context.ApplicationLogTaskDetails
+        await _context.TaskStepLog
             .Where(a => a.TimeStamp.Date < DateTime.Today.AddDays(-retentionDays))
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
-        await _context.ApplicationLogEmailSender
+        await _context.EmailLog
             .Where(a => a.EndDateTime.Date < DateTime.Today.AddDays(-retentionDays))
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
-        await _context.ApplicationAuditTrail
+        await _context.AuditTrail
             .Where(a => a.DateTime.Date < DateTime.Today.AddDays(-retentionDays))
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
-        await _context.ApplicationLogReportResult
+        await _context.ReportGenerationLog
             .Where(a => a.CreatedAt.Date < DateTime.Today.AddDays(-retentionDays) && !a.IsAvailable)
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
-        await _context.ApplicationLogQueryExecution
+        await _context.QueryExecutionLog
             .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();
-        await _context.ApplicationLogAdHocQueries
+        await _context.AdHocQueryExecutionLog
             .Where(a => a.StartDateTime.Date < DateTime.Today.AddDays(-retentionDays))
             .ForEachAsync(a => _context.Remove(a));
         await _context.SaveChangesAsync();

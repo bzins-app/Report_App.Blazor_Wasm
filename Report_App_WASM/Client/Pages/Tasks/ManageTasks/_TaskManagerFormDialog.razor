@@ -13,11 +13,11 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.TaskName" Label="@(Item?.TypeName == TaskType.Report.ToString() ? Localizer.Get("Report title") : Item?.TypeName == TaskType.DataTransfer.ToString() ? Localizer.Get("Job title") : Localizer.Get("Alert title"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ActivityName" AnchorOrigin="Origin.BottomCenter"
+            <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ProviderName" AnchorOrigin="Origin.BottomCenter"
                        Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
                 @foreach (var value in _activities)
                 {
-                    <MudSelectItem Value="@value.ActivityName">@value.ActivityName</MudSelectItem>
+                    <MudSelectItem Value="@value.ProviderName">@value.ProviderName</MudSelectItem>
                 }
             </MudSelect>
             @if (Item?.TypeName == TaskType.Report.ToString())
@@ -50,17 +50,17 @@
 
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public ScheduledTaskDto? Item { get; set; }
 
     [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = default!;
     private string? _deletionValidation;
-    private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 
     private void Cancel()
@@ -74,16 +74,16 @@
         {
             if (_deletionValidation == "Validate")
             {
-                Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
+                Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.ProviderName == Item.ProviderName).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = Item.ProviderName };
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
         else
         {
-            Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityName == Item.ActivityName).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = Item.ActivityName };
-            Item.IdActivity = Item.Activity.ActivityId;
+            Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.ProviderName == Item.ProviderName).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = Item.ProviderName };
+            Item.IdDataProvider = Item.DataProvider.DataProviderId;
             await _form.Validate();
-            if (_form.IsValid && Item.Activity is not null)
+            if (_form.IsValid && Item.DataProvider is not null)
             {
                 if (Item.Type != TaskType.Report)
                 {

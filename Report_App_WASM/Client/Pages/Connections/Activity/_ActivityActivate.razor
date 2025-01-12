@@ -1,19 +1,19 @@
 ﻿@inject ISnackbar Snackbar
 
 
-<MudSwitch Style="justify-content: center" Value="@Item!.IsActivated" Color="Color.Primary" ThumbIcon="@(Item.IsActivated ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsActivated ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)"/>
+<MudSwitch Style="justify-content: center" Value="@Item!.IsEnabled" Color="Color.Primary" ThumbIcon="@(Item.IsEnabled ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsEnabled ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)"/>
 
 @code {
 
-    [Parameter] public ActivityDto? Item { get; set; }
+    [Parameter] public DataProviderDto? Item { get; set; }
 
     private async Task ChangeStatusAsync(bool value)
     {
-        Item!.IsActivated = value;
-        var result = await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = Item.IsActivated, Value = Item.ActivityId }, "ActivatePerActivity", "api/BackgroundWorker/");
+        Item!.IsEnabled = value;
+        var result = await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = Item.IsEnabled, Value = Item.DataProviderId }, "ActivatePerActivity", "api/BackgroundWorker/");
         if (!result.Success)
         {
-            Item.IsActivated = !value;
+            Item.IsEnabled = !value;
             Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
             if (result.Message != null) Snackbar.Add(result.Message, Severity.Error);
             return;
@@ -21,7 +21,7 @@
 
         await DataService.PostValues(Item, "ActivityUpdate");
 
-        Snackbar.Add(Item.IsActivated ? Item.ActivityName + " " + Localizer.Get("enabled") : Item.ActivityName + " " + Localizer.Get("disabled"), Item.IsActivated ? Severity.Success : Severity.Normal);
+        Snackbar.Add(Item.IsEnabled ? Item.ProviderName + " " + Localizer.Get("enabled") : Item.ProviderName + " " + Localizer.Get("disabled"), Item.IsEnabled ? Severity.Success : Severity.Normal);
     }
 
 }

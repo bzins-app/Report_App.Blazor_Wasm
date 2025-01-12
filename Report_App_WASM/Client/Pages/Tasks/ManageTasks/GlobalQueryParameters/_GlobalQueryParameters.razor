@@ -68,7 +68,7 @@
 
 @code {
 
-    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public ScheduledTaskDto? Item { get; set; }
 
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
@@ -78,9 +78,9 @@
 
     protected override void OnInitialized()
     {
-        if (Item?.QueryParameters != "[]" && !string.IsNullOrEmpty(Item?.QueryParameters))
+        if (Item?.GlobalQueryParameters != "[]" && !string.IsNullOrEmpty(Item?.GlobalQueryParameters))
         {
-            _parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
+            _parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.GlobalQueryParameters);
         }
     }
 
@@ -112,7 +112,7 @@
     {
         await Task.Delay(60); //Ensure binding is done prior to serialize
         _parameters?.ForEach(a => a.ParameterIdentifier = a.ParameterIdentifier.RemoveSpecialCharacters());
-        Item!.QueryParameters = JsonSerializer.Serialize(_parameters);
+        Item!.GlobalQueryParameters = JsonSerializer.Serialize(_parameters);
         ChangePending = true;
         await ChangePendingChanged.InvokeAsync(ChangePending);
     }

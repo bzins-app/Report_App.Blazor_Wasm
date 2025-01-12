@@ -4,16 +4,16 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@Localizer.Get("Queries")</MudText>
-            <MudSpacer/>
+            <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")" />
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")"/>
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -21,36 +21,36 @@
                 <SimpleGrid Items="@_elements!.AsQueryable()" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
                         <MudStack Row="true" Justify="Justify.Center">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")"/>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
-                            <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" OnClick="() => OpenCreateDialog(context)" title="@Localizer.Get("Duplicate")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" OnClick="() => OpenCreateDialog(context)" title="@Localizer.Get("Duplicate")" />
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DetailSequence)" Title="@Localizer.Get("Query sequence")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ExecutionOrder)" Title="@Localizer.Get("Query sequence")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
-            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
 
 @code {
 
-    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public ScheduledTaskDto? Item { get; set; }
 
-    [Parameter] public List<TaskDetailDto>? ItemToDelete { get; set; }
+    [Parameter] public List<ScheduledTaskQueryDto>? ItemToDelete { get; set; }
 
     [Parameter] public bool ChangePending { get; set; }
 
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
-    IEnumerable<TaskDetailDto>? _elements = new List<TaskDetailDto>();
-    SimpleGrid<TaskDetailDto>? _grid;
+    IEnumerable<ScheduledTaskQueryDto>? _elements = new List<ScheduledTaskQueryDto>();
+    SimpleGrid<ScheduledTaskQueryDto>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 5 };
     SimpleGridFieldsContent? _translations = default!;
     DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
@@ -64,35 +64,35 @@
 
     private void UpdateElements()
     {
-        _elements = Item?.TaskDetails.ToList();
+        _elements = Item?.TaskQueries.ToList();
     }
 
-    private async Task OpenEditDialog(TaskDetailDto value)
+    private async Task OpenEditDialog(ScheduledTaskQueryDto value)
     {
         _disable = true;
-        var itemUpdate = new TaskDetailDto
-        {
-            Query = value.Query,
-            QueryName = value.QueryName,
-            QueryParameters = value.QueryParameters,
-            DetailSequence = value.DetailSequence,
-            TaskDetailParameters = value.TaskDetailParameters,
-            LastRunDateTime = value.LastRunDateTime
-        };
-        var parameters = new DialogParameters { ["Item"] = itemUpdate, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Update };
+        var itemUpdate = new ScheduledTaskQueryDto
+            {
+                Query = value.Query,
+                QueryName = value.QueryName,
+                QueryParameters = value.QueryParameters,
+                ExecutionOrder = value.ExecutionOrder,
+                ExecutionParameters = value.ExecutionParameters,
+                LastRunDateTime = value.LastRunDateTime
+            };
+        var parameters = new DialogParameters { ["Item"] = itemUpdate, ["DataProviderId"] = Item!.DataProvider.DataProviderId, ["Header"] = Item, ["Action"] = CrudAction.Update };
 
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Edit", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
         {
-            var result = (TaskDetailDto)feedback.Data;
-            var toUpdate = Item.TaskDetails.First(a => a.TaskDetailId == value.TaskDetailId);
+            var result = (ScheduledTaskQueryDto)feedback.Data;
+            var toUpdate = Item.TaskQueries.First(a => a.ScheduledTaskQueryId == value.ScheduledTaskQueryId);
             toUpdate.Query = result.Query;
             toUpdate.QueryName = result.QueryName;
             toUpdate.QueryParameters = result.QueryParameters;
-            toUpdate.DetailSequence = result.DetailSequence;
-            toUpdate.TaskDetailParameters = result.TaskDetailParameters;
+            toUpdate.ExecutionOrder = result.ExecutionOrder;
+            toUpdate.ExecutionParameters = result.ExecutionParameters;
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
         }
@@ -100,7 +100,7 @@
         _disable = false;
     }
 
-    private async Task OpenDeleteDialog(TaskDetailDto value)
+    private async Task OpenDeleteDialog(ScheduledTaskQueryDto value)
     {
         _disable = true;
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
@@ -109,7 +109,7 @@
         if (result != null)
         {
             ItemToDelete?.Add(value);
-            Item?.TaskDetails.Remove(value);
+            Item?.TaskQueries.Remove(value);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();
@@ -121,39 +121,39 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new TaskDetailDto();
-        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
+        var value = new ScheduledTaskQueryDto();
+        var parameters = new DialogParameters { ["Item"] = value, ["DataProviderId"] = Item!.DataProvider.DataProviderId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
         {
-            Item.TaskDetails.Add((TaskDetailDto)feedback.Data);
+            Item.TaskQueries.Add((ScheduledTaskQueryDto)feedback.Data);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();
         }
     }
 
-    private async Task OpenCreateDialog(TaskDetailDto toDuplicate)
+    private async Task OpenCreateDialog(ScheduledTaskQueryDto toDuplicate)
     {
-        var value = new TaskDetailDto
-        {
-            Query = toDuplicate.Query,
-            QueryName = toDuplicate.QueryName + " (Copy)",
-            QueryParameters = toDuplicate.QueryParameters,
-            DetailSequence = toDuplicate.DetailSequence,
-            TaskDetailParameters = toDuplicate.TaskDetailParameters
-        };
-        var parameters = new DialogParameters { ["Item"] = value, ["ActivityId"] = Item!.Activity.ActivityId, ["Header"] = Item, ["Action"] = CrudAction.Create };
+        var value = new ScheduledTaskQueryDto
+            {
+                Query = toDuplicate.Query,
+                QueryName = toDuplicate.QueryName + " (Copy)",
+                QueryParameters = toDuplicate.QueryParameters,
+                ExecutionOrder = toDuplicate.ExecutionOrder,
+                ExecutionParameters = toDuplicate.ExecutionParameters
+            };
+        var parameters = new DialogParameters { ["Item"] = value, ["DataProviderId"] = Item!.DataProvider.DataProviderId, ["Header"] = Item, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskDetailsFormDialog>("Create", parameters, _maxWidth);
         var feedback = await dialog.Result;
 
         if (feedback is { Canceled: false })
         {
-            Item.TaskDetails.Add(((TaskDetailDto)feedback.Data!)!);
+            Item.TaskQueries.Add(((ScheduledTaskQueryDto)feedback.Data!)!);
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();

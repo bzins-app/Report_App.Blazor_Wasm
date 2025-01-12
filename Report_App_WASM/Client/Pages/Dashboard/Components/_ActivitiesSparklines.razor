@@ -54,7 +54,7 @@
     {
         return _taskLogs!
             .Where(a => a.Date >= DateTime.Now.Date.AddDays(-10))
-            .GroupBy(e => e.ActivityName)
+            .GroupBy(e => e.ProviderName)
             .OrderByDescending(a => a.Sum(taksLogsValues => taksLogsValues.NbrTasks));
     }
 

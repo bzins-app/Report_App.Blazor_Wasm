@@ -19,9 +19,9 @@ public class AuditEntry
     public AuditType AuditType { get; set; }
     public List<string> ChangedColumns { get; } = new();
 
-    public ApplicationAuditTrail ToAudit()
+    public AuditTrail ToAudit()
     {
-        var audit = new ApplicationAuditTrail
+        var audit = new AuditTrail
         {
             UserId = UserId,
             Type = AuditType.ToString(),

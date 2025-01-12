@@ -19,7 +19,7 @@ else
                          Name="@Localizer.Get("Nbr of rows")"
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e => e.Sum(a => a.NbrOfRows))"
+                         YAggregate="@(e => e.Sum(a => a.RowsFetched))"
                          Stroke="@(new SeriesStroke { Width = 2, Color = "#1F15E5" })"/>
     </ApexChart>
 }

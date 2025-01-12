@@ -11,7 +11,7 @@ public class SqlServerRemoteDb : IRemoteDb
         GC.SuppressFinalize(this);
     }
 
-    public string GetAllTablesScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -20,13 +20,13 @@ public class SqlServerRemoteDb : IRemoteDb
             script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' order by 1,2"
-                : $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
+                : @"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables order by 1,2";
         }
         return script;
     }
 
-    public string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesAndColumnsScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -39,13 +39,13 @@ public class SqlServerRemoteDb : IRemoteDb
             else
                 script =
                     "select concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
-                    $"  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
+                    "  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
         }
 
         return script;
     }
 
-    public string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName)
+    public string GetTableColumnInfoScript(DatabaseConnection dbInfo, string tableName)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -61,7 +61,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return script;
     }
 
-    public async Task TryConnectAsync(ActivityDbConnection dbInfo)
+    public async Task TryConnectAsync(DatabaseConnection dbInfo)
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new SqlConnection(param.ConnnectionString);
@@ -77,7 +77,7 @@ public class SqlServerRemoteDb : IRemoteDb
     }
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts)
+        DatabaseConnection dbInfo, CancellationToken cts)
     {
         if (CheckDbType(dbInfo))
         {
@@ -161,12 +161,12 @@ public class SqlServerRemoteDb : IRemoteDb
         return data;
     }
 
-    private static bool CheckDbType(ActivityDbConnection dbInfo)
+    private static bool CheckDbType(DatabaseConnection dbInfo)
     {
         return dbInfo.TypeDb == TypeDb.SqlServer;
     }
 
-    private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
+    private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
         var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin??"", string.IsNullOrEmpty(dbInfo.Password)?"": EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
@@ -181,7 +181,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return value;
     }
 
-    public async Task<bool> CkeckTableExists(ActivityDbConnection dbInfo, string query)
+    public async Task<bool> CkeckTableExists(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
@@ -206,7 +206,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return false;
     }
 
-    public async Task DeleteTable(ActivityDbConnection dbInfo, string tableName)
+    public async Task DeleteTable(DatabaseConnection dbInfo, string tableName)
     {
         if (string.IsNullOrEmpty(tableName))
             throw new ArgumentNullException(nameof(tableName));
@@ -225,7 +225,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
-    public async Task CreateTable(ActivityDbConnection dbInfo, string query)
+    public async Task CreateTable(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
@@ -235,7 +235,7 @@ public class SqlServerRemoteDb : IRemoteDb
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
-    public async Task<MergeResult> MergeTables(ActivityDbConnection dbInfo, string query)
+    public async Task<MergeResult> MergeTables(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         SqlConnection conn = new(remoteConnection.ConnnectionString);
@@ -278,7 +278,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return result;
     }
 
-    public async Task LoadDatatableToTable(ActivityDbConnection dbInfo, DataTable data, string? targetTable)
+    public async Task LoadDatatableToTable(DatabaseConnection dbInfo, DataTable data, string? targetTable)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         using var bulkCopy = new SqlBulkCopy(remoteConnection.ConnnectionString);

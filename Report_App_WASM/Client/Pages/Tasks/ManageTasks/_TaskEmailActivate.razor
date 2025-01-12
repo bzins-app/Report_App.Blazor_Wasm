@@ -5,7 +5,7 @@
 
 @code {
 
-    [Parameter] public TaskHeaderDto Item { get; set; } = new();
+    [Parameter] public ScheduledTaskDto Item { get; set; } = new();
 
     private async Task ChangeStatusAsync(bool value)
     {
@@ -13,7 +13,7 @@
 
         if (Item.SendByEmail)
         {
-            var uri = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.TaskHeaderId}";
+            var uri = $"{ApiControllers.ApplicationParametersApi}CheckTaskHeaderEmail?taskHeaderId={Item.ScheduledTaskId}";
             var emailsConfigured = await Http.GetFromJsonAsync<bool>(uri);
             if (!emailsConfigured)
             {
@@ -23,7 +23,7 @@
             }
         }
 
-        var result = await DataService.PostValues(new TaskActivatePayload { Activate = Item.SendByEmail, TaskHeaderId = Item.TaskHeaderId }, "TaskSendByEmail");
+        var result = await DataService.PostValues(new TaskActivatePayload { Activate = Item.SendByEmail, ScheduledTaskId = Item.ScheduledTaskId }, "TaskSendByEmail");
         if (!result.Success)
         {
             Item.SendByEmail = !value;
