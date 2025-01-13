@@ -86,6 +86,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                         a =>
                         {
                             var jobName = a.TypeName + " Id:" + a.ScheduledTaskId;
+                            options.TimeZone=string.IsNullOrEmpty(a.DataProvider.TimeZone) ? TimeZoneInfo.Local
+                                : TimeZoneInfo.FindSystemTimeZoneById(a.DataProvider.TimeZone);
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
