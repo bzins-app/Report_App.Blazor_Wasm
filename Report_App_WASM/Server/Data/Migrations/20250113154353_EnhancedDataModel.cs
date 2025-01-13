@@ -36,7 +36,6 @@ namespace ReportAppWASM.Server.Migrations
                 table: "AspNetUserTokens");
 
 
-
             migrationBuilder.DropPrimaryKey(
                 name: "PK_AspNetUserTokens",
                 table: "AspNetUserTokens");
@@ -619,7 +618,8 @@ namespace ReportAppWASM.Server.Migrations
                     Step = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Info = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RelatedLogType = table.Column<int>(type: "int", nullable: false),
-                    RelatedLogId = table.Column<long>(type: "bigint", nullable: false)
+                    RelatedLogId = table.Column<long>(type: "bigint", nullable: false),
+                    Error = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -857,7 +857,7 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
 
-            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+                        migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_NAME = N'set' and TABLE_SCHEMA=N'HangFire')
 BEGIN
 delete from [HangFire].[Set];
@@ -1377,12 +1377,12 @@ SELECT
            ,[Step]
            ,[Info]
            ,[RelatedLogType]
-           ,[RelatedLogId])
+           ,[RelatedLogId],[Error])
 SELECT  coalesce(tl.TaskLogId,0)
       ,atd.[TimeStamp]
       ,atd.[Step]
       ,atd.[Info]
-	  ,0,0
+	  ,0,0, case when atd.[Step] like ('%rror%%') then 1 else 0 end 
   FROM [dbo].[ApplicationLogTaskDetails] atd
   left join [dbo].[TaskLog] tl on tl.[MiscValue]=atd.TaskId");
             migrationBuilder.Sql(@"INSERT INTO [dbo].[AdHocQueryExecutionLog]
@@ -1488,7 +1488,6 @@ SELECT rlr.[CreatedAt]
   FROM [dbo].[ApplicationLogReportResult] rlr
 join [dbo].[DataProvider] dpv on dpv.MiscValue=rlr.[ActivityId]
 left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
-
 
 
             migrationBuilder.CreateIndex(
@@ -1691,6 +1690,7 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
+
             migrationBuilder.DropTable(
                 name: "ApplicationAuditTrail");
 
@@ -1750,6 +1750,7 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
             migrationBuilder.DropTable(
                 name: "Activity");
+
         }
 
         /// <inheritdoc />

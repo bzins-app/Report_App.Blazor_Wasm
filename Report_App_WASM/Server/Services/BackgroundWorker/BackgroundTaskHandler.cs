@@ -119,7 +119,7 @@ public class BackgroundTaskHandler : IDisposable
             ProviderName = _header.ProviderName,
             StartDateTime = DateTime.Now,
             JobDescription = _header.TaskName,
-            Type = _header.Type + " service",
+            Type = _header.Type.ToString(),
             Result = "Running",
             ScheduledTaskId = parameters.ScheduledTaskId,
             RunBy = _jobParameters.RunBy,
@@ -143,10 +143,10 @@ public class BackgroundTaskHandler : IDisposable
         await _context.SaveChangesAsync("backgroundworker");
     }
 
-    private async Task InsertLogTaskStepAsync(string step, string info)
+    private async Task InsertLogTaskStepAsync(string step, string info, bool error=false)
     {
         _logTask.HasSteps = true;
-        await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info });
+        await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info , Error = true});
         await _context.SaveChangesAsync("backgroundworker");
     }
 
@@ -220,7 +220,7 @@ public class BackgroundTaskHandler : IDisposable
         logTask.DurationInSeconds = (int)(logTask.EndDateTime - logTask.StartDateTime).TotalSeconds;
         logTask.Result = ex.Message.Length > 440 ? ex.Message.Substring(0, 440) : ex.Message;
         await _emailSender.GenerateErrorEmailAsync(ex.Message, _header.ProviderName + ": " + _header.TaskName);
-        await InsertLogTaskStepAsync("Error", logTask.Result);
+        await InsertLogTaskStepAsync("Error", logTask.Result, true);
         _fetchedData.Clear();
     }
 
@@ -360,7 +360,7 @@ public class BackgroundTaskHandler : IDisposable
             {
                 await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message, "File deposit: ");
                 await _context.AddAsync(new TaskStepLog
-                { TaskLogId = _taskId, Step = "Error", Info = resultDeposit.Message, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id});
+                { TaskLogId = _taskId, Step = "Error", Info = resultDeposit.Message, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id, Error = true});
             }
 
             filecreationRemote.ReportPath = completePath;
@@ -559,7 +559,7 @@ public class BackgroundTaskHandler : IDisposable
                         { TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog, RelatedLogId = result.KeyValue});
                     else
                         await _context.AddAsync(new TaskStepLog
-                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message });
+                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true});
 
                     listAttach.Clear();
                 }
@@ -600,7 +600,7 @@ public class BackgroundTaskHandler : IDisposable
                         { TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog, RelatedLogId = result.KeyValue});
                     else
                         await _context.AddAsync(new TaskStepLog
-                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message });
+                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true});
                 }
         }
     }
