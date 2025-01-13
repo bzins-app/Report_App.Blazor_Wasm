@@ -191,6 +191,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
                         $" Exception caught on attempt {attempts} - will retry after delay in {delay / 1000} seconds " +
                         ex.Message;
                     _logTaskStep.Step += $": attempt {attempts}";
+                    _logTaskStep.Error = true;
                     await _context.AddAsync(_logTaskStep, cts);
                     await _context.SaveChangesAsync();
                     await Task.Delay(delay, cts).WaitAsync(cts);

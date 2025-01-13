@@ -1571,6 +1571,9 @@ namespace ReportAppWASM.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<bool>("Error")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Info")
                         .HasColumnType("nvarchar(max)");
 
