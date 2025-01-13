@@ -74,6 +74,12 @@ public class OracleRemoteDb : IRemoteDb
         if (CheckDbType(dbInfo))
         {
             var connectionInfo = CreateConnectionString(dbInfo);
+
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone= TimeZoneInfo.FindSystemTimeZoneById(_tzId);
+
             List<string> IntializationQueries = new();
 
             var DbConnection = new OracleConnection(connectionInfo.ConnnectionString);
@@ -106,8 +112,8 @@ public class OracleRemoteDb : IRemoteDb
                             ParameterDirection.Input)
                         {
                             Value = parameter.ValueType == QueryCommandParameterValueType.Date
-                                ? (OracleDate)timevalue
-                                : (OracleTimeStamp)timevalue
+                                ? (OracleDate)TimeZoneInfo.ConvertTime( timevalue,_timeZone)
+                                : (OracleTimeStamp)TimeZoneInfo.ConvertTime( timevalue,_timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }

@@ -142,6 +142,7 @@
             {
                 ProviderName = value.ProviderName,
                 ProviderIcon = value.ProviderIcon,
+                TimeZone = value.TimeZone??TimeZoneInfo.Local.Id,
                 DatabaseConnection = await DataService.GetValues<DatabaseConnectionDto>(uri)
             };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
@@ -155,6 +156,7 @@
             value.ProviderName = item.ProviderName;
             value.ProviderIcon = item.ProviderIcon;
             value.DatabaseConnection = item.DatabaseConnection;
+            value.TimeZone = item.TimeZone;
 
             var result = await DataService.PostValues(value, "ActivityUpdate");
             if (result.Success)

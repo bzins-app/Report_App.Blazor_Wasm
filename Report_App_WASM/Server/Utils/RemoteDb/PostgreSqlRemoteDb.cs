@@ -86,6 +86,11 @@ public class PostgreSqlRemoteDb : IRemoteDb
         {
             var connectionInfo = CreateConnectionString(dbInfo);
 
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone= TimeZoneInfo.FindSystemTimeZoneById(_tzId);
+
             var DbConnection = new NpgsqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new NpgsqlDataAdapter();
             var cmd = new NpgsqlCommand
@@ -108,7 +113,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
                         NpgsqlParameter para = new(parameter.ParameterIdentifier,
                             NpgsqlDbType.Date)
                         {
-                            Value = timevalue
+                            Value = TimeZoneInfo.ConvertTime( timevalue,_timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }

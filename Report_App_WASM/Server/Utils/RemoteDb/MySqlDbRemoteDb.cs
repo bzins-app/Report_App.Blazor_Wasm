@@ -85,6 +85,11 @@ public class MySqlDbRemoteDb : IRemoteDb
         {
             var connectionInfo = CreateConnectionString(dbInfo);
 
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone= TimeZoneInfo.FindSystemTimeZoneById(_tzId);
+
             var DbConnection = new MySqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new MySqlDataAdapter();
             var cmd = new MySqlCommand
@@ -109,7 +114,7 @@ public class MySqlDbRemoteDb : IRemoteDb
                                 ? MySqlDbType.Date
                                 : MySqlDbType.DateTime)
                         {
-                            Value = timevalue
+                            Value = TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
