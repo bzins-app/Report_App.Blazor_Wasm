@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.DirectoryServices.ActiveDirectory;
+using System.Net.Mail;
 using System.Text.Json;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
@@ -68,7 +69,7 @@ public class BackgroundTaskHandler : IDisposable
         }
 
         _taskId = _logTask.TaskLogId;
-        await InsertLogTaskStepAsync("Initialization", $"Nbr of queries: {_header.TaskQueries.Count}");
+        await InsertLogTaskStepAsync("Initialization", $"Nbr of queries: {_header.TaskQueries.Count}", false);
 
         try
         {
@@ -143,7 +144,7 @@ public class BackgroundTaskHandler : IDisposable
         await _context.SaveChangesAsync("backgroundworker");
     }
 
-    private async Task InsertLogTaskStepAsync(string step, string info, bool error=false)
+    private async Task InsertLogTaskStepAsync(string step, string info, bool error)
     {
         _logTask.HasSteps = true;
         await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info , Error = error});
@@ -209,7 +210,7 @@ public class BackgroundTaskHandler : IDisposable
             _context.Entry(_header).State = EntityState.Modified;
         }
 
-        await InsertLogTaskStepAsync("Job end", $"Total duration {logTask.DurationInSeconds} seconds");
+        await InsertLogTaskStepAsync("Job end", $"Total duration {logTask.DurationInSeconds} seconds", false);
     }
 
     private async Task HandleTaskErrorAsync(TaskLog logTask, Exception ex)
