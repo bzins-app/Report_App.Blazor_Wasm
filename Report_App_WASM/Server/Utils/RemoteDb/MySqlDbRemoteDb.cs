@@ -114,7 +114,7 @@ public class MySqlDbRemoteDb : IRemoteDb
                                 ? MySqlDbType.Date
                                 : MySqlDbType.DateTime)
                         {
-                            Value = TimeZoneInfo.ConvertTime(timevalue, _timeZone)
+                            Value = run.Test?timevalue: TimeZoneInfo.ConvertTime( timevalue,_timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }

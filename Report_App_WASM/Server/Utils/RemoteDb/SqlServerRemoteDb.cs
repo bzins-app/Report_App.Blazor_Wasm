@@ -113,7 +113,7 @@ public class SqlServerRemoteDb : IRemoteDb
                                 ? SqlDbType.Date
                                 : SqlDbType.DateTime2)
                         {
-                            Value =  TimeZoneInfo.ConvertTime( timevalue,_timeZone)
+                            Value = run.Test?timevalue: TimeZoneInfo.ConvertTime( timevalue,_timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
