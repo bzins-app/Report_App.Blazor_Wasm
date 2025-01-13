@@ -146,7 +146,7 @@ public class BackgroundTaskHandler : IDisposable
     private async Task InsertLogTaskStepAsync(string step, string info, bool error=false)
     {
         _logTask.HasSteps = true;
-        await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info , Error = true});
+        await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info , Error = error});
         await _context.SaveChangesAsync("backgroundworker");
     }
 
