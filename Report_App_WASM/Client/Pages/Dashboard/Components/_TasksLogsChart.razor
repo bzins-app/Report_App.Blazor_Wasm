@@ -2,7 +2,7 @@
 @using Color = MudBlazor.Color
 @if (_taskLogs == null)
 {
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
@@ -13,11 +13,12 @@ else
 
         <ApexPointSeries TItem="TaksLogsValues"
                          Items="_taskLogs"
-                         Name="@Localizer.Get("Nbr of jobs")"
+                         Name="@Localizer.Get("Job duration")"
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e => e.Sum(a => a.NbrTasks))"
-                         OrderBy="e => e.X"/>
+                         YAggregate="@(e => (decimal?)e.Sum(a => a.TotalDuration / 60.0))"
+                         OrderBy="e => e.X" />
+
 
         <ApexPointSeries TItem="TaksLogsValues"
                          Items="_taskLogs"
@@ -25,15 +26,7 @@ else
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
                          YAggregate="@(e => e.Sum(a => a.NbrErrors))"
-                         OrderBy="e => e.X"/>
-
-        <ApexPointSeries TItem="TaksLogsValues"
-                         Items="_taskLogs"
-                         Name="@Localizer.Get("Job duration")"
-                         SeriesType="SeriesType.Line"
-                         XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e => e.Sum(a => a.TotalDuration / 60))"
-                         OrderBy="e => e.X"/>
+                         OrderBy="e => e.X" />
     </ApexChart>
 }
 
@@ -58,6 +51,22 @@ else
         //Stacked 100% test
         //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
         //options.Chart.Toolbar = new Toolbar { Show = false };
+
+        _options.Yaxis = new List<YAxis>();
+
+        _options.Yaxis.Add(new YAxis
+            {
+                Title = new AxisTitle { Text = Localizer.Get("Job duration") },
+                SeriesName = Localizer.Get("Job duration")
+            });
+
+        _options.Yaxis.Add(new YAxis
+            {
+                Title = new AxisTitle { Text = Localizer.Get("Nbr of errors") },
+                SeriesName = Localizer.Get("Nbr of errors"),
+                DecimalsInFloat = 0,
+                Opposite = true
+            });
     }
 
     public async Task Refresh()
