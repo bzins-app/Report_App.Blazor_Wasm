@@ -113,7 +113,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
                         NpgsqlParameter para = new(parameter.ParameterIdentifier,
                             NpgsqlDbType.Date)
                         {
-                            Value = TimeZoneInfo.ConvertTime( timevalue,_timeZone)
+                            Value = run.Test?timevalue: TimeZoneInfo.ConvertTime( timevalue,_timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }

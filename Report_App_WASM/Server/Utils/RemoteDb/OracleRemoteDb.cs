@@ -112,8 +112,8 @@ public class OracleRemoteDb : IRemoteDb
                             ParameterDirection.Input)
                         {
                             Value = parameter.ValueType == QueryCommandParameterValueType.Date
-                                ? (OracleDate)TimeZoneInfo.ConvertTime( timevalue,_timeZone)
-                                : (OracleTimeStamp)TimeZoneInfo.ConvertTime( timevalue,_timeZone)
+                                ? run.Test?(OracleDate)timevalue :(OracleDate)TimeZoneInfo.ConvertTime( timevalue,_timeZone)
+                                :run.Test?(OracleTimeStamp)timevalue :(OracleTimeStamp)TimeZoneInfo.ConvertTime( timevalue,_timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
