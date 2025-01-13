@@ -16,7 +16,7 @@ else
                          Name="@Localizer.Get("Job duration")"
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e => (decimal?)e.Sum(a => a.TotalDuration / 60.0))"
+                         YAggregate="@(e =>e.Sum(a => a.TotalDuration / 60))"
                          OrderBy="e => e.X" />
 
 
