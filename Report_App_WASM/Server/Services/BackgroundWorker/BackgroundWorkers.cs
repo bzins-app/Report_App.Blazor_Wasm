@@ -149,14 +149,14 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         var taskHeader = await _context.ScheduledTask
             .AsNoTrackingWithIdentityResolution()
             .Where(a => a.ScheduledTaskId == taskHeaderId)
-            .Select(a => new { a.TaskName, a.Type, a.TypeName, a.DataProvider.ProviderName, a.CronParameters })
+            .Select(a => new { a.TaskName, a.Type, a.TypeName, a.DataProvider.ProviderName, a.CronParameters, timeZone=string.IsNullOrEmpty(a.DataProvider.TimeZone)?TimeZoneInfo.Local.Id:a.DataProvider.TimeZone })
             .FirstOrDefaultAsync();
 
         var jobName = taskHeader!.TypeName + " Id:" + taskHeaderId;
 
         if (activate)
         {
-            var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
+            var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
             if (!string.IsNullOrEmpty(taskHeader.CronParameters) && taskHeader.CronParameters != "[]")
             {
                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);

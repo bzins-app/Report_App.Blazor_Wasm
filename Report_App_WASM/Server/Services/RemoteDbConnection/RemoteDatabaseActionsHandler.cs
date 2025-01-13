@@ -222,7 +222,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
 
     private async Task<DatabaseConnection> GetDbInfo(long dataProviderId)
     {
-        return (await _context.DatabaseConnection.Where(a => a.DataProvider.DataProviderId == dataProviderId)
+        return (await _context.DatabaseConnection.Include(a=>a.DataProvider).Where(a => a.DataProvider.DataProviderId == dataProviderId)
             .FirstOrDefaultAsync())!;
     }
 

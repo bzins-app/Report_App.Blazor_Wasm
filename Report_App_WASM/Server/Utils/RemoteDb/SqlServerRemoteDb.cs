@@ -83,6 +83,11 @@ public class SqlServerRemoteDb : IRemoteDb
         {
             var connectionInfo = CreateConnectionString(dbInfo);
 
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone= TimeZoneInfo.FindSystemTimeZoneById(_tzId);
+
             var DbConnection = new SqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new SqlDataAdapter();
             var cmd = new SqlCommand
@@ -102,12 +107,13 @@ public class SqlServerRemoteDb : IRemoteDb
                                 ? parameter.DateOption.GetCalculateDateTime().Date
                                 : parameter.DateOption.GetCalculateDateTime();
 
+
                         SqlParameter para = new(parameter.ParameterIdentifier,
                             parameter.ValueType is QueryCommandParameterValueType.Date
                                 ? SqlDbType.Date
                                 : SqlDbType.DateTime2)
                         {
-                            Value = timevalue
+                            Value =  TimeZoneInfo.ConvertTime( timevalue,_timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }

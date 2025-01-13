@@ -267,6 +267,7 @@
         var uriAction = $"GetTaskHeader?taskHeaderId={TaskHeaderId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
         _DataProviderId = Item.DataProvider.DataProviderId;
+        Item.TimeZone = string.IsNullOrEmpty(Item.DataProvider.TimeZone) ? TimeZoneInfo.Local.Id : Item.DataProvider.TimeZone;
         _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
 
         var controllerActionDepositPath = "DepositPathInfo";

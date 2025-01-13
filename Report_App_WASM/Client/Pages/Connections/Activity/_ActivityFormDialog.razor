@@ -19,16 +19,27 @@
         <MudStack Spacing="1">
             <MudForm Model="@Item" @ref="@_form">
                 <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete" />
-                <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
-                    @if (DbCon.TypeDb == 0)
-                    {
-                        <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
-                    }
-                    @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
-                    {
-                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                    }
-                </MudSelect>
+                <MudStack Row="true">
+                    <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
+                        @if (DbCon.TypeDb == 0)
+                        {
+                            <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
+                        }
+                        @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
+                        {
+                            <MudSelectItem Value="@item">@item</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item.TimeZone" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
+
+                        @foreach (var z in TimeZoneInfo.GetSystemTimeZones())
+                        {
+                            <MudSelectItem Value="@z.Id">@z.DisplayName</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                </MudStack>
 
                 @if (DbCon.TypeDb > 0 && Action != CrudAction.Delete)
                 {
@@ -43,7 +54,7 @@
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="OParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
                                 <MudTextField @bind-Value="OParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
+                                InputType="InputType.Password" />
                             </MudStack>
                             <MudStack Row="true">
                                 <MudSwitch @bind-Value="OParameters.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
@@ -69,7 +80,7 @@
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="sqlServerParameters.UserId" Label="UserId" Required="true" Disabled="sqlServerParameters.TrustedConnection" autocomplete="new-userid" Margin="Margin.Dense" />
                                 <MudTextField @bind-Value="sqlServerParameters.Password" Label="Password" Required="true" Disabled="sqlServerParameters.TrustedConnection" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
+                                InputType="InputType.Password" />
                             </MudStack>
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" Margin="Margin.Dense"/>
@@ -104,7 +115,7 @@
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="oleDParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
                                 <MudTextField @bind-Value="oleDParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
+                                InputType="InputType.Password" />
                             </MudStack>
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="oleDParameters.Database" Label="Database" Margin="Margin.Dense"/>
@@ -121,7 +132,7 @@
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="PostgreParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
                                 <MudTextField @bind-Value="PostgreParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
+                                InputType="InputType.Password" />
                             </MudStack>
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="PostgreParameters.Database" Label="Database" Required="true" Margin="Margin.Dense" />
@@ -146,7 +157,7 @@
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="MariaParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
                                 <MudTextField @bind-Value="MariaParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
+                                InputType="InputType.Password" />
                             </MudStack>
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="MariaParameters.Database" Label="Database" Required="true" Margin="Margin.Dense"/>
@@ -167,7 +178,7 @@
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="MyParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
                                 <MudTextField @bind-Value="MyParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
+                                InputType="InputType.Password" />
                             </MudStack>
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="MyParameters.Database" Label="Database" Required="true" Margin="Margin.Dense"/>
@@ -223,11 +234,11 @@
                                 <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
                                     <ActivatorContent>
                                         <MudFab HtmlTag="label" Class="pa-4"
-                                                Color="Color.Secondary"
-                                                StartIcon="@Icons.Material.Filled.Image"
-                                                Label="@Localizer.Get("Select activity Logo")"
-                                                Size="Size.Small"
-                                                Style="text-transform: none" />
+                                        Color="Color.Secondary"
+                                        StartIcon="@Icons.Material.Filled.Image"
+                                        Label="@Localizer.Get("Select activity Logo")"
+                                        Size="Size.Small"
+                                        Style="text-transform: none" />
                                     </ActivatorContent>
                                 </MudFileUpload>
                             </MudItem>
@@ -249,11 +260,11 @@
                                 <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
                                     <ActivatorContent>
                                         <MudFab HtmlTag="label"
-                                                Color="Color.Secondary"
-                                                StartIcon="@Icons.Material.Filled.UploadFile"
-                                                Label="@Localizer.Get("Select a file")"
-                                                Size="Size.Small"
-                                                Style="text-transform: none" />
+                                        Color="Color.Secondary"
+                                        StartIcon="@Icons.Material.Filled.UploadFile"
+                                        Label="@Localizer.Get("Select a file")"
+                                        Size="Size.Small"
+                                        Style="text-transform: none" />
                                     </ActivatorContent>
                                 </MudFileUpload>
                             </MudItem>
@@ -345,6 +356,7 @@
     private bool _loading;
     private bool _loadingDescription;
     private bool _extractDescriptions;
+
 
     SqlServerParameters sqlServerParameters = new SqlServerParameters();
     OracleParameters OParameters = new OracleParameters();
