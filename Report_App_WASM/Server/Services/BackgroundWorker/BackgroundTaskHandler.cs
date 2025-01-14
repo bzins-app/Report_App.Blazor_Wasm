@@ -293,7 +293,7 @@ public class BackgroundTaskHandler : IDisposable
             FileName = fName,
             IsAvailable = true,
             Error = !localFileResult.Success,
-            Result = localFileResult.Message,
+            Result = localFileResult.Message,FileGenerationType = FileGenerationType.LocalCopy,
             FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.Content.Length)
         };
         await _context.AddAsync(filecreationLocal);
@@ -330,6 +330,7 @@ public class BackgroundTaskHandler : IDisposable
                 var localfilePath = Path.Combine(storagePath, fName);
                 if (config.SftpConfiguration.UseFtpProtocol)
                 {
+                    filecreationRemote.FileGenerationType= FileGenerationType.Ftp;
                     completePath = "FTP Host:" + config.SftpConfiguration.Host + " Path:" + config.FilePath;
                     using var ftp = new FtpService(_context);
                     resultDeposit = await ftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
@@ -339,6 +340,7 @@ public class BackgroundTaskHandler : IDisposable
                 }
                 else
                 {
+                    filecreationRemote.FileGenerationType= FileGenerationType.Sftp;
                     completePath = "Sftp Host:" + config.SftpConfiguration.Host + " Path:" + config.FilePath;
                     using var sftp = new SftpService(_context);
                     resultDeposit = await sftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
@@ -349,6 +351,7 @@ public class BackgroundTaskHandler : IDisposable
             }
             else
             {
+                filecreationRemote.FileGenerationType= FileGenerationType.DirectToFolder;
                 completePath = Path.Combine(config.FilePath, fName);
                 resultDeposit =
                     await _fileDeposit.SaveFileAsync(fileResult, fName, config.FilePath, config.TryToCreateFolder);

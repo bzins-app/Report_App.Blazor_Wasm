@@ -19,3 +19,13 @@ public enum LogType
     EmailLog = 40,
     ReportGenerationLog=50
 }
+
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FileGenerationType
+{
+    LocalCopy = 10,
+    DirectToFolder = 20,
+    Ftp = 30,
+    Sftp = 40
+}

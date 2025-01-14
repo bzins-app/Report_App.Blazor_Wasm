@@ -18,4 +18,5 @@ public class ReportGenerationLog : IExcludeAuditTrail
     public bool IsAvailable { get; set; } = true;
     [MaxLength(4000)] public string? Result { get; set; }
     public bool Error { get; set; }
+    public FileGenerationType? FileGenerationType { get; set; }
 }
