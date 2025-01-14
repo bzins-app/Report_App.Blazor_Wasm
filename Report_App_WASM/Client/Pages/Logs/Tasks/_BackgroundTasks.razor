@@ -27,6 +27,7 @@
                     <Blazor.SimpleGrid.TemplateColumn >
                         <MudIconButton Style="padding: 0px !important" Icon="@Icons.Material.Outlined.Article" OnClick="() => OpenDetails(context.TaskLogId)" title="@Localizer.Get("Display details")" Disabled="!context.HasSteps"/>
                     </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>

@@ -63,12 +63,12 @@
                             </MudStack>
                         </Blazor.SimpleGrid.TemplateColumn>
                     }
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true" />
                     @if (string.IsNullOrEmpty(ProviderName))
                     {
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
                     }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Run query")">
                         <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" title="@Localizer.Get("Run query")"/>
                     </Blazor.SimpleGrid.TemplateColumn>

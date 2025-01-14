@@ -23,17 +23,19 @@
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid BuildInFilter="true" FieldsContent="@_translations" ItemsProvider="@_itemsProvider" Pagination="@_pagination" @ref="_grid">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="FileLogId" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreatedAt)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportName)" Title="@Localizer.Get("Report name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.SubName)" Title="@Localizer.Get("Report sub name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileType)" Title="@Localizer.Get("File type")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileName)" Title="@Localizer.Get("File name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportPath)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileSizeInMb)" Title="@Localizer.Get("File size in MB")" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.IsAvailable)" Title="@Localizer.Get("Is available?")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileSizeInMb)" Title="@Localizer.Get("File size in MB")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportPath)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
                 </SimpleGrid>
             </div>
             @if (_rendering)

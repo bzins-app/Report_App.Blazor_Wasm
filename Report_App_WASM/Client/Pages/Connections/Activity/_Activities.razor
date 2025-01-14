@@ -41,6 +41,7 @@
                             <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DataProviderId)" Title="DataProviderId" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true" />
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Is activated?")">
                         <_ActivityActivate Item="context" />
@@ -48,6 +49,7 @@
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Is visible?")">
                         <_ActivityVisible Item="context" />
                     </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TimeZone)" Title="TimeZone" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />

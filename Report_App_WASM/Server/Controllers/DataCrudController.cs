@@ -494,6 +494,7 @@ public class DataCrudController : ControllerBase, IDisposable
         try
         {
             var dbItem = await _context.ScheduledTask.Include(a => a.DataProvider).Include(a => a.TaskQueries)
+                .Include(scheduledTask => scheduledTask.DistributionLists)
                 .Include(a => a.ScheduledTaskId).Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
                 .AsNoTracking().FirstOrDefaultAsync();
 
