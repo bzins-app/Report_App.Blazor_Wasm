@@ -239,10 +239,10 @@ else
         var dialog = await DialogService.ShowAsync<_SaveConfigurationDialog>("Create");
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
-            var SaveName = feedback.Data.ToString();
+            var SaveName = feedback?.Data!.ToString();
             var config = await _pvt?.GetConfig()!;
             var payload = new UserConfigurationSave { SaveName = SaveName, IdIntConfiguration = QueryId, TypeConfiguration = TypeConfiguration.PitvotReport, SavedValues = config };
             var result = await DataService.PostValues(payload, "UserConfigurationSave");

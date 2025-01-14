@@ -91,7 +91,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
-            var parametersCopy = (SqlServerParameters)this.MemberwiseClone();
+            var parametersCopy = (SqlServerParameters)MemberwiseClone();
 
             // Remove sensitive information
             parametersCopy.UserId = null;
@@ -139,7 +139,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
-            var parametersCopy = (MySqlParameters)this.MemberwiseClone();
+            var parametersCopy = (MySqlParameters)MemberwiseClone();
 
             // Remove sensitive information
             parametersCopy.UserId = null;
@@ -192,7 +192,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
-            var parametersCopy = (PostgreSqlParameters)this.MemberwiseClone();
+            var parametersCopy = (PostgreSqlParameters)MemberwiseClone();
 
             // Remove sensitive information
             parametersCopy.UserId = null;
@@ -246,7 +246,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
-            var parametersCopy = (OracleParameters)this.MemberwiseClone();
+            var parametersCopy = (OracleParameters)MemberwiseClone();
 
             // Remove sensitive information
             parametersCopy.UserId = null;
@@ -294,7 +294,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
-            var parametersCopy = (MariaDbParameters)this.MemberwiseClone();
+            var parametersCopy = (MariaDbParameters)MemberwiseClone();
 
             // Remove sensitive information
             parametersCopy.UserId = null;
@@ -331,7 +331,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         public override JsonElement SerializeMembersToJson()
         {
             // Create a shallow copy of the parameters object
-            var parametersCopy = (OleDbParameters)this.MemberwiseClone();
+            var parametersCopy = (OleDbParameters)MemberwiseClone();
 
             // Remove sensitive information
             parametersCopy.UserId = null;

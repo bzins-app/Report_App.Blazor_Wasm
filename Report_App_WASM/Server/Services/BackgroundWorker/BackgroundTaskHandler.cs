@@ -1,5 +1,4 @@
-﻿using System.DirectoryServices.ActiveDirectory;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Text.Json;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
@@ -641,7 +640,7 @@ public class BackgroundTaskHandler : IDisposable
                     else
                         queryCreate =
                             CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                                detailParam.DataTransferTargetTableName, loopNumber == 0 ? true : false);
+                                detailParam.DataTransferTargetTableName, loopNumber == 0);
                 }
 
                 await _dbReader.CreateTable(queryCreate, activityIdTransfer);

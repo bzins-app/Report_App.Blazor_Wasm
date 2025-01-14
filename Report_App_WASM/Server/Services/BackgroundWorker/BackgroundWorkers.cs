@@ -81,7 +81,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     _ => TaskType.Report
                 };
                 await _context.ScheduledTask
-                    .Where(a => a.IsEnabled == true && a.Type == typeTask && a.DataProvider.IsEnabled).ForEachAsync(
+                    .Where(a => a.IsEnabled == true && a.Type == typeTask && a.DataProvider.IsEnabled)
+                    .Include(scheduledTask => scheduledTask.DataProvider).ForEachAsync(
                         a =>
                         {
                             var jobName = a.TypeName + " Id:" + a.ScheduledTaskId;

@@ -50,7 +50,7 @@
     protected override async Task OnInitializedAsync()
     {
         _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
-        if (Item.IdDataProvider > 0)
+        if (Item != null && Item.IdDataProvider > 0)
         {
             Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
         }

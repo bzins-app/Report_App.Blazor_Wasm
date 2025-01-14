@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Report_App_WASM.Server.Services.RemoteDb;
+﻿namespace Report_App_WASM.Server.Services.RemoteDb;
 
 public interface IRemoteDatabaseActionsHandler
 {

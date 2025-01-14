@@ -57,13 +57,16 @@
         _initialAppLogo = _param.ApplicationLogo;
     }
 
-    private async Task UploadFiles(IBrowserFile file)
+    private async Task UploadFiles(IBrowserFile? file)
     {
-        var result = await DataService.PostFile(file);
-        if (result.Success)
+        if (file != null)
         {
-            _param.ApplicationLogo = "/" + result.Message;
-            _success = true;
+            var result = await DataService.PostFile(file);
+            if (result.Success)
+            {
+                _param.ApplicationLogo = "/" + result.Message;
+                _success = true;
+            }
         }
     }
 
