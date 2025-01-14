@@ -111,8 +111,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "ReportResultLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Reports result logs" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "ReportGenerationLogs";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractReportGenerationLogs";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 

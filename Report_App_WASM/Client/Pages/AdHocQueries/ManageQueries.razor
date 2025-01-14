@@ -125,7 +125,7 @@
         }
 
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        if (_empty || _oldActivity != ProviderName)
+        if ((_empty || _oldActivity != ProviderName) && !_rendering)
         {
             _itemsProvider = async req =>
             {
@@ -182,6 +182,7 @@
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
+        _oldActivity = ProviderName;
         _translations = AppService.GetGridTranslations();
     }
 
@@ -193,6 +194,7 @@
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/Queries?";
+        _rendering = true;
 
         var customFilters = string.Empty;
         if (DataProviderId.HasValue)

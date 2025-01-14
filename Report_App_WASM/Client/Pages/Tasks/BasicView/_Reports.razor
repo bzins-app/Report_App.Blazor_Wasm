@@ -96,10 +96,7 @@
 
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
         _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
-    }
 
-    protected override void OnInitialized()
-    {
         _itemsProvider = async req =>
         {
             var response = await GetRemoteData(req);
@@ -111,6 +108,11 @@
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
+       
+    }
+
+    protected override void OnInitialized()
+    {
         _translations = AppService.GetGridTranslations();
     }
 
