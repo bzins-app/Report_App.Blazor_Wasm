@@ -765,6 +765,9 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<bool>("Error")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("FileGenerationType")
+                        .HasColumnType("int");
+
                     b.Property<string>("FileName")
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
