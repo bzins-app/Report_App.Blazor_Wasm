@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Report_App_WASM.Server.Utils.SettingsConfiguration;
-using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server;
 

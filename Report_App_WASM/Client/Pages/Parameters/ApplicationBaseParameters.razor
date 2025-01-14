@@ -1,5 +1,4 @@
 ﻿@page "/ApplicationParameters"
-@using System.ComponentModel.DataAnnotations
 @using System.Text.RegularExpressions
 @inject NavigationManager UriHelper
 @inject IDialogService DialogService
@@ -93,7 +92,6 @@
     private readonly List<string?> _filesToDelete = new();
     private string? _initialAppName;
     private string? _initialAppLogo;
-    EmailAddressAttribute _checkEmail = new() { ErrorMessage = "The email address is invalid" };
 
     protected override async Task OnInitializedAsync()
     {

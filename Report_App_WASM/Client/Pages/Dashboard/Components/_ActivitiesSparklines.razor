@@ -22,7 +22,7 @@
                                  Items="context.ToList()"
                                  Name="@Localizer.Get("Type of tasks")"
                                  SeriesType="SeriesType.Pie"
-                                 XValue="@(e => e.TypeTask)"
+                                 XValue="@(e => e.TypeTask!)"
                                  YAggregate="@(e => e.Sum(a => a.NbrTasks))"/>
 
             </ApexChart>

@@ -26,6 +26,7 @@
                             <MudIconButton Icon="@Icons.Material.Outlined.ContentCopy" OnClick="() => OpenCreateDialog(context)" title="@Localizer.Get("Duplicate")" />
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskQueryId)" Title="ScheduledTaskQueryId" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ExecutionOrder)" Title="@Localizer.Get("Query sequence")" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />

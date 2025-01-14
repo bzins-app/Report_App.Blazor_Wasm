@@ -415,7 +415,7 @@
                 DbCon.ConnectionLogin = oleDParameters.UserId;
                 break;
             case TypeDb.Oracle:
-                OParameters.Database = OParameters.Schema ?? string.Empty;
+                OParameters.Database = OParameters.Schema;
                 DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
                 DbCon.Password = OParameters.Password;
                 DbCon.ConnectionLogin = OParameters.UserId;
@@ -514,7 +514,7 @@
         return true;
     }
 
-    private async Task OnUploadLogo(IBrowserFile file)
+    private async Task OnUploadLogo(IBrowserFile? file)
     {
         var result = await DataService.PostFile(file);
         if (result.Success)

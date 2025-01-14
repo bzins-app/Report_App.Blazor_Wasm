@@ -1,7 +1,6 @@
 ﻿@page "/QueryEdit/{QueryId:long}"
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager UriHelper
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 @using Report_App_WASM.Shared.Extensions
@@ -401,7 +400,7 @@
                 else
                 {
                     _values = new List<Dictionary<string, object>>();
-                    _queryTestResult = response.Content.ToString();
+                    if (true) _queryTestResult = response.Content.ToString();
                 }
             }
             catch (Exception ex)

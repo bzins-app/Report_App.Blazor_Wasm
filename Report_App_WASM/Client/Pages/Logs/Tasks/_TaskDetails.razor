@@ -3,7 +3,7 @@
         <MudTimeline TimelinePosition="TimelinePosition.Start">
             @foreach (var d in _details.OrderByDescending(a => a.TimeStamp))
             {
-                if (d.Step.Contains("completed"))
+                if (d.Step!.Contains("completed"))
                 {
                     <MudTimelineItem Color="Color.Info">
                         <MudText Typo="Typo.body2" Class="mud-text-secondary">@d.TimeStamp</MudText>

@@ -164,7 +164,7 @@ public class DataCrudController : ControllerBase, IDisposable
         var targetInfo = await _context.DataProvider
             .Include(a => a.DatabaseConnection)
             .AsNoTracking()
-            .FirstOrDefaultAsync(( a) => a.ProviderType == Shared.ProviderType.TargetDatabase);
+            .FirstOrDefaultAsync(( a) => a.ProviderType == ProviderType.TargetDatabase);
 
         if (targetInfo != null) return targetInfo;
 
@@ -173,7 +173,7 @@ public class DataCrudController : ControllerBase, IDisposable
         targetInfo = new DataProvider
         {
             ProviderName = "Data transfer",
-            ProviderType = Shared.ProviderType.TargetDatabase,
+            ProviderType = ProviderType.TargetDatabase,
             DatabaseConnection = connections
         };
 
@@ -331,7 +331,7 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            if (values.EntityValue.ProviderType == Shared.ProviderType.SourceDatabase)
+            if (values.EntityValue.ProviderType == ProviderType.SourceDatabase)
             {
                 if (!await _roleManager.RoleExistsAsync(values.EntityValue?.ProviderName!))
                 {
@@ -391,7 +391,7 @@ public class DataCrudController : ControllerBase, IDisposable
     {
         try
         {
-            if (values.EntityValue.ProviderType == Shared.ProviderType.SourceDatabase)
+            if (values.EntityValue.ProviderType == ProviderType.SourceDatabase)
             {
                 var roleActivity = await _roleManager.FindByIdAsync(values.EntityValue?.ProviderRoleId!);
                 if (roleActivity != null && roleActivity.Name != values.EntityValue!.ProviderName)
@@ -502,6 +502,7 @@ public class DataCrudController : ControllerBase, IDisposable
         try
         {
             var dbItem = await _context.ScheduledTask.Include(a => a.DataProvider).Include(a => a.TaskQueries)
+                .Include(scheduledTask => scheduledTask.DistributionLists)
                 .Include(a => a.ScheduledTaskId).Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
                 .AsNoTracking().FirstOrDefaultAsync();
 
