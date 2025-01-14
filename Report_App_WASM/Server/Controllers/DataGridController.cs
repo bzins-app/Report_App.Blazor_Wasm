@@ -1,5 +1,4 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Community.OData.Linq;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Report_App_WASM.Shared.DTO;
@@ -34,35 +33,72 @@ public class DataGridController : ODataController, IDisposable
         return _context.SystemLog.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
-    [HttpPost("odata/ExtractLogs")]
-    public async Task<FileResult?> ExtractLogsAsync([FromBody] ODataExtractPayload values)
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractSystemLogs")]
+    public async Task<IActionResult> ExtractSystemLogs(ODataQueryOptions<SystemLog> queryOptions)
     {
-        return values.FunctionName switch
-        {
-            "EmailLogs" => await GetExtractFile(GetEmailLogs(), values),
-            "QueryExecutionLogs" => await GetExtractFile(GetQueryExecutionLogs(), values),
-            "ReportResultLogs" => await GetExtractFile(GetReportResultLogs(), values),
-            "TaskLogs" => await GetExtractFile(GetTaskLogs(), values),
-            "AuditTrail" => await GetExtractFile(GetAuditTrail(), values),
-            "QueriesLogs" => await GetExtractFile(GetQueriesLogs(), values),
-            _ => await GetExtractFile(GetSystemLogs(), values)
-        };
+        var logs =await queryOptions.ApplyTo(_context.SystemLog.OrderByDescending(a => a.Id).AsNoTracking()).Cast<SystemLog>().ToListAsync();
+        return GetExtractFile(logs,"SystemLogs","SystemLogs");
     }
 
-    private async Task<FileResult> GetExtractFile<T>(IQueryable<T> source, ODataExtractPayload values) where T : class
+    [EnableQuery]
+    [HttpGet("odata/ExtractEmailLogs")]
+    public async Task<IActionResult> ExtractEmailLogs(ODataQueryOptions<EmailLog> queryOptions)
     {
-        var q = source.OData();
-        if (!string.IsNullOrEmpty(values.FilterValues)) q = q.Filter(values.FilterValues.Replace("$filter=", ""));
-        if (!string.IsNullOrEmpty(values.SortValues)) q = q.OrderBy(values.SortValues.Replace("$orderby=", ""));
-        var finalQ = q.ToOriginalQuery();
+        var logs =await queryOptions.ApplyTo(_context.EmailLog.OrderByDescending(a => a.Id).AsNoTracking()).Cast<EmailLog>().ToListAsync();
+        return GetExtractFile(logs,"EmailLogs","EmailLogs");
+    }
 
+    [EnableQuery]
+    [HttpGet("odata/ExtractReportGenerationLogs")]
+    public async Task<IActionResult> ExtractEmailLogs(ODataQueryOptions<ReportGenerationLog> queryOptions)
+    {
+        var logs =await queryOptions.ApplyTo(_context.ReportGenerationLog.OrderByDescending(a => a.Id).AsNoTracking()).Cast<ReportGenerationLog>().ToListAsync();
+        return GetExtractFile(logs,"ReportGenerationLogs","ReportGenerationLogs");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractTaskLogs")]
+    public async Task<IActionResult> ExtractTaskLogs(ODataQueryOptions<TaskLog> queryOptions)
+    {
+        var systemLogs =await queryOptions.ApplyTo(_context.TaskLog.OrderByDescending(a => a.TaskLogId).AsNoTracking()).Cast<TaskLog>().ToListAsync();
+        return GetExtractFile(systemLogs,"TaskLogs","TaskLogs");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractQueryExecutionLogs")]
+    public async Task<IActionResult> ExtractQueryExecutionLogs(ODataQueryOptions<QueryExecutionLog> queryOptions)
+    {
+        var logs =await queryOptions.ApplyTo(_context.QueryExecutionLog.OrderByDescending(a => a.Id).AsNoTracking()).Cast<QueryExecutionLog>().ToListAsync();
+        return GetExtractFile(logs,"QueryExecutionLogs","QueryExecutionLogs");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractAuditTrail")]
+    public async Task<IActionResult> ExtractAuditTrail(ODataQueryOptions<AuditTrail> queryOptions)
+{
+        var logs =await queryOptions.ApplyTo(_context.AuditTrail.OrderByDescending(a => a.Id).AsNoTracking()).Cast<AuditTrail>().ToListAsync();
+        return GetExtractFile(logs,"AuditTrail","AuditTrail");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractQueriesLogs")]
+    public async Task<IActionResult> ExtractQueriesLogs(ODataQueryOptions<AdHocQueryExecutionLog> queryOptions)
+    {
+        var logs =await queryOptions.ApplyTo(_context.AdHocQueryExecutionLog.OrderByDescending(a => a.Id).AsNoTracking()).Cast<AdHocQueryExecutionLog>().ToListAsync();
+        return GetExtractFile(logs,"QueriesLogs","QueriesLogs");
+    }
+
+
+    private FileResult GetExtractFile<T>(List<T> items, string fname, string tab="data") where T : class
+    {
         try
         {
-            _logger.LogInformation("Grid extraction: Start " + values.FunctionName, values.FunctionName);
-            var items = await finalQ.AsQueryable().Take(values.MaxResult).ToListAsync();
-            var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
+            _logger.LogInformation("Grid extraction: Start " + fname, fname);
+            var fileName = fname + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
-            var file = CreateFile.ExcelFromCollection(fileName, values.TabName, items);
+            var file = CreateFile.ExcelFromCollection(fileName, tab, items);
             _logger.LogInformation($"Grid extraction: End {fileName} {items.Count} lines",
                 $" {fileName} {items.Count} lines");
             return File(file.Content, file.ContentType, file.FileName);

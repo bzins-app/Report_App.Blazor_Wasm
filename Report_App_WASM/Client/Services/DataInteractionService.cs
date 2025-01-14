@@ -100,17 +100,16 @@ public class DataInteractionService
         }
     }
 
-    public async Task ExtractGridLogs(ODataExtractPayload values)
+    public async Task ExtractGridLogs(string uri, string fname)
     {
-        var url = "odata/ExtractLogs";
         using var httpClientLong = new HttpClient();
         httpClientLong.Timeout = TimeSpan.FromMinutes(10);
         httpClientLong.BaseAddress = _httpClient.BaseAddress;
-        var response = await httpClientLong.PostAsJsonAsync(url, values);
+        var response = await httpClientLong.GetAsync(uri);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.ServiceUnavailable
             or HttpStatusCode.RequestTimeout)
             await SendNotification();
-        await HandleDownloadResponse(response, $"{values.FileName} {DateTime.Now:yyyyMMdd_HH_mm_ss}.xlsx");
+        await HandleDownloadResponse(response, $"{fname} {DateTime.Now:yyyyMMdd_HH_mm_ss}.xlsx");
     }
 
     public async Task ExtractAdHocQuery(RemoteDataPayload payload, CancellationToken ct)
