@@ -41,12 +41,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        
         if (Item != null) _selectedDataProviderId = Item.IdDataProvider;
     }
 
-    private void OpenRunConfirmationComponent()
+    private async Task OpenRunConfirmationComponent()
     {
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _name = Item?.QueryName + " (Copy)";
         _visible = true;
     }
