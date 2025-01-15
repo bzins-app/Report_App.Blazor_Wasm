@@ -70,7 +70,7 @@ else
 
     public async Task Refresh()
     {
-        await _chart.UpdateOptionsAsync(false,true, false);
+        if (_chart != null) await _chart.UpdateOptionsAsync(false, true, false);
     }
 
 }

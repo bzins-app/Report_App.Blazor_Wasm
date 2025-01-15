@@ -51,14 +51,14 @@
     [Parameter] public long? DataProviderId { get; set; }
 
     private string? _pageTitle;
-    private List<StoredQueryDto> _queries;
-    private List<StoredQueryDto> _filteredQueries;
+    private List<StoredQueryDto>? _queries;
+    private List<StoredQueryDto>? _filteredQueries;
 
     public RenderFragment? _QueriesFragment { get; set; }
     public RenderFragment? _queryRender { get; set; }
     private string _queryName = string.Empty;
     private bool _open = true;
-    List<string> _tags;
+    List<string> _tags = null!;
     IReadOnlyCollection<string>? selected;
 
     protected override async Task OnParametersSetAsync()
@@ -131,7 +131,11 @@
 
     private async Task ExecuteQuery(long queryId)
     {
-        _queryName = _queries.FirstOrDefault(a => a.Id == queryId)?.QueryName ?? string.Empty;
+        if (_queries != null)
+        {
+            _queryName = _queries.FirstOrDefault(a => a.Id == queryId)?.QueryName ?? string.Empty;
+        }
+
         _queryRender = null;
         await Task.Delay(10);
         _queryRender = (__builder) =>

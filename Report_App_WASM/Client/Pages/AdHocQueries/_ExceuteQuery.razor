@@ -178,7 +178,7 @@ else
     private string _typeReport = "Grid";
     PivotTable<Dictionary<string, object>>? _pvt;
     List<UserConfigurations> _userConfigs = new();
-    MudMenu _menu;
+    MudMenu _menu = null!;
 
     protected override async Task OnInitializedAsync()
     {

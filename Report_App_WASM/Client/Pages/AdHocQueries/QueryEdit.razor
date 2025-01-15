@@ -365,7 +365,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (!_formParamValidated && param!.Count > 0)
+        else if (!_formParamValidated && param.Count > 0)
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -384,7 +384,7 @@
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>(cancellationToken: token);
                     if (result!.Success)
                     {
                         _values = result.Value;
@@ -393,14 +393,14 @@
                     }
                     else
                     {
-                        _queryTestResult = result.Message;
+                        _queryTestResult = result.Message!;
                         _values = new List<Dictionary<string, object>>();
                     }
                 }
                 else
                 {
                     _values = new List<Dictionary<string, object>>();
-                    if (true) _queryTestResult = response.Content.ToString();
+                    if (true) _queryTestResult = response.Content.ToString()!;
                 }
             }
             catch (Exception ex)
