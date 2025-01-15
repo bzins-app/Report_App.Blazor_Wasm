@@ -26,28 +26,32 @@ builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
 var host = builder.Build();
 
-//Setting culture of the application
-var jsInterop = host.Services.GetRequiredService<IJSRuntime>();
-var result = await jsInterop.InvokeAsync<string>("cultureInfo.get");
-CultureInfo culture;
-if (result != null)
+await SetCultureAndThemeAsync(host.Services);
+
+await host.RunAsync();
+
+async Task SetCultureAndThemeAsync(IServiceProvider services)
 {
-    culture = new CultureInfo(result);
+    var jsInterop = services.GetRequiredService<IJSRuntime>();
+    var result = await jsInterop.InvokeAsync<string>("cultureInfo.get");
+    CultureInfo culture;
+    if (result != null)
+    {
+        culture = new CultureInfo(result);
+    }
+    else
+    {
+        var browserLanguage = await jsInterop.InvokeAsync<string>("getBrowserLanguage");
+        culture = new CultureInfo(browserLanguage[..2]);
+        await jsInterop.InvokeVoidAsync("cultureInfo.set", browserLanguage[..2]);
+    }
+
+    CultureInfo.DefaultThreadCurrentCulture = culture;
+    CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+    var resultTheme = await jsInterop.InvokeAsync<string>("AppTheme.get");
+    if (resultTheme != null)
+        UserAppTheme.DarkTheme = resultTheme == "Dark";
+    else
+        await jsInterop.InvokeVoidAsync("AppTheme.set", "Light");
 }
-else
-{
-    var browserLanguage = await jsInterop.InvokeAsync<string>("getBrowserLanguage");
-    culture = new CultureInfo(browserLanguage[..2]);
-    await jsInterop.InvokeVoidAsync("cultureInfo.set", browserLanguage[..2]);
-}
-
-CultureInfo.DefaultThreadCurrentCulture = culture;
-CultureInfo.DefaultThreadCurrentUICulture = culture;
-var resultTheme = await jsInterop.InvokeAsync<string>("AppTheme.get");
-if (resultTheme != null)
-    UserAppTheme.DarkTheme = resultTheme == "Dark";
-else
-    await jsInterop.InvokeVoidAsync("AppTheme.set", "Light");
-
-
-await builder.Build().RunAsync();
