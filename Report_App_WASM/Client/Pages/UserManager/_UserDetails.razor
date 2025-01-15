@@ -74,14 +74,11 @@
 
     [Parameter] public CrudAction Action { get; set; }
 
-    private MudForm _form = default!;
     private HashSet<string> _rolesToAssign = new();
     private readonly List<string> _rolesAvailable = new();
 
     private HashSet<string> _rolesToRemove = new();
     private readonly List<string> _rolesAssigned = new();
-
-    private string[]? _titles;
 
     private void Cancel()
     {
@@ -107,7 +104,6 @@
             _rolesAvailable.Remove(ur);
         }
 
-        _titles = new[] { Localizer.Get("Roles available"), Localizer.Get("Roles assigned") };
         await base.OnInitializedAsync();
     }
 

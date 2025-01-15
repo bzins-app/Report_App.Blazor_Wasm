@@ -360,7 +360,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                                 listCols.HasDescription = true;
                                 listCols.Values.AddRange(cols.Distinct().Select(col => new TablesColsInfo
                                 {
-                                    Name = col.Name!,
+                                    Name = col.Name,
                                     TypeValue = col.TypeValue,
                                     ColType = col.ColType,
                                     ColOrder = col.ColOrder,

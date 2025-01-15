@@ -39,10 +39,10 @@
     private List<SelectItemDataproviderInfo> _activities = new();
     private long _selectedDataProviderId;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        
         if (Item != null) _selectedDataProviderId = Item.IdDataProvider;
+        return Task.CompletedTask;
     }
 
     private async Task OpenRunConfirmationComponent()
