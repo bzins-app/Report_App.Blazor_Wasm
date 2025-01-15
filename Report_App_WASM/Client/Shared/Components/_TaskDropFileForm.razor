@@ -18,7 +18,7 @@
         var result = feedback != null;
         if (result)
         {
-            var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = new List<EmailRecipient>(), CustomQueryParameters = new List<QueryCommandParameter>(), GenerateFiles = true };
+            var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = new List<EmailRecipient>(), QueryCommandParameters = new List<QueryCommandParameter>(), GenerateFiles = true };
             await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             Snackbar.Add(Localizer.Get(Item.TypeName) + " " + Localizer.Get("Job on going"), Severity.Success);
         }
