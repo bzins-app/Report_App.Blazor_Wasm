@@ -1,4 +1,6 @@
-﻿namespace Report_App_WASM.Server.Controllers;
+﻿using Report_App_WASM.Server.Utils.BackgroundWorker;
+
+namespace Report_App_WASM.Server.Controllers;
 
 [ApiExplorerSettings(IgnoreApi = true)]
 [Authorize]
@@ -70,7 +72,8 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
 
     private async Task<SystemServicesStatus> GetServiceStatusAsync()
     {
-        return await _context.SystemServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ?? new SystemServicesStatus();
+        return await _context.SystemServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ??
+               new SystemServicesStatus();
     }
 
     private async Task<IActionResult> ActivateServiceAsync(ApiCrudPayload<ApiBackgroundWorkerPayload> value,

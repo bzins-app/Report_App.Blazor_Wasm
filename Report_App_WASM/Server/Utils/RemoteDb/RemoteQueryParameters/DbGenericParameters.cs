@@ -1,4 +1,4 @@
-﻿namespace Report_App_WASM.Server.Utils.RemoteQueryParameters;
+﻿namespace Report_App_WASM.Server.Utils.RemoteDb.RemoteQueryParameters;
 
 public class DbGenericParameters
 {

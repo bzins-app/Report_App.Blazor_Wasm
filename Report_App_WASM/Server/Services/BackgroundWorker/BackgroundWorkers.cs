@@ -6,6 +6,7 @@ using Hangfire.Storage;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
+using Report_App_WASM.Server.Utils.BackgroundWorker;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
@@ -49,7 +50,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     public async Task SwitchBackgroundTasksPerActivityAsync(long dataProviderId, bool activate)
     {
-        var reportHeaders = await _context.ScheduledTask.Where(a => a.IsEnabled && a.DataProvider.DataProviderId == dataProviderId)
+        var reportHeaders = await _context.ScheduledTask
+            .Where(a => a.IsEnabled && a.DataProvider.DataProviderId == dataProviderId)
             .Select(a => a.ScheduledTaskId).ToListAsync();
 
         foreach (var t in reportHeaders) await HandleTasksJobs(t, activate);
@@ -87,7 +89,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                         a =>
                         {
                             var jobName = a.TypeName + " Id:" + a.ScheduledTaskId;
-                            options.TimeZone=string.IsNullOrEmpty(a.DataProvider.TimeZone) ? TimeZoneInfo.Local
+                            options.TimeZone = string.IsNullOrEmpty(a.DataProvider.TimeZone)
+                                ? TimeZoneInfo.Local
                                 : TimeZoneInfo.FindSystemTimeZoneById(a.DataProvider.TimeZone);
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
@@ -153,14 +156,21 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         var taskHeader = await _context.ScheduledTask
             .AsNoTrackingWithIdentityResolution()
             .Where(a => a.ScheduledTaskId == taskHeaderId)
-            .Select(a => new { a.TaskName, a.Type, a.TypeName, a.DataProvider.ProviderName, a.CronParameters, timeZone=string.IsNullOrEmpty(a.DataProvider.TimeZone)?TimeZoneInfo.Local.Id:a.DataProvider.TimeZone })
+            .Select(a => new
+            {
+                a.TaskName, a.Type, a.TypeName, a.DataProvider.ProviderName, a.CronParameters,
+                timeZone = string.IsNullOrEmpty(a.DataProvider.TimeZone)
+                    ? TimeZoneInfo.Local.Id
+                    : a.DataProvider.TimeZone
+            })
             .FirstOrDefaultAsync();
 
         var jobName = taskHeader!.TypeName + " Id:" + taskHeaderId;
 
         if (activate)
         {
-            var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
+            var options = new RecurringJobOptions
+                { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
             if (!string.IsNullOrEmpty(taskHeader.CronParameters) && taskHeader.CronParameters != "[]")
             {
                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);

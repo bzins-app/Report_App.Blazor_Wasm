@@ -3,6 +3,8 @@ using System.Text.Json;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
+using Report_App_WASM.Server.Utils.BackgroundWorker;
+using Report_App_WASM.Server.Utils.FIles;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
@@ -25,6 +27,7 @@ public class BackgroundTaskHandler : IDisposable
     {
         PropertyNameCaseInsensitive = true
     };
+
     private long _taskId;
     private TaskLog _logTask;
 
@@ -35,9 +38,12 @@ public class BackgroundTaskHandler : IDisposable
         public int Updated { get; set; }
         public int Deleted { get; set; }
     }
+
     DataTransferRowsStats _dataTransferStat = new DataTransferRowsStats();
 
-    public BackgroundTaskHandler(ApplicationDbContext context, IEmailSender emailSender, IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment)
+    public BackgroundTaskHandler(ApplicationDbContext context, IEmailSender emailSender,
+        IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
+        IWebHostEnvironment hostingEnvironment)
     {
         _context = context;
         _emailSender = emailSender;
@@ -80,7 +86,8 @@ public class BackgroundTaskHandler : IDisposable
             else
             {
                 await HandleDataTransferTaskAsync(_activityConnect);
-                _resultInfo = $"Rows bulkinserted: {_dataTransferStat.BulkInserted},Rows inserted: {_dataTransferStat.Inserted},Rows updated: {_dataTransferStat.Updated},Rows deleted: {_dataTransferStat.Deleted}";
+                _resultInfo =
+                    $"Rows bulkinserted: {_dataTransferStat.BulkInserted},Rows inserted: {_dataTransferStat.Inserted},Rows updated: {_dataTransferStat.Updated},Rows deleted: {_dataTransferStat.Deleted}";
             }
 
             await FinalizeTaskAsync(_logTask, parameters.GenerateFiles, _resultInfo);
@@ -146,7 +153,7 @@ public class BackgroundTaskHandler : IDisposable
     private async Task InsertLogTaskStepAsync(string step, string info, bool error)
     {
         _logTask.HasSteps = true;
-        await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info , Error = error});
+        await _context.AddAsync(new TaskStepLog { TaskLogId = _taskId, Step = step, Info = info, Error = error });
         await _context.SaveChangesAsync("backgroundworker");
     }
 
@@ -196,8 +203,8 @@ public class BackgroundTaskHandler : IDisposable
             _fetchedData.Clear();
         }
     }
-    
-    private async Task FinalizeTaskAsync(TaskLog logTask, bool generateFiles, string _result="Ok")
+
+    private async Task FinalizeTaskAsync(TaskLog logTask, bool generateFiles, string _result = "Ok")
     {
         logTask.Error = false;
         logTask.Result = _result;
@@ -233,7 +240,8 @@ public class BackgroundTaskHandler : IDisposable
     private async ValueTask FetchData(ScheduledTaskQuery detail, int maxRows = 100000)
     {
         using var remoteDb = new RemoteDatabaseActionsHandler(_context, _mapper);
-        var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(detail.ExecutionParameters!, _jsonOpt);
+        var detailParam =
+            JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(detail.ExecutionParameters!, _jsonOpt);
         List<QueryCommandParameter>? param = new();
         if (_jobParameters.CustomQueryParameters!.Any())
             param = _jobParameters.CustomQueryParameters;
@@ -262,7 +270,7 @@ public class BackgroundTaskHandler : IDisposable
                 QueryCommandParameters = param,
                 MaxSize = maxRows
             }, _jobParameters.Cts, _taskId);
-        _logTask.HasSteps = true; 
+        _logTask.HasSteps = true;
 
         if (detailParam!.GenerateIfEmpty || table.Rows.Count > 0) _fetchedData.Add(detail, table);
 
@@ -273,7 +281,8 @@ public class BackgroundTaskHandler : IDisposable
         }
     }
 
-    private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName, bool useDepositConfiguration, string? subName = null)
+    private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName, bool useDepositConfiguration,
+        string? subName = null)
     {
         var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
         if (!localFileResult.Success)
@@ -293,14 +302,17 @@ public class BackgroundTaskHandler : IDisposable
             FileName = fName,
             IsAvailable = true,
             Error = !localFileResult.Success,
-            Result = localFileResult.Message,FileGenerationType = FileGenerationType.LocalCopy,
+            Result = localFileResult.Message, FileGenerationType = FileGenerationType.LocalCopy,
             FileSizeInMb = BytesConverter.ConvertBytesToMegabytes(fileResult.Content.Length)
         };
         await _context.AddAsync(filecreationLocal);
         await _context.SaveChangesAsync("backgroundworker");
         _logTask.HasSteps = true;
         await _context.AddAsync(new TaskStepLog
-        { TaskLogId = _taskId, Step = "File local storage", Info = "Ok" , RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationLocal.Id});
+        {
+            TaskLogId = _taskId, Step = "File local storage", Info = "Ok", RelatedLogType = LogType.ReportGenerationLog,
+            RelatedLogId = filecreationLocal.Id
+        });
 
         if (_header.FileStorageLocationId != 0 && useDepositConfiguration && localFileResult.Success)
         {
@@ -330,40 +342,52 @@ public class BackgroundTaskHandler : IDisposable
                 var localfilePath = Path.Combine(storagePath, fName);
                 if (config.SftpConfiguration.UseFtpProtocol)
                 {
-                    filecreationRemote.FileGenerationType= FileGenerationType.Ftp;
+                    filecreationRemote.FileGenerationType = FileGenerationType.Ftp;
                     completePath = "FTP Host:" + config.SftpConfiguration.Host + " Path:" + config.FilePath;
                     using var ftp = new FtpService(_context);
                     resultDeposit = await ftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
                         localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                     await _context.AddAsync(new TaskStepLog
-                    { TaskLogId = _taskId, Step = "File FTP drop", Info = config.FilePath, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id });
+                    {
+                        TaskLogId = _taskId, Step = "File FTP drop", Info = config.FilePath,
+                        RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id
+                    });
                 }
                 else
                 {
-                    filecreationRemote.FileGenerationType= FileGenerationType.Sftp;
+                    filecreationRemote.FileGenerationType = FileGenerationType.Sftp;
                     completePath = "Sftp Host:" + config.SftpConfiguration.Host + " Path:" + config.FilePath;
                     using var sftp = new SftpService(_context);
                     resultDeposit = await sftp.UploadFileAsync(config.SftpConfiguration.SftpConfigurationId,
                         localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                     await _context.AddAsync(new TaskStepLog
-                    { TaskLogId = _taskId, Step = "File Sftp drop", Info = config.FilePath, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id });
+                    {
+                        TaskLogId = _taskId, Step = "File Sftp drop", Info = config.FilePath,
+                        RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id
+                    });
                 }
             }
             else
             {
-                filecreationRemote.FileGenerationType= FileGenerationType.DirectToFolder;
+                filecreationRemote.FileGenerationType = FileGenerationType.DirectToFolder;
                 completePath = Path.Combine(config.FilePath, fName);
                 resultDeposit =
                     await _fileDeposit.SaveFileAsync(fileResult, fName, config.FilePath, config.TryToCreateFolder);
                 await _context.AddAsync(new TaskStepLog
-                { TaskLogId = _taskId, Step = "File folder drop", Info = config.FilePath, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id });
+                {
+                    TaskLogId = _taskId, Step = "File folder drop", Info = config.FilePath,
+                    RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id
+                });
             }
 
             if (!resultDeposit.Success)
             {
                 await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message, "File deposit: ");
                 await _context.AddAsync(new TaskStepLog
-                { TaskLogId = _taskId, Step = "Error", Info = resultDeposit.Message, RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id, Error = true});
+                {
+                    TaskLogId = _taskId, Step = "Error", Info = resultDeposit.Message,
+                    RelatedLogType = LogType.ReportGenerationLog, RelatedLogId = filecreationRemote.Id, Error = true
+                });
             }
 
             filecreationRemote.ReportPath = completePath;
@@ -372,7 +396,6 @@ public class BackgroundTaskHandler : IDisposable
 
             _context.Update(filecreationRemote);
             await _context.SaveChangesAsync("backgroundworker");
-
         }
     }
 
@@ -387,7 +410,8 @@ public class BackgroundTaskHandler : IDisposable
         foreach (var d in _fetchedData)
         {
             MemoryFileContainer fileCreated;
-            var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(d.Key.ExecutionParameters!, _jsonOpt);
+            var detailParam =
+                JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(d.Key.ExecutionParameters!, _jsonOpt);
             if (string.IsNullOrEmpty(detailParam?.FileName))
                 fName =
                     $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
@@ -435,7 +459,7 @@ public class BackgroundTaskHandler : IDisposable
                     }
 
                     excelMultipleTabs.Add(new ExcelCreationDatatable
-                    { TabName = tabName, ExcelTemplate = template, Data = d.Value });
+                        { TabName = tabName, ExcelTemplate = template, Data = d.Value });
                     continue;
                 }
             }
@@ -461,7 +485,7 @@ public class BackgroundTaskHandler : IDisposable
 
             _fileResults.Add(fileCreated);
             await _context.AddAsync(new TaskStepLog
-            { TaskLogId = _taskId, Step = "File created", Info = fName });
+                { TaskLogId = _taskId, Step = "File created", Info = fName });
         }
 
         if (excelMultipleTabs.Any())
@@ -501,7 +525,7 @@ public class BackgroundTaskHandler : IDisposable
             _fileResults.Add(fileCreated);
             excelMultipleTabs.Clear();
             await _context.AddAsync(new TaskStepLog
-            { TaskLogId = _taskId, Step = "File created", Info = fName });
+                { TaskLogId = _taskId, Step = "File created", Info = fName });
         }
 
         _fetchedData.Clear();
@@ -531,7 +555,8 @@ public class BackgroundTaskHandler : IDisposable
                     .FirstOrDefaultAsync();
                 if (_header.DistributionLists.Select(a => a.EmailMessage).FirstOrDefault() != "[]")
                 {
-                    var subject = emailPrefix + " - " + a.ScheduledTask?.ProviderName + ": " + a.ScheduledTask?.TaskName;
+                    var subject = emailPrefix + " - " + a.ScheduledTask?.ProviderName + ": " +
+                                  a.ScheduledTask?.TaskName;
                     var message = "";
                     List<Attachment> listAttach = new();
                     foreach (var table in _fetchedData.Where(keyValuePair => keyValuePair.Value.Rows.Count > 0))
@@ -545,8 +570,9 @@ public class BackgroundTaskHandler : IDisposable
                         else
                         {
                             ExcelCreationDatatable dataExcel = new()
-                            { TabName = a.ScheduledTask?.TaskName, Data = table.Value };
-                            var fileResult = CreateFile.ExcelFromDatable((string?)(a.ScheduledTask?.TaskName), dataExcel);
+                                { TabName = a.ScheduledTask?.TaskName, Data = table.Value };
+                            var fileResult =
+                                CreateFile.ExcelFromDatable((string?)(a.ScheduledTask?.TaskName), dataExcel);
                             var fName =
                                 $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
                             listAttach.Add(new Attachment(new MemoryStream(fileResult.Content), fName,
@@ -559,10 +585,13 @@ public class BackgroundTaskHandler : IDisposable
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
                         await _context.AddAsync(new TaskStepLog
-                        { TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog, RelatedLogId = result.KeyValue});
+                        {
+                            TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog,
+                            RelatedLogId = result.KeyValue
+                        });
                     else
                         await _context.AddAsync(new TaskStepLog
-                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true});
+                            { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
 
                     listAttach.Clear();
                 }
@@ -600,15 +629,19 @@ public class BackgroundTaskHandler : IDisposable
                     var result = await _emailSender.SendEmailAsync(_emails, subject, message, listAttach);
                     if (result.Success)
                         await _context.AddAsync(new TaskStepLog
-                        { TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog, RelatedLogId = result.KeyValue});
+                        {
+                            TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog,
+                            RelatedLogId = result.KeyValue
+                        });
                     else
                         await _context.AddAsync(new TaskStepLog
-                        { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true});
+                            { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
                 }
         }
     }
 
-    private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, long activityIdTransfer, int loopNumber)
+    private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, long activityIdTransfer,
+        int loopNumber)
     {
         if (data.Rows.Count > 0)
         {
@@ -653,8 +686,8 @@ public class BackgroundTaskHandler : IDisposable
             {
                 await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName, activityIdTransfer);
                 _logTask.HasSteps = true;
-                _dataTransferStat.Inserted=+data.Rows.Count;
-                _dataTransferStat.BulkInserted=+data.Rows.Count;
+                _dataTransferStat.Inserted = +data.Rows.Count;
+                _dataTransferStat.BulkInserted = +data.Rows.Count;
                 await _context.AddAsync(new TaskStepLog
                 {
                     TaskLogId = _taskId,
@@ -677,7 +710,7 @@ public class BackgroundTaskHandler : IDisposable
                 {
                     await _dbReader.LoadDatatableToTable(data, tempTable, activityIdTransfer);
 
-                    _dataTransferStat.BulkInserted=+data.Rows.Count;
+                    _dataTransferStat.BulkInserted = +data.Rows.Count;
                     await _context.AddAsync(new TaskStepLog
                     {
                         TaskLogId = _taskId,
@@ -754,9 +787,9 @@ public class BackgroundTaskHandler : IDisposable
 
                 var mergeResult = await _dbReader.MergeTables(mergeSqlTemplate, activityIdTransfer);
 
-                _dataTransferStat.Inserted=+mergeResult.InsertedCount;
-                _dataTransferStat.Updated=+mergeResult.UpdatedCount;
-                _dataTransferStat.Deleted=+mergeResult.DeletedCount;
+                _dataTransferStat.Inserted = +mergeResult.InsertedCount;
+                _dataTransferStat.Updated = +mergeResult.UpdatedCount;
+                _dataTransferStat.Deleted = +mergeResult.DeletedCount;
                 await _dbReader.DeleteTable(tempTable, activityIdTransfer);
                 await _context.AddAsync(new TaskStepLog
                 {

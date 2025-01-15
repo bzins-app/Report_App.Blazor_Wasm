@@ -18,7 +18,9 @@ public class SystemLog : Log, IExcludeAuditTrail
         }
     }
 
-    protected SystemLog() { }
+    protected SystemLog()
+    {
+    }
 
     public DateTime TimeStampAppHour { get; set; } = DateTime.Now;
     [MaxLength(1000)] public string? Browser { get; set; }

@@ -3,7 +3,7 @@
 public class ScheduledTaskQuery : BaseTraceability
 {
     public long ScheduledTaskQueryId { get; set; }
-    [Required][MaxLength(200)] public string? QueryName { get; set; }
+    [Required] [MaxLength(200)] public string? QueryName { get; set; }
     [Required] public string? Query { get; set; }
     [MaxLength(4000)] public string QueryParameters { get; set; } = "[]";
     [MaxLength(4000)] public string? ExecutionParameters { get; set; }

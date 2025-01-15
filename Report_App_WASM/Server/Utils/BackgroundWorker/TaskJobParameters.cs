@@ -1,4 +1,4 @@
-﻿namespace Report_App_WASM.Server.Services.BackgroundWorker;
+﻿namespace Report_App_WASM.Server.Utils.BackgroundWorker;
 
 public class TaskJobParameters
 {
