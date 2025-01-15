@@ -243,8 +243,8 @@ public class BackgroundTaskHandler : IDisposable
         var detailParam =
             JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(detail.ExecutionParameters!, _jsonOpt);
         List<QueryCommandParameter>? param = new();
-        if (_jobParameters.CustomQueryParameters!.Any())
-            param = _jobParameters.CustomQueryParameters;
+        if (_jobParameters.QueryCommandParameters!.Any())
+            param = _jobParameters.QueryCommandParameters;
         else if (_header.UseGlobalQueryParameters && _header.GlobalQueryParameters != "[]" &&
                  !string.IsNullOrEmpty(_header.GlobalQueryParameters))
             param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.GlobalQueryParameters, _jsonOpt);

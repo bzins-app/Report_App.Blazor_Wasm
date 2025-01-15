@@ -126,7 +126,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     }
 
     public void RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient>? emails,
-        List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
+        List<QueryCommandParameter> commandQueryParameters, bool generateFiles = false)
     {
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
         {
@@ -134,7 +134,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             Cts = CancellationToken.None,
             GenerateFiles = generateFiles,
             CustomEmails = emails ?? new List<EmailRecipient>(),
-            CustomQueryParameters = customQueryParameters,
+            QueryCommandParameters = commandQueryParameters,
             ManualRun = true,
             RunBy = runBy
         }, CancellationToken.None));

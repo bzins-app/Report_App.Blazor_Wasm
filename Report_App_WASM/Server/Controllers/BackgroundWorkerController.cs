@@ -132,7 +132,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     public IActionResult RunManually(ApiCrudPayload<RunTaskManually> value)
     {
         _backgroundWorkers.RunManuallyTask(value.EntityValue!.TaskHeaderId, value.UserName, value.EntityValue.Emails!,
-            value.EntityValue.CustomQueryParameters!, value.EntityValue.GenerateFiles);
+            value.EntityValue.QueryCommandParameters!, value.EntityValue.GenerateFiles);
         return Ok(new SubmitResult { Success = true });
     }
 
