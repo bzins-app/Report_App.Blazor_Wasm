@@ -164,11 +164,12 @@ public class DataCrudController : ControllerBase, IDisposable
         var targetInfo = await _context.DataProvider
             .Include(a => a.DatabaseConnection)
             .AsNoTracking()
-            .FirstOrDefaultAsync(( a) => a.ProviderType == ProviderType.TargetDatabase);
+            .FirstOrDefaultAsync((a) => a.ProviderType == ProviderType.TargetDatabase);
 
         if (targetInfo != null) return targetInfo;
 
-        var connections = new List<DatabaseConnection>{new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer }};
+        var connections = new List<DatabaseConnection>
+            { new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer } };
 
         targetInfo = new DataProvider
         {
@@ -682,7 +683,8 @@ public class DataCrudController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> QueryStoreUpdate(ApiCrudPayload<StoredQuery> values)
     {
-        values.EntityValue.DataProvider = (await _context.DataProvider.Where(a => a.DataProviderId == values.EntityValue.IdDataProvider)
+        values.EntityValue.DataProvider = (await _context.DataProvider
+            .Where(a => a.DataProviderId == values.EntityValue.IdDataProvider)
             .FirstOrDefaultAsync())!;
         return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
     }

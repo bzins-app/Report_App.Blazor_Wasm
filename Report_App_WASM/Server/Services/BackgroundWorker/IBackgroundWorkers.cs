@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using Report_App_WASM.Server.Utils.BackgroundWorker;
+using System.Net.Mail;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 

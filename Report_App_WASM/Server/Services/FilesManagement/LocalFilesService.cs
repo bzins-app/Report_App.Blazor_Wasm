@@ -1,4 +1,6 @@
-﻿namespace Report_App_WASM.Server.Services.FilesManagement;
+﻿using Report_App_WASM.Server.Utils.FIles;
+
+namespace Report_App_WASM.Server.Services.FilesManagement;
 
 public class LocalFilesService
 {

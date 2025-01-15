@@ -4,7 +4,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
 using OfficeOpenXml.Table;
 
-namespace Report_App_WASM.Server.Utils;
+namespace Report_App_WASM.Server.Utils.FIles;
 
 public static class CreateFile
 {

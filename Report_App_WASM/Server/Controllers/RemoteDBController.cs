@@ -1,4 +1,5 @@
 ﻿using Report_App_WASM.Server.Services.RemoteDb;
+using Report_App_WASM.Server.Utils.FIles;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -341,11 +342,13 @@ public class RemoteDbController : ControllerBase, IDisposable
                     {
                         if ((description.tableDesc || description.UseTableMetaDataFromAnotherProvider) && await _context
                                 .TableMetadata
-                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId && a.TableName == table)
+                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId &&
+                                            a.TableName == table)
                                 .AnyAsync(ct))
                         {
                             var desc = await _context.TableMetadata
-                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId && a.TableName == table)
+                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId &&
+                                            a.TableName == table)
                                 .AsNoTracking()
                                 .Select(a => new { a.ColumnName, a.ColumnDescription, a.IsSnippet })
                                 .ToListAsync();

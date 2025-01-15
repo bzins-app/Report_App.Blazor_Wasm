@@ -3,7 +3,7 @@
 public class SystemParameters : BaseTraceability
 {
     public int Id { get; set; }
-    [Required][MaxLength(400)] public string? ApplicationName { get; set; }
+    [Required] [MaxLength(400)] public string? ApplicationName { get; set; }
     [MaxLength(1000)] public string? ApplicationLogo { get; set; }
     [MaxLength(1000)] public string? LoginScreenBackgroundImage { get; set; }
     [MaxLength(1000)] public string? AdminEmails { get; set; }

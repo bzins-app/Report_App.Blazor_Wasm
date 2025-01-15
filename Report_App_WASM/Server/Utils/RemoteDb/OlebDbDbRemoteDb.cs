@@ -1,4 +1,5 @@
 ﻿using System.Data.OleDb;
+using Report_App_WASM.Server.Utils.RemoteDb.RemoteQueryParameters;
 using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 #pragma warning disable CA1416
@@ -93,7 +94,8 @@ public class OlebDbDbRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
+            dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,

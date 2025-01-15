@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.Data.SqlClient;
+using Report_App_WASM.Server.Utils.RemoteDb.RemoteQueryParameters;
 using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
@@ -16,13 +17,15 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
         {
-            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' order by 1,2"
                 : @"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables order by 1,2";
         }
+
         return script;
     }
 
@@ -31,7 +34,8 @@ public class SqlServerRemoteDb : IRemoteDb
         var script = string.Empty;
         if (CheckDbType(dbInfo))
         {
-            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             if (!string.IsNullOrEmpty(dbparam.Database))
                 script =
                     $"select  concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
@@ -86,7 +90,7 @@ public class SqlServerRemoteDb : IRemoteDb
             var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
                 ? TimeZoneInfo.Local.Id
                 : dbInfo.DataProvider.TimeZone;
-            TimeZoneInfo _timeZone= TimeZoneInfo.FindSystemTimeZoneById(_tzId);
+            TimeZoneInfo _timeZone = TimeZoneInfo.FindSystemTimeZoneById(_tzId);
 
             var DbConnection = new SqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new SqlDataAdapter();
@@ -113,7 +117,7 @@ public class SqlServerRemoteDb : IRemoteDb
                                 ? SqlDbType.Date
                                 : SqlDbType.DateTime2)
                         {
-                            Value = run.Test?timevalue: TimeZoneInfo.ConvertTime( timevalue,_timeZone)
+                            Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
@@ -174,7 +178,9 @@ public class SqlServerRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin??"", string.IsNullOrEmpty(dbInfo.Password)?"": EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
+            dbInfo.ConnectionLogin ?? "",
+            string.IsNullOrEmpty(dbInfo.Password) ? "" : EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,

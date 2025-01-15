@@ -9,27 +9,6 @@ public class ApplicationDbContext : AuditableIdentityContext
     {
     }
 
-    //public virtual DbSet<SystemUniqueKey> ApplicationUniqueKey { get; set; } = null!;
-    //public virtual DbSet<SystemParameters> ApplicationParameters { get; set; } = null!;
-    //public virtual DbSet<TaskLog> ApplicationLogTask { get; set; } = null!;
-    //public virtual DbSet<TaskStepLog> ApplicationLogTaskDetails { get; set; } = null!;
-    //public virtual DbSet<AdHocQueryExecutionLog> ApplicationLogAdHocQueries { get; set; } = null!;
-    //public virtual DbSet<QueryExecutionLog> ApplicationLogQueryExecution { get; set; } = null!;
-    //public virtual DbSet<EmailLog> ApplicationLogEmailSender { get; set; } = null!;
-    //public virtual DbSet<AuditTrail> ApplicationAuditTrail { get; set; } = null!;
-    //public virtual DbSet<ReportGenerationLog> ApplicationLogReportResult { get; set; } = null!;
-    //public virtual DbSet<ApplicationLogSystem> ApplicationLogSystem { get; set; } = null!;
-    //public virtual DbSet<DataProvider> Activity { get; set; } = null!;
-    //public virtual DbSet<DatabaseConnection> ActivityDbConnection { get; set; } = null!;
-    //public virtual DbSet<ScheduledTask> TaskHeader { get; set; } = null!;
-    //public virtual DbSet<ScheduledTaskQuery> TaskDetail { get; set; } = null!;
-    //public virtual DbSet<ScheduledTaskDistributionList> TaskEmailRecipient { get; set; } = null!;
-    //public virtual DbSet<SystemServicesStatus> ServicesStatus { get; set; } = null!;
-    //public virtual DbSet<FileStorageLocation> FileDepositPathConfiguration { get; set; } = null!;
-    //public virtual DbSet<StoredQuery> QueryStore { get; set; } = null!;
-    //public virtual DbSet<TableMetadata> DbTableDescriptions { get; set; } = null!;
-    //public virtual DbSet<UserPreferences> UserSavedConfiguration { get; set; } = null!;
-
     public virtual DbSet<ApplicationUser> ApplicationUser { get; set; } = null!;
     public virtual DbSet<SystemUniqueKey> SystemUniqueKey { get; set; } = null!;
     public virtual DbSet<SystemParameters> SystemParameters { get; set; } = null!;
@@ -81,40 +60,19 @@ public class ApplicationDbContext : AuditableIdentityContext
             .HasMany(b => b.DistributionLists)
             .WithOne(t => t.ScheduledTask).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<ApplicationUser>(b =>
-        {
-            b.ToTable("Users", schema:"auth");
-        });
+        modelBuilder.Entity<ApplicationUser>(b => { b.ToTable("Users", schema: "auth"); });
 
-        modelBuilder.Entity<IdentityUserClaim<Guid>>(b =>
-        {
-            b.ToTable("UserClaims", schema:"auth");
-        });
+        modelBuilder.Entity<IdentityUserClaim<Guid>>(b => { b.ToTable("UserClaims", schema: "auth"); });
 
-        modelBuilder.Entity<IdentityUserLogin<Guid>>(b =>
-        {
-            b.ToTable("UserLogins", schema:"auth");
-        });
+        modelBuilder.Entity<IdentityUserLogin<Guid>>(b => { b.ToTable("UserLogins", schema: "auth"); });
 
-        modelBuilder.Entity<IdentityUserToken<Guid>>(b =>
-        {
-            b.ToTable("UserTokens", schema: "auth");
-        });
+        modelBuilder.Entity<IdentityUserToken<Guid>>(b => { b.ToTable("UserTokens", schema: "auth"); });
 
-        modelBuilder.Entity<IdentityRole<Guid>>(b =>
-        {
-            b.ToTable("Roles", schema:"auth");
-        });
+        modelBuilder.Entity<IdentityRole<Guid>>(b => { b.ToTable("Roles", schema: "auth"); });
 
-        modelBuilder.Entity<IdentityRoleClaim<Guid>>(b =>
-        {
-            b.ToTable("RoleClaims", schema: "auth");
-        });
+        modelBuilder.Entity<IdentityRoleClaim<Guid>>(b => { b.ToTable("RoleClaims", schema: "auth"); });
 
-        modelBuilder.Entity<IdentityUserRole<Guid>>(b =>
-        {
-            b.ToTable("UserRoles", schema: "auth");
-        });
+        modelBuilder.Entity<IdentityUserRole<Guid>>(b => { b.ToTable("UserRoles", schema: "auth"); });
 
         //custom indexes
         modelBuilder.Entity<SystemLog>().HasIndex(r => r.TimeStampAppHour);
