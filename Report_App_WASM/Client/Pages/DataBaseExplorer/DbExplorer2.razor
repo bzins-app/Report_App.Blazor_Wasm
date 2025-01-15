@@ -1,9 +1,9 @@
 ﻿@page "/DbExplorer2/{DataProviderId:long}/{ProviderName}"
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@using Blazor.AceEditorJs
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
-@using Blazor.AceEditorJs
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -162,12 +162,12 @@
         };
 
 
-        _editor = (__builder) =>
+        _editor = __builder =>
         {
             <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
         };
 
-        _tree = (__builder) =>
+        _tree = __builder =>
         {
             <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="82vh" ReadOnly="false" Dense="true" Class="overflow-x-auto" Ripple="false">
                 <ItemTemplate Context="context">

@@ -205,7 +205,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
     {
         return await _context.DataProvider.Where(a =>
                 a.ProviderType == ProviderType.TargetDatabase && a.DataProviderId == dataProviderId)
-            .Select((a) => a.DataProviderId)
+            .Select(a => a.DataProviderId)
             .FirstOrDefaultAsync();
     }
 
