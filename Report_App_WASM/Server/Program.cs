@@ -16,8 +16,9 @@ builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddEntityFramework<ApplicationDbContext, SystemLog>();
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                       ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString,
         sqlServerOptionsAction: sqlOptions =>
@@ -27,17 +28,20 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 maxRetryDelay: TimeSpan.FromSeconds(60),
                 errorNumbersToAdd: null);
         }));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+}
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.Configure<BaseUser>(builder.Configuration.GetSection("BaseUserDefaultOptions"));
-
-var identityDefaultOptionsConfigurationSection = builder.Configuration.GetSection("IdentityDefaultOptions");
-builder.Services.Configure<IdentityDefaultOptions>(identityDefaultOptionsConfigurationSection);
+var identityDefaultOptions = builder.Configuration.GetSection("IdentityDefaultOptions").Get<IdentityDefaultOptions>();
+builder.Services.Configure<IdentityDefaultOptions>(builder.Configuration.GetSection("IdentityDefaultOptions"));
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
@@ -46,10 +50,8 @@ builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
 builder.Services.AddTransient<LocalFilesService>();
 builder.Services.AddTransient<InitializeDatabase>();
 
-var identityDefaultOptions = identityDefaultOptionsConfigurationSection.Get<IdentityDefaultOptions>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // Password settings
     options.Password.RequireDigit = identityDefaultOptions!.PasswordRequireDigit;
     options.Password.RequiredLength = identityDefaultOptions.PasswordRequiredLength;
     options.Password.RequireNonAlphanumeric = identityDefaultOptions.PasswordRequireNonAlphanumeric;
@@ -57,16 +59,11 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = identityDefaultOptions.PasswordRequireLowercase;
     options.Password.RequiredUniqueChars = identityDefaultOptions.PasswordRequiredUniqueChars;
 
-    // Lockout settings
-    options.Lockout.DefaultLockoutTimeSpan =
-        TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);
     options.Lockout.MaxFailedAccessAttempts = identityDefaultOptions.LockoutMaxFailedAccessAttempts;
     options.Lockout.AllowedForNewUsers = identityDefaultOptions.LockoutAllowedForNewUsers;
 
-    // User settings
     options.User.RequireUniqueEmail = identityDefaultOptions.UserRequireUniqueEmail;
-
-    // email confirmation require
     options.SignIn.RequireConfirmedEmail = identityDefaultOptions.SignInRequireConfirmedEmail;
 });
 
@@ -86,7 +83,6 @@ builder.Services.AddControllersWithViews().AddJsonOptions(x =>
         "odata", OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 
 builder.Services.AddRazorPages();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -95,12 +91,11 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddResponseCompression(options => { options.EnableForHttps = true; });
-// Add Hangfire services.
 builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
     {
         CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
         SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
@@ -108,8 +103,6 @@ builder.Services.AddHangfire(configuration => configuration
         UseRecommendedIsolationLevel = true,
         DisableGlobalLocks = true
     }));
-
-// Add the processing server as IHostedService
 builder.Services.AddHangfireServer(options =>
 {
     options.Queues = new[] { "default", "report", "cleaner", "alert", "datatransfer" };
@@ -117,21 +110,18 @@ builder.Services.AddHangfireServer(options =>
 builder.Services.AddDirectoryBrowser();
 
 var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
-
-var mapper = mapperConfig.CreateMapper();
-builder.Services.AddSingleton(mapper);
+builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
 var app = builder.Build();
-var env = builder.Environment;
+var env = app.Environment;
 
 using (var scope = app.Services.CreateScope())
 {
-    var loop = true;
+    var services = scope.ServiceProvider;
     var retryCount = 0;
     const int maxRetries = 5;
-    while (loop)
+    while (retryCount < maxRetries)
     {
-        var services = scope.ServiceProvider;
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
@@ -139,7 +129,7 @@ using (var scope = app.Services.CreateScope())
             services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
             var dbInit = services.GetRequiredService<InitializeDatabase>();
 
-            dbInit.InitializeAsync().Wait();
+            await dbInit.InitializeAsync();
             HashKey.Key = context.SystemUniqueKey.OrderBy(a => a.Id).Select(a => a.Id.ToString().Replace("-", ""))
                 .FirstOrDefault() ?? throw new InvalidOperationException("Cannot retrieve mandatory key");
             var parameters = context.SystemParameters.FirstOrDefault();
@@ -147,29 +137,25 @@ using (var scope = app.Services.CreateScope())
             ApplicationConstants.ApplicationLogo = parameters?.ApplicationLogo!;
             ApplicationConstants.ActivateAdHocQueriesModule = parameters.ActivateAdHocQueriesModule;
             ApplicationConstants.ActivateTaskSchedulerModule = parameters.ActivateTaskSchedulerModule;
-            var ldapParameters = context.LdapConfiguration.Any(a => a.IsActivated);
-            ApplicationConstants.LdapLogin = ldapParameters!;
+            ApplicationConstants.LdapLogin = context.LdapConfiguration.Any(a => a.IsActivated);
             ApplicationConstants.WindowsEnv = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            loop = false;
+            break;
         }
         catch (Exception ex)
         {
             retryCount++;
             var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}",
-                retryCount, maxRetries);
+            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}", retryCount, maxRetries);
             if (retryCount >= maxRetries)
             {
                 throw;
             }
-
-            Task.Delay(TimeSpan.FromSeconds(10)).Wait(); // Wait before retrying
+            await Task.Delay(TimeSpan.FromSeconds(10));
         }
     }
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (env.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
     app.UseWebAssemblyDebugging();
@@ -177,7 +163,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -217,4 +202,4 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-app.Run();
+await app.RunAsync();
