@@ -44,20 +44,23 @@
         if (!(result is { Canceled: true }))
         {
             List<EmailRecipient> emails = new();
-            var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data;
-            var resultValidation = feedback != null && feedback.Item1;
-            if (feedback != null) queryParameters = feedback.Item2;
-            if (resultValidation)
+            if (result != null)
             {
-                var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Recipients!);
-                var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = emailsRecipients, CustomQueryParameters = queryParameters };
-                await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
-            }
-            else
-            {
-                emails.Add(new EmailRecipient { Email = _email, Bcc = false });
-                var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = emails, CustomQueryParameters = queryParameters };
-                await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
+                var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data!;
+                var resultValidation = feedback != null && feedback.Item1;
+                if (feedback != null) queryParameters = feedback.Item2;
+                if (resultValidation)
+                {
+                    var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Recipients!);
+                    var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = emailsRecipients, CustomQueryParameters = queryParameters };
+                    await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
+                }
+                else
+                {
+                    emails.Add(new EmailRecipient { Email = _email!, Bcc = false });
+                    var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = emails, CustomQueryParameters = queryParameters };
+                    await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
+                }
             }
 
             Snackbar.Add(Localizer.Get("Alert") + " " + Localizer.Get("Job on going"), Severity.Success);

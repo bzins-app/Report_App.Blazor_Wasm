@@ -164,7 +164,7 @@ public class DataCrudController : ControllerBase, IDisposable
         var targetInfo = await _context.DataProvider
             .Include(a => a.DatabaseConnection)
             .AsNoTracking()
-            .FirstOrDefaultAsync((a) => a.ProviderType == ProviderType.TargetDatabase);
+            .FirstOrDefaultAsync(a => a.ProviderType == ProviderType.TargetDatabase);
 
         if (targetInfo != null) return targetInfo;
 

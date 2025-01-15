@@ -99,7 +99,7 @@
             .Distinct().ToList();
 
         _filteredQueries = _queries;
-        _QueriesFragment = (__builder) =>
+        _QueriesFragment = __builder =>
         {
             @if (_tags.Any())
             {
@@ -138,7 +138,7 @@
 
         _queryRender = null;
         await Task.Delay(10);
-        _queryRender = (__builder) =>
+        _queryRender = __builder =>
         {
             <MudCardContent Style="padding:5px">
                 <_ExceuteQuery QueryId="@queryId"/>

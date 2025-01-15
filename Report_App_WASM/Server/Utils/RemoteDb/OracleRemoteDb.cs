@@ -1,6 +1,5 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
-using Report_App_WASM.Server.Utils.RemoteDb.RemoteQueryParameters;
 using Report_App_WASM.Shared.DatabasesConnectionParameters;
 
 namespace Report_App_WASM.Server.Utils.RemoteDb;
@@ -123,7 +122,7 @@ public class OracleRemoteDb : IRemoteDb
                                     ? (OracleDate)timevalue
                                     : (OracleDate)TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                                 : run.Test
-                                    ? (OracleTimeStamp)timevalue
+                                    ? timevalue
                                     : (OracleTimeStamp)TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                         };
                         cmd.Parameters.Add(para);

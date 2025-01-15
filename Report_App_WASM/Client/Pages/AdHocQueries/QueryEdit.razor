@@ -3,10 +3,10 @@
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
-@using Report_App_WASM.Shared.Extensions
-@using Report_App_WASM.Shared.RemoteQueryParameters
 @using Blazor.AceEditorJs
 @using MudBlazor.Utilities
+@using Report_App_WASM.Shared.Extensions
+@using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
@@ -40,7 +40,7 @@
                                 @if (_activities.Any())
                                 {
                                     <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
-                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
+                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 200px"
                                                Required>
                                         @foreach (var value in _activities)
                                         {
@@ -211,7 +211,7 @@
     private bool _openPopOver;
     string _tagValue = string.Empty;
     List<string> _AvailableTags = new();
-    MudTabs tabs;
+    MudTabs tabs = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -462,7 +462,7 @@
         }
         catch (Exception e)
         {
-            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(Localizer.Get("An error has occurred")+ e.Message, Severity.Error);
         }
     }
 

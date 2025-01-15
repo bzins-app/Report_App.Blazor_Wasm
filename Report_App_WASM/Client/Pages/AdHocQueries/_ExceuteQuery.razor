@@ -1,7 +1,7 @@
-﻿@using Blazor.PivotTable
+﻿@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@using Blazor.PivotTable
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
-@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar

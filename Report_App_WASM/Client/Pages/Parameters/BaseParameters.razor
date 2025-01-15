@@ -1,7 +1,6 @@
 ﻿@page "/BaseParameters"
-@using Report_App_WASM.Client.Pages.Parameters.SMTP
 @using Report_App_WASM.Client.Pages.Parameters.LDAP
-
+@using Report_App_WASM.Client.Pages.Parameters.SMTP
 @attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <PageTitle>@Localizer.Get("Application parameters")</PageTitle>

@@ -64,7 +64,7 @@
 
     [Parameter] public string? Style { get; set; }
 
-    List<QueryCommandParameter?>? _parameters = new();
+    List<QueryCommandParameter> _parameters = new();
 
     JsonSerializerOptions _jsonOpt = new()
     {
