@@ -2,6 +2,7 @@
 @using Blazor.PivotTable
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
+@using SortDirection = MudBlazor.SortDirection
 @implements IDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -72,13 +73,13 @@
                 }
                 <MudItem>
                     <MudIconButton Variant="Variant.Outlined"
-                                   OnClick="@(SaveConfiguration)"
-                                   Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                    OnClick="@(SaveConfiguration)"
+                    Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
                 </MudItem>
                 <MudItem>
                     <MudMenu Variant="Variant.Outlined"
-                             Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
-                             Dense="true">
+                    Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
+                    Dense="true">
                         <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
                             @foreach (var config in _userConfigs)
                             {
@@ -105,8 +106,8 @@
                 </MudItem>
                 <MudItem>
                     <MudIconButton Variant="Variant.Outlined"
-                                   OnClick="@(ExtractElements)"
-                                   Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                    OnClick="@(ExtractElements)"
+                    Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
                 </MudItem>
             </MudGrid>
         </div>
@@ -118,13 +119,13 @@
 }
 @if (!_pivotTable)
 {
-    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true"  HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" >
         <HeaderContent>
             @if (_values?.Any() == true)
             {
                 @foreach (var key in _values?.FirstOrDefault()?.Keys!)
                 {
-                    <MudTh>@key</MudTh>
+                    <MudTh><MudTableSortLabel SortLabel="@key" SortDirectionChanged="(value)=>Callback(value, key)" T="string">@key</MudTableSortLabel></MudTh>
                 }
             }
         </HeaderContent>
@@ -179,6 +180,8 @@ else
     PivotTable<Dictionary<string, object>>? _pvt;
     List<UserConfigurations> _userConfigs = new();
     MudMenu _menu = null!;
+    string? _sorting;
+    string? _sortingDirection;
 
     protected override async Task OnInitializedAsync()
     {
@@ -226,7 +229,6 @@ else
 
         await GetUserSavedConfigs();
     }
-
 
     private async Task GetUserSavedConfigs()
     {
@@ -428,7 +430,7 @@ else
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
                 var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-                var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements, ColumSorting = _sorting, SortingDirection = _sortingDirection };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
@@ -519,6 +521,13 @@ else
     public void Dispose()
     {
         GC.SuppressFinalize(this);
+    }
+
+    private async Task Callback(SortDirection obj, string key)
+    {
+        _sorting = obj==SortDirection.None?"": key;
+        _sortingDirection = obj == SortDirection.Descending ? "DESC" : "";
+        await _table.ReloadServerData();
     }
 
 }
