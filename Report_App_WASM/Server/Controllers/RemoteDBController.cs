@@ -97,6 +97,12 @@ public class RemoteDbController : ControllerBase, IDisposable
             }
         }
 
+        if (!string.IsNullOrEmpty(payload.SortingDirection))
+        {
+            var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun, payload.ColumSorting, payload.SortingDirection);
+            payload.Values.QueryToRun = query;
+        }
+
         try
         {
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
@@ -179,6 +185,19 @@ public class RemoteDbController : ControllerBase, IDisposable
         return $@"select  count(*) from ( 
                     {query} 
                     ) a";
+    }
+
+
+    private async Task<string> GetQuerySorted(long dataProviderId, string query, string sortingCol, string sortingDirection)
+    {
+        var _typeDb = await GetDbType(dataProviderId);
+
+        if (_typeDb == TypeDb.SqlServer && query.ToLower().RemoveSpecialCharacters().Contains("orderby"))
+            query += Environment.NewLine + " OFFSET 0 Rows";
+
+        return $@"select  * from ( 
+                    {query} 
+                    ) a  order by {sortingCol} {sortingDirection}";
     }
 
     [HttpPost]

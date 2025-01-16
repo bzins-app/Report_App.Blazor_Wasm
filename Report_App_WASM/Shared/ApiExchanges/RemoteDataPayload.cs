@@ -10,4 +10,6 @@ public class RemoteDataPayload
     public string? ProviderName { get; init; }
     public bool PivotTable { get; init; }
     public int PivotTableNbrColumns { get; init; }
+    public string? ColumSorting { get; set; }
+    public string? SortingDirection { get; set; }
 }
