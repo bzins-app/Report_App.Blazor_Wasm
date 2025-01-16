@@ -158,7 +158,11 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             .Where(a => a.ScheduledTaskId == taskHeaderId)
             .Select(a => new
             {
-                a.TaskName, a.Type, a.TypeName, a.DataProvider.ProviderName, a.CronParameters,
+                a.TaskName,
+                a.Type,
+                a.TypeName,
+                a.DataProvider.ProviderName,
+                a.CronParameters,
                 timeZone = string.IsNullOrEmpty(a.DataProvider.TimeZone)
                     ? TimeZoneInfo.Local.Id
                     : a.DataProvider.TimeZone
@@ -170,7 +174,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         if (activate)
         {
             var options = new RecurringJobOptions
-                { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
+            { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
             if (!string.IsNullOrEmpty(taskHeader.CronParameters) && taskHeader.CronParameters != "[]")
             {
                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);
@@ -181,6 +185,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     var jobParam = new TaskJobParameters
                     {
                         ScheduledTaskId = taskHeaderId,
+                        TaskType = taskHeader.Type,
                         Cts = CancellationToken.None,
                         GenerateFiles = true
                     };
@@ -225,16 +230,32 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
         if (db != null)
         {
-            using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
-                _hostingEnvironment);
-            await handler.HandleTask(parameters);
+            if (parameters.TaskType == TaskType.DataTransfer)
+            {
+                using var handler = new DataTransferHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
+                    _hostingEnvironment);
+                await handler.HandleDatatransferTask(parameters);
+            }
+            else if (parameters.TaskType == TaskType.Alert)
+            {
+                using var handler = new AlertHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
+                    _hostingEnvironment);
+                await handler.HandleAlertTask(parameters);
+            }
+            else if (parameters.TaskType == TaskType.Report)
+            {
+                using var handler = new ReportHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
+                    _hostingEnvironment);
+                await handler.HandleReportTask(parameters);
+            }
+
         }
     }
 
     public async Task DeleteLocalFilesAsync()
     {
         TaskLog logTask = new()
-            { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
+        { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
         try
         {
             var qry = _context.ReportGenerationLog.Where(a => a.IsAvailable == true).GroupJoin(
