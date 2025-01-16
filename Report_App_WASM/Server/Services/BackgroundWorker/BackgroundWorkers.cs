@@ -101,6 +101,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                                     {
                                         ScheduledTaskId = a.ScheduledTaskId,
                                         Cts = CancellationToken.None,
+                                        TaskType = a.Type,
                                         GenerateFiles = true
                                     };
                                     var jobId = jobName + "_" + cronId;
@@ -128,11 +129,15 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     public void RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient>? emails,
         List<QueryCommandParameter> commandQueryParameters, bool generateFiles = false)
     {
+        var _tType=  _context.ScheduledTask.Where(a => a.ScheduledTaskId == taskHeaderId)
+            .Select(a => a.Type)
+            .FirstOrDefault();
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
         {
             ScheduledTaskId = taskHeaderId,
             Cts = CancellationToken.None,
             GenerateFiles = generateFiles,
+            TaskType = _tType,
             CustomEmails = emails ?? new List<EmailRecipient>(),
             QueryCommandParameters = commandQueryParameters,
             ManualRun = true,
