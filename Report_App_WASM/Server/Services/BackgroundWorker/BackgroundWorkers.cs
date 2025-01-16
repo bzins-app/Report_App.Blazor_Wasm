@@ -126,12 +126,12 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         return result;
     }
 
-    public void RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient>? emails,
+    public async Task RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient> emails,
         List<QueryCommandParameter> commandQueryParameters, bool generateFiles = false)
     {
-        var _tType=  _context.ScheduledTask.Where(a => a.ScheduledTaskId == taskHeaderId)
+        var _tType= await _context.ScheduledTask.Where(a => a.ScheduledTaskId == taskHeaderId)
             .Select(a => a.Type)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
         {
             ScheduledTaskId = taskHeaderId,
