@@ -357,6 +357,8 @@ else
     private async Task OnchangeReportType(string typeReport)
     {
         _typeReport = typeReport;
+        _sortingDirection=string.Empty;
+        _sorting = string.Empty;
         if (typeReport == "Grid")
         {
             _pivotTable = false;
@@ -479,7 +481,7 @@ else
             _extracting = true;
             _cts = new CancellationTokenSource();
             var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-            var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName };
+            var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, ColumSorting = _sorting, SortingDirection = _sortingDirection };
             await DataService.ExtractAdHocQuery(remoteDataPayload, _cts.Token);
             _extracting = false;
         }
@@ -527,7 +529,7 @@ else
     {
         _sorting = obj==SortDirection.None?"": key;
         _sortingDirection = obj == SortDirection.Descending ? "DESC" : "";
-        await _table.ReloadServerData();
+        await _table?.ReloadServerData();
     }
 
 }
