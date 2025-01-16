@@ -2,7 +2,6 @@
 
 namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 {
-
     public class DatabaseConfig
     {
         public TypeDb Type { get; set; }
@@ -30,11 +29,14 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var config = JsonSerializer.Deserialize<DatabaseConfig>(json, options);
             DatabaseParameters parameters = (config.Type switch
             {
-                TypeDb.SqlServer => JsonSerializer.Deserialize<SqlServerParameters>(config.Parameters.GetRawText(), options),
+                TypeDb.SqlServer => JsonSerializer.Deserialize<SqlServerParameters>(config.Parameters.GetRawText(),
+                    options),
                 TypeDb.MySql => JsonSerializer.Deserialize<MySqlParameters>(config.Parameters.GetRawText(), options),
-                TypeDb.PostgreSql => JsonSerializer.Deserialize<PostgreSqlParameters>(config.Parameters.GetRawText(), options),
+                TypeDb.PostgreSql => JsonSerializer.Deserialize<PostgreSqlParameters>(config.Parameters.GetRawText(),
+                    options),
                 TypeDb.Oracle => JsonSerializer.Deserialize<OracleParameters>(config.Parameters.GetRawText(), options),
-                TypeDb.MariaDb => JsonSerializer.Deserialize<MariaDbParameters>(config.Parameters.GetRawText(), options),
+                TypeDb.MariaDb =>
+                    JsonSerializer.Deserialize<MariaDbParameters>(config.Parameters.GetRawText(), options),
                 TypeDb.OlebDb => JsonSerializer.Deserialize<OleDbParameters>(config.Parameters.GetRawText(), options),
                 _ => throw new ArgumentException("Unsupported database type")
             })!;

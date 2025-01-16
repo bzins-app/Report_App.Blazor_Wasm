@@ -131,7 +131,8 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> RunManually(ApiCrudPayload<RunTaskManually> value)
     {
-        await _backgroundWorkers.RunManuallyTask(value.EntityValue!.TaskHeaderId, value.UserName, value.EntityValue.Emails!,
+        await _backgroundWorkers.RunManuallyTask(value.EntityValue!.TaskHeaderId, value.UserName,
+            value.EntityValue.Emails!,
             value.EntityValue.QueryCommandParameters!, value.EntityValue.GenerateFiles);
         return Ok(new SubmitResult { Success = true });
     }

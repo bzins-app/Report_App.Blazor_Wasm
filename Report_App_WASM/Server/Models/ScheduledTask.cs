@@ -7,7 +7,7 @@ public class ScheduledTask : BaseTraceability
 
     public long ScheduledTaskId { get; set; }
     [Required] [MaxLength(200)] public string? TaskName { get; set; }
-    [Required] [MaxLength(250)] public string ProviderName { get; set; } =string.Empty;
+    [Required] [MaxLength(250)] public string ProviderName { get; set; } = string.Empty;
     public long IdDataProvider { get; set; }
     [MaxLength(60)] public string? TaskNamePrefix { get; set; }
     public TaskType Type { get; set; }

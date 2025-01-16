@@ -10,7 +10,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
     {
         public DataTransferHandler(ApplicationDbContext context, IEmailSender emailSender,
             IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
-            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper, hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper,
+            hostingEnvironment)
         {
             _context = context;
             _emailSender = emailSender;
@@ -67,7 +68,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     _fetchedData.Clear();
                 }
 
-                _resultInfo = $"Rows bulkinserted: {_dataTransferStat.BulkInserted}, Rows inserted: {_dataTransferStat.Inserted}, Rows updated: {_dataTransferStat.Updated}, Rows deleted: {_dataTransferStat.Deleted}";
+                _resultInfo =
+                    $"Rows bulkinserted: {_dataTransferStat.BulkInserted}, Rows inserted: {_dataTransferStat.Inserted}, Rows updated: {_dataTransferStat.Updated}, Rows deleted: {_dataTransferStat.Deleted}";
 
                 await FinalizeTaskAsync(_logTask, parameters.GenerateFiles, _resultInfo);
             }
@@ -80,12 +82,14 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             await _context.SaveChangesAsync("backgroundworker");
         }
 
-        private async ValueTask TransferDataToDestinationTable(ScheduledTaskQuery a, DataTable data, long activityIdTransfer, int loopNumber)
+        private async ValueTask TransferDataToDestinationTable(ScheduledTaskQuery a, DataTable data,
+            long activityIdTransfer, int loopNumber)
         {
             if (data.Rows.Count == 0) return;
 
             var detailParam = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(a.ExecutionParameters!);
-            var checkTableQuery = $@"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = '{detailParam?.DataTransferTargetTableName}'))
+            var checkTableQuery =
+                $@"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = '{detailParam?.DataTransferTargetTableName}'))
                                          BEGIN
                                             SELECT 1
                                          END
@@ -115,15 +119,18 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             if (detailParam.DataTransferUsePk)
             {
-                return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPk);
+                return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
+                    detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPk);
             }
             else
             {
-                return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, detailParam.DataTransferTargetTableName, loopNumber == 0);
+                return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
+                    detailParam.DataTransferTargetTableName, loopNumber == 0);
             }
         }
 
-        private async Task BulkInsertData(DataTable data, ScheduledTaskQueryParameters detailParam, long activityIdTransfer)
+        private async Task BulkInsertData(DataTable data, ScheduledTaskQueryParameters detailParam,
+            long activityIdTransfer)
         {
             await _dbReader.LoadDatatableToTable(data, detailParam.DataTransferTargetTableName, activityIdTransfer);
             _logTask.HasSteps = true;
@@ -141,7 +148,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             var tempTable = $"tmp_{detailParam.DataTransferTargetTableName}{DateTime.Now:yyyyMMddHHmmss}";
             var columnNames = new HashSet<string>(data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
-            var queryCreate = CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true, detailParam.DataTransferPk);
+            var queryCreate =
+                CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, tempTable, true,
+                    detailParam.DataTransferPk);
 
             await _dbReader.CreateTable(queryCreate, activityIdTransfer);
             try
@@ -172,21 +181,26 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             {
                 TaskLogId = _taskId,
                 Step = "Merge completed",
-                Info = $"Rows inserted: {mergeResult.InsertedCount} Rows updated: {mergeResult.UpdatedCount} Rows deleted: {mergeResult.DeletedCount}"
+                Info =
+                    $"Rows inserted: {mergeResult.InsertedCount} Rows updated: {mergeResult.UpdatedCount} Rows deleted: {mergeResult.DeletedCount}"
             });
         }
 
-        private string GenerateMergeSqlTemplate(ScheduledTaskQueryParameters detailParam, HashSet<string> columnNames, string tempTable)
+        private string GenerateMergeSqlTemplate(ScheduledTaskQueryParameters detailParam, HashSet<string> columnNames,
+            string tempTable)
         {
             var mergeSql = new
             {
-                MERGE_FIELD_NAME = string.Join(" and ", detailParam.DataTransferPk!.Select(name => $"target.[{name}] = source.[{name}]")),
+                MERGE_FIELD_NAME = string.Join(" and ",
+                    detailParam.DataTransferPk!.Select(name => $"target.[{name}] = source.[{name}]")),
                 FIELD_LIST = string.Join(", ", columnNames.Select(name => $"[{name}]")),
                 SOURCE_TABLE_NAME = tempTable,
                 TARGET_TABLE_NAME = detailParam.DataTransferTargetTableName,
                 UPDATES_LIST = string.Join(", ", columnNames.Select(name => $"target.[{name}] = source.[{name}]")),
                 SOURCE_FIELD_LIST = string.Join(", ", columnNames.Select(name => $"source.[{name}]")),
-                UPDATE_REQUIRED_EXPRESSION = string.Join(" OR ", columnNames.Select(name => $"IIF((target.[{name}] IS NULL AND source.[{name}] IS NULL) OR target.[{name}] = source.[{name}], 1, 0) = 0"))
+                UPDATE_REQUIRED_EXPRESSION = string.Join(" OR ",
+                    columnNames.Select(name =>
+                        $"IIF((target.[{name}] IS NULL AND source.[{name}] IS NULL) OR target.[{name}] = source.[{name}], 1, 0) = 0"))
             };
 
             return detailParam.DataTransferCommandBehaviour switch
@@ -202,7 +216,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                                                                       SELECT Change, COUNT(1) AS CountPerChange
                                                                       FROM @SummaryOfChanges
                                                                       GROUP BY Change;",
-                nameof(DataTransferAdvancedBehaviour.InsertOrUpdateOrDelete) => $@"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
+                nameof(DataTransferAdvancedBehaviour.InsertOrUpdateOrDelete) =>
+                    $@"DECLARE @SummaryOfChanges TABLE(Change VARCHAR(20));
                                                                                       MERGE INTO {mergeSql.TARGET_TABLE_NAME} WITH (HOLDLOCK) AS target
                                                                                       USING (SELECT * FROM {mergeSql.SOURCE_TABLE_NAME}) as source
                                                                                       ON ({mergeSql.MERGE_FIELD_NAME})

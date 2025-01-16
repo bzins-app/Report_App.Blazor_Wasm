@@ -8,7 +8,6 @@ public enum TaskType
     DataTransfer = 2
 }
 
-
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum LogType
 {
@@ -17,9 +16,8 @@ public enum LogType
     TaskStepLog = 20,
     QueryExecutionLog = 30,
     EmailLog = 40,
-    ReportGenerationLog=50
+    ReportGenerationLog = 50
 }
-
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FileGenerationType
