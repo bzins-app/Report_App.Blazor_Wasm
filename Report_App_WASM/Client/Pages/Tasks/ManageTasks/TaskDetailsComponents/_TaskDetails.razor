@@ -87,13 +87,17 @@
 
         if (!(feedback is { Canceled: true }))
         {
-            var result = (ScheduledTaskQueryDto)feedback.Data;
-            var toUpdate = Item.TaskQueries.First(a => a.ScheduledTaskQueryId == value.ScheduledTaskQueryId);
-            toUpdate.Query = result.Query;
-            toUpdate.QueryName = result.QueryName;
-            toUpdate.QueryParameters = result.QueryParameters;
-            toUpdate.ExecutionOrder = result.ExecutionOrder;
-            toUpdate.ExecutionParameters = result.ExecutionParameters;
+            if (feedback != null)
+            {
+                var result = (ScheduledTaskQueryDto)feedback.Data!;
+                var toUpdate = Item.TaskQueries.First(a => a.ScheduledTaskQueryId == value.ScheduledTaskQueryId);
+                toUpdate.Query = result.Query;
+                toUpdate.QueryName = result.QueryName;
+                toUpdate.QueryParameters = result.QueryParameters;
+                toUpdate.ExecutionOrder = result.ExecutionOrder;
+                toUpdate.ExecutionParameters = result.ExecutionParameters;
+            }
+
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
         }

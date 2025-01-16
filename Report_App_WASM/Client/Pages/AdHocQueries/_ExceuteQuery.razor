@@ -426,7 +426,7 @@ else
         {
             try
             {
-                _cts = new CancellationTokenSource();
+                _cts = new CancellationTokenSource(); 
 
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
@@ -527,9 +527,12 @@ else
 
     private async Task Callback(SortDirection obj, string key)
     {
-        _sorting = obj == SortDirection.None ? "" : key;
-        _sortingDirection = obj == SortDirection.Descending ? "DESC" : "";
-        await _table?.ReloadServerData();
+        if (_table != null)
+        {
+            _sorting = obj == SortDirection.None ? "" : key;
+            _sortingDirection = obj == SortDirection.Descending ? "DESC" : obj == SortDirection.Ascending ? "ASC" : "";
+            await _table.ReloadServerData();
+        }
     }
 
 }

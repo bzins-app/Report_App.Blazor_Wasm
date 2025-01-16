@@ -195,7 +195,7 @@ public class OracleRemoteDb : IRemoteDb
     private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
         var dbparam = (OracleParameters)DatabaseConnectionParametersManager.DeserializeFromJson(
-            dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin,
+            dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin ?? string.Empty,
             EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {

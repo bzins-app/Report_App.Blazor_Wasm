@@ -113,7 +113,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
         private string CreateTableQuery(DataTable data, ScheduledTaskQueryParameters detailParam, int loopNumber)
         {
-            if (detailParam!.DataTransferUsePk)
+            if (detailParam.DataTransferUsePk)
             {
                 return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data, detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPk);
             }

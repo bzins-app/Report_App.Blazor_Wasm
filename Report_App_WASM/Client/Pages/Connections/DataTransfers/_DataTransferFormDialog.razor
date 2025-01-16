@@ -162,7 +162,7 @@
             DbCon = Item.DatabaseConnection.FirstOrDefault()!;
             if (DbCon.TypeDb == TypeDb.SqlServer && DbCon.DbConnectionParameters != "[]")
             {
-                sqlServerParameters = (SqlServerParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin, DbCon.Password);
+                sqlServerParameters = (SqlServerParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, DbCon.ConnectionLogin ?? string.Empty, DbCon.Password ?? string.Empty);
             }
         }
         else

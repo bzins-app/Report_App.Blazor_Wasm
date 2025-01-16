@@ -107,10 +107,10 @@
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
-    private List<TreeItemData<TablesColsInfo>> InitialTreeItems;
+    private List<TreeItemData<TablesColsInfo>> InitialTreeItems = null!;
     public RenderFragment? _editor { get; set; }
     public RenderFragment? _tree { get; set; }
-    public string _tableHeader;
+    public string _tableHeader=string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {

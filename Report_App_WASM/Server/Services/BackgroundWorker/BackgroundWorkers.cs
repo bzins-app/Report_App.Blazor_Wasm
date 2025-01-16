@@ -138,7 +138,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             Cts = CancellationToken.None,
             GenerateFiles = generateFiles,
             TaskType = _tType,
-            CustomEmails = emails ?? new List<EmailRecipient>(),
+            CustomEmails = emails,
             QueryCommandParameters = commandQueryParameters,
             ManualRun = true,
             RunBy = runBy
