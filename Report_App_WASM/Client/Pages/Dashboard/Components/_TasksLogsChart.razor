@@ -2,7 +2,7 @@
 @using Color = MudBlazor.Color
 @if (_taskLogs == null)
 {
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
 }
 else
 {
@@ -16,8 +16,8 @@ else
                          Name="@Localizer.Get("Job duration")"
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e =>e.Sum(a => a.TotalDuration / 60))"
-                         OrderBy="e => e.X" />
+                         YAggregate="@(e => e.Sum(a => a.TotalDuration / 60))"
+                         OrderBy="e => e.X"/>
 
 
         <ApexPointSeries TItem="TaksLogsValues"
@@ -26,7 +26,7 @@ else
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
                          YAggregate="@(e => e.Sum(a => a.NbrErrors))"
-                         OrderBy="e => e.X" />
+                         OrderBy="e => e.X"/>
     </ApexChart>
 }
 
@@ -55,17 +55,17 @@ else
         _options.Yaxis = new List<YAxis>();
 
         _options.Yaxis.Add(new YAxis
-            {
-                Title = new AxisTitle { Text = Localizer.Get("Job duration") },
-                SeriesName = Localizer.Get("Job duration")
-            });
+        {
+            Title = new AxisTitle { Text = Localizer.Get("Job duration") },
+            SeriesName = Localizer.Get("Job duration")
+        });
 
         _options.Yaxis.Add(new YAxis
-            {
-                Title = new AxisTitle { Text = Localizer.Get("Nbr of errors") },
-                SeriesName = Localizer.Get("Nbr of errors"),
-                Opposite = true
-            });
+        {
+            Title = new AxisTitle { Text = Localizer.Get("Nbr of errors") },
+            SeriesName = Localizer.Get("Nbr of errors"),
+            Opposite = true
+        });
     }
 
     public async Task Refresh()

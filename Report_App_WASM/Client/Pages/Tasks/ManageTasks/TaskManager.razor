@@ -22,17 +22,17 @@
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(OpenCreateDialog)"
-                Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
+                               Size="Size.Small"
+                               OnClick="@(OpenCreateDialog)"
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(OnRefresh)"
-                Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(RemoveFilters)"
-                Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -56,7 +56,7 @@
                             </CascadingValue>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
                     @if (string.IsNullOrEmpty(ProviderName))
                     {
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
@@ -80,7 +80,7 @@
                     }
                     @if (TypeTask == TaskType.Report.ToString())
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context"/>
                         </Blazor.SimpleGrid.TemplateColumn>
@@ -174,6 +174,7 @@
             _pageTitle += ": " + ProviderName;
             _oldActivity = ProviderName;
         }
+
         _oldTypeTask = TypeTask;
     }
 
@@ -339,7 +340,7 @@
             value.IdDataProvider = DataProviderId.Value;
             value.ProviderName = ProviderName;
         }
-        
+
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);

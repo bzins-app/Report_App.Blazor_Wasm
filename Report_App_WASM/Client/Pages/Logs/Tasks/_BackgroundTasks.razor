@@ -27,7 +27,7 @@
                     <Blazor.SimpleGrid.TemplateColumn >
                         <MudIconButton Style="padding: 0px !important" Icon="@Icons.Material.Outlined.Article" OnClick="() => OpenDetails(context.TaskLogId)" title="@Localizer.Get("Display details")" Disabled="!context.HasSteps"/>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of job")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.JobDescription)" Title="@Localizer.Get("Job description")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
@@ -114,7 +114,7 @@
         var odataQuery = _grid?.GetODataQueryWihtoutPagination();
         var url = "odata/ExtractTaskLogs?";
         url += odataQuery;
-        await DataService.ExtractGridLogs(url,fname);
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 

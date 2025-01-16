@@ -90,7 +90,7 @@
 
     private async Task TestConfiguration()
     {
-        var payload = new DepositPathTest { UseSftpProtocol = Item.UseSftpProtocol, SftpConfigurationId =(int) Item.SftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
+        var payload = new DepositPathTest { UseSftpProtocol = Item.UseSftpProtocol, SftpConfigurationId = (int)Item.SftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
         var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi);
         if (result.Success)
         {
