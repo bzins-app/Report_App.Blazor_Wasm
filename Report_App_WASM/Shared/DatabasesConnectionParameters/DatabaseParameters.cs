@@ -10,11 +10,11 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 
     public abstract class DatabaseParameters
     {
-        public string Server { get; set; }
+        public string Server { get; set; }=string.Empty;
         public int Port { get; set; }
-        public string Database { get; set; }
-        public string UserId { get; set; }
-        public string Password { get; set; }
+        public string Database { get; set; }=string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string Password { get; set; }=string.Empty;
         public int ConnectTimeout { get; set; } = 15;
 
         public abstract string BuildConnectionString();
@@ -94,8 +94,8 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (SqlServerParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId =string.Empty;
+            parametersCopy.Password =string.Empty;
 
             return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
@@ -142,8 +142,8 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (MySqlParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId =string.Empty;
+            parametersCopy.Password =string.Empty;
 
             return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
@@ -195,8 +195,8 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (PostgreSqlParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId = string.Empty;
+            parametersCopy.Password =string.Empty;
 
             return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
@@ -209,14 +209,14 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             Port = 1521; // Default Oracle port
         }
 
-        public string ServiceName { get; set; }
+        public string ServiceName { get; set; } = string.Empty;
         public bool DedicatedAdmin { get; set; } = false;
         public bool Pooling { get; set; } = true;
         public int MinPoolSize { get; set; } = 1;
         public int MaxPoolSize { get; set; } = 100;
         public string LoadBalancing { get; set; } = "no";
         public bool UseDbSchema { get; set; }
-        public string Schema { get; set; }
+        public string Schema { get; set; } = string.Empty;
 
         public override string BuildConnectionString()
         {
@@ -249,8 +249,8 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (OracleParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId =string.Empty;
+            parametersCopy.Password =string.Empty;
 
             return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
@@ -297,8 +297,8 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (MariaDbParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId =string.Empty;
+            parametersCopy.Password =string.Empty;
 
             return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
@@ -306,8 +306,8 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 
     public class OleDbParameters : DatabaseParameters
     {
-        public string Provider { get; set; }
-        public string DataSource { get; set; }
+        public string Provider { get; set; } = string.Empty;
+        public string DataSource { get; set; } = string.Empty;
         public string ExtendedProperties { get; set; } = "";
         public bool PersistSecurityInfo { get; set; } = false;
 
@@ -334,8 +334,8 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (OleDbParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId =string.Empty;
+            parametersCopy.Password =string.Empty;
 
             return JsonSerializer.SerializeToElement(parametersCopy) ;
         }
