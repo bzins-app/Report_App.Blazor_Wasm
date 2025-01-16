@@ -15,11 +15,13 @@ public class ReportGenerationLogDto : IDto
     [MaxLength(60)] public string? FileType { get; set; }
     [MaxLength(600)] public string? FileName { get; set; }
     [MaxLength(1000)] public string? ReportPath { get; set; }
+
     public double FileSizeInMb
     {
         get => _fileSizeInMb;
         set => _fileSizeInMb = Math.Round(value, 2);
     }
+
     public bool IsAvailable { get; set; } = true;
     [MaxLength(4000)] public string? Result { get; set; }
     public bool Error { get; set; }

@@ -107,10 +107,10 @@
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
-    private List<TreeItemData<TablesColsInfo>> InitialTreeItems;
+    private List<TreeItemData<TablesColsInfo>> InitialTreeItems = null!;
     public RenderFragment? _editor { get; set; }
     public RenderFragment? _tree { get; set; }
-    public string _tableHeader;
+    public string _tableHeader = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -175,14 +175,14 @@
                     {
                         <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
                             <BodyContent Context="item">
-                                <MudText>@(string.IsNullOrEmpty(item.Value.Description) ? item.Value?.Name : item.Value?.Name + " " + item.Value.Description)</MudText>
-                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
+                                <MudText>@(string.IsNullOrEmpty(item.Value!.Description) ? item.Value?.Name : item.Value?.Name + " " + item.Value!.Description)</MudText>
+                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value!.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
                             </BodyContent>
                         </MudTreeViewItem>
                     }
                     else
                     {
-                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
+                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value!.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value!.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
                     }
                 </ItemTemplate>
             </MudTreeView>
@@ -230,10 +230,10 @@
         }
         else
         {
-            var item = InitialTreeItems.FirstOrDefault(a => a.Value.Name == _typeTableHead);
-            if (item != null)
+            var item = InitialTreeItems.FirstOrDefault(a => a.Value!.Name == _typeTableHead);
+            if (item is { Children: not null })
             {
-                var childItem = item.Children.FirstOrDefault(a => a.Value.Name == parentValue.Name);
+                var childItem = item.Children.FirstOrDefault(a => a.Value!.Name == parentValue.Name);
                 if (childItem != null)
                 {
                     var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={parentValue.Name}", _cts.Token);

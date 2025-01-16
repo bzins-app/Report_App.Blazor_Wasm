@@ -34,7 +34,7 @@
                                 </MudSelect>
                                 @if (element.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                 {
-                                    var valueDateTime = element.DateOption == CalulatedDateOption.Now ? DateTime.Now : Item.LastRunDateTime ?? DateTime.Now;
+                                    var valueDateTime = element.DateOption == CalulatedDateOption.Now ? DateTime.Now : Item!.LastRunDateTime ?? DateTime.Now;
                                     <MudField Label="@Localizer.Get("Calculated date")">@(element.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date.ToString("d") : valueDateTime)</MudField>
                                 }
                                 else
@@ -91,7 +91,7 @@
 
         if (!(feedback is { Canceled: true }))
         {
-            _parameters?.Add((QueryCommandParameter)feedback.Data);
+            if (feedback != null) _parameters?.Add(((QueryCommandParameter)feedback.Data!));
             await UpdateParameters();
         }
     }

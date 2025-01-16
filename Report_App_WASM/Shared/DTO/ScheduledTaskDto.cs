@@ -9,8 +9,8 @@ public sealed class ScheduledTaskDto : BaseTraceabilityDto, IDto
     }
 
     public long ScheduledTaskId { get; set; }
-    [Required][MaxLength(200)] public string? TaskName { get; set; }
-    [Required][MaxLength(250)] public string ProviderName { get; set; }
+    [Required] [MaxLength(200)] public string? TaskName { get; set; }
+    [Required] [MaxLength(250)] public string ProviderName { get; set; }
     public long IdDataProvider { get; set; }
     [MaxLength(60)] public string? TaskNamePrefix { get; set; }
     public TaskType Type { get; set; }
@@ -31,6 +31,9 @@ public sealed class ScheduledTaskDto : BaseTraceabilityDto, IDto
     public long FileStorageLocationId { get; set; }
     [MaxLength(4000)] public string MiscParameters { get; set; } = "[]";
     public ICollection<ScheduledTaskQueryDto> TaskQueries { get; set; } = new List<ScheduledTaskQueryDto>();
-    public ICollection<ScheduledTaskDistributionListDto> DistributionLists { get; set; } = new List<ScheduledTaskDistributionListDto>();
+
+    public ICollection<ScheduledTaskDistributionListDto> DistributionLists { get; set; } =
+        new List<ScheduledTaskDistributionListDto>();
+
     public DataProviderDto DataProvider { get; set; } = null!;
 }

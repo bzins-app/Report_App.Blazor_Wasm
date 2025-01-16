@@ -58,7 +58,7 @@ public class EmailSender : IEmailSender
 
                 if (size > 20)
                 {
-                    attachment = null;
+                    attachment.Clear();
                     message += Environment.NewLine +
                                $"The size of the attachment is too high: {Math.Round(size, 2)}MB. Maximum is {20} ";
                 }

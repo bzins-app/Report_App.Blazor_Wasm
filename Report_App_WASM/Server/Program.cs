@@ -16,7 +16,7 @@ builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddEntityFramework<ApplicationDbContext, SystemLog>();
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -59,7 +59,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = identityDefaultOptions.PasswordRequireLowercase;
     options.Password.RequiredUniqueChars = identityDefaultOptions.PasswordRequiredUniqueChars;
 
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);
+    options.Lockout.DefaultLockoutTimeSpan =
+        TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);
     options.Lockout.MaxFailedAccessAttempts = identityDefaultOptions.LockoutMaxFailedAccessAttempts;
     options.Lockout.AllowedForNewUsers = identityDefaultOptions.LockoutAllowedForNewUsers;
 
@@ -145,11 +146,13 @@ using (var scope = app.Services.CreateScope())
         {
             retryCount++;
             var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}", retryCount, maxRetries);
+            logger.LogError(ex, "An error occurred while seeding the database. Retry {RetryCount}/{MaxRetries}",
+                retryCount, maxRetries);
             if (retryCount >= maxRetries)
             {
                 throw;
             }
+
             await Task.Delay(TimeSpan.FromSeconds(10));
         }
     }

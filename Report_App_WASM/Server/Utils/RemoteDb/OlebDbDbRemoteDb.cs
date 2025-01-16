@@ -94,7 +94,7 @@ public class OlebDbDbRemoteDb : IRemoteDb
     private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
         var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
-            dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+            dbInfo.ConnectionLogin ?? string.Empty, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,

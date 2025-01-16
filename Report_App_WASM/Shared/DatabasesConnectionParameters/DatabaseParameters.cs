@@ -10,11 +10,11 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 
     public abstract class DatabaseParameters
     {
-        public string Server { get; set; }
+        public string Server { get; set; } = string.Empty;
         public int Port { get; set; }
-        public string Database { get; set; }
-        public string UserId { get; set; }
-        public string Password { get; set; }
+        public string Database { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public int ConnectTimeout { get; set; } = 15;
 
         public abstract string BuildConnectionString();
@@ -24,7 +24,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             return !string.IsNullOrEmpty(value) ? $"{key}={value};" : "";
         }
 
-        protected string AddParameterIfNotDefault(string key, bool value, bool defaultValue) 
+        protected string AddParameterIfNotDefault(string key, bool value, bool defaultValue)
         {
             return !value.Equals(defaultValue) ? $"{key}={value};" : "";
         }
@@ -64,11 +64,11 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         {
             var parts = new List<string>
             {
-                AddParameterIfNotEmpty("Server", Port==1433||Port==0?Server:Server+","+Port),
+                AddParameterIfNotEmpty("Server", Port == 1433 || Port == 0 ? Server : Server + "," + Port),
                 AddParameterIfNotEmpty("Database", Database),
                 AddParameterIfNotEmpty("User Id", UserId),
                 AddParameterIfNotEmpty("Password", Password),
-                AddParameterIfNotEmpty("Integrated Security", TrustedConnection?"SSPI":string.Empty),
+                AddParameterIfNotEmpty("Integrated Security", TrustedConnection ? "SSPI" : string.Empty),
                 AddParameterIfNotDefault("Encrypt", Encrypt, true),
                 AddParameterIfNotDefault("TrustServerCertificate", TrustServerCertificate, false),
                 AddEnumParameterIfNotDefault("ApplicationIntent", ApplicationIntent, ApplicationIntent.ReadWrite),
@@ -94,10 +94,10 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (SqlServerParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId = string.Empty;
+            parametersCopy.Password = string.Empty;
 
-            return JsonSerializer.SerializeToElement(parametersCopy) ;
+            return JsonSerializer.SerializeToElement(parametersCopy);
         }
     }
 
@@ -126,7 +126,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
                 AddParameterIfNotEmpty("Pwd", Password),
                 AddParameterIfNotDefault("Charset", Charset, "utf8mb4"),
                 AddParameterIfNotDefault("UseCompression", UseCompression, false),
-                AddParameterIfNotDefault("SSL Mode", UseSSL?"required":"Preferred", "none"),
+                AddParameterIfNotDefault("SSL Mode", UseSSL ? "required" : "Preferred", "none"),
                 AddParameterIfNotDefault("AllowUserVariables", AllowUserVariables, false),
                 AddParameterIfNotDefault("ConvertZeroDateTime", ConvertZeroDateTime, false),
                 AddParameterIfNotDefault("PersistSecurityInfo", PersistSecurityInfo, false),
@@ -142,10 +142,10 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (MySqlParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId = string.Empty;
+            parametersCopy.Password = string.Empty;
 
-            return JsonSerializer.SerializeToElement(parametersCopy) ;
+            return JsonSerializer.SerializeToElement(parametersCopy);
         }
     }
 
@@ -172,7 +172,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
                 AddParameterIfNotEmpty("Database", Database),
                 AddParameterIfNotEmpty("Username", UserId),
                 AddParameterIfNotEmpty("Password", Password),
-                AddParameterIfNotDefault("SSL Mode", UseSSL?"require":"prefer", "prefer"),
+                AddParameterIfNotDefault("SSL Mode", UseSSL ? "require" : "prefer", "prefer"),
                 AddParameterIfNotDefault("Trust Server Certificate", UseSSL, false),
                 AddParameterIfNotDefault("SearchPath", SearchPath, "public"),
                 AddParameterIfNotDefault("Pooling", Pooling, true),
@@ -195,10 +195,10 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (PostgreSqlParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId = string.Empty;
+            parametersCopy.Password = string.Empty;
 
-            return JsonSerializer.SerializeToElement(parametersCopy) ;
+            return JsonSerializer.SerializeToElement(parametersCopy);
         }
     }
 
@@ -209,20 +209,20 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             Port = 1521; // Default Oracle port
         }
 
-        public string ServiceName { get; set; }
+        public string ServiceName { get; set; } = string.Empty;
         public bool DedicatedAdmin { get; set; } = false;
         public bool Pooling { get; set; } = true;
         public int MinPoolSize { get; set; } = 1;
         public int MaxPoolSize { get; set; } = 100;
         public string LoadBalancing { get; set; } = "no";
         public bool UseDbSchema { get; set; }
-        public string Schema { get; set; }
+        public string Schema { get; set; } = string.Empty;
 
         public override string BuildConnectionString()
         {
             var dataSource = $"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={Server})(PORT={Port}))" +
-                             $"(CONNECT_DATA=(SERVICE_NAME={ServiceName})" + (DedicatedAdmin ?
-                             "(SERVER=DEDICATED)":"") +
+                             $"(CONNECT_DATA=(SERVICE_NAME={ServiceName})" +
+                             (DedicatedAdmin ? "(SERVER=DEDICATED)" : "") +
                              "))";
 
             var parts = new List<string>
@@ -249,10 +249,10 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (OracleParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId = string.Empty;
+            parametersCopy.Password = string.Empty;
 
-            return JsonSerializer.SerializeToElement(parametersCopy) ;
+            return JsonSerializer.SerializeToElement(parametersCopy);
         }
     }
 
@@ -281,7 +281,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
                 AddParameterIfNotEmpty("Pwd", Password),
                 AddParameterIfNotDefault("Charset", Charset, "utf8mb4"),
                 AddParameterIfNotDefault("Use Compression", UseCompression, false),
-                AddParameterIfNotDefault("SSL Mode", UseSSL?"required":"Preferred", "none"),
+                AddParameterIfNotDefault("SSL Mode", UseSSL ? "required" : "Preferred", "none"),
                 AddParameterIfNotDefault("TreatTinyAsBoolean", TreatTinyAsBoolean, false),
                 AddParameterIfNotDefault("AllowUserVariables", AllowUserVariables, false),
                 AddParameterIfNotDefault("InteractiveSession", InteractiveSession, false),
@@ -297,17 +297,17 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (MariaDbParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId = string.Empty;
+            parametersCopy.Password = string.Empty;
 
-            return JsonSerializer.SerializeToElement(parametersCopy) ;
+            return JsonSerializer.SerializeToElement(parametersCopy);
         }
     }
 
     public class OleDbParameters : DatabaseParameters
     {
-        public string Provider { get; set; }
-        public string DataSource { get; set; }
+        public string Provider { get; set; } = string.Empty;
+        public string DataSource { get; set; } = string.Empty;
         public string ExtendedProperties { get; set; } = "";
         public bool PersistSecurityInfo { get; set; } = false;
 
@@ -334,10 +334,10 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
             var parametersCopy = (OleDbParameters)MemberwiseClone();
 
             // Remove sensitive information
-            parametersCopy.UserId = null;
-            parametersCopy.Password = null;
+            parametersCopy.UserId = string.Empty;
+            parametersCopy.Password = string.Empty;
 
-            return JsonSerializer.SerializeToElement(parametersCopy) ;
+            return JsonSerializer.SerializeToElement(parametersCopy);
         }
     }
 }

@@ -21,5 +21,4 @@ public class ApplicationUserDto : BaseTraceabilityDto, IDto
     [MaxLength(250)] public string? UserLastName { get; set; }
     [MaxLength(10)] public string? ApplicationTheme { get; set; }
     [MaxLength(8)] public string Culture { get; set; } = "en";
-
 }

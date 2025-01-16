@@ -10,11 +10,10 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public class AlertHandler : ScheduledTaskHandler
     {
-
-
         public AlertHandler(ApplicationDbContext context, IEmailSender emailSender,
             IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
-            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper, hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper,
+            hostingEnvironment)
         {
             _context = context;
             _emailSender = emailSender;
@@ -29,7 +28,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             _jobParameters = parameters;
             _header = await GetScheduledTaskAsync(parameters.ScheduledTaskId);
-            
+
             _logTask = CreateTaskLog(parameters);
             await InsertLogTaskAsync(_logTask);
 
@@ -111,7 +110,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                             else
                             {
                                 ExcelCreationDatatable dataExcel = new()
-                                { TabName = a.ScheduledTask?.TaskName, Data = table.Value };
+                                    { TabName = a.ScheduledTask?.TaskName, Data = table.Value };
                                 var fileResult =
                                     CreateFile.ExcelFromDatable((string?)(a.ScheduledTask?.TaskName), dataExcel);
                                 var fName =
@@ -135,7 +134,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                             });
                         else
                             await _context.AddAsync(new TaskStepLog
-                            { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
+                                { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
 
                         listAttach.Clear();
                     }
@@ -154,6 +153,5 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 _context.Entry(a).State = EntityState.Modified;
             }
         }
-
     }
 }

@@ -10,10 +10,10 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public class ReportHandler : ScheduledTaskHandler
     {
-
         public ReportHandler(ApplicationDbContext context, IEmailSender emailSender,
             IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
-            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper, hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper,
+            hostingEnvironment)
         {
             _context = context;
             _emailSender = emailSender;
@@ -107,14 +107,15 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                             });
                         else
                             await _context.AddAsync(new TaskStepLog
-                            { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
+                                { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
                     }
             }
         }
 
 
-        private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName, bool useDepositConfiguration,
-    string? subName = null)
+        private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName,
+            bool useDepositConfiguration,
+            string? subName = null)
         {
             var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
             if (!localFileResult.Success)
@@ -265,7 +266,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                     fName =
                         $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{d.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
                 else
-                    fName = $"{detailParam.FileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
+                    fName =
+                        $"{detailParam.FileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now:yyyyMMdd_HHmmss}";
 
                 if (_header.TypeFile == FileType.Excel)
                 {
@@ -274,10 +276,10 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         fExtension = ".xlsx";
                         fName += fExtension;
                         List<ExcelCreationDatatable> excelCreationDatatables = new()
-                    {
-                        new ExcelCreationDatatable
-                            { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
-                    };
+                        {
+                            new ExcelCreationDatatable
+                                { TabName = detailParam.ExcelTabName ?? d.Key.QueryName, Data = d.Value }
+                        };
                         ExcelCreationData dataExcel = new()
                         {
                             FileName = fName,
@@ -308,7 +310,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         }
 
                         excelMultipleTabs.Add(new ExcelCreationDatatable
-                        { TabName = tabName, ExcelTemplate = template, Data = d.Value });
+                            { TabName = tabName, ExcelTemplate = template, Data = d.Value });
                         continue;
                     }
                 }
@@ -334,7 +336,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
                 _fileResults.Add(fileCreated);
                 await _context.AddAsync(new TaskStepLog
-                { TaskLogId = _taskId, Step = "File created", Info = fName });
+                    { TaskLogId = _taskId, Step = "File created", Info = fName });
             }
 
             if (excelMultipleTabs.Any())
@@ -374,11 +376,10 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 _fileResults.Add(fileCreated);
                 excelMultipleTabs.Clear();
                 await _context.AddAsync(new TaskStepLog
-                { TaskLogId = _taskId, Step = "File created", Info = fName });
+                    { TaskLogId = _taskId, Step = "File created", Info = fName });
             }
 
             _fetchedData.Clear();
         }
-
     }
 }

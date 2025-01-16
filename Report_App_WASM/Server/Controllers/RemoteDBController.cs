@@ -101,9 +101,11 @@ public class RemoteDbController : ControllerBase, IDisposable
         {
             if (!string.IsNullOrEmpty(payload.SortingDirection))
             {
-                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun, payload.ColumSorting, payload.SortingDirection);
+                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
+                    payload.ColumSorting, payload.SortingDirection);
                 payload.Values.QueryToRun = query;
             }
+
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
             if (payload.PivotTable)
             {
@@ -187,7 +189,8 @@ public class RemoteDbController : ControllerBase, IDisposable
     }
 
 
-    private async Task<string> GetQuerySorted(long dataProviderId, string query, string sortingCol, string sortingDirection)
+    private async Task<string> GetQuerySorted(long dataProviderId, string query, string sortingCol,
+        string sortingDirection)
     {
         var _typeDb = await GetDbType(dataProviderId);
 
@@ -218,9 +221,11 @@ public class RemoteDbController : ControllerBase, IDisposable
         {
             if (!string.IsNullOrEmpty(payload.SortingDirection))
             {
-                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun, payload.ColumSorting, payload.SortingDirection);
+                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
+                    payload.ColumSorting, payload.SortingDirection);
                 payload.Values.QueryToRun = query;
             }
+
             _logger.LogInformation("Grid extraction: Start " + payload.Values.FileName, payload.Values.FileName);
             var queriesMaxSizeExtract = await _context.DatabaseConnection
                 .Where(a => a.DataProvider.DataProviderId == payload.Values.DataProviderId)

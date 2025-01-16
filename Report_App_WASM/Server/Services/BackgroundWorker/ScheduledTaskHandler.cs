@@ -9,12 +9,12 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public abstract class ScheduledTaskHandler : IDisposable
     {
-        protected  ApplicationDbContext _context;
-        protected  IRemoteDatabaseActionsHandler _dbReader;
-        protected  IEmailSender _emailSender;
-        protected  LocalFilesService _fileDeposit;
-        protected  IWebHostEnvironment _hostingEnvironment;
-        protected  IMapper _mapper;
+        protected ApplicationDbContext _context;
+        protected IRemoteDatabaseActionsHandler _dbReader;
+        protected IEmailSender _emailSender;
+        protected LocalFilesService _fileDeposit;
+        protected IWebHostEnvironment _hostingEnvironment;
+        protected IMapper _mapper;
         protected List<EmailRecipient> _emails = new();
 
         protected Dictionary<ScheduledTaskQuery, DataTable> _fetchedData = new();
@@ -52,18 +52,20 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         protected async Task<ScheduledTask> GetScheduledTaskAsync(long scheduledTaskId)
         {
             return await _context.ScheduledTask
-                .Where(a => a.ScheduledTaskId == scheduledTaskId)
-                .Include(a => a.DataProvider)
-                .Include(a => a.TaskQueries)
-                .Include(a => a.DistributionLists)
-                .FirstOrDefaultAsync() ?? throw new InvalidOperationException($"ScheduledTask {scheduledTaskId} cannnot be retrieved");
+                       .Where(a => a.ScheduledTaskId == scheduledTaskId)
+                       .Include(a => a.DataProvider)
+                       .Include(a => a.TaskQueries)
+                       .Include(a => a.DistributionLists)
+                       .FirstOrDefaultAsync() ??
+                   throw new InvalidOperationException($"ScheduledTask {scheduledTaskId} cannnot be retrieved");
         }
 
         protected async Task<DatabaseConnection> GetDatabaseConnectionAsync(long dataProviderId)
         {
             return await _context.DatabaseConnection
-                .Where(a => a.DataProvider.DataProviderId == dataProviderId)
-                .FirstOrDefaultAsync() ?? throw new InvalidOperationException($"DataProvider {dataProviderId} cannnot be retrieved");
+                       .Where(a => a.DataProvider.DataProviderId == dataProviderId)
+                       .FirstOrDefaultAsync() ??
+                   throw new InvalidOperationException($"DataProvider {dataProviderId} cannnot be retrieved");
         }
 
         protected TaskLog CreateTaskLog(TaskJobParameters parameters)
@@ -148,11 +150,13 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 param = _jobParameters.QueryCommandParameters;
             else if (_header.UseGlobalQueryParameters && _header.GlobalQueryParameters != "[]" &&
                      !string.IsNullOrEmpty(_header.GlobalQueryParameters))
-                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.GlobalQueryParameters, _jsonOpt);
+                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(_header.GlobalQueryParameters,
+                    _jsonOpt);
 
             if (detail.QueryParameters != "[]" && !string.IsNullOrEmpty(detail.QueryParameters))
             {
-                var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(detail.QueryParameters, _jsonOpt);
+                var desParam =
+                    JsonSerializer.Deserialize<List<QueryCommandParameter>>(detail.QueryParameters, _jsonOpt);
                 foreach (var value in desParam!)
                     if (param!.All(a => a.ParameterIdentifier?.ToLower() != value.ParameterIdentifier?.ToLower()))
                         param?.Add(value);
@@ -181,6 +185,5 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 _context.Entry(detail).State = EntityState.Modified;
             }
         }
-
     }
 }

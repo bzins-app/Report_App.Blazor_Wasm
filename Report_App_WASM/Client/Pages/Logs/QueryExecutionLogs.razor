@@ -27,12 +27,12 @@
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="QueryExecutionLogDto">
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="ExcecutionLogId" Sortable="true" />
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="ExcecutionLogId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true" />
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskQueryId)" Title="ScheduledTaskQueryId" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskQueryId)" Title="ScheduledTaskQueryId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true"/>
@@ -138,7 +138,7 @@
         var odataQuery = _grid?.GetODataQueryWihtoutPagination();
         var url = "odata/ExtractQueryExecutionLogs?";
         url += odataQuery;
-        await DataService.ExtractGridLogs(url,fname);
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 

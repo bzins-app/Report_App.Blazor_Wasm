@@ -130,7 +130,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     public async Task RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient> emails,
         List<QueryCommandParameter> commandQueryParameters, bool generateFiles = false)
     {
-        var _tType= await _context.ScheduledTask.Where(a => a.ScheduledTaskId == taskHeaderId)
+        var _tType = await _context.ScheduledTask.Where(a => a.ScheduledTaskId == taskHeaderId)
             .Select(a => a.Type)
             .FirstOrDefaultAsync();
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
@@ -139,7 +139,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             Cts = CancellationToken.None,
             GenerateFiles = generateFiles,
             TaskType = _tType,
-            CustomEmails = emails ?? new List<EmailRecipient>(),
+            CustomEmails = emails,
             QueryCommandParameters = commandQueryParameters,
             ManualRun = true,
             RunBy = runBy
@@ -179,7 +179,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         if (activate)
         {
             var options = new RecurringJobOptions
-            { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
+                { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
             if (!string.IsNullOrEmpty(taskHeader.CronParameters) && taskHeader.CronParameters != "[]")
             {
                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);
@@ -253,14 +253,13 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     _hostingEnvironment);
                 await handler.HandleReportTask(parameters);
             }
-
         }
     }
 
     public async Task DeleteLocalFilesAsync()
     {
         TaskLog logTask = new()
-        { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
+            { StartDateTime = DateTime.Now, JobDescription = "File Cleaner", Type = "Cleaner service" };
         try
         {
             var qry = _context.ReportGenerationLog.Where(a => a.IsAvailable == true).GroupJoin(

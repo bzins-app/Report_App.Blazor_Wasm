@@ -7,5 +7,5 @@ public class AdHocQueriesParameters
     public int PivotTableNbrOfColumnsMax { get; set; } = 10;
     public int PivotTableMaxRowsFetched { get; set; } = 20000;
     public bool PivotTableAsDefaultView { get; set; }
-    public string PivotTableDefaultConfig { get; set; }= string.Empty;
+    public string PivotTableDefaultConfig { get; set; } = string.Empty;
 }
