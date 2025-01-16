@@ -30,7 +30,18 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         protected long _taskId;
         protected TaskLog _logTask;
 
- 
+        protected ScheduledTaskHandler(ApplicationDbContext context, IEmailSender emailSender,
+            IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
+            IWebHostEnvironment hostingEnvironment)
+        {
+            _context = context;
+            _emailSender = emailSender;
+            _dbReader = dbReader;
+            _fileDeposit = fileDeposit;
+            _mapper = mapper;
+            _hostingEnvironment = hostingEnvironment;
+        }
+
 
         public void Dispose()
         {
