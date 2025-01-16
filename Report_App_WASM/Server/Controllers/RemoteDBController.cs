@@ -97,14 +97,13 @@ public class RemoteDbController : ControllerBase, IDisposable
             }
         }
 
-        if (!string.IsNullOrEmpty(payload.SortingDirection))
-        {
-            var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun, payload.ColumSorting, payload.SortingDirection);
-            payload.Values.QueryToRun = query;
-        }
-
         try
         {
+            if (!string.IsNullOrEmpty(payload.SortingDirection))
+            {
+                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun, payload.ColumSorting, payload.SortingDirection);
+                payload.Values.QueryToRun = query;
+            }
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
             if (payload.PivotTable)
             {
