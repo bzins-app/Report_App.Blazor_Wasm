@@ -29,8 +29,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             _jobParameters = parameters;
             _header = await GetScheduledTaskAsync(parameters.ScheduledTaskId);
-            var _activityConnect = await GetDatabaseConnectionAsync(_header.IdDataProvider);
-
+            
             _logTask = CreateTaskLog(parameters);
             await InsertLogTaskAsync(_logTask);
 
@@ -45,8 +44,21 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
             try
             {
+                var _activityConnect = await GetDatabaseConnectionAsync(_header.IdDataProvider);
                 var _resultInfo = "Ok";
-                await HandleNonDataTransferTaskAsync(_activityConnect);
+                if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
+                    _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
+                        .Select(a => a.Recipients).FirstOrDefault()!);
+                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
+
+                foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
+                {
+                    await FetchData(detail, _activityConnect.TaskSchedulerMaxNbrofRowsFetched);
+                    await _context.SaveChangesAsync("backgroundworker");
+                }
+
+                await GenerateAlertAsync();
+                _fetchedData.Clear();
 
                 await FinalizeTaskAsync(_logTask, parameters.GenerateFiles, _resultInfo);
             }
@@ -59,25 +71,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             await _context.SaveChangesAsync("backgroundworker");
         }
 
-        private async Task HandleNonDataTransferTaskAsync(DatabaseConnection _activityConnect)
-        {
-            if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
-                _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
-                    .Select(a => a.Recipients).FirstOrDefault()!);
-            if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
 
-            foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
-            {
-                await FetchData(detail, _activityConnect.TaskSchedulerMaxNbrofRowsFetched);
-                await _context.SaveChangesAsync("backgroundworker");
-            }
-
-            await HandleTaskAlertAsync();
-            _fetchedData.Clear();
-        }
-
-
-        private async ValueTask HandleTaskAlertAsync()
+        private async ValueTask GenerateAlertAsync()
         {
             var headerParam = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskParameters, _jsonOpt);
             if (_fetchedData.Any())

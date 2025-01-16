@@ -36,7 +36,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         {
             _jobParameters = parameters;
             _header = await GetScheduledTaskAsync(parameters.ScheduledTaskId);
-            var _activityConnect = await GetDatabaseConnectionAsync(_header.IdDataProvider);
+            
 
             _logTask = CreateTaskLog(parameters);
             await InsertLogTaskAsync(_logTask);
@@ -52,8 +52,22 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
             try
             {
+                var _activityConnect = await GetDatabaseConnectionAsync(_header.IdDataProvider);
                 var _resultInfo = "Ok";
-                await HandleDataTransferTaskAsync(_activityConnect);
+                foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
+                {
+                    await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
+
+                    var _headerParameters = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskParameters);
+                    int i = 0;
+                    foreach (var value in _fetchedData)
+                    {
+                        await TransferDataToDestinationTable(detail, value.Value, _headerParameters.DataTransferId, i);
+                        i++;
+                    }
+
+                    _fetchedData.Clear();
+                }
                 _resultInfo =
                     $"Rows bulkinserted: {_dataTransferStat.BulkInserted},Rows inserted: {_dataTransferStat.Inserted},Rows updated: {_dataTransferStat.Updated},Rows deleted: {_dataTransferStat.Deleted}";
 
@@ -69,26 +83,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         }
 
 
-
-        private async Task HandleDataTransferTaskAsync(DatabaseConnection _activityConnect)
-        {
-            foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
-            {
-                await FetchData(detail, _activityConnect.DataTransferMaxNbrofRowsFetched);
-
-                var _headerParameters = JsonSerializer.Deserialize<ScheduledTaskParameters>(_header.TaskParameters);
-                int i = 0;
-                foreach (var value in _fetchedData)
-                {
-                    await HandleDataTransferTask(detail, value.Value, _headerParameters.DataTransferId, i);
-                    i++;
-                }
-
-                _fetchedData.Clear();
-            }
-        }
-
-        private async ValueTask HandleDataTransferTask(ScheduledTaskQuery a, DataTable data, long activityIdTransfer,
+        private async ValueTask TransferDataToDestinationTable(ScheduledTaskQuery a, DataTable data, long activityIdTransfer,
     int loopNumber)
         {
             if (data.Rows.Count > 0)

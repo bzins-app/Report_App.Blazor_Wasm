@@ -24,12 +24,11 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
         }
 
 
-        
         public async ValueTask HandleReportTask(TaskJobParameters parameters)
         {
             _jobParameters = parameters;
             _header = await GetScheduledTaskAsync(parameters.ScheduledTaskId);
-            var _activityConnect = await GetDatabaseConnectionAsync(_header.IdDataProvider);
+
 
             _logTask = CreateTaskLog(parameters);
             await InsertLogTaskAsync(_logTask);
@@ -45,8 +44,30 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
             try
             {
+                var _activityConnect = await GetDatabaseConnectionAsync(_header.IdDataProvider);
                 var _resultInfo = "Ok";
-                await HandleNonDataTransferTaskAsync(_activityConnect);
+                if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
+                    _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
+                        .Select(a => a.Recipients).FirstOrDefault()!);
+                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
+
+                foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
+                {
+                    await FetchData(detail, _activityConnect.TaskSchedulerMaxNbrofRowsFetched);
+                    await _context.SaveChangesAsync("backgroundworker");
+                }
+
+                await GenerateFile();
+                foreach (var f in _fileResults)
+                {
+                    await WriteFileAsync(f, f.FileName, _jobParameters.GenerateFiles, f.FileName);
+                }
+
+                await GenerateEmail();
+                _fileResults.Clear();
+
+                _fetchedData.Clear();
+
                 await FinalizeTaskAsync(_logTask, parameters.GenerateFiles, _resultInfo);
             }
             catch (Exception ex)
@@ -58,27 +79,6 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             await _context.SaveChangesAsync("backgroundworker");
         }
 
-        private async Task HandleNonDataTransferTaskAsync(DatabaseConnection _activityConnect)
-        {
-            if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
-                _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
-                    .Select(a => a.Recipients).FirstOrDefault()!);
-            if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
-
-            foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
-            {
-                await FetchData(detail, _activityConnect.TaskSchedulerMaxNbrofRowsFetched);
-                await _context.SaveChangesAsync("backgroundworker");
-            }
-
-            await GenerateFile();
-            foreach (var f in _fileResults)
-                await WriteFileAsync(f, f.FileName, _jobParameters.GenerateFiles, f.FileName);
-            await GenerateEmail();
-            _fileResults.Clear();
-
-            _fetchedData.Clear();
-        }
 
         private async Task GenerateEmail()
         {
@@ -99,12 +99,15 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         if (result.Success)
                             await _context.AddAsync(new TaskStepLog
                             {
-                                TaskLogId = _taskId, Step = "Email sent", Info = subject, RelatedLogType = LogType.EmailLog,
+                                TaskLogId = _taskId,
+                                Step = "Email sent",
+                                Info = subject,
+                                RelatedLogType = LogType.EmailLog,
                                 RelatedLogId = result.KeyValue
                             });
                         else
                             await _context.AddAsync(new TaskStepLog
-                                { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
+                            { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
                     }
             }
         }
