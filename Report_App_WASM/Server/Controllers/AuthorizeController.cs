@@ -235,7 +235,7 @@ public class AuthorizeController : ControllerBase
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Page("/ResetPassword", null, new { code }, Request.Scheme);
 
-            var emailRecipients = new List<EmailRecipient> { new EmailRecipient { Email = item.EntityValue.UserMail } };
+            var emailRecipients = new List<EmailRecipient> { new EmailRecipient { Email = item.EntityValue.UserMail ?? throw new InvalidOperationException("User Email must be set") } };
             var title = "Reset Password";
             var body =
                 $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.";

@@ -10,7 +10,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
     {
         public DataTransferHandler(ApplicationDbContext context, IEmailSender emailSender,
             IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
-            IWebHostEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper, hostingEnvironment)
         {
             _context = context;
             _emailSender = emailSender;
