@@ -1,5 +1,6 @@
 ﻿using System.Net.Mail;
 using System.Text.Json;
+using Report_App_WASM.Server.Models;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
@@ -108,14 +109,14 @@ public class BackgroundTaskHandler : IDisposable
             .Include(a => a.DataProvider)
             .Include(a => a.TaskQueries)
             .Include(a => a.DistributionLists)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync() ?? throw new InvalidOperationException($"ScheduledTask {scheduledTaskId} cannnot be retrieved");
     }
 
     private async Task<DatabaseConnection> GetDatabaseConnectionAsync(long dataProviderId)
     {
         return await _context.DatabaseConnection
             .Where(a => a.DataProvider.DataProviderId == dataProviderId)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync()?? throw new InvalidOperationException($"DataProvider {dataProviderId} cannnot be retrieved");
     }
 
     private TaskLog CreateTaskLog(TaskJobParameters parameters)
