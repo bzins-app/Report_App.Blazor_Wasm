@@ -10,7 +10,7 @@
             @foreach (var element in _parameters.OrderBy(a => a.DisplaySequence))
             {
                 <MudItem xs="6" md="4" lg="3" xl="2">
-                    <MudCard Elevation="4" Style="height: 475px">
+                    <MudCard Elevation="7" Style="height: 475px">
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6">@(string.IsNullOrEmpty(element.DisplayName) ? element.ParameterIdentifier : element.DisplayName)</MudText>
