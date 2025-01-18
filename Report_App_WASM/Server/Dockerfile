@@ -4,12 +4,12 @@
 #For more information, please see https://aka.ms/containercompat
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-# add library for autofit excel column with Epplus
-RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y libgdiplus
-RUN apt-get install -y libc6-dev 
-RUN ln -s /usr/lib/libgdiplus.so/usr/lib/gdiplus.dll
+## add library for autofit excel column with Epplus
+#RUN apt-get update
+#RUN apt-get install -y apt-utils
+#RUN apt-get install -y libgdiplus
+#RUN apt-get install -y libc6-dev 
+#RUN ln -s /usr/lib/libgdiplus.so/usr/lib/gdiplus.dll
 # Change timezone to local time
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
