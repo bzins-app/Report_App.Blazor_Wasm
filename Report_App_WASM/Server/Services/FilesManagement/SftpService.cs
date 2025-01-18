@@ -19,9 +19,9 @@ public class SftpService : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private async Task<SftpConfiguration> GetSftpConfigurationAsync(int sftpconfigurationId)
+    private async Task<FileStorageConfiguration> GetSftpConfigurationAsync(long sftpconfigurationId)
     {
-        return (await _context.SftpConfiguration.Where(a => a.SftpConfigurationId == sftpconfigurationId).AsNoTracking()
+        return (await _context.FileStorageConfiguration.Where(a => a.FileStorageConfigurationId == sftpconfigurationId).AsNoTracking()
             .FirstOrDefaultAsync())!;
     }
 
@@ -46,7 +46,7 @@ public class SftpService : IDisposable
         }
     }
 
-    public async Task<SubmitResult> UploadFileAsync(int sftpconfigurationId, string localFilePath,
+    public async Task<SubmitResult> UploadFileAsync(long sftpconfigurationId, string localFilePath,
         string remoteDirectory, string fileName, bool tryCreateFolder = false)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);

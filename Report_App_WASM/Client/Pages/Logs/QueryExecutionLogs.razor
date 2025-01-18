@@ -52,21 +52,7 @@
         </MudCardContent>
         <MudCard Elevation="6">
             <MudCardContent>
-                <div style="overflow: auto">
-                    <h4>
-                        @Localizer.Get("Query")
-                    </h4>
-                    @if (_queryValue == null)
-                    {
-                        <p class="muted">
-                            @Localizer.Get("Select a log to display the message")
-                        </p>
-                    }
-                    else
-                    {
-                        <MudTextField ReadOnly="true" T="string" Text="@_queryValue" Lines="10"/>
-                    }
-                </div>
+                <MudTextField Label="@Localizer.Get("Query")" ReadOnly="true" T="string" AutoGrow MaxLines="15" Typo="Typo.caption" Lines="2" Text="@(string.IsNullOrEmpty(_queryValue)? @Localizer.Get("Select a log to display the message"):_queryValue)" />
             </MudCardContent>
         </MudCard>
     </MudCard>
