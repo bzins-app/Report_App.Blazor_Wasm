@@ -9,5 +9,5 @@ public class FileStorageConfigurationDto : BaseTraceabilityDto, IDto
     public int Port { get; set; } = 22;
     public string? UserName { get; set; }
     public string? Password { get; set; }
-    public string? ConfigurationParameter { get; set; }
+    public string? ConfigurationParameter { get; set; } = "[]";
 }

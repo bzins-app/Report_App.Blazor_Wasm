@@ -21,7 +21,8 @@ public class FileStorageConfiguration : BaseTraceability
                 _password = EncryptDecrypt.EncryptString(value!);
         }
     }
-    public string? ConfigurationParameter { get; set; }
+
+    public string? ConfigurationParameter { get; set; } = "[]";
 
     public virtual ICollection<FileStorageLocation>? FileStorageLocations { get; set; }
 }
