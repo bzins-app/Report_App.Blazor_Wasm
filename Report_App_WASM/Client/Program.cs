@@ -1,4 +1,5 @@
 using System.Globalization;
+using ApexCharts;
 using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
@@ -18,6 +19,7 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.H
 builder.Services.AddScoped<DataInteractionService>();
 builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddMudServices();
+builder.Services.AddApexCharts();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Utils/LanguageRessources");
 builder.Services.AddSingleton<CommonLocalizationService>();

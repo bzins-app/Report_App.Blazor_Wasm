@@ -1,9 +1,13 @@
 ﻿@page "/DashboardApp"
 @inherits ComponentBase
 @using System.Timers
+@using ApexCharts
 @using Report_App_WASM.Client.Pages.Dashboard.Components
 @using Report_App_WASM.Shared.Dashboard
+@using Color = MudBlazor.Color
+@using Size = MudBlazor.Size
 @implements IAsyncDisposable
+@inject IApexChartService ApexChartService
 @attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
@@ -168,6 +172,7 @@
     protected override async Task OnInitializedAsync()
     {
         _isLoading = true;
+        await ApexChartService.InitalizeChartAsync();
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
         _isLoading = false;
