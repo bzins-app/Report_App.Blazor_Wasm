@@ -127,7 +127,7 @@ public class SftpService : IDisposable
 
 
 
-    public async Task<SubmitResult> DeleteDirectoryFilesAsync(int sftpconfigurationId, string remoteFilePath)
+    public async Task<SubmitResult> DeleteDirectoryFilesAsync(long sftpconfigurationId, string remoteFilePath)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
         using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
