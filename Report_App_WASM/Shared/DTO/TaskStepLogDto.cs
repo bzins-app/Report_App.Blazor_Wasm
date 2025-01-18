@@ -9,4 +9,5 @@ public class TaskStepLogDto : IDto
     public string? Info { get; set; }
     public LogType RelatedLogType { get; set; } = LogType.NotSet;
     public long RelatedLogId { get; set; }
+    public bool Error { get; set; }
 }

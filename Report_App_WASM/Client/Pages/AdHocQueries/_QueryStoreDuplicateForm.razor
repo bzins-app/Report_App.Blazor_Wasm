@@ -39,14 +39,15 @@
     private List<SelectItemDataproviderInfo> _activities = new();
     private long _selectedDataProviderId;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         if (Item != null) _selectedDataProviderId = Item.IdDataProvider;
+        return Task.CompletedTask;
     }
 
-    private void OpenRunConfirmationComponent()
+    private async Task OpenRunConfirmationComponent()
     {
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _name = Item?.QueryName + " (Copy)";
         _visible = true;
     }

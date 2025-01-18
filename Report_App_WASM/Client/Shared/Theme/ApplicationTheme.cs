@@ -8,7 +8,7 @@ public class ApplicationTheme
     {
         var theme = new MudTheme
         {
-            PaletteLight = new PaletteLight()
+            PaletteLight = new PaletteLight
             {
                 DrawerBackground = "#001529",
                 DrawerText = "#FFFFFF7F",
@@ -63,7 +63,7 @@ public class ApplicationTheme
             //    OverlayLight = "#1e1e2d80",
             //    Divider = "#5c5c6a"
             //},
-            PaletteDark = new PaletteDark()
+            PaletteDark = new PaletteDark
             {
                 Primary = "#7e6fff",
                 Dark = "#343a40",

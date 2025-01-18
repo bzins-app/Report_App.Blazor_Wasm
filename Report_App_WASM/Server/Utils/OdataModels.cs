@@ -28,7 +28,13 @@ public static class OdataModels
         builder.EntitySet<StoredQuery>("Queries");
         builder.EntitySet<UsersPerRole>("UsersRole");
 
-        builder.Action("ExtractLogs");
+        builder.Action("ExtractSystemLogs");
+        builder.Action("ExtractEmailLogs");
+        builder.Action("ExtractReportGenerationLogs");
+        builder.Action("ExtractTaskLogs");
+        builder.Action("ExtractQueryExecutionLogs");
+        builder.Action("ExtractAuditTrail");
+        builder.Action("ExtractQueriesLogs");
         return builder.GetEdmModel();
     }
 }

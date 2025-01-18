@@ -27,14 +27,18 @@
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="QueryExecutionLogDto">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="ExcecutionLogId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskQueryId)" Title="ScheduledTaskQueryId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.SqlExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.DownloadDuration)" Title="@Localizer.Get("Download duration")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.RowsFetched)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.RowsFetched)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TypeDb)" Title="@Localizer.Get("Type of Database")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Database)" Title="@Localizer.Get("Database name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.CommandTimeOut)" Title="@Localizer.Get("Command timeout")" Sortable="true"/>
@@ -130,8 +134,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "QueryExecutionLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Query execution logs" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "QueryExecutionLogs";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractQueryExecutionLogs?";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 

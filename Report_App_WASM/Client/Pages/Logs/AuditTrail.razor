@@ -27,6 +27,7 @@
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="AuditTrailDto">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Audit id" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DateTime)" Title="@Localizer.Get("Timestamp")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.UserId)" Title="@Localizer.Get("User name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of change")" Sortable="true"/>
@@ -138,8 +139,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "AuditTrail", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Audit Trail" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "AuditTrail";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractAuditTrail?";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 

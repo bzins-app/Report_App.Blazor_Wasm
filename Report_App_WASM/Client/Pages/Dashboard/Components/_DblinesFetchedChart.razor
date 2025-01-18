@@ -1,5 +1,5 @@
-﻿@using Report_App_WASM.Shared.Dashboard
-@using ApexCharts
+﻿@using ApexCharts
+@using Report_App_WASM.Shared.Dashboard
 @using Color = MudBlazor.Color
 
 @if (_isLoading)
@@ -14,13 +14,16 @@ else
                XAxisType="XAxisType.Datetime" Options="_options"
                @ref=_chart>
 
-        <ApexPointSeries TItem="DbLinesQuery"
-                         Items="_logs.OrderBy(a => a.Date)"
-                         Name="@Localizer.Get("Nbr of rows")"
-                         SeriesType="SeriesType.Line"
-                         XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e => e.Sum(a => a.RowsFetched))"
-                         Stroke="@(new SeriesStroke { Width = 2, Color = "#1F15E5" })"/>
+        @if (_logs != null)
+        {
+            <ApexPointSeries TItem="DbLinesQuery"
+                             Items="_logs.OrderBy(a => a.Date)"
+                             Name="@Localizer.Get("Nbr of rows")"
+                             SeriesType="SeriesType.Line"
+                             XValue="@(e => e.Date.ToLocalTime())"
+                             YAggregate="@(e => e.Sum(a => a.RowsFetched))"
+                             Stroke="@(new SeriesStroke { Width = 2, Color = "#1F15E5" })"/>
+        }
     </ApexChart>
 }
 
@@ -42,7 +45,7 @@ else
     public async Task Refresh()
     {
         _logs = await DataService.GetValues<DbLinesQuery>("DbFetchMetrics", ApiControllers.DashboardApi);
-        await _chart.UpdateSeriesAsync(false);
+        if (_chart != null) await _chart.UpdateOptionsAsync(false, true, false);
     }
 
 }

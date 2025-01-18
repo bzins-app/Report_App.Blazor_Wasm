@@ -1,13 +1,12 @@
 ﻿@page "/QueryEdit/{QueryId:long}"
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager UriHelper
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
-@using Report_App_WASM.Shared.Extensions
-@using Report_App_WASM.Shared.RemoteQueryParameters
 @using Blazor.AceEditorJs
 @using MudBlazor.Utilities
+@using Report_App_WASM.Shared.Extensions
+@using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -41,7 +40,7 @@
                                 @if (_activities.Any())
                                 {
                                     <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
-                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
+                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 200px"
                                                Required>
                                         @foreach (var value in _activities)
                                         {
@@ -212,7 +211,7 @@
     private bool _openPopOver;
     string _tagValue = string.Empty;
     List<string> _AvailableTags = new();
-    MudTabs tabs;
+    MudTabs tabs = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -366,7 +365,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (!_formParamValidated && param!.Count > 0)
+        else if (!_formParamValidated && param.Count > 0)
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -385,7 +384,7 @@
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>(cancellationToken: token);
                     if (result!.Success)
                     {
                         _values = result.Value;
@@ -394,14 +393,14 @@
                     }
                     else
                     {
-                        _queryTestResult = result.Message;
+                        _queryTestResult = result.Message!;
                         _values = new List<Dictionary<string, object>>();
                     }
                 }
                 else
                 {
                     _values = new List<Dictionary<string, object>>();
-                    _queryTestResult = response.Content.ToString();
+                    if (true) _queryTestResult = response.Content.ToString()!;
                 }
             }
             catch (Exception ex)
@@ -463,7 +462,7 @@
         }
         catch (Exception e)
         {
-            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(Localizer.Get("An error has occurred") + e.Message, Severity.Error);
         }
     }
 

@@ -23,6 +23,7 @@
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="EmailLogId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
@@ -103,8 +104,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "EmailLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Email sender logs" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "EmailLogs";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractEmailLogs?";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 

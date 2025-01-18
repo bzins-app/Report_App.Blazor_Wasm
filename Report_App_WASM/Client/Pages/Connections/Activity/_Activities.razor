@@ -16,20 +16,20 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@Localizer.Get("Activities manager")</MudText>
-            <MudSpacer />
+            <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")" />
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -37,28 +37,30 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
                         <MudStack Row="true" Justify="Justify.Center">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DataProviderId)" Title="DataProviderId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Is activated?")">
-                        <_ActivityActivate Item="context" />
+                        <_ActivityActivate Item="context"/>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Is visible?")">
-                        <_ActivityVisible Item="context" />
+                        <_ActivityVisible Item="context"/>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TimeZone)" Title="TimeZone" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
                 </SimpleGrid>
             </div>
             @if (_rendering)
             {
-                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering" />
+                <MudProgressLinear Color="Color.Info" Indeterminate="@_rendering"/>
             }
-            <Paginator Value="@_pagination" FieldsContent="@_translations" />
+            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -139,11 +141,12 @@
     {
         var uri = $"GetActivityDbConnection?DataProviderId={value.DataProviderId}";
         var item = new DataProviderDto
-            {
-                ProviderName = value.ProviderName,
-                ProviderIcon = value.ProviderIcon,
-                DatabaseConnection = await DataService.GetValues<DatabaseConnectionDto>(uri)
-            };
+        {
+            ProviderName = value.ProviderName,
+            ProviderIcon = value.ProviderIcon,
+            TimeZone = value.TimeZone ?? TimeZoneInfo.Local.Id,
+            DatabaseConnection = await DataService.GetValues<DatabaseConnectionDto>(uri)
+        };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
         var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Edit", parameters, _dialogOptions);
@@ -155,6 +158,7 @@
             value.ProviderName = item.ProviderName;
             value.ProviderIcon = item.ProviderIcon;
             value.DatabaseConnection = item.DatabaseConnection;
+            value.TimeZone = item.TimeZone;
 
             var result = await DataService.PostValues(value, "ActivityUpdate");
             if (result.Success)
@@ -199,7 +203,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new DataProviderDto { DatabaseConnection = new List<DatabaseConnectionDto>() , ProviderType = ProviderType.SourceDatabase };
+        var value = new DataProviderDto { DatabaseConnection = new List<DatabaseConnectionDto>(), ProviderType = ProviderType.SourceDatabase };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_ActivityFormDialog>("Create", parameters, _dialogOptions);

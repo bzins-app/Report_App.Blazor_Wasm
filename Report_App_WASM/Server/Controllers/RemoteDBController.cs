@@ -1,4 +1,5 @@
 ﻿using Report_App_WASM.Server.Services.RemoteDb;
+using Report_App_WASM.Server.Utils.FIles;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -98,6 +99,13 @@ public class RemoteDbController : ControllerBase, IDisposable
 
         try
         {
+            if (!string.IsNullOrEmpty(payload.SortingDirection))
+            {
+                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
+                    payload.ColumSorting, payload.SortingDirection);
+                payload.Values.QueryToRun = query;
+            }
+
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
             if (payload.PivotTable)
             {
@@ -180,6 +188,20 @@ public class RemoteDbController : ControllerBase, IDisposable
                     ) a";
     }
 
+
+    private async Task<string> GetQuerySorted(long dataProviderId, string query, string sortingCol,
+        string sortingDirection)
+    {
+        var _typeDb = await GetDbType(dataProviderId);
+
+        if (_typeDb == TypeDb.SqlServer && query.ToLower().RemoveSpecialCharacters().Contains("orderby"))
+            query += Environment.NewLine + " OFFSET 0 Rows";
+
+        return $@"select  * from ( 
+                    {query} 
+                    ) a  order by {sortingCol} {sortingDirection}";
+    }
+
     [HttpPost]
     public async Task<FileResult?> RemoteDbExtractValuesAsync(RemoteDataPayload payload, CancellationToken ct)
     {
@@ -197,6 +219,13 @@ public class RemoteDbController : ControllerBase, IDisposable
 
         try
         {
+            if (!string.IsNullOrEmpty(payload.SortingDirection))
+            {
+                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
+                    payload.ColumSorting, payload.SortingDirection);
+                payload.Values.QueryToRun = query;
+            }
+
             _logger.LogInformation("Grid extraction: Start " + payload.Values.FileName, payload.Values.FileName);
             var queriesMaxSizeExtract = await _context.DatabaseConnection
                 .Where(a => a.DataProvider.DataProviderId == payload.Values.DataProviderId)
@@ -341,11 +370,13 @@ public class RemoteDbController : ControllerBase, IDisposable
                     {
                         if ((description.tableDesc || description.UseTableMetaDataFromAnotherProvider) && await _context
                                 .TableMetadata
-                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId && a.TableName == table)
+                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId &&
+                                            a.TableName == table)
                                 .AnyAsync(ct))
                         {
                             var desc = await _context.TableMetadata
-                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId && a.TableName == table)
+                                .Where(a => a.DatabaseConnection.DatabaseConnectionId == description.ConnectId &&
+                                            a.TableName == table)
                                 .AsNoTracking()
                                 .Select(a => new { a.ColumnName, a.ColumnDescription, a.IsSnippet })
                                 .ToListAsync();
@@ -360,7 +391,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                                 listCols.HasDescription = true;
                                 listCols.Values.AddRange(cols.Distinct().Select(col => new TablesColsInfo
                                 {
-                                    Name = col.Name!,
+                                    Name = col.Name,
                                     TypeValue = col.TypeValue,
                                     ColType = col.ColType,
                                     ColOrder = col.ColOrder,

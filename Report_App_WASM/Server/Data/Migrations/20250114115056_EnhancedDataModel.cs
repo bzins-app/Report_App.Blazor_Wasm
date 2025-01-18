@@ -35,7 +35,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                 table: "AspNetUserTokens");
 
-
+           
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_AspNetUserTokens",
@@ -489,7 +489,8 @@ namespace ReportAppWASM.Server.Migrations
                     FileSizeInMb = table.Column<double>(type: "float", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     Result = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
-                    Error = table.Column<bool>(type: "bit", nullable: false)
+                    Error = table.Column<bool>(type: "bit", nullable: false),
+                    FileGenerationType = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -619,7 +620,8 @@ namespace ReportAppWASM.Server.Migrations
                     Step = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Info = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RelatedLogType = table.Column<int>(type: "int", nullable: false),
-                    RelatedLogId = table.Column<long>(type: "bigint", nullable: false)
+                    RelatedLogId = table.Column<long>(type: "bigint", nullable: false),
+                    Error = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -857,7 +859,7 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
 
-            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+                                    migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_NAME = N'set' and TABLE_SCHEMA=N'HangFire')
 BEGIN
 delete from [HangFire].[Set];
@@ -1377,12 +1379,12 @@ SELECT
            ,[Step]
            ,[Info]
            ,[RelatedLogType]
-           ,[RelatedLogId])
+           ,[RelatedLogId],[Error])
 SELECT  coalesce(tl.TaskLogId,0)
       ,atd.[TimeStamp]
       ,atd.[Step]
       ,atd.[Info]
-	  ,0,0
+	  ,0,0, case when atd.[Step] like ('%rror%%') then 1 else 0 end 
   FROM [dbo].[ApplicationLogTaskDetails] atd
   left join [dbo].[TaskLog] tl on tl.[MiscValue]=atd.TaskId");
             migrationBuilder.Sql(@"INSERT INTO [dbo].[AdHocQueryExecutionLog]
@@ -1469,7 +1471,7 @@ SELECT qel.[TypeDb]
            ,[FileSizeInMb]
            ,[IsAvailable]
            ,[Result]
-           ,[Error])
+           ,[Error],[FileGenerationType])
 SELECT rlr.[CreatedAt]
       ,rlr.[CreatedBy]
       ,dpv.DataProviderId
@@ -1484,11 +1486,10 @@ SELECT rlr.[CreatedAt]
       ,rlr.[FileSizeInMb]
       ,rlr.[IsAvailable]
       ,rlr.[Result]
-      ,rlr.[Error]
+      ,rlr.[Error] , case when rlr.[ReportPath] like ('/docsstorage%') then 10 when  rlr.[ReportPath] like ('Sftp%') then 40 when  rlr.[ReportPath] like ('Ftp%') then 30  else 20 end 
   FROM [dbo].[ApplicationLogReportResult] rlr
 join [dbo].[DataProvider] dpv on dpv.MiscValue=rlr.[ActivityId]
 left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
-
 
 
             migrationBuilder.CreateIndex(

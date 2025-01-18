@@ -6,7 +6,7 @@ public class DatabaseConnectionDto : BaseTraceabilityDto, IDto
     [MaxLength(20)] public string ConnectionType { get; set; } = "SQL";
     public TypeDb TypeDb { get; set; }
     [MaxLength(20)] public string? TypeDbName { get; set; }
-    [Required][MaxLength(4000)] public string DbConnectionParameters { get; set; } = "[]";
+    [Required] [MaxLength(4000)] public string DbConnectionParameters { get; set; } = "[]";
     [MaxLength(1000)] public string? ConnectionLogin { get; set; }
     public string? Password { get; set; }
     public int CommandTimeOut { get; set; } = 300;

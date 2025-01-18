@@ -1,6 +1,6 @@
 ﻿@page "/TaskEdit/{TaskHeaderId:long}"
-@using Report_App_WASM.Shared.Extensions
 @using MudBlazor.Utilities
+@using Report_App_WASM.Shared.Extensions
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject HttpClient Http
@@ -241,7 +241,7 @@
     private long _DataProviderId;
     private string? _errorMessage;
     private readonly List<ScheduledTaskQueryDto> _itemToDelete = new();
-    private ScheduledTaskParameters? _param = new();
+    private ScheduledTaskParameters _param = new();
 
     private bool _loading;
     private TypeDb _typeDbTask;
@@ -267,6 +267,7 @@
         var uriAction = $"GetTaskHeader?taskHeaderId={TaskHeaderId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
         _DataProviderId = Item.DataProvider.DataProviderId;
+        Item.TimeZone = string.IsNullOrEmpty(Item.DataProvider.TimeZone) ? TimeZoneInfo.Local.Id : Item.DataProvider.TimeZone;
         _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
 
         var controllerActionDepositPath = "DepositPathInfo";
@@ -274,7 +275,7 @@
 
         if (!string.IsNullOrEmpty(Item.TaskParameters) && Item.TaskParameters != "[]")
         {
-            _param = JsonSerializer.Deserialize<ScheduledTaskParameters>(Item.TaskParameters, _jsonOpt);
+            _param = JsonSerializer.Deserialize<ScheduledTaskParameters>(Item.TaskParameters, _jsonOpt)!;
         }
 
         if (!string.IsNullOrEmpty(Item.Tags) && Item.Tags != "[]")
@@ -421,7 +422,7 @@
         var result = await DataService.PostFile(file);
         if (result.Success)
         {
-            _param!.ExcelTemplatePath = result.Message;
+            _param.ExcelTemplatePath = result.Message;
         }
 
         _changesToSave = true;

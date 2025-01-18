@@ -109,7 +109,8 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
             var activityName = await _context.DataProvider.Where(a => a.DataProviderId == run.DataProviderId)
                 .Select(a => a.ProviderName).FirstOrDefaultAsync(cts);
             var _dbInfo = await GetDbInfo(run.DataProviderId);
-            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(_dbInfo.DbConnectionParameters, "", "");
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(_dbInfo.DbConnectionParameters, "", "");
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
             var _logTaskStep = new TaskStepLog { TaskLogId = taskId, Step = "Fetch data", Info = run.QueryInfo };
             try
@@ -191,6 +192,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
                         $" Exception caught on attempt {attempts} - will retry after delay in {delay / 1000} seconds " +
                         ex.Message;
                     _logTaskStep.Step += $": attempt {attempts}";
+                    _logTaskStep.Error = true;
                     await _context.AddAsync(_logTaskStep, cts);
                     await _context.SaveChangesAsync();
                     await Task.Delay(delay, cts).WaitAsync(cts);
@@ -201,8 +203,9 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
 
     private async Task<long> GetDataTransferActivity(long dataProviderId)
     {
-        return await _context.DataProvider.Where(a => a.ProviderType == ProviderType.TargetDatabase && a.DataProviderId == dataProviderId)
-            .Select(( a) => a.DataProviderId)
+        return await _context.DataProvider.Where(a =>
+                a.ProviderType == ProviderType.TargetDatabase && a.DataProviderId == dataProviderId)
+            .Select(a => a.DataProviderId)
             .FirstOrDefaultAsync();
     }
 
@@ -221,7 +224,8 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
 
     private async Task<DatabaseConnection> GetDbInfo(long dataProviderId)
     {
-        return (await _context.DatabaseConnection.Where(a => a.DataProvider.DataProviderId == dataProviderId)
+        return (await _context.DatabaseConnection.Include(a => a.DataProvider)
+            .Where(a => a.DataProvider.DataProviderId == dataProviderId)
             .FirstOrDefaultAsync())!;
     }
 

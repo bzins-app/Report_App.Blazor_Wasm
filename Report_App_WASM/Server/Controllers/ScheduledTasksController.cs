@@ -89,7 +89,7 @@ public class ScheduledTasksController : ControllerBase
               new List<QueryCommandParameter>()
             : new List<QueryCommandParameter>();
 
-        _backgroundWorkers.RunManuallyTask(payload.ScheduledTaskId, User?.Identity?.Name, recipients, parameters,
+        await _backgroundWorkers.RunManuallyTask(payload.ScheduledTaskId, User?.Identity?.Name, recipients, parameters,
             payload.GenerateFileToFolder);
 
         return Ok("Task enqueued successfully");

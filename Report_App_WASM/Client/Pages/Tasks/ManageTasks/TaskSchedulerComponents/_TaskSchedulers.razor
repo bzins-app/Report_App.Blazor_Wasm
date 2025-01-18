@@ -4,7 +4,7 @@
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Crons")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("Crons") @Item?.TimeZone</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"

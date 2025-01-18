@@ -4,7 +4,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
 using OfficeOpenXml.Table;
 
-namespace Report_App_WASM.Server.Utils;
+namespace Report_App_WASM.Server.Utils.FIles;
 
 public static class CreateFile
 {
@@ -43,7 +43,7 @@ public static class CreateFile
         {
             Content = excel.GetAsByteArray(),
             ContentType = "application/vnd.ms-excel",
-            FileName = fileName
+            FileName = fileName ?? throw new ArgumentNullException(nameof(fileName), @"FileName is required")
         };
         return file;
     }

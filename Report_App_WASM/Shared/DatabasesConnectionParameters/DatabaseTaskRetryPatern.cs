@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace Report_App_WASM.Shared.DatabasesConnectionParameters
+﻿namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 {
     public class DatabaseTaskRetryPattern
     {
-        public List<RetryOptions> Pattern { get; set; }=
+        public List<RetryOptions> Pattern { get; set; } =
         [
             new() { RetryAttempt = 1, DelayBetweenRetriesInSeconds = 10 },
             new() { RetryAttempt = 2, DelayBetweenRetriesInSeconds = 60 },
             new() { RetryAttempt = 3, DelayBetweenRetriesInSeconds = 300 }
         ];
     }
+
     public class RetryOptions
     {
         public int RetryAttempt { get; set; }

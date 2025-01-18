@@ -56,7 +56,7 @@
                             </CascadingValue>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="Task Id" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
                     @if (string.IsNullOrEmpty(ProviderName))
                     {
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
@@ -80,7 +80,7 @@
                     }
                     @if (TypeTask == TaskType.Report.ToString())
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context"/>
                         </Blazor.SimpleGrid.TemplateColumn>
@@ -121,7 +121,7 @@
     IReadOnlyCollection<string>? selected;
     bool _empty;
     string _oldActivity = string.Empty;
-
+    string _oldTypeTask = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -152,7 +152,7 @@
         }
 
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        if (_empty || _oldActivity != ProviderName)
+        if ((_empty || _oldActivity != ProviderName || _oldTypeTask != TypeTask) && !_rendering)
         {
             _itemsProvider = async req =>
             {
@@ -174,6 +174,8 @@
             _pageTitle += ": " + ProviderName;
             _oldActivity = ProviderName;
         }
+
+        _oldTypeTask = TypeTask;
     }
 
 
@@ -200,6 +202,8 @@
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
+        _oldActivity = ProviderName;
+        _oldTypeTask = TypeTask;
         _translations = AppService.GetGridTranslations();
     }
 
@@ -211,7 +215,7 @@
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/TaskHeader?";
-
+        _rendering = true;
 
         var customFilters = $"TypeName eq '{TypeTask}'";
         if (DataProviderId.HasValue)
@@ -336,7 +340,7 @@
             value.IdDataProvider = DataProviderId.Value;
             value.ProviderName = ProviderName;
         }
-        
+
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);

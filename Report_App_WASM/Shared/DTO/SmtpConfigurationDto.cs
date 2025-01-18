@@ -9,7 +9,7 @@ public class SmtpConfigurationDto : BaseTraceabilityDto, IDto
     [Required] public string? SmtpHost { get; set; }
     [Required] public int SmtpPort { get; set; }
     public bool SmtpSsl { get; set; }
-    [Required][MaxLength(250)] public string? FromEmail { get; set; }
-    [Required][MaxLength(250)] public string? FromFullName { get; set; }
+    [Required] [MaxLength(250)] public string? FromEmail { get; set; }
+    [Required] [MaxLength(250)] public string? FromFullName { get; set; }
     public bool IsActivated { get; set; }
 }

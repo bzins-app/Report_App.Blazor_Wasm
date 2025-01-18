@@ -8,8 +8,8 @@
         <MudForm Model="@_email" @ref="_form">
             <MudAutocomplete T="string" InputMode="InputMode.email" Label="@Localizer.Get("Enter the email address")" @bind-Value="_email" OpenIcon="@Icons.Material.Filled.Email" IconSize="Size.Medium" Style="width: 300px;"
                              Validation="@(new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") })" Required RequiredError="@Localizer.Get("Required")"
-                             CoerceText="true" CoerceValue="false" Immediate="true" SearchFunc="@SearchEmail" />
-            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small" 
+                             CoerceText="true" CoerceValue="false" Immediate="true" SearchFunc="@SearchEmail"/>
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none;" Size="Size.Small"
                        OnClick="AddRecipient">
                 @Localizer.Get("Add recipient")
             </MudButton>
@@ -158,6 +158,7 @@
         {
             results.Add(value);
         }
+
         return results;
     }
 

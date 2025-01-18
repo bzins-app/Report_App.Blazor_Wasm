@@ -14,13 +14,16 @@ public class MySqlDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"		
         SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 		FROM information_schema.tables t  
                 where TABLE_SCHEMA='{dbparam.Database}' 
                 order by 1,2";
         }
+
         return script;
     }
 
@@ -28,7 +31,9 @@ public class MySqlDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select 
                             tab.table_name as table_name,
                             col.column_name as column_name
@@ -47,7 +52,9 @@ public class MySqlDbRemoteDb : IRemoteDb
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select
 				'Col' as Valuetype,
 				c.COLUMN_NAME,
@@ -85,6 +92,11 @@ public class MySqlDbRemoteDb : IRemoteDb
         {
             var connectionInfo = CreateConnectionString(dbInfo);
 
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone = TimeZoneInfo.FindSystemTimeZoneById(_tzId);
+
             var DbConnection = new MySqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new MySqlDataAdapter();
             var cmd = new MySqlCommand
@@ -109,7 +121,7 @@ public class MySqlDbRemoteDb : IRemoteDb
                                 ? MySqlDbType.Date
                                 : MySqlDbType.DateTime)
                         {
-                            Value = timevalue
+                            Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
@@ -172,7 +184,8 @@ public class MySqlDbRemoteDb : IRemoteDb
 
     private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
+            dbInfo.ConnectionLogin ?? string.Empty, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,

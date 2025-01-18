@@ -14,7 +14,7 @@ global using Report_App_WASM.Server.Models.AuditModels;
 global using Report_App_WASM.Server.Services.BackgroundWorker;
 global using Report_App_WASM.Server.Utils;
 global using Report_App_WASM.Server.Utils.EncryptDecrypt;
-global using Report_App_WASM.Server.Utils.RemoteQueryParameters;
+global using Report_App_WASM.Server.Utils.RemoteDb.RemoteQueryParameters;
 global using Report_App_WASM.Shared;
 global using Report_App_WASM.Shared.ApiExchanges;
 global using Report_App_WASM.Shared.Extensions;

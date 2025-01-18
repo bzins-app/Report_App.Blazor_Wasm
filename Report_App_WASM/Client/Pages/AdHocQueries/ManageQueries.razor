@@ -63,12 +63,12 @@
                             </MudStack>
                         </Blazor.SimpleGrid.TemplateColumn>
                     }
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     @if (string.IsNullOrEmpty(ProviderName))
                     {
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
                     }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Run query")">
                         <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" title="@Localizer.Get("Run query")"/>
                     </Blazor.SimpleGrid.TemplateColumn>
@@ -125,7 +125,7 @@
         }
 
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        if (_empty || _oldActivity != ProviderName)
+        if ((_empty || _oldActivity != ProviderName) && !_rendering)
         {
             _itemsProvider = async req =>
             {
@@ -182,6 +182,7 @@
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
+        _oldActivity = ProviderName;
         _translations = AppService.GetGridTranslations();
     }
 
@@ -193,6 +194,7 @@
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/Queries?";
+        _rendering = true;
 
         var customFilters = string.Empty;
         if (DataProviderId.HasValue)

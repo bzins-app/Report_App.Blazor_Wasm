@@ -16,9 +16,9 @@ public class QueryExecutionLogDto : IDto
     public DateTime StartDateTime { get; set; }
     public DateTime TransferBeginDateTime { get; set; }
     public DateTime EndDateTime { get; set; }
-    public string?  TotalDuration { get; set; }
-    public string?  SqlExcecutionDuration { get; set; }
-    public string?  DownloadDuration { get; set; }
+    public string? TotalDuration { get; set; }
+    public string? SqlExcecutionDuration { get; set; }
+    public string? DownloadDuration { get; set; }
     public int RowsFetched { get; set; }
     [MaxLength(250)] public string? RunBy { get; set; }
     [MaxLength(250)] public string? TypeJob { get; set; }

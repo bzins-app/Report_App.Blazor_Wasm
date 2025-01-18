@@ -4,326 +4,336 @@
 @inject HttpClient Http
 
 <MudDialog>
-    <TitleContent>
-        <MudText Typo="Typo.h6">
-            <MudIcon Icon="@(Action switch { CrudAction.Update => Icons.Material.Filled.Edit, CrudAction.Create => Icons.Material.Filled.Create, _ => Icons.Material.Filled.DeleteForever })" Class="mr-3 mb-n1" />
-            @Localizer.Get(Action switch
-                {
-                    CrudAction.Update => "Edit",
-                    CrudAction.Create => "Add",
-                    _ => "Delete"
-                })
-        </MudText>
-    </TitleContent>
-    <DialogContent>
-        <MudStack Spacing="1">
-            <MudForm Model="@Item" @ref="@_form">
-                <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete" />
-                <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
-                    @if (DbCon.TypeDb == 0)
-                    {
-                        <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
-                    }
-                    @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
-                    {
-                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                    }
-                </MudSelect>
-
-                @if (DbCon.TypeDb > 0 && Action != CrudAction.Delete)
-                {
-                    <MudPaper Class="pa-2" Outlined="true">
-                        @if (DbCon.TypeDb == TypeDb.Oracle)
-                        {
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="OParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="OParameters.Port" Label="Port" Required="true" Margin="Margin.Dense" />
-                                <MudTextField @bind-Value="OParameters.ServiceName" Label="Oracle ServiceName" Required="true" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="OParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
-                                <MudTextField @bind-Value="OParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudSwitch @bind-Value="OParameters.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary" />
-                                <MudTextField @bind-Value="OParameters.Schema" Label="@Localizer.Get("DB schema")" Disabled="!OParameters.UseDbSchema" Required="OParameters.UseDbSchema" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudCheckBox @bind-Value="OParameters.Pooling" Label="Pooling?" />
-                                <MudNumericField @bind-Value="OParameters.MinPoolSize" Label="MinPoolSize" Disabled="!OParameters.Pooling" Margin="Margin.Dense"/>
-                                <MudNumericField @bind-Value="OParameters.MaxPoolSize" Label="MaxPoolSize" Disabled="!OParameters.Pooling" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudNumericField @bind-Value="OParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="DbCon.CommandFetchSize" Label="@Localizer.Get("Command fetch size")" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
-                            </MudStack>
-                        }
-                        else if (DbCon.TypeDb == TypeDb.SqlServer)
-                        {
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="sqlServerParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="sqlServerParameters.Port" Label="Port" Margin="Margin.Dense"/>
-                                <MudSwitch @bind-Value="sqlServerParameters.TrustedConnection" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="!_appConst!.WindowsEnv" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="sqlServerParameters.UserId" Label="UserId" Required="true" Disabled="sqlServerParameters.TrustedConnection" autocomplete="new-userid" Margin="Margin.Dense" />
-                                <MudTextField @bind-Value="sqlServerParameters.Password" Label="Password" Required="true" Disabled="sqlServerParameters.TrustedConnection" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" Margin="Margin.Dense"/>
-                                <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
-                                    @foreach (ApplicationIntent item in Enum.GetValues(typeof(ApplicationIntent)))
-                                    {
-                                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                                    }
-                                </MudSelect>
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudCheckBox @bind-Value="sqlServerParameters.MultipleActiveResultSets" Label="MultipleActiveResultSets" />
-                                <MudCheckBox @bind-Value="sqlServerParameters.TrustServerCertificate" Label="TrustServerCertificate" />
-                                <MudCheckBox @bind-Value="sqlServerParameters.Encrypt" Label="Encrypt" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudCheckBox @bind-Value="sqlServerParameters.Pooling" Label="Pooling?" />
-                                <MudNumericField @bind-Value="sqlServerParameters.MinPoolSize" Label="MinPoolSize" Disabled="!sqlServerParameters.Pooling" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="sqlServerParameters.MaxPoolSize" Label="MaxPoolSize" Disabled="!sqlServerParameters.Pooling" Margin="Margin.Dense"/>
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudNumericField @bind-Value="sqlServerParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="sqlServerParameters.PacketSize" Label="PacketSize" Margin="Margin.Dense"/>
-                            </MudStack>
-                        }
-                        else if (DbCon.TypeDb == TypeDb.OlebDb)
-                        {
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="oleDParameters.Provider" Label="Provider" Required Margin="Margin.Dense" />
-                                <MudTextField @bind-Value="oleDParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="oleDParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
-                                <MudTextField @bind-Value="oleDParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="oleDParameters.Database" Label="Database" Margin="Margin.Dense"/>
-                                <MudNumericField @bind-Value="oleDParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense" />
-                            </MudStack>
-
-                        }
-                        else if (DbCon.TypeDb == TypeDb.PostgreSql)
-                        {
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="PostgreParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="PostgreParameters.Port" Label="Port" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="PostgreParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
-                                <MudTextField @bind-Value="PostgreParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="PostgreParameters.Database" Label="Database" Required="true" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="PostgreParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudCheckBox @bind-Value="PostgreParameters.Pooling" Label="Pooling?" />
-                                <MudNumericField @bind-Value="PostgreParameters.MinPoolSize" Label="MinPoolSize" Disabled="!PostgreParameters.Pooling" Margin="Margin.Dense"/>
-                                <MudNumericField @bind-Value="PostgreParameters.MaxPoolSize" Label="MaxPoolSize" Disabled="!PostgreParameters.Pooling" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudCheckBox @bind-Value="PostgreParameters.UseSSL" Label="UseSSL" />
-                                <MudTextField @bind-Value="PostgreParameters.SearchPath" Label="SearchPath" Margin="Margin.Dense" />
-                            </MudStack>
-                        }
-                        else if (DbCon.TypeDb == TypeDb.MariaDb)
-                        {
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="MariaParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="MariaParameters.Port" Label="Port" Margin="Margin.Dense"/>
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="MariaParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
-                                <MudTextField @bind-Value="MariaParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="MariaParameters.Database" Label="Database" Required="true" Margin="Margin.Dense"/>
-                                <MudNumericField @bind-Value="MariaParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudCheckBox @bind-Value="MariaParameters.UseSSL" Label="UseSSL" />
-                                <MudCheckBox @bind-Value="MariaParameters.TreatTinyAsBoolean" Label="TreatTinyAsBoolean" />
-                                <MudCheckBox @bind-Value="MariaParameters.AllowUserVariables" Label="AllowUserVariables" />
-                            </MudStack>
-                        }
-                        else if (DbCon.TypeDb == TypeDb.MySql)
-                        {
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="MyParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense" />
-                                <MudNumericField @bind-Value="MyParameters.Port" Label="Port" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="MyParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
-                                <MudTextField @bind-Value="MyParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
-                                              InputType="InputType.Password" />
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudTextField @bind-Value="MyParameters.Database" Label="Database" Required="true" Margin="Margin.Dense"/>
-                                <MudNumericField @bind-Value="MyParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense"/>
-                            </MudStack>
-                            <MudStack Row="true">
-                                <MudCheckBox @bind-Value="MyParameters.UseSSL" Label="UseSSL" />
-                                <MudCheckBox @bind-Value="MyParameters.ConvertZeroDateTime" Label="ConvertZeroDateTime" />
-                                <MudCheckBox @bind-Value="MyParameters.AllowUserVariables" Label="AllowUserVariables" />
-                            </MudStack>
-                        }
-                        <MudStack Row="true">
-                            <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
-                                <LoadingContent>
-                                    <MudText>@Localizer.Get("Processing")</MudText>
-                                </LoadingContent>
-                                <ChildContent>
-                                    <MudText>@Localizer.Get("Test Db connection")</MudText>
-                                </ChildContent>
-                            </MudLoadingButton>
-                            <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
-                        </MudStack>
-                    </MudPaper>
-                    <MudPaper Class="pa-2" Outlined="true">
-                        <MudStack Row="true">
-                            <MudNumericField @bind-Value="DbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
-                            <MudNumericField @bind-Value="DbCon.DataTransferMaxNbrofRowsFetched" Label="@(Localizer.Get("DataTransfer") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
-                        </MudStack>
-                        @if (Action == CrudAction.Update)
-                        {
-                            <MudStack Row="true">
-                                @if (_appConst is { ActivateTaskSchedulerModule: true })
-                                {
-                                    <MudNumericField @bind-Value="DbCon.TaskSchedulerMaxNbrofRowsFetched" Label="@(Localizer.Get("Task scheduler") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
-                                }
-                                @if (_appConst is { ActivateAdHocQueriesModule: true })
-                                {
-                                    <MudNumericField @bind-Value="DbCon.AdHocQueriesMaxNbrofRowsFetched" Label="@(Localizer.Get("Ad hoc queries") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense" />
-                                }
-                            </MudStack>
-                        }
-                    </MudPaper>
-                    <MudPaper Class="pa-2" Outlined="true">
-                        <div>
-                            <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
-                            @if (!string.IsNullOrEmpty(Item?.ProviderIcon))
-                            {
-                                <MudImage Src="@Item.ProviderIcon" style="max-height: 200px; max-width: 150px; padding: 10px" Alt="@Item.ProviderName" />
-                            }
-                        </div>
-                        <MudGrid>
-                            <MudItem>
-                                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
-                                    <ActivatorContent>
-                                        <MudFab HtmlTag="label" Class="pa-4"
-                                                Color="Color.Secondary"
-                                                StartIcon="@Icons.Material.Filled.Image"
-                                                Label="@Localizer.Get("Select activity Logo")"
-                                                Size="Size.Small"
-                                                Style="text-transform: none" />
-                                    </ActivatorContent>
-                                </MudFileUpload>
-                            </MudItem>
-                            <MudItem>
-                                <MudButton OnClick="OnRemoveLogo" Variant="Variant.Text" Color="Color.Secondary" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Remove logo")</MudButton>
-                            </MudItem>
-                        </MudGrid>
-                    </MudPaper>
-                }
-            </MudForm>
-            @if (_appConst is { ActivateAdHocQueriesModule: true } && Action == CrudAction.Update)
+<TitleContent>
+    <MudText Typo="Typo.h6">
+        <MudIcon Icon="@(Action switch { CrudAction.Update => Icons.Material.Filled.Edit, CrudAction.Create => Icons.Material.Filled.Create, _ => Icons.Material.Filled.DeleteForever })" Class="mr-3 mb-n1"/>
+        @Localizer.Get(Action switch
+        {
+            CrudAction.Update => "Edit",
+            CrudAction.Create => "Add",
+            _ => "Delete"
+        })
+    </MudText>
+</TitleContent>
+<DialogContent>
+<MudStack Spacing="1">
+<MudForm Model="@Item" @ref="@_form">
+    <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete"/>
+    <MudStack Row="true">
+        <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
+            @if (DbCon.TypeDb == 0)
             {
-                <MudPaper Class="pa-2" Outlined="true">
-                    <MudText Class="pa-4">@Localizer.Get("You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering")</MudText>
-                    <MudGrid>
-                        @if (!_loadingDescription)
+                <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
+            }
+            @foreach (TypeDb item in Enum.GetValues(typeof(TypeDb)))
+            {
+                <MudSelectItem Value="@item">@item</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item.TimeZone" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
+
+            @foreach (var z in TimeZoneInfo.GetSystemTimeZones())
+            {
+                <MudSelectItem Value="@z.Id">@z.DisplayName</MudSelectItem>
+            }
+        </MudSelect>
+
+    </MudStack>
+
+    @if (DbCon.TypeDb > 0 && Action != CrudAction.Delete)
+    {
+        <MudPaper Class="pa-2" Outlined="true">
+            @if (DbCon.TypeDb == TypeDb.Oracle)
+            {
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="OParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="OParameters.Port" Label="Port" Required="true" Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="OParameters.ServiceName" Label="Oracle ServiceName" Required="true" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="OParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="OParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
+                                  InputType="InputType.Password"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudSwitch @bind-Value="OParameters.UseDbSchema" Label="@Localizer.Get("Use a DB schema?")" Color="Color.Primary"/>
+                    <MudTextField @bind-Value="OParameters.Schema" Label="@Localizer.Get("DB schema")" Disabled="!OParameters.UseDbSchema" Required="OParameters.UseDbSchema" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudCheckBox @bind-Value="OParameters.Pooling" Label="Pooling?"/>
+                    <MudNumericField @bind-Value="OParameters.MinPoolSize" Label="MinPoolSize" Disabled="!OParameters.Pooling" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="OParameters.MaxPoolSize" Label="MaxPoolSize" Disabled="!OParameters.Pooling" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudNumericField @bind-Value="OParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="DbCon.CommandFetchSize" Label="@Localizer.Get("Command fetch size")" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense"/>
+                </MudStack>
+            }
+            else if (DbCon.TypeDb == TypeDb.SqlServer)
+            {
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="sqlServerParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="sqlServerParameters.Port" Label="Port" Margin="Margin.Dense"/>
+                    <MudSwitch @bind-Value="sqlServerParameters.TrustedConnection" Label="@Localizer.Get("Use Windows authentication?")" Color="Color.Primary" Disabled="!_appConst!.WindowsEnv"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="sqlServerParameters.UserId" Label="UserId" Required="true" Disabled="sqlServerParameters.TrustedConnection" autocomplete="new-userid" Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="sqlServerParameters.Password" Label="Password" Required="true" Disabled="sqlServerParameters.TrustedConnection" autocomplete="new-password" Margin="Margin.Dense"
+                                  InputType="InputType.Password"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" Margin="Margin.Dense"/>
+                    <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                        @foreach (ApplicationIntent item in Enum.GetValues(typeof(ApplicationIntent)))
                         {
-                            <MudItem>
-                                <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
-                                    <ActivatorContent>
-                                        <MudFab HtmlTag="label"
-                                                Color="Color.Secondary"
-                                                StartIcon="@Icons.Material.Filled.UploadFile"
-                                                Label="@Localizer.Get("Select a file")"
-                                                Size="Size.Small"
-                                                Style="text-transform: none" />
-                                    </ActivatorContent>
-                                </MudFileUpload>
-                            </MudItem>
-                            <MudItem>
-                                <MudLink Class="d-flex pa-4" Href="/images/TablesDescriptionTemplate.csv" Target="_blank">@Localizer.Get("Template for description file")</MudLink>
-                            </MudItem>
+                            <MudSelectItem Value="@item">@item</MudSelectItem>
                         }
+                    </MudSelect>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudCheckBox @bind-Value="sqlServerParameters.MultipleActiveResultSets" Label="MultipleActiveResultSets"/>
+                    <MudCheckBox @bind-Value="sqlServerParameters.TrustServerCertificate" Label="TrustServerCertificate"/>
+                    <MudCheckBox @bind-Value="sqlServerParameters.Encrypt" Label="Encrypt"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudCheckBox @bind-Value="sqlServerParameters.Pooling" Label="Pooling?"/>
+                    <MudNumericField @bind-Value="sqlServerParameters.MinPoolSize" Label="MinPoolSize" Disabled="!sqlServerParameters.Pooling" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="sqlServerParameters.MaxPoolSize" Label="MaxPoolSize" Disabled="!sqlServerParameters.Pooling" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudNumericField @bind-Value="sqlServerParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="sqlServerParameters.PacketSize" Label="PacketSize" Margin="Margin.Dense"/>
+                </MudStack>
+            }
+            else if (DbCon.TypeDb == TypeDb.OlebDb)
+            {
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="oleDParameters.Provider" Label="Provider" Required Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="oleDParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname:Port" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="oleDParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="oleDParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
+                                  InputType="InputType.Password"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="oleDParameters.Database" Label="Database" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="oleDParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense"/>
+                </MudStack>
+            }
+            else if (DbCon.TypeDb == TypeDb.PostgreSql)
+            {
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="PostgreParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="PostgreParameters.Port" Label="Port" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="PostgreParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="PostgreParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
+                                  InputType="InputType.Password"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="PostgreParameters.Database" Label="Database" Required="true" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="PostgreParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudCheckBox @bind-Value="PostgreParameters.Pooling" Label="Pooling?"/>
+                    <MudNumericField @bind-Value="PostgreParameters.MinPoolSize" Label="MinPoolSize" Disabled="!PostgreParameters.Pooling" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="PostgreParameters.MaxPoolSize" Label="MaxPoolSize" Disabled="!PostgreParameters.Pooling" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudCheckBox @bind-Value="PostgreParameters.UseSSL" Label="UseSSL"/>
+                    <MudTextField @bind-Value="PostgreParameters.SearchPath" Label="SearchPath" Margin="Margin.Dense"/>
+                </MudStack>
+            }
+            else if (DbCon.TypeDb == TypeDb.MariaDb)
+            {
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="MariaParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="MariaParameters.Port" Label="Port" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="MariaParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="MariaParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
+                                  InputType="InputType.Password"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="MariaParameters.Database" Label="Database" Required="true" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="MariaParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudCheckBox @bind-Value="MariaParameters.UseSSL" Label="UseSSL"/>
+                    <MudCheckBox @bind-Value="MariaParameters.TreatTinyAsBoolean" Label="TreatTinyAsBoolean"/>
+                    <MudCheckBox @bind-Value="MariaParameters.AllowUserVariables" Label="AllowUserVariables"/>
+                </MudStack>
+            }
+            else if (DbCon.TypeDb == TypeDb.MySql)
+            {
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="MyParameters.Server" Label="Server" Required RequiredError="@Localizer.Get("Required")" Placeholder="IP or Hostname" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="MyParameters.Port" Label="Port"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="MyParameters.UserId" Label="UserId" Required="true" autocomplete="new-userid" Margin="Margin.Dense"/>
+                    <MudTextField @bind-Value="MyParameters.Password" Label="Password" Required="true" autocomplete="new-password" Margin="Margin.Dense"
+                                  InputType="InputType.Password"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField @bind-Value="MyParameters.Database" Label="Database" Required="true" Margin="Margin.Dense"/>
+                    <MudNumericField @bind-Value="MyParameters.ConnectTimeout" Label="ConnectTimeout" Margin="Margin.Dense"/>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudCheckBox @bind-Value="MyParameters.UseSSL" Label="UseSSL"/>
+                    <MudCheckBox @bind-Value="MyParameters.ConvertZeroDateTime" Label="ConvertZeroDateTime"/>
+                    <MudCheckBox @bind-Value="MyParameters.AllowUserVariables" Label="AllowUserVariables"/>
+                </MudStack>
+            }
+            <MudStack Row="true">
+                <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="OnClickConnectionTest" Variant="Variant.Filled" Color="Color.Primary">
+                    <LoadingContent>
+                        <MudText>@Localizer.Get("Processing")</MudText>
+                    </LoadingContent>
+                    <ChildContent>
+                        <MudText>@Localizer.Get("Test Db connection")</MudText>
+                    </ChildContent>
+                </MudLoadingButton>
+                <MudText>@Localizer.Get("Connection Feedback:") @_connectionTestResult</MudText>
+            </MudStack>
+        </MudPaper>
+        <MudPaper Class="pa-2" Outlined="true">
+            <MudStack Row="true">
+                <MudNumericField @bind-Value="DbCon.CommandTimeOut" Label="@Localizer.Get("Command timeout")" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense"/>
+                <MudNumericField @bind-Value="DbCon.DataTransferMaxNbrofRowsFetched" Label="@(Localizer.Get("DataTransfer") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense"/>
+            </MudStack>
+            @if (Action == CrudAction.Update)
+            {
+                <MudStack Row="true">
+                    @if (_appConst is { ActivateTaskSchedulerModule: true })
+                    {
+                        <MudNumericField @bind-Value="DbCon.TaskSchedulerMaxNbrofRowsFetched" Label="@(Localizer.Get("Task scheduler") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense"/>
+                    }
+                    @if (_appConst is { ActivateAdHocQueriesModule: true })
+                    {
+                        <MudNumericField @bind-Value="DbCon.AdHocQueriesMaxNbrofRowsFetched" Label="@(Localizer.Get("Ad hoc queries") + ": " + Localizer.Get("Max of rows fetched"))" Culture="@CultureInfo.CurrentCulture" Margin="Margin.Dense"/>
+                    }
+                </MudStack>
+            }
+        </MudPaper>
+        <MudPaper Class="pa-2" Outlined="true">
+            <div>
+                <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
+                @if (!string.IsNullOrEmpty(Item?.ProviderIcon))
+                {
+                    <MudImage Src="@Item.ProviderIcon" style="max-height: 200px; max-width: 150px; padding: 10px" Alt="@Item.ProviderName"/>
+                }
+            </div>
+            <MudGrid>
+                <MudItem>
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
+                        <ActivatorContent>
+                            <MudFab HtmlTag="label" Class="pa-4"
+                                    Color="Color.Secondary"
+                                    StartIcon="@Icons.Material.Filled.Image"
+                                    Label="@Localizer.Get("Select activity Logo")"
+                                    Size="Size.Small"
+                                    Style="text-transform: none"/>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                </MudItem>
+                <MudItem>
+                    <MudButton OnClick="OnRemoveLogo" Variant="Variant.Text" Color="Color.Secondary" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Remove logo")</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    }
+</MudForm>
+@if (_appConst is { ActivateAdHocQueriesModule: true } && Action == CrudAction.Update)
+{
+    <MudPaper Class="pa-2" Outlined="true">
+        <MudText Class="pa-4">@Localizer.Get("You can add the tables and colums descriptions by uploading a file. You can use the tempalte below then upload it. Please try to use UTF8 encoding for a better rendering")</MudText>
+        <MudGrid>
+            @if (!_loadingDescription)
+            {
+                <MudItem>
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
+                        <ActivatorContent>
+                            <MudFab HtmlTag="label"
+                                    Color="Color.Secondary"
+                                    StartIcon="@Icons.Material.Filled.UploadFile"
+                                    Label="@Localizer.Get("Select a file")"
+                                    Size="Size.Small"
+                                    Style="text-transform: none"/>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                </MudItem>
+                <MudItem>
+                    <MudLink Class="d-flex pa-4" Href="/images/TablesDescriptionTemplate.csv" Target="_blank">@Localizer.Get("Template for description file")</MudLink>
+                </MudItem>
+            }
+            @if (_loadingDescription)
+            {
+                <MudItem>
+                    <MudButton Disabled="@_loadingDescription" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
                         @if (_loadingDescription)
                         {
-                            <MudItem>
-                                <MudButton Disabled="@_loadingDescription" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                                    @if (_loadingDescription)
-                                    {
-                                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                                        <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                                    }
-                                </MudButton>
-                            </MudItem>
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                            <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
                         }
-                    </MudGrid>
-                    <MudGrid>
-                        <MudItem>
-                            <MudSwitch @bind-Value="DbCon.UseTableMetaData" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true" />
-                        </MudItem>
-                        <MudItem>
-                            @if (DbCon.UseTableMetaData)
-                            {
-                                <MudLoadingButton @bind-Loading="_extractDescriptions" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ExtractDescriptions" Variant="Variant.Filled" Color="Color.Primary">
-                                    <LoadingContent>
-                                        <MudText>@Localizer.Get("Processing")</MudText>
-                                    </LoadingContent>
-                                    <ChildContent>
-                                        <MudText>@Localizer.Get("Download descriptions")</MudText>
-                                    </ChildContent>
-                                </MudLoadingButton>
-                            }
-                        </MudItem>
-                    </MudGrid>
-                    <MudGrid>
-                        @if (_activities.Any())
-                        {
-                            <MudItem md="6">
-                                <MudSwitch @bind-Value="DbCon.UseTableMetaDataFromAnotherProvider" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary" />
-                            </MudItem>
-                            <MudItem md="6">
-                                <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdTableMetaData" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseTableMetaDataFromAnotherProvider">
-                                    @if (DbCon.IdTableMetaData == 0)
-                                    {
-                                        <MudSelectItem Value="DbCon.IdTableMetaData">@Localizer.Get("Activity name")</MudSelectItem>
-                                    }
-                                    @foreach (var item in _activities.Where(a => Item != null && a.ProviderName != Item.ProviderName))
-                                    {
-                                        <MudSelectItem Value="@item.DatabaseConnectionId">@item.ProviderName</MudSelectItem>
-                                    }
-                                </MudSelect>
-                            </MudItem>
-                        }
-                    </MudGrid>
-                </MudPaper>
+                    </MudButton>
+                </MudItem>
             }
-            @if (Action == CrudAction.Delete)
+        </MudGrid>
+        <MudGrid>
+            <MudItem>
+                <MudSwitch @bind-Value="DbCon.UseTableMetaData" Label="@Localizer.Get("Already uploaded?")" Color="Color.Primary" Disabled="true"/>
+            </MudItem>
+            <MudItem>
+                @if (DbCon.UseTableMetaData)
+                {
+                    <MudLoadingButton @bind-Loading="_extractDescriptions" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ExtractDescriptions" Variant="Variant.Filled" Color="Color.Primary">
+                        <LoadingContent>
+                            <MudText>@Localizer.Get("Processing")</MudText>
+                        </LoadingContent>
+                        <ChildContent>
+                            <MudText>@Localizer.Get("Download descriptions")</MudText>
+                        </ChildContent>
+                    </MudLoadingButton>
+                }
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            @if (_activities.Any())
             {
-                <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense" />
+                <MudItem md="6">
+                    <MudSwitch @bind-Value="DbCon.UseTableMetaDataFromAnotherProvider" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary"/>
+                </MudItem>
+                <MudItem md="6">
+                    <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdTableMetaData" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseTableMetaDataFromAnotherProvider">
+                        @if (DbCon.IdTableMetaData == 0)
+                        {
+                            <MudSelectItem Value="DbCon.IdTableMetaData">@Localizer.Get("Activity name")</MudSelectItem>
+                        }
+                        @foreach (var item in _activities.Where(a => Item != null && a.ProviderName != Item.ProviderName))
+                        {
+                            <MudSelectItem Value="@item.DatabaseConnectionId">@item.ProviderName</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
             }
-        </MudStack>
-    </DialogContent>
-    <DialogActions>
-        <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
-        <MudButton Color="Action == CrudAction.Delete ? Color.Error : Color.Primary" OnClick="Validate">@Localizer.Get(Action == CrudAction.Delete ? "Delete" : "Validate")</MudButton>
-    </DialogActions>
+        </MudGrid>
+    </MudPaper>
+}
+@if (Action == CrudAction.Delete)
+{
+    <MudTextField @bind-Value="_deletionValidation" Label="@(Localizer.Get("Confirm the deletion by entering") + ": Validate")" Required RequiredError="@Localizer.Get("Required")" Margin="Margin.Dense"/>
+}
+</MudStack>
+</DialogContent>
+<DialogActions>
+    <MudButton Color="Color.Info" OnClick="Cancel">@Localizer.Get("Cancel")</MudButton>
+    <MudButton Color="Action == CrudAction.Delete ? Color.Error : Color.Primary" OnClick="Validate">@Localizer.Get(Action == CrudAction.Delete ? "Delete" : "Validate")</MudButton>
+</DialogActions>
 </MudDialog>
 
 @code {
@@ -338,6 +348,7 @@
     private string _deletionValidation = null!;
 
     private DatabaseConnectionDto DbCon { get; set; } = new();
+
     // private DatabaseParameters DbParameters { get; set; }
     private string _connectionTestResult = null!;
     private List<SelectItemDataproviderInfo> _activities = new();
@@ -345,6 +356,7 @@
     private bool _loading;
     private bool _loadingDescription;
     private bool _extractDescriptions;
+
 
     SqlServerParameters sqlServerParameters = new SqlServerParameters();
     OracleParameters OParameters = new OracleParameters();
@@ -403,7 +415,7 @@
                 DbCon.ConnectionLogin = oleDParameters.UserId;
                 break;
             case TypeDb.Oracle:
-                OParameters.Database = OParameters.Schema ?? string.Empty;
+                OParameters.Database = OParameters.Schema;
                 DbCon.DbConnectionParameters = DatabaseConnectionParametersManager.SerializeToJson(OParameters.SerializeMembersToJson(), TypeDb.Oracle);
                 DbCon.Password = OParameters.Password;
                 DbCon.ConnectionLogin = OParameters.UserId;
@@ -419,9 +431,10 @@
     protected override async Task OnInitializedAsync()
     {
         _appConst = await AppService.GetApplicationConstantsValues();
-        if (Item!.DatabaseConnection.Any())
+        Item ??= new DataProviderDto();
+        if (Item.DatabaseConnection.Any())
         {
-            DbCon = Item.DatabaseConnection.FirstOrDefault();
+            DbCon = Item.DatabaseConnection.FirstOrDefault()!;
             DeserializeDbConnectionParameters();
         }
         else
@@ -437,7 +450,7 @@
     {
         if (DbCon.DbConnectionParameters == "[]") return;
 
-        var _login = DbCon.ConnectionLogin??string.Empty;
+        var _login = DbCon.ConnectionLogin ?? string.Empty;
         var _password = DbCon.Password ?? string.Empty;
 
         switch (DbCon.TypeDb)
@@ -475,12 +488,12 @@
         SetDbConnectionParameters();
 
         var tryConn = new DatabaseConnectionDto
-            {
-                ConnectionLogin = DbCon.ConnectionLogin,
-                TypeDb = DbCon.TypeDb,
-                Password = DbCon.Password,
-                DbConnectionParameters = DbCon.DbConnectionParameters,
-            };
+        {
+            ConnectionLogin = DbCon.ConnectionLogin,
+            TypeDb = DbCon.TypeDb,
+            Password = DbCon.Password,
+            DbConnectionParameters = DbCon.DbConnectionParameters,
+        };
         var result = await DataService.PostValues(tryConn, "TestConnection", ApiControllers.RemoteDbApi);
         _connectionTestResult = result.Message ?? "Ok!";
     }
@@ -502,7 +515,7 @@
         return true;
     }
 
-    private async Task OnUploadLogo(IBrowserFile file)
+    private async Task OnUploadLogo(IBrowserFile? file)
     {
         var result = await DataService.PostFile(file);
         if (result.Success)

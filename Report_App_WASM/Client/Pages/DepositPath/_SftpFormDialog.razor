@@ -19,8 +19,8 @@
             {
                 <MudNumericField @bind-Value="Item.Port" Label="@Localizer.Get("Sftp port")" Disabled="Action == CrudAction.Delete"/>
             }
-            <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("User name")" Disabled="Action == CrudAction.Delete" autocomplete="new-UserName" />
-            <MudTextField @bind-Value="Item!.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="Action == CrudAction.Delete" autocomplete="new-Password" />
+            <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("User name")" Disabled="Action == CrudAction.Delete" autocomplete="new-UserName"/>
+            <MudTextField @bind-Value="Item!.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled="Action == CrudAction.Delete" autocomplete="new-Password"/>
         </MudForm>
         @if (Action == CrudAction.Delete)
         {

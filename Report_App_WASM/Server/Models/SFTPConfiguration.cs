@@ -21,5 +21,6 @@ public class SftpConfiguration : BaseTraceability
                 _password = EncryptDecrypt.EncryptString(value!);
         }
     }
+
     public virtual ICollection<FileStorageLocation>? FileDepositPathConfigurations { get; set; }
 }

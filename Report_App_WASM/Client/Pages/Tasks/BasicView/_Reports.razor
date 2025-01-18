@@ -34,6 +34,7 @@
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
 
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true"/>
                     @if (_typeTask == TaskType.Report.ToString())
                     {
@@ -95,10 +96,7 @@
 
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
         _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
-    }
 
-    protected override void OnInitialized()
-    {
         _itemsProvider = async req =>
         {
             var response = await GetRemoteData(req);
@@ -110,6 +108,10 @@
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
+    }
+
+    protected override void OnInitialized()
+    {
         _translations = AppService.GetGridTranslations();
     }
 

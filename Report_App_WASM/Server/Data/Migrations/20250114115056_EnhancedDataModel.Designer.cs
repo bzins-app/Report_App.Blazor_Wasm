@@ -12,7 +12,7 @@ using Report_App_WASM.Server.Data;
 namespace ReportAppWASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250111205038_EnhancedDataModel")]
+    [Migration("20250114115056_EnhancedDataModel")]
     partial class EnhancedDataModel
     {
         /// <inheritdoc />
@@ -767,6 +767,9 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<bool>("Error")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("FileGenerationType")
+                        .HasColumnType("int");
 
                     b.Property<string>("FileName")
                         .HasMaxLength(600)
@@ -1573,6 +1576,9 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("Error")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Info")
                         .HasColumnType("nvarchar(max)");

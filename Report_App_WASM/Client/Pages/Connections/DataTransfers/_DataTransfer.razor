@@ -19,17 +19,17 @@
             <MudSpacer/>
             <MudStack Row="true" Justify="Justify.Center">
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(OpenCreateDialog)"
-                Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
+                               Size="Size.Small"
+                               OnClick="@(OpenCreateDialog)"
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(OnRefresh)"
-                Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(RemoveFilters)"
-                Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -41,6 +41,7 @@
                             <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DataProviderId)" Title="DataProviderId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
@@ -134,9 +135,9 @@
         var uri = $"GetActivityDbConnection?DataProviderId={value.DataProviderId}";
         var item = new DataProviderDto
         {
-                ProviderName = value.ProviderName,
-                ProviderIcon = value.ProviderIcon,
-                DatabaseConnection = await DataService.GetValues<DatabaseConnectionDto>(uri)
+            ProviderName = value.ProviderName,
+            ProviderIcon = value.ProviderIcon,
+            DatabaseConnection = await DataService.GetValues<DatabaseConnectionDto>(uri)
         };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -192,7 +193,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new DataProviderDto { DatabaseConnection = new List<DatabaseConnectionDto>() , ProviderType = ProviderType.TargetDatabase };
+        var value = new DataProviderDto { DatabaseConnection = new List<DatabaseConnectionDto>(), ProviderType = ProviderType.TargetDatabase };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_DataTransferFormDialog>("Create", parameters, _dialogOptions);

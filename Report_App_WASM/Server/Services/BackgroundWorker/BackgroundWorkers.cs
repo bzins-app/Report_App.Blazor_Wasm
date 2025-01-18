@@ -5,6 +5,7 @@ using Hangfire.Storage;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
+using Report_App_WASM.Server.Utils.BackgroundWorker;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
@@ -48,7 +49,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
     public async Task SwitchBackgroundTasksPerActivityAsync(long dataProviderId, bool activate)
     {
-        var reportHeaders = await _context.ScheduledTask.Where(a => a.IsEnabled && a.DataProvider.DataProviderId == dataProviderId)
+        var reportHeaders = await _context.ScheduledTask
+            .Where(a => a.IsEnabled && a.DataProvider.DataProviderId == dataProviderId)
             .Select(a => a.ScheduledTaskId).ToListAsync();
 
         foreach (var t in reportHeaders) await HandleTasksJobs(t, activate);
@@ -81,10 +83,14 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     _ => TaskType.Report
                 };
                 await _context.ScheduledTask
-                    .Where(a => a.IsEnabled == true && a.Type == typeTask && a.DataProvider.IsEnabled).ForEachAsync(
+                    .Where(a => a.IsEnabled == true && a.Type == typeTask && a.DataProvider.IsEnabled)
+                    .Include(scheduledTask => scheduledTask.DataProvider).ForEachAsync(
                         a =>
                         {
                             var jobName = a.TypeName + " Id:" + a.ScheduledTaskId;
+                            options.TimeZone = string.IsNullOrEmpty(a.DataProvider.TimeZone)
+                                ? TimeZoneInfo.Local
+                                : TimeZoneInfo.FindSystemTimeZoneById(a.DataProvider.TimeZone);
                             if (!string.IsNullOrEmpty(a.CronParameters) || a.CronParameters != "[]")
                             {
                                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(a.CronParameters);
@@ -95,6 +101,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                                     {
                                         ScheduledTaskId = a.ScheduledTaskId,
                                         Cts = CancellationToken.None,
+                                        TaskType = a.Type,
                                         GenerateFiles = true
                                     };
                                     var jobId = jobName + "_" + cronId;
@@ -119,16 +126,20 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         return result;
     }
 
-    public void RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient>? emails,
-        List<QueryCommandParameter> customQueryParameters, bool generateFiles = false)
+    public async Task RunManuallyTask(long taskHeaderId, string? runBy, List<EmailRecipient> emails,
+        List<QueryCommandParameter> commandQueryParameters, bool generateFiles = false)
     {
+        var _tType = await _context.ScheduledTask.Where(a => a.ScheduledTaskId == taskHeaderId)
+            .Select(a => a.Type)
+            .FirstOrDefaultAsync();
         BackgroundJob.Enqueue(() => RunTaskJobAsync(new TaskJobParameters
         {
             ScheduledTaskId = taskHeaderId,
             Cts = CancellationToken.None,
             GenerateFiles = generateFiles,
-            CustomEmails = emails ?? new List<EmailRecipient>(),
-            CustomQueryParameters = customQueryParameters,
+            TaskType = _tType,
+            CustomEmails = emails,
+            QueryCommandParameters = commandQueryParameters,
             ManualRun = true,
             RunBy = runBy
         }, CancellationToken.None));
@@ -149,14 +160,25 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         var taskHeader = await _context.ScheduledTask
             .AsNoTrackingWithIdentityResolution()
             .Where(a => a.ScheduledTaskId == taskHeaderId)
-            .Select(a => new { a.TaskName, a.Type, a.TypeName, a.DataProvider.ProviderName, a.CronParameters })
+            .Select(a => new
+            {
+                a.TaskName,
+                a.Type,
+                a.TypeName,
+                a.DataProvider.ProviderName,
+                a.CronParameters,
+                timeZone = string.IsNullOrEmpty(a.DataProvider.TimeZone)
+                    ? TimeZoneInfo.Local.Id
+                    : a.DataProvider.TimeZone
+            })
             .FirstOrDefaultAsync();
 
         var jobName = taskHeader!.TypeName + " Id:" + taskHeaderId;
 
         if (activate)
         {
-            var options = new RecurringJobOptions { TimeZone = TimeZoneInfo.Local };
+            var options = new RecurringJobOptions
+                { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(taskHeader.timeZone) };
             if (!string.IsNullOrEmpty(taskHeader.CronParameters) && taskHeader.CronParameters != "[]")
             {
                 var crons = JsonSerializer.Deserialize<List<CronParameters>>(taskHeader.CronParameters);
@@ -167,6 +189,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
                     var jobParam = new TaskJobParameters
                     {
                         ScheduledTaskId = taskHeaderId,
+                        TaskType = taskHeader.Type,
                         Cts = CancellationToken.None,
                         GenerateFiles = true
                     };
@@ -211,9 +234,24 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
         if (db != null)
         {
-            using var handler = new BackgroundTaskHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
-                _hostingEnvironment);
-            await handler.HandleTask(parameters);
+            if (parameters.TaskType == TaskType.DataTransfer)
+            {
+                using var handler = new DataTransferHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
+                    _hostingEnvironment);
+                await handler.HandleDatatransferTask(parameters);
+            }
+            else if (parameters.TaskType == TaskType.Alert)
+            {
+                using var handler = new AlertHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
+                    _hostingEnvironment);
+                await handler.HandleAlertTask(parameters);
+            }
+            else if (parameters.TaskType == TaskType.Report)
+            {
+                using var handler = new ReportHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
+                    _hostingEnvironment);
+                await handler.HandleReportTask(parameters);
+            }
         }
     }
 

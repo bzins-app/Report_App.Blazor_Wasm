@@ -19,8 +19,9 @@ public class DatabaseConnection : BaseTraceability
         }
     }
 
-    [Required][MaxLength(4000)] public string DbConnectionParameters { get; set; } = "[]";
+    [Required] [MaxLength(4000)] public string DbConnectionParameters { get; set; } = "[]";
     [MaxLength(1000)] public string? ConnectionLogin { get; set; }
+
     [MaxLength(1000)]
     public string? Password
     {

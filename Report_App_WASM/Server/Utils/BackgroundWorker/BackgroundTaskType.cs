@@ -1,4 +1,4 @@
-﻿namespace Report_App_WASM.Server.Utils;
+﻿namespace Report_App_WASM.Server.Utils.BackgroundWorker;
 
 public enum BackgroundTaskType
 {
