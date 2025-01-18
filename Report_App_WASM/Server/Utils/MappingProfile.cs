@@ -8,25 +8,25 @@ public class MappingProfile : Profile
     {
         // Add as many of these lines as you need to map your objects
         CreateMap<SftpConfiguration, SftpConfigurationDto>().ReverseMap();
-        CreateMap<ApplicationParameters, ApplicationParametersDto>().ReverseMap();
-        CreateMap<Activity, ActivityDto>().ReverseMap();
-        CreateMap<ActivityDbConnection, ActivityDbConnectionDto>().ReverseMap();
-        CreateMap<FileDepositPathConfiguration, FileDepositPathConfigurationDto>().ReverseMap();
-        CreateMap<ServicesStatus, ServicesStatusDto>().ReverseMap();
+        CreateMap<SystemParameters, SystemParametersDto>().ReverseMap();
+        CreateMap<DataProvider, DataProviderDto>().ReverseMap();
+        CreateMap<DatabaseConnection, DatabaseConnectionDto>().ReverseMap();
+        CreateMap<FileStorageLocation, FileStorageLocationDto>().ReverseMap();
+        CreateMap<SystemServicesStatus, SystemServicesStatusDto>().ReverseMap();
         CreateMap<SmtpConfiguration, SmtpConfigurationDto>().ReverseMap();
         CreateMap<LdapConfiguration, LdapConfigurationDto>().ReverseMap();
-        CreateMap<TaskDetail, TaskDetailDto>().ReverseMap();
-        CreateMap<TaskEmailRecipient, TaskEmailRecipientDto>().ReverseMap();
-        CreateMap<TaskHeader, TaskHeaderDto>().ReverseMap();
-        CreateMap<ApplicationLogQueryExecution, ApplicationLogQueryExecutionDto>();
-        CreateMap<ApplicationLogEmailSender, ApplicationLogEmailSenderDto>();
-        CreateMap<ApplicationLogReportResult, ApplicationLogReportResultDto>();
-        CreateMap<ApplicationLogTask, ApplicationLogTaskDto>();
-        CreateMap<ApplicationLogSystem, ApplicationLogSystemDto>();
-        CreateMap<ApplicationAuditTrail, ApplicationAuditTrailDto>();
-        CreateMap<ApplicationLogTaskDetails, ApplicationLogTaskDetailsDto>();
+        CreateMap<ScheduledTaskQuery, ScheduledTaskQueryDto>().ReverseMap();
+        CreateMap<ScheduledTaskDistributionList, ScheduledTaskDistributionListDto>().ReverseMap();
+        CreateMap<ScheduledTask, ScheduledTaskDto>().ReverseMap();
+        CreateMap<QueryExecutionLog, QueryExecutionLogDto>();
+        CreateMap<EmailLog, EmailLogDto>();
+        CreateMap<ReportGenerationLog, ReportGenerationLogDto>();
+        CreateMap<TaskLog, TaskLogDto>();
+        CreateMap<SystemLog, SystemLogDto>();
+        CreateMap<AuditTrail, AuditTrailDto>();
+        CreateMap<TaskStepLog, TaskStepLogDto>();
         CreateMap<ApplicationUser, ApplicationUserDto>();
-        CreateMap<DbTableDescriptions, DbTableDescriptionsDto>();
-        CreateMap<QueryStore, QueryStoreDto>();
+        CreateMap<TableMetadata, TableMetadataDto>();
+        CreateMap<StoredQuery, StoredQueryDto>();
     }
 }

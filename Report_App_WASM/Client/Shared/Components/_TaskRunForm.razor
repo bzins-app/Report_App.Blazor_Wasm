@@ -8,7 +8,7 @@
 
 @code {
 
-    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public ScheduledTaskDto? Item { get; set; }
 
     private string? _email;
 
@@ -21,20 +21,20 @@
         userEmail.Add(currentUserEmail);
         _email = currentUserEmail;
 
-        var recipients = (await DataService.GetValues<TaskEmailRecipientDto>($"GetTaskEmailRecipient?taskHeaderId={Item!.TaskHeaderId}")).FirstOrDefault();
+        var recipients = (await DataService.GetValues<ScheduledTaskDistributionListDto>($"GetTaskEmailRecipient?taskHeaderId={Item!.ScheduledTaskId}")).FirstOrDefault();
         if (Item != null && recipients != null)
         {
-            if (!string.IsNullOrEmpty(recipients.Email))
+            if (!string.IsNullOrEmpty(recipients.Recipients))
             {
-                var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Email);
+                var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients.Recipients);
                 recipientsEmails.AddRange(emails!.Where(a => a.Bcc == false).Select(a => a.Email).ToList());
             }
         }
 
         var queryParameters = new List<QueryCommandParameter>();
-        if (Item?.QueryParameters != "[]" && !string.IsNullOrEmpty(Item?.QueryParameters))
+        if (Item?.GlobalQueryParameters != "[]" && !string.IsNullOrEmpty(Item?.GlobalQueryParameters))
         {
-            queryParameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
+            queryParameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.GlobalQueryParameters);
         }
 
         var parameters = new DialogParameters { ["userEmail"] = userEmail, ["recipientsEmails"] = recipientsEmails, ["queryParameters"] = queryParameters };
@@ -44,20 +44,23 @@
         if (!(result is { Canceled: true }))
         {
             List<EmailRecipient> emails = new();
-            var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data;
-            var resultValidation = feedback != null && feedback.Item1;
-            if (feedback != null) queryParameters = feedback.Item2;
-            if (resultValidation)
+            if (result != null)
             {
-                var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Email!);
-                var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emailsRecipients, CustomQueryParameters = queryParameters };
-                await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
-            }
-            else
-            {
-                emails.Add(new EmailRecipient { Email = _email, Bcc = false });
-                var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = emails, CustomQueryParameters = queryParameters };
-                await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
+                var feedback = (Tuple<bool, List<QueryCommandParameter>>)result.Data!;
+                var resultValidation = feedback != null && feedback.Item1;
+                if (feedback != null) queryParameters = feedback.Item2;
+                if (resultValidation)
+                {
+                    var emailsRecipients = JsonSerializer.Deserialize<List<EmailRecipient>>(recipients?.Recipients!);
+                    var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = emailsRecipients, QueryCommandParameters = queryParameters };
+                    await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
+                }
+                else
+                {
+                    emails.Add(new EmailRecipient { Email = _email!, Bcc = false });
+                    var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = emails, QueryCommandParameters = queryParameters };
+                    await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
+                }
             }
 
             Snackbar.Add(Localizer.Get("Alert") + " " + Localizer.Get("Job on going"), Severity.Success);

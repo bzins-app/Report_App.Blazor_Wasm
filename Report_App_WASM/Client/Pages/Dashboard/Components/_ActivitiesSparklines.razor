@@ -1,6 +1,4 @@
 ﻿@using ApexCharts
-
-
 <MudTable Items="GetFilteredTaskLogs()" Height="450px" Virtualize="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" FixedHeader="true" Dense="true" Elevation="0">
     <HeaderContent>
         <MudTh>@Localizer.Get("Activity")</MudTh>
@@ -22,7 +20,7 @@
                                  Items="context.ToList()"
                                  Name="@Localizer.Get("Type of tasks")"
                                  SeriesType="SeriesType.Pie"
-                                 XValue="@(e => e.TypeTask)"
+                                 XValue="@(e => e.TypeTask!)"
                                  YAggregate="@(e => e.Sum(a => a.NbrTasks))"/>
 
             </ApexChart>
@@ -54,7 +52,7 @@
     {
         return _taskLogs!
             .Where(a => a.Date >= DateTime.Now.Date.AddDays(-10))
-            .GroupBy(e => e.ActivityName)
+            .GroupBy(e => e.ProviderName)
             .OrderByDescending(a => a.Sum(taksLogsValues => taksLogsValues.NbrTasks));
     }
 

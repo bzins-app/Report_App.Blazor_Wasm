@@ -17,7 +17,7 @@ else
                          Name="@Localizer.Get("Total size in MB")"
                          SeriesType="SeriesType.Treemap"
                          XValue="@(e => e.ReportName!)"
-                         YAggregate="@(e => (decimal)e.Sum(a => Math.Round(a.FileSizeInMb, 2)))" OrderByDescending="@(e => e.Y!)"/>
+                         YAggregate="@(e => e.Sum(a => Math.Round((decimal)a.FileSizeInMb, 2)))" OrderByDescending="@(e => e.Y!)"/>
     </ApexChart>
 }
 
@@ -40,7 +40,7 @@ else
     public async Task Refresh()
     {
         _logs = await DataService.GetValues<StorageData>("StorageInfo", ApiControllers.DashboardApi);
-        await _chart.UpdateSeriesAsync(false);
+        if (_chart != null) await _chart.UpdateOptionsAsync(false, true, false);
     }
 
 }

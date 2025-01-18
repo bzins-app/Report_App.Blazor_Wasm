@@ -10,25 +10,30 @@ public class MySqlDbRemoteDb : IRemoteDb
         GC.SuppressFinalize(this);
     }
 
-    public string GetAllTablesScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"		
         SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 		FROM information_schema.tables t  
                 where TABLE_SCHEMA='{dbparam.Database}' 
                 order by 1,2";
         }
+
         return script;
     }
 
-    public string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesAndColumnsScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select 
                             tab.table_name as table_name,
                             col.column_name as column_name
@@ -43,11 +48,13 @@ public class MySqlDbRemoteDb : IRemoteDb
         return script;
     }
 
-    public string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName)
+    public string GetTableColumnInfoScript(DatabaseConnection dbInfo, string tableName)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select
 				'Col' as Valuetype,
 				c.COLUMN_NAME,
@@ -63,7 +70,7 @@ public class MySqlDbRemoteDb : IRemoteDb
         return script;
     }
 
-    public async Task TryConnectAsync(ActivityDbConnection dbInfo)
+    public async Task TryConnectAsync(DatabaseConnection dbInfo)
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new MySqlConnection(param.ConnnectionString);
@@ -79,11 +86,16 @@ public class MySqlDbRemoteDb : IRemoteDb
     }
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts)
+        DatabaseConnection dbInfo, CancellationToken cts)
     {
         if (CheckDbType(dbInfo))
         {
             var connectionInfo = CreateConnectionString(dbInfo);
+
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone = TimeZoneInfo.FindSystemTimeZoneById(_tzId);
 
             var DbConnection = new MySqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new MySqlDataAdapter();
@@ -109,7 +121,7 @@ public class MySqlDbRemoteDb : IRemoteDb
                                 ? MySqlDbType.Date
                                 : MySqlDbType.DateTime)
                         {
-                            Value = timevalue
+                            Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
@@ -165,14 +177,15 @@ public class MySqlDbRemoteDb : IRemoteDb
         return data;
     }
 
-    private static bool CheckDbType(ActivityDbConnection dbInfo)
+    private static bool CheckDbType(DatabaseConnection dbInfo)
     {
         return dbInfo.TypeDb == TypeDb.MySql;
     }
 
-    private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
+    private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
+            dbInfo.ConnectionLogin ?? string.Empty, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,

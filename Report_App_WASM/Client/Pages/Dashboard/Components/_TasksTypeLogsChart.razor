@@ -65,7 +65,7 @@ else
 
     public async Task Refresh()
     {
-        await _chart.UpdateSeriesAsync(false); 
+        await _chart?.UpdateOptionsAsync(false, true, false)!;
     }
 
 }

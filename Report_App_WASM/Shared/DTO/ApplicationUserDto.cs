@@ -17,12 +17,8 @@ public class ApplicationUserDto : BaseTraceabilityDto, IDto
 
     //override identity user, add new column
     public bool IsBaseUser { get; set; } = false;
-
-    [MaxLength(100)] public string? UserFirstName { get; set; }
-
-    [MaxLength(100)] public string? UserLastName { get; set; }
-
+    [MaxLength(250)] public string? UserFirstName { get; set; }
+    [MaxLength(250)] public string? UserLastName { get; set; }
     [MaxLength(10)] public string? ApplicationTheme { get; set; }
-
-    [MaxLength(5)] public string Culture { get; set; } = "en";
+    [MaxLength(8)] public string Culture { get; set; } = "en";
 }

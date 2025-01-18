@@ -14,8 +14,8 @@
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             <MudTextField @bind-Value="Item!.Domain" Label="@Localizer.Get("Domain")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("User name")" Disabled autocomplete="new-UserName" />
-            <MudTextField @bind-Value="Item!.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled autocomplete="new-Password" />
+            <MudTextField @bind-Value="Item!.UserName" Label="@Localizer.Get("User name")" Disabled autocomplete="new-UserName"/>
+            <MudTextField @bind-Value="Item!.Password" Label="@Localizer.Get("Password")" InputType="InputType.Password" Disabled autocomplete="new-Password"/>
         </MudForm>
         @if (Action == CrudAction.Delete)
         {
@@ -30,7 +30,7 @@
 
 @code {
 
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
 
     [Parameter] public LdapConfigurationDto? Item { get; set; }
 

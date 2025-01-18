@@ -26,7 +26,8 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
-                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationAuditTrailDto">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="AuditTrailDto">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Audit id" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DateTime)" Title="@Localizer.Get("Timestamp")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.UserId)" Title="@Localizer.Get("User name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Type)" Title="@Localizer.Get("Type of change")" Sortable="true"/>
@@ -71,10 +72,10 @@
 
 @code
 {
-    GridItemsProvider<ApplicationAuditTrailDto>? _itemsProvider;
+    GridItemsProvider<AuditTrailDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationAuditTrailDto> _grid = default!;
+    SimpleGrid<AuditTrailDto> _grid = default!;
     private bool _rendering;
 
     private AuditTrailValuesChanged _values = new();
@@ -94,7 +95,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationAuditTrailDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<AuditTrailDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -102,7 +103,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationAuditTrailDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationAuditTrailDto> req)
+    private async Task<ApiResponse<AuditTrailDto>?> GetRemoteData(GridItemsProviderRequest<AuditTrailDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -119,7 +120,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationAuditTrailDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<AuditTrailDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -138,8 +139,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "AuditTrail", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Audit Trail" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "AuditTrail";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractAuditTrail?";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 
@@ -150,7 +154,7 @@
         _rendering = false;
     }
 
-    void RowClicked(SimpleGridRowClickEventArgs<ApplicationAuditTrailDto> args)
+    void RowClicked(SimpleGridRowClickEventArgs<AuditTrailDto> args)
     {
         _values.AffectedColumns = args.Item.AffectedColumns;
         _values.OldValues = args.Item.OldValues;

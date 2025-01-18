@@ -3,5 +3,5 @@
 public class DeleteTablePayload
 {
     public string TableName { get; set; } = string.Empty;
-    public int IdDataTransfer { get; set; }
+    public long IdDataTransfer { get; set; }
 }

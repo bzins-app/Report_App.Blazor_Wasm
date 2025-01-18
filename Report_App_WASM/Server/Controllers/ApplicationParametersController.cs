@@ -24,40 +24,40 @@ public class ApplicationParametersController : ControllerBase, IDisposable
 
     [Authorize]
     [HttpGet("ActivitiesInfo")]
-    public async Task<IEnumerable<SelectItemActivitiesInfo>> GetActivitiesInfo()
+    public async Task<IEnumerable<SelectItemDataproviderInfo>> GetActivitiesInfo()
     {
-        return await _context.Activity
-            .Where(a => a.ActivityType == ActivityType.SourceDb)
+        return await _context.DataProvider
+            .Where(a => a.ProviderType == ProviderType.SourceDatabase)
             .AsNoTracking()
-            .Select(a => new SelectItemActivitiesInfo
+            .Select(a => new SelectItemDataproviderInfo
             {
-                ActivityId = a.ActivityId,
-                ActivityName = a.ActivityName,
-                HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
-                IsVisible = a.Display,
-                LogoPath = a.ActivityLogo,
-                IsActivated = a.IsActivated,
-                DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
+                DataProviderId = a.DataProviderId,
+                ProviderName = a.ProviderName,
+                HasALogo = !string.IsNullOrEmpty(a.ProviderIcon),
+                IsVisible = a.IsVisible,
+                LogoPath = a.ProviderIcon,
+                IsActivated = a.IsEnabled,
+                DatabaseConnectionId = a.DatabaseConnection.FirstOrDefault().DatabaseConnectionId
             })
             .ToArrayAsync();
     }
 
     [Authorize]
     [HttpGet("DataTransfers")]
-    public async Task<IEnumerable<SelectItemActivitiesInfo>> GetDataTransfersInfo()
+    public async Task<IEnumerable<SelectItemDataproviderInfo>> GetDataTransfersInfo()
     {
-        return await _context.Activity
-            .Where(a => a.ActivityType == ActivityType.TargetDb)
+        return await _context.DataProvider
+            .Where(a => a.ProviderType == ProviderType.TargetDatabase)
             .AsNoTracking()
-            .Select(a => new SelectItemActivitiesInfo
+            .Select(a => new SelectItemDataproviderInfo
             {
-                ActivityId = a.ActivityId,
-                ActivityName = a.ActivityName,
-                HasALogo = !string.IsNullOrEmpty(a.ActivityLogo),
-                IsVisible = a.Display,
-                LogoPath = a.ActivityLogo,
-                IsActivated = a.IsActivated,
-                DbConnectionId = a.ActivityDbConnections.FirstOrDefault().Id
+                DataProviderId = a.DataProviderId,
+                ProviderName = a.ProviderName,
+                HasALogo = !string.IsNullOrEmpty(a.ProviderIcon),
+                IsVisible = a.IsVisible,
+                LogoPath = a.ProviderIcon,
+                IsActivated = a.IsEnabled,
+                DatabaseConnectionId = a.DatabaseConnection.FirstOrDefault().DatabaseConnectionId
             })
             .ToArrayAsync();
     }
@@ -75,8 +75,8 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     [HttpGet("DepositPathInfo")]
     public async Task<IEnumerable<SelectItem>> GetDepositPathInfo()
     {
-        return await _context.FileDepositPathConfiguration
-            .Select(a => new SelectItem { Id = a.FileDepositPathConfigurationId, Name = a.ConfigurationName })
+        return await _context.FileStorageLocation
+            .Select(a => new SelectItem { Id = a.FileStorageLocationId, Name = a.ConfigurationName })
             .ToListAsync();
     }
 
@@ -105,13 +105,13 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     [HttpGet("CheckTaskHeaderEmail")]
     public async Task<bool> CheckTaskHeaderEmailAsync(int taskHeaderId)
     {
-        var email = await _context.TaskEmailRecipient
-            .Where(a => a.TaskHeader!.TaskHeaderId == taskHeaderId)
-            .Select(a => a.Email)
+        var email = await _context.ScheduledTaskDistributionList
+            .Where(a => a.ScheduledTask!.ScheduledTaskId == taskHeaderId)
+            .Select(a => a.Recipients)
             .FirstOrDefaultAsync();
 
-        return email != "[]" && await _context.TaskEmailRecipient
-            .AnyAsync(a => a.TaskHeader.TaskHeaderId == taskHeaderId);
+        return email != "[]" && await _context.ScheduledTaskDistributionList
+            .AnyAsync(a => a.ScheduledTask.ScheduledTaskId == taskHeaderId);
     }
 
     [Authorize]
@@ -126,9 +126,9 @@ public class ApplicationParametersController : ControllerBase, IDisposable
 
     [Authorize]
     [HttpGet("GetApplicationParameters")]
-    public async Task<ApplicationParameters?> GetApplicationParametersAsync()
+    public async Task<SystemParameters?> GetApplicationParametersAsync()
     {
-        return await _context.ApplicationParameters
+        return await _context.SystemParameters
             .OrderBy(a => a.Id)
             .FirstOrDefaultAsync();
     }

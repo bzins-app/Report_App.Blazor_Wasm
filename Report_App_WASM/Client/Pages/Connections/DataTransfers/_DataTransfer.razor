@@ -41,7 +41,8 @@
                             <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DataProviderId)" Title="DataProviderId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -59,10 +60,10 @@
 
 @code
 {
-    GridItemsProvider<ActivityDto>? _itemsProvider;
+    GridItemsProvider<DataProviderDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<ActivityDto> _grid = default!;
+    SimpleGrid<DataProviderDto> _grid = default!;
     private string? _errorMessage;
     private bool _rendering;
     DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Medium, FullWidth = true };
@@ -75,7 +76,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ActivityDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<DataProviderDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -83,7 +84,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ActivityDto>?> GetRemoteData(GridItemsProviderRequest<ActivityDto> req)
+    private async Task<ApiResponse<DataProviderDto>?> GetRemoteData(GridItemsProviderRequest<DataProviderDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -100,7 +101,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ActivityDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<DataProviderDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -129,14 +130,14 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(ActivityDto value)
+    private async Task OpenEditDialog(DataProviderDto value)
     {
-        var uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
-        var item = new ActivityDto
+        var uri = $"GetActivityDbConnection?DataProviderId={value.DataProviderId}";
+        var item = new DataProviderDto
         {
-            ActivityName = value.ActivityName,
-            ActivityLogo = value.ActivityLogo,
-            ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDto>(uri)
+            ProviderName = value.ProviderName,
+            ProviderIcon = value.ProviderIcon,
+            DatabaseConnection = await DataService.GetValues<DatabaseConnectionDto>(uri)
         };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -146,9 +147,9 @@
         if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
-            value.ActivityName = item.ActivityName;
-            value.ActivityLogo = item.ActivityLogo;
-            value.ActivityDbConnections = item.ActivityDbConnections;
+            value.ProviderName = item.ProviderName;
+            value.ProviderIcon = item.ProviderIcon;
+            value.DatabaseConnection = item.DatabaseConnection;
 
             var result = await DataService.PostValues(value, "ActivityUpdate");
             if (result.Success)
@@ -164,10 +165,10 @@
         }
     }
 
-    private async Task OpenDeleteDialog(ActivityDto value)
+    private async Task OpenDeleteDialog(DataProviderDto value)
     {
-        var uri = $"GetActivityDbConnection?ActivityId={value.ActivityId}";
-        value.ActivityDbConnections = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+        var uri = $"GetActivityDbConnection?DataProviderId={value.DataProviderId}";
+        value.DatabaseConnection = await DataService.GetValues<DatabaseConnectionDto>(uri);
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
         var dialog = await DialogService.ShowAsync<_DataTransferFormDialog>("Delete", parameters, _dialogOptions);
@@ -192,7 +193,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new ActivityDto { ActivityDbConnections = new List<ActivityDbConnectionDto> { new() }, ActivityType = ActivityType.TargetDb };
+        var value = new DataProviderDto { DatabaseConnection = new List<DatabaseConnectionDto>(), ProviderType = ProviderType.TargetDatabase };
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_DataTransferFormDialog>("Create", parameters, _dialogOptions);

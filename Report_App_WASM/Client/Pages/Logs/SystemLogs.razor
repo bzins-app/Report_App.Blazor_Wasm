@@ -26,7 +26,7 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
-                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogSystemDto" FieldsContent="_translations">
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" @ref="_grid" RowClick="@RowClicked" TGridItem="SystemLogDto" FieldsContent="_translations">
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TimeStampAppHour)" Title="@Localizer.Get("Timestamp")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.EventId)" Title="@Localizer.Get("Event Id")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Id)" Title="@Localizer.Get("Id")" Sortable="true"/>
@@ -75,10 +75,10 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogSystemDto>? _itemsProvider;
+    GridItemsProvider<SystemLogDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<ApplicationLogSystemDto>? _grid;
+    SimpleGrid<SystemLogDto>? _grid;
     private bool _rendering;
     ErrorDetails _values = new();
 
@@ -98,7 +98,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogSystemDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<SystemLogDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -106,7 +106,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogSystemDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogSystemDto> req)
+    private async Task<ApiResponse<SystemLogDto>?> GetRemoteData(GridItemsProviderRequest<SystemLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -123,7 +123,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationLogSystemDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<SystemLogDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -142,8 +142,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "SystemLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "System logs" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "SystemLogs";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractSystemLogs?";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 
@@ -160,7 +163,7 @@
         GC.SuppressFinalize(this);
     }
 
-    void RowClicked(SimpleGridRowClickEventArgs<ApplicationLogSystemDto> args)
+    void RowClicked(SimpleGridRowClickEventArgs<SystemLogDto> args)
     {
         _values.Browser = args.Item.Browser;
         _values.Platform = args.Item.Platform;

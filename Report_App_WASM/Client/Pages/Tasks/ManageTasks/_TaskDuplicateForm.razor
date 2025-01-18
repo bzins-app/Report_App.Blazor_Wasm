@@ -19,9 +19,9 @@
 
 @code {
 
-    [CascadingParameter] public SimpleGrid<TaskHeaderDto>? DataGrid { get; set; }
+    [CascadingParameter] public SimpleGrid<ScheduledTaskDto>? DataGrid { get; set; }
 
-    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public ScheduledTaskDto? Item { get; set; }
 
     string _name = "";
 
@@ -37,7 +37,7 @@
     private async Task ConfirmDuplicate()
     {
         _visible = false;
-        await Clone(_name, Item!.TaskHeaderId);
+        await Clone(_name, Item!.ScheduledTaskId);
         Snackbar.Add(Localizer.Get("Object added"), Severity.Success);
         await DataGrid?.RefreshDataAsync()!;
     }
@@ -47,9 +47,9 @@
         _visible = false;
     }
 
-    private async Task Clone(string name, int taskHeaderId)
+    private async Task Clone(string name, long taskHeaderId)
     {
-        DuplicateTask payload = new() { Name = name, TaskHeaderId = taskHeaderId };
+        DuplicateTask payload = new() { Name = name, ScheduledTaskId = taskHeaderId };
         var result = await DataService.PostValues(payload, "TaskClone");
         if (!result.Success)
         {

@@ -10,12 +10,10 @@ public class DepositPathController : ControllerBase, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly LocalFilesService _fileService;
-    private readonly ILogger<DepositPathController> _logger;
 
     public DepositPathController(ILogger<DepositPathController> logger, LocalFilesService fileService,
         ApplicationDbContext context)
     {
-        _logger = logger;
         _fileService = fileService;
         _context = context;
     }
@@ -55,7 +53,7 @@ public class DepositPathController : ControllerBase, IDisposable
                 return Ok(result);
             }
         }
-        else
+
         {
             var result =
                 await _fileService.TestDirectory(value.EntityValue.FilePath!, value.EntityValue.TryToCreateFolder);

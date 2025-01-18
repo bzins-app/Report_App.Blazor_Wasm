@@ -9,7 +9,7 @@ public abstract class AuditableIdentityContext : IdentityDbContext<ApplicationUs
     {
     }
 
-    public DbSet<ApplicationAuditTrail> AuditLogs { get; set; } = null!;
+    public DbSet<AuditTrail> AuditLogs { get; set; } = null!;
 
     public virtual async Task<int> SaveChangesAsync(string? userId = null)
     {
@@ -39,7 +39,7 @@ public abstract class AuditableIdentityContext : IdentityDbContext<ApplicationUs
                 entity.ModDateTime = now;
             }
 
-            if (entry.Entity is ApplicationAuditTrail || entry.State == EntityState.Detached ||
+            if (entry.Entity is AuditTrail || entry.State == EntityState.Detached ||
                 entry.State == EntityState.Unchanged ||
                 entry.Entity.GetType().GetInterfaces().Contains(typeof(IExcludeAuditTrail)))
                 continue;

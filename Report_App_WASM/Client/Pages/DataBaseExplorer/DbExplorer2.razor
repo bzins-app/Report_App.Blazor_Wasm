@@ -1,9 +1,9 @@
-﻿@page "/DbExplorer2/{ActivityId:int}/{ActivityName}"
+﻿@page "/DbExplorer2/{DataProviderId:long}/{ProviderName}"
 @inject HttpClient Http
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@using Blazor.AceEditorJs
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
-@using Blazor.AceEditorJs
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -13,7 +13,7 @@
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h6">
-                @Localizer.Get("DB explorer"): @ActivityName
+                @Localizer.Get("DB explorer"): @ProviderName
             </MudText>
         </CardHeaderContent>
     </MudCardHeader>
@@ -83,9 +83,9 @@
 
 @code {
 
-    [Parameter] public string ActivityName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int ActivityId { get; set; }
+    [Parameter] public long DataProviderId { get; set; }
 
     private List<TablesColsInfo> TableNames = new();
     private List<TablesColsInfo> TableNamesStored = new();
@@ -107,15 +107,15 @@
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
-    private List<TreeItemData<TablesColsInfo>> InitialTreeItems;
+    private List<TreeItemData<TablesColsInfo>> InitialTreeItems = null!;
     public RenderFragment? _editor { get; set; }
     public RenderFragment? _tree { get; set; }
-    public string _tableHeader;
+    public string _tableHeader = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+        if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
         {
             NavigationManager.NavigateTo("/403");
         }
@@ -139,8 +139,8 @@
         QueryBuilder = "";
         TableNamesStored = new List<TablesColsInfo>();
         ColNamesStored = new List<TablesColsInfo>();
-        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
-        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+        var uri = $"GetActivityDbConnection?DataProviderId={DataProviderId}";
+        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
         if (response.Any())
         {
             _typeDbTask = response.Select(a => a.TypeDb).First();
@@ -162,12 +162,12 @@
         };
 
 
-        _editor = (__builder) =>
+        _editor = __builder =>
         {
             <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
         };
 
-        _tree = (__builder) =>
+        _tree = __builder =>
         {
             <MudTreeView ServerData="@LoadServerData" Items="@InitialTreeItems" Height="82vh" ReadOnly="false" Dense="true" Class="overflow-x-auto" Ripple="false">
                 <ItemTemplate Context="context">
@@ -175,14 +175,14 @@
                     {
                         <MudTreeViewItem Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable">
                             <BodyContent Context="item">
-                                <MudText>@(string.IsNullOrEmpty(item.Value.Description) ? item.Value?.Name : item.Value?.Name + " " + item.Value.Description)</MudText>
-                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
+                                <MudText>@(string.IsNullOrEmpty(item.Value!.Description) ? item.Value?.Name : item.Value?.Name + " " + item.Value!.Description)</MudText>
+                                <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(item.Value!.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
                             </BodyContent>
                         </MudTreeViewItem>
                     }
                     else
                     {
-                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
+                        <MudTreeViewItem Text="@(string.IsNullOrEmpty(context.Value!.Description) ? context.Value?.Name : context.Value?.Name + " " + context.Value!.Description)" Value="@context.Value" Icon="@context.Icon" LoadingIconColor="Color.Info" CanExpand="@context.Expandable"/>
                     }
                 </ItemTemplate>
             </MudTreeView>
@@ -216,7 +216,7 @@
             var item = InitialTreeItems.FirstOrDefault(a => a.Value == parentValue);
             if (item != null)
             {
-                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
+                var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
                 if (data != null)
                 {
                     item.Children = data.Values
@@ -230,13 +230,13 @@
         }
         else
         {
-            var item = InitialTreeItems.FirstOrDefault(a => a.Value.Name == _typeTableHead);
-            if (item != null)
+            var item = InitialTreeItems.FirstOrDefault(a => a.Value!.Name == _typeTableHead);
+            if (item is { Children: not null })
             {
-                var childItem = item.Children.FirstOrDefault(a => a.Value.Name == parentValue.Name);
+                var childItem = item.Children.FirstOrDefault(a => a.Value!.Name == parentValue.Name);
                 if (childItem != null)
                 {
-                    var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={parentValue.Name}", _cts.Token);
+                    var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={parentValue.Name}", _cts.Token);
                     if (data != null)
                     {
                         childItem.Children = data.Values.Select(a => new TreeItemData<TablesColsInfo>
@@ -264,7 +264,7 @@
     {
         _cts = new CancellationTokenSource();
         _loading = true;
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?activityId={ActivityId}", _cts.Token);
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
         TableNames = data!.Values;
         TableNamesStored = data.Values;
         _hasDesc = data.HasDescription;
@@ -276,7 +276,7 @@
         _cts = new CancellationTokenSource();
         _loading = true;
         _SelectedTable = table;
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?activityId={ActivityId}&table={table}", _cts.Token);
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={table}", _cts.Token);
         ColNames = data!.Values;
         ColNamesStored = data.Values;
         _hasDescCol = data.HasDescription;
@@ -374,7 +374,7 @@
 
             var run = new RemoteDbCommandParameters
             {
-                ActivityId = ActivityId,
+                DataProviderId = DataProviderId,
                 QueryToRun = QueryRun,
                 Test = true,
                 PaginatedResult = true,

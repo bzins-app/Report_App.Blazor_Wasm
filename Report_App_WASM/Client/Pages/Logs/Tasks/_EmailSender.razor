@@ -23,6 +23,7 @@
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="EmailLogId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
@@ -44,10 +45,10 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogEmailSenderDto>? _itemsProvider;
+    GridItemsProvider<EmailLogDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 20 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationLogEmailSenderDto> _grid = default!;
+    SimpleGrid<EmailLogDto> _grid = default!;
     private bool _rendering;
 
 
@@ -59,7 +60,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogEmailSenderDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<EmailLogDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -67,7 +68,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogEmailSenderDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogEmailSenderDto> req)
+    private async Task<ApiResponse<EmailLogDto>?> GetRemoteData(GridItemsProviderRequest<EmailLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -84,7 +85,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationLogEmailSenderDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<EmailLogDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -103,8 +104,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "EmailLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Email sender logs" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "EmailLogs";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractEmailLogs?";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 

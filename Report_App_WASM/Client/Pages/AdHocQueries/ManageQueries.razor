@@ -1,4 +1,4 @@
-﻿@page "/ManageQueries/{ActivityId:int}/{ActivityName}"
+﻿@page "/ManageQueries/{DataProviderId:long}/{ProviderName}"
 @page "/ManageQueriesGlobal"
 @inject NavigationManager UriHelper
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
@@ -63,12 +63,12 @@
                             </MudStack>
                         </Blazor.SimpleGrid.TemplateColumn>
                     }
-                    @if (string.IsNullOrEmpty(ActivityName))
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
+                    @if (string.IsNullOrEmpty(ProviderName))
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
                     }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="Query Id" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Run query")">
                         <MudIconButton Icon="@Icons.Material.Outlined.Kitesurfing" OnClick="() => RunQuery(context)" title="@Localizer.Get("Run query")"/>
                     </Blazor.SimpleGrid.TemplateColumn>
@@ -85,14 +85,14 @@
 
 @code {
 
-    [Parameter] public string ActivityName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int? ActivityId { get; set; }
+    [Parameter] public long? DataProviderId { get; set; }
 
-    GridItemsProvider<QueryStoreDto>? _itemsProvider;
+    GridItemsProvider<StoredQueryDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<QueryStoreDto>? _grid;
+    SimpleGrid<StoredQueryDto>? _grid;
     private string? _errorMessage;
     private string? _pageTitle;
     private bool _rendering;
@@ -100,7 +100,7 @@
     bool _UserIsSupervisor;
     List<string> _tags = new();
     IReadOnlyCollection<string>? selected;
-    int _activityId;
+    long _DataProviderId;
     string _oldActivity = string.Empty;
 
     protected override async Task OnParametersSetAsync()
@@ -109,9 +109,9 @@
 
         selected = null;
         var urlExt = string.Empty;
-        if (!string.IsNullOrEmpty(ActivityName))
+        if (!string.IsNullOrEmpty(ProviderName))
         {
-            urlExt = $"?activityId={ActivityId!.Value}";
+            urlExt = $"?DataProviderId={DataProviderId!.Value}";
         }
 
         var uri = $"{ApiControllers.CrudDataApi}GetTagsQueries{urlExt}";
@@ -125,7 +125,7 @@
         }
 
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        if (_empty || _oldActivity != ActivityName)
+        if ((_empty || _oldActivity != ProviderName) && !_rendering)
         {
             _itemsProvider = async req =>
             {
@@ -134,7 +134,7 @@
                 if (response is null)
                 {
                     _empty = true;
-                    return GridItemsProviderResult.From(Array.Empty<QueryStoreDto>(), 0);
+                    return GridItemsProviderResult.From(Array.Empty<StoredQueryDto>(), 0);
                 }
 
                 _empty = !response.Value!.Any();
@@ -143,17 +143,17 @@
         }
 
         var user = await AuthenticationStateProvider.GetUserInfo();
-        if (!string.IsNullOrEmpty(ActivityName))
+        if (!string.IsNullOrEmpty(ProviderName))
         {
-            _empty = _activityId != ActivityId;
-            _activityId = ActivityId!.Value;
-            _pageTitle += ": " + ActivityName;
-            if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ActivityName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
+            _empty = _DataProviderId != DataProviderId;
+            _DataProviderId = DataProviderId!.Value;
+            _pageTitle += ": " + ProviderName;
+            if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
             {
                 NavigationManager.NavigateTo("/403");
             }
 
-            _oldActivity = ActivityName;
+            _oldActivity = ProviderName;
         }
 
         _UserIsSupervisor = user!.ExposedClaims!.Select(a => a.Value).ToList().Contains("Supervisor") || user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin");
@@ -168,7 +168,7 @@
             if (response is null)
             {
                 _empty = true;
-                return GridItemsProviderResult.From(Array.Empty<QueryStoreDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<StoredQueryDto>(), 0);
             }
 
             if (response.Value!.Any())
@@ -182,10 +182,11 @@
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
+        _oldActivity = ProviderName;
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<QueryStoreDto>?> GetRemoteData(GridItemsProviderRequest<QueryStoreDto> req)
+    private async Task<ApiResponse<StoredQueryDto>?> GetRemoteData(GridItemsProviderRequest<StoredQueryDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -193,11 +194,12 @@
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/Queries?";
+        _rendering = true;
 
         var customFilters = string.Empty;
-        if (ActivityId.HasValue)
+        if (DataProviderId.HasValue)
         {
-            customFilters = $"IdActivity eq {ActivityId.Value}";
+            customFilters = $"IdDataProvider eq {DataProviderId.Value}";
         }
 
         url += "$count=true";
@@ -213,7 +215,7 @@
 
         if (!string.IsNullOrEmpty(odataFilters))
         {
-            if (ActivityId.HasValue)
+            if (DataProviderId.HasValue)
             {
                 url += "&" + odataFilters + " and " + customFilters;
             }
@@ -222,7 +224,7 @@
                 url += "&" + odataFilters;
             }
         }
-        else if (ActivityId.HasValue)
+        else if (DataProviderId.HasValue)
         {
             url += "&$filter=" + customFilters;
         }
@@ -231,7 +233,7 @@
         {
             var _tagFilter = string.Empty;
             var first = false;
-            if (!ActivityId.HasValue && string.IsNullOrEmpty(odataFilters))
+            if (!DataProviderId.HasValue && string.IsNullOrEmpty(odataFilters))
             {
                 _tagFilter = "&$filter=";
                 first = true;
@@ -255,7 +257,7 @@
 
         try
         {
-            return await DataService.GetODataValues<QueryStoreDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<StoredQueryDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -290,7 +292,7 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenDeleteDialog(QueryStoreDto value)
+    private async Task OpenDeleteDialog(StoredQueryDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
@@ -314,17 +316,17 @@
         }
     }
 
-    private void RunQuery(QueryStoreDto value)
+    private void RunQuery(StoredQueryDto value)
     {
-        UriHelper.NavigateTo($"RunQuery/{value.Id}/{value.IdActivity}/{value.ActivityName}");
+        UriHelper.NavigateTo($"RunQuery/{value.Id}/{value.IdDataProvider}/{value.ProviderName}");
     }
 
-    private void EditItem(QueryStoreDto value)
+    private void EditItem(StoredQueryDto value)
     {
         //var uri = UriHelper.GetUriWithQueryParameters("QueryEdit/" + value.Id,
         //   new Dictionary<string, object>
         //       {
-        //           ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
+        //           ["FromTaskManager"] = !string.IsNullOrEmpty(ProviderName),
         //           ["Page"] = _pagination.CurrentPageIndex,
         //           ["PageSize"] = _pagination.ItemsPerPage
         //       }!);
@@ -333,10 +335,10 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new QueryStoreDto();
-        if (ActivityId.HasValue)
+        var value = new StoredQueryDto();
+        if (DataProviderId.HasValue)
         {
-            value.IdActivity = ActivityId.Value;
+            value.IdDataProvider = DataProviderId.Value;
         }
 
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };

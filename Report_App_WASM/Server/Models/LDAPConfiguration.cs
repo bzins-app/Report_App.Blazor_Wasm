@@ -4,12 +4,9 @@ public class LdapConfiguration : BaseTraceability
 {
     private string? _password;
     public int Id { get; set; }
-
-    [Required] [MaxLength(60)] public string? ConfigurationName { get; set; }
-
+    [Required] [MaxLength(200)] public string? ConfigurationName { get; set; }
     [Required] public string? Domain { get; set; }
-
-    [MaxLength(100)] public string? UserName { get; set; }
+    [MaxLength(200)] public string? UserName { get; set; }
 
     public string? Password
     {

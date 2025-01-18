@@ -1,4 +1,6 @@
-﻿namespace Report_App_WASM.Server.Controllers;
+﻿using Report_App_WASM.Server.Utils.BackgroundWorker;
+
+namespace Report_App_WASM.Server.Controllers;
 
 [ApiExplorerSettings(IgnoreApi = true)]
 [Authorize]
@@ -31,7 +33,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateServicesStatusAsync(ApiCrudPayload<ServicesStatus> status)
+    public async Task<IActionResult> UpdateServicesStatusAsync(ApiCrudPayload<SystemServicesStatus> status)
     {
         if (status.EntityValue == null)
         {
@@ -52,7 +54,7 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
         }
     }
 
-    private async Task<SubmitResult> UpdateServicesAsync(ServicesStatus item, string? userName)
+    private async Task<SubmitResult> UpdateServicesAsync(SystemServicesStatus item, string? userName)
     {
         try
         {
@@ -68,16 +70,17 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
         }
     }
 
-    private async Task<ServicesStatus> GetServiceStatusAsync()
+    private async Task<SystemServicesStatus> GetServiceStatusAsync()
     {
-        return await _context.ServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ?? new ServicesStatus();
+        return await _context.SystemServicesStatus.OrderBy(a => a.Id).FirstOrDefaultAsync() ??
+               new SystemServicesStatus();
     }
 
     private async Task<IActionResult> ActivateServiceAsync(ApiCrudPayload<ApiBackgroundWorkerPayload> value,
-        BackgroundTaskType type, Action<ServicesStatus, bool> updateServiceStatus)
+        BackgroundTaskType type, Action<SystemServicesStatus, bool> changeStatus)
     {
         var item = await GetServiceStatusAsync();
-        updateServiceStatus(item, value.EntityValue!.Activate);
+        changeStatus(item, value.EntityValue!.Activate);
         var result = await ActivateBackgroundWorkersAsync(value.EntityValue.Activate, type);
         await UpdateServicesAsync(item, value.UserName);
         return Ok(result);
@@ -126,10 +129,11 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public IActionResult RunManually(ApiCrudPayload<RunTaskManually> value)
+    public async Task<IActionResult> RunManually(ApiCrudPayload<RunTaskManually> value)
     {
-        _backgroundWorkers.RunManuallyTask(value.EntityValue!.TaskHeaderId, value.UserName, value.EntityValue.Emails!,
-            value.EntityValue.CustomQueryParameters!, value.EntityValue.GenerateFiles);
+        await _backgroundWorkers.RunManuallyTask(value.EntityValue!.TaskHeaderId, value.UserName,
+            value.EntityValue.Emails!,
+            value.EntityValue.QueryCommandParameters!, value.EntityValue.GenerateFiles);
         return Ok(new SubmitResult { Success = true });
     }
 

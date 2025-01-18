@@ -12,25 +12,25 @@ public class OlebDbDbRemoteDb : IRemoteDb
         GC.SuppressFinalize(this);
     }
 
-    public string GetAllTablesScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         return script;
     }
 
-    public string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesAndColumnsScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         return script;
     }
 
-    public string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName)
+    public string GetTableColumnInfoScript(DatabaseConnection dbInfo, string tableName)
     {
         var script = string.Empty;
         return script;
     }
 
-    public async Task TryConnectAsync(ActivityDbConnection dbInfo)
+    public async Task TryConnectAsync(DatabaseConnection dbInfo)
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new OleDbConnection(param.ConnnectionString);
@@ -47,7 +47,7 @@ public class OlebDbDbRemoteDb : IRemoteDb
 
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts)
+        DatabaseConnection dbInfo, CancellationToken cts)
     {
         if (CheckDbType(dbInfo))
         {
@@ -86,14 +86,15 @@ public class OlebDbDbRemoteDb : IRemoteDb
         return data;
     }
 
-    private static bool CheckDbType(ActivityDbConnection dbInfo)
+    private static bool CheckDbType(DatabaseConnection dbInfo)
     {
         return dbInfo.TypeDb == TypeDb.OlebDb;
     }
 
-    private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
+    private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
+            dbInfo.ConnectionLogin ?? string.Empty, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,

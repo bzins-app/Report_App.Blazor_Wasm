@@ -1,5 +1,5 @@
-﻿using Report_App_WASM.Client.Services.Contracts;
-using System.Net;
+﻿using System.Net;
+using Report_App_WASM.Client.Services.Contracts;
 
 namespace Report_App_WASM.Client.Services.Implementations;
 

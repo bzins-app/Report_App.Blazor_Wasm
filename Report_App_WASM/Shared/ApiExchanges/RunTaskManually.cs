@@ -2,8 +2,8 @@
 
 public class RunTaskManually
 {
-    public int TaskHeaderId { get; init; }
+    public long TaskHeaderId { get; init; }
     public List<EmailRecipient>? Emails { get; init; }
-    public List<QueryCommandParameter>? CustomQueryParameters { get; init; }
+    public List<QueryCommandParameter>? QueryCommandParameters { get; init; }
     public bool GenerateFiles { get; init; } = false;
 }

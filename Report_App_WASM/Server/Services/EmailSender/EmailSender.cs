@@ -15,7 +15,7 @@ public class EmailSender : IEmailSender
 
     public async Task GenerateErrorEmailAsync(string errorMessage, string subjectSuffix)
     {
-        var emailInfos = await Context.ApplicationParameters
+        var emailInfos = await Context.SystemParameters
             .Select(a => new { a.ErrorEmailPrefix, a.ErrorEMailMessage, a.AdminEmails }).FirstOrDefaultAsync();
 
         if (emailInfos != null && emailInfos.AdminEmails != "[]")
@@ -32,13 +32,13 @@ public class EmailSender : IEmailSender
     {
         var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking()
             .FirstOrDefaultAsync();
-        var emailservice = await Context.ServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
+        var emailservice = await Context.SystemServicesStatus.Select(a => a.EmailService).FirstOrDefaultAsync();
 
         var result = new SubmitResult();
 
         if (email != null && smtp != null && email.Any() && emailservice)
         {
-            ApplicationLogEmailSender log = new()
+            EmailLog log = new()
             {
                 EmailTitle = subject,
                 StartDateTime = DateTime.Now,
@@ -58,7 +58,7 @@ public class EmailSender : IEmailSender
 
                 if (size > 20)
                 {
-                    attachment = null;
+                    attachment.Clear();
                     message += Environment.NewLine +
                                $"The size of the attachment is too high: {Math.Round(size, 2)}MB. Maximum is {20} ";
                 }
@@ -91,6 +91,7 @@ public class EmailSender : IEmailSender
             await Context.AddAsync(log);
             await Context.SaveChangesAsync();
             result.Success = true;
+            result.KeyValue = log.Id;
         }
         else
         {

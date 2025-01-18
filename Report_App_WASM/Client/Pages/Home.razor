@@ -13,10 +13,10 @@
         {
             foreach (var t in _activities.Where(a => a.IsVisible))
             {
-                <AuthorizeView Roles=@t.ActivityName>
+                <AuthorizeView Roles=@t.ProviderName>
                     <div>
                         <hr style="margin-bottom: 15px"/>
-                        <h5>@Localizer.Get("You have access to the activity"): @t.ActivityName</h5>
+                        <h5>@Localizer.Get("You have access to the activity"): @t.ProviderName</h5>
                         @if (_appConst.ActivateTaskSchedulerModule)
                         {
                             <p>@Localizer.Get("You can download the reports already created and consult the plan of the next report executions.")</p>
@@ -27,7 +27,7 @@
                                 @if (!context.User.IsInRole("Supervisor"))
                                 {
                                     <MudItem sm="3" md="3">
-                                        <a class="nav-link" href="/TasksView/@t.ActivityName/@t.ActivityId">
+                                        <a class="nav-link" href="/TasksView/@t.ProviderName/@t.DataProviderId">
                                             <span class="pcoded-micon">
                                                 <i class="fa fa-arrow-right"></i>
                                             </span><span class="pcoded-mtext">@Localizer.Get("Base view")</span>
@@ -38,14 +38,14 @@
                                 @if (context.User.IsInRole("Supervisor"))
                                 {
                                     <MudItem sm="3" md="3">
-                                        <a class="nav-link" href="/RetrieveFiles/@t.ActivityName/@t.ActivityId">
+                                        <a class="nav-link" href="/RetrieveFiles/@t.ProviderName/@t.DataProviderId">
                                             <span class="pcoded-micon">
                                                 <i class="fa fa-arrow-right"></i>
                                             </span><span class="pcoded-mtext">@Localizer.Get("Retrieve files")</span>
                                         </a>
                                     </MudItem>
                                     <MudItem sm="3" md="3">
-                                        <a class="nav-link" href="TasksPerActivity/Report/@t.ActivityId/@t.ActivityName">
+                                        <a class="nav-link" href="TasksPerActivity/Report/@t.DataProviderId/@t.ProviderName">
                                             <span class="pcoded-micon">
                                                 <i class="fa fa-arrow-right"></i>
                                             </span><span class="pcoded-mtext">@Localizer.Get("Manage reports")</span>
@@ -56,7 +56,7 @@
                             @if (_appConst.ActivateAdHocQueriesModule)
                             {
                                 <MudItem sm="3" md="3">
-                                    <a class="nav-link" href="/QueryStore/@t.ActivityId/@t.ActivityName">
+                                    <a class="nav-link" href="/QueryStore/@t.DataProviderId/@t.ProviderName">
                                         <span class="pcoded-micon">
                                             <i class="fa fa-arrow-right"></i>
                                         </span><span class="pcoded-mtext">@Localizer.Get("Queries store")</span>
@@ -65,7 +65,7 @@
                                 @if (context.User.IsInRole("Supervisor"))
                                 {
                                     <MudItem sm="3" md="3">
-                                        <a class="nav-link" href="/DbExplorer2/@t.ActivityId/@t.ActivityName">
+                                        <a class="nav-link" href="/DbExplorer2/@t.DataProviderId/@t.ProviderName">
                                             <span class="pcoded-micon">
                                                 <i class="fa fa-arrow-right"></i>
                                             </span><span class="pcoded-mtext">@Localizer.Get("DB explorer")</span>
@@ -99,13 +99,13 @@
 
 @code {
 
-    private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
     private ApplicationConstantsValues _appConst = new();
 
     protected override async Task OnInitializedAsync()
     {
         _appConst = (await AppService.GetApplicationConstantsValues())!;
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
     }
 
 }

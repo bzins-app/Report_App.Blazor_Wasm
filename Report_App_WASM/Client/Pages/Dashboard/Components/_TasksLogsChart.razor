@@ -13,11 +13,12 @@ else
 
         <ApexPointSeries TItem="TaksLogsValues"
                          Items="_taskLogs"
-                         Name="@Localizer.Get("Nbr of jobs")"
+                         Name="@Localizer.Get("Job duration")"
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e => e.Sum(a => a.NbrTasks))"
+                         YAggregate="@(e => e.Sum(a => a.TotalDuration / 60))"
                          OrderBy="e => e.X"/>
+
 
         <ApexPointSeries TItem="TaksLogsValues"
                          Items="_taskLogs"
@@ -25,14 +26,6 @@ else
                          SeriesType="SeriesType.Line"
                          XValue="@(e => e.Date.ToLocalTime())"
                          YAggregate="@(e => e.Sum(a => a.NbrErrors))"
-                         OrderBy="e => e.X"/>
-
-        <ApexPointSeries TItem="TaksLogsValues"
-                         Items="_taskLogs"
-                         Name="@Localizer.Get("Job duration")"
-                         SeriesType="SeriesType.Line"
-                         XValue="@(e => e.Date.ToLocalTime())"
-                         YAggregate="@(e => e.Sum(a => a.TotalDuration / 60))"
                          OrderBy="e => e.X"/>
     </ApexChart>
 }
@@ -58,11 +51,26 @@ else
         //Stacked 100% test
         //options.Chart = new Chart { Stacked = true, Type = ChartType.Bar, StackType = StackType.Percent100 };
         //options.Chart.Toolbar = new Toolbar { Show = false };
+
+        _options.Yaxis = new List<YAxis>();
+
+        _options.Yaxis.Add(new YAxis
+        {
+            Title = new AxisTitle { Text = Localizer.Get("Job duration") },
+            SeriesName = Localizer.Get("Job duration")
+        });
+
+        _options.Yaxis.Add(new YAxis
+        {
+            Title = new AxisTitle { Text = Localizer.Get("Nbr of errors") },
+            SeriesName = Localizer.Get("Nbr of errors"),
+            Opposite = true
+        });
     }
 
     public async Task Refresh()
     {
-        await _chart.UpdateSeriesAsync(false);
+        if (_chart != null) await _chart.UpdateOptionsAsync(false, true, false);
     }
 
 }

@@ -1,5 +1,5 @@
 ﻿@page "/TaskManager/{TypeTask}"
-@page "/TasksPerActivity/{TypeTask}/{ActivityId:int}/{ActivityName}"
+@page "/TasksPerActivity/{TypeTask}/{DataProviderId:long}/{ProviderName}"
 @inject NavigationManager UriHelper
 @implements IAsyncDisposable
 @inject HttpClient Http
@@ -56,10 +56,10 @@
                             </CascadingValue>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskHeaderId)" Title="Task Id" Sortable="true"/>
-                    @if (string.IsNullOrEmpty(ActivityName))
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
+                    @if (string.IsNullOrEmpty(ProviderName))
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ActivityName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
                     }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true"/>
                     @if (TypeTask == TaskType.Report.ToString())
@@ -80,7 +80,7 @@
                     }
                     @if (TypeTask == TaskType.Report.ToString())
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileDepositPathConfigurationId)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context"/>
                         </Blazor.SimpleGrid.TemplateColumn>
@@ -101,19 +101,19 @@
 {
     [Parameter] public string TypeTask { get; set; } = default!;
 
-    [Parameter] public string ActivityName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = default!;
 
-    [Parameter] public int? ActivityId { get; set; }
+    [Parameter] public long? DataProviderId { get; set; }
 
     [Parameter] [SupplyParameterFromQuery] public int? Page { get; set; }
 
     [Parameter] [SupplyParameterFromQuery] public int? PageSize { get; set; }
 
 
-    GridItemsProvider<TaskHeaderDto>? _itemsProvider;
+    GridItemsProvider<ScheduledTaskDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
-    SimpleGrid<TaskHeaderDto>? _grid;
+    SimpleGrid<ScheduledTaskDto>? _grid;
     private string? _errorMessage;
     private string? _pageTitle;
     private bool _rendering;
@@ -121,7 +121,7 @@
     IReadOnlyCollection<string>? selected;
     bool _empty;
     string _oldActivity = string.Empty;
-
+    string _oldTypeTask = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -136,9 +136,9 @@
         selected = null;
         var type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.Alert.ToString() ? TaskType.Alert : TaskType.DataTransfer;
         var urlExt = string.Empty;
-        if (!string.IsNullOrEmpty(ActivityName))
+        if (!string.IsNullOrEmpty(ProviderName))
         {
-            urlExt = $"&&activityId={ActivityId!.Value}";
+            urlExt = $"&&DataProviderId={DataProviderId!.Value}";
         }
 
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
@@ -152,7 +152,7 @@
         }
 
         // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
-        if (_empty || _oldActivity != ActivityName)
+        if ((_empty || _oldActivity != ProviderName || _oldTypeTask != TypeTask) && !_rendering)
         {
             _itemsProvider = async req =>
             {
@@ -161,7 +161,7 @@
                 if (response is null)
                 {
                     _empty = true;
-                    return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
+                    return GridItemsProviderResult.From(Array.Empty<ScheduledTaskDto>(), 0);
                 }
 
                 _empty = !response.Value!.Any();
@@ -169,11 +169,13 @@
             };
         }
 
-        if (!string.IsNullOrEmpty(ActivityName))
+        if (!string.IsNullOrEmpty(ProviderName))
         {
-            _pageTitle += ": " + ActivityName;
-            _oldActivity = ActivityName;
+            _pageTitle += ": " + ProviderName;
+            _oldActivity = ProviderName;
         }
+
+        _oldTypeTask = TypeTask;
     }
 
 
@@ -186,7 +188,7 @@
             if (response is null)
             {
                 _empty = true;
-                return GridItemsProviderResult.From(Array.Empty<TaskHeaderDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<ScheduledTaskDto>(), 0);
             }
 
             if (response.Value!.Any())
@@ -200,10 +202,12 @@
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
         };
+        _oldActivity = ProviderName;
+        _oldTypeTask = TypeTask;
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<TaskHeaderDto>?> GetRemoteData(GridItemsProviderRequest<TaskHeaderDto> req)
+    private async Task<ApiResponse<ScheduledTaskDto>?> GetRemoteData(GridItemsProviderRequest<ScheduledTaskDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -211,12 +215,12 @@
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/TaskHeader?";
-
+        _rendering = true;
 
         var customFilters = $"TypeName eq '{TypeTask}'";
-        if (ActivityId.HasValue)
+        if (DataProviderId.HasValue)
         {
-            customFilters += $" and  IdActivity eq {ActivityId.Value} ";
+            customFilters += $" and  IdDataProvider eq {DataProviderId.Value} ";
         }
 
         url += "$count=true";
@@ -252,7 +256,7 @@
 
         try
         {
-            return await DataService.GetODataValues<TaskHeaderDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<ScheduledTaskDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -287,7 +291,7 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenDeleteDialog(TaskHeaderDto value)
+    private async Task OpenDeleteDialog(ScheduledTaskDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
@@ -297,9 +301,9 @@
         if (feedback is { Canceled: false })
         {
             _errorMessage = string.Empty;
-            if (value.IsActivated)
+            if (value.IsEnabled)
             {
-                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = value.TaskHeaderId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = value.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
             }
 
             var result = await DataService.PostValues(value, "TaskHeaderDelete");
@@ -316,12 +320,12 @@
         }
     }
 
-    private void EditItem(TaskHeaderDto value)
+    private void EditItem(ScheduledTaskDto value)
     {
-        var uri = UriHelper.GetUriWithQueryParameters("TaskEdit/" + value.TaskHeaderId,
+        var uri = UriHelper.GetUriWithQueryParameters("TaskEdit/" + value.ScheduledTaskId,
             new Dictionary<string, object>
             {
-                ["FromTaskManager"] = !string.IsNullOrEmpty(ActivityName),
+                ["FromTaskManager"] = !string.IsNullOrEmpty(ProviderName),
                 ["Page"] = _pagination.CurrentPageIndex,
                 ["PageSize"] = _pagination.ItemsPerPage
             }!);
@@ -330,7 +334,13 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new TaskHeaderDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert, SendByEmail = TypeTask == TaskType.Alert.ToString() };
+        var value = new ScheduledTaskDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert, SendByEmail = TypeTask == TaskType.Alert.ToString() };
+        if (DataProviderId.HasValue)
+        {
+            value.IdDataProvider = DataProviderId.Value;
+            value.ProviderName = ProviderName;
+        }
+
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);

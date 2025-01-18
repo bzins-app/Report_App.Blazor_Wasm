@@ -11,27 +11,30 @@ public class SqlServerRemoteDb : IRemoteDb
         GC.SuppressFinalize(this);
     }
 
-    public string GetAllTablesScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
         {
-            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' order by 1,2"
-                : $@"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
+                : @"SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, concat(TABLE_SCHEMA,'.',TABLE_NAME) as table_name
                 FROM information_schema.tables order by 1,2";
         }
+
         return script;
     }
 
-    public string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesAndColumnsScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
         {
-            var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             if (!string.IsNullOrEmpty(dbparam.Database))
                 script =
                     $"select  concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
@@ -39,13 +42,13 @@ public class SqlServerRemoteDb : IRemoteDb
             else
                 script =
                     "select concat(tables.TABLE_SCHEMA,'.',tab.name) as Table_name, col.name as Column_Name  from sys.tables as tab inner join sys.columns as col on tab.object_id = col.object_id left join sys.types as t on col.user_type_id = t.user_type_id" +
-                    $"  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
+                    "  inner join information_schema.tables tables on tables.TABLE_NAME=tab.name  order by 1 ,2";
         }
 
         return script;
     }
 
-    public string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName)
+    public string GetTableColumnInfoScript(DatabaseConnection dbInfo, string tableName)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
@@ -61,7 +64,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return script;
     }
 
-    public async Task TryConnectAsync(ActivityDbConnection dbInfo)
+    public async Task TryConnectAsync(DatabaseConnection dbInfo)
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new SqlConnection(param.ConnnectionString);
@@ -77,11 +80,16 @@ public class SqlServerRemoteDb : IRemoteDb
     }
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts)
+        DatabaseConnection dbInfo, CancellationToken cts)
     {
         if (CheckDbType(dbInfo))
         {
             var connectionInfo = CreateConnectionString(dbInfo);
+
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone = TimeZoneInfo.FindSystemTimeZoneById(_tzId);
 
             var DbConnection = new SqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new SqlDataAdapter();
@@ -102,12 +110,13 @@ public class SqlServerRemoteDb : IRemoteDb
                                 ? parameter.DateOption.GetCalculateDateTime().Date
                                 : parameter.DateOption.GetCalculateDateTime();
 
+
                         SqlParameter para = new(parameter.ParameterIdentifier,
                             parameter.ValueType is QueryCommandParameterValueType.Date
                                 ? SqlDbType.Date
                                 : SqlDbType.DateTime2)
                         {
-                            Value = timevalue
+                            Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
@@ -161,14 +170,16 @@ public class SqlServerRemoteDb : IRemoteDb
         return data;
     }
 
-    private static bool CheckDbType(ActivityDbConnection dbInfo)
+    private static bool CheckDbType(DatabaseConnection dbInfo)
     {
         return dbInfo.TypeDb == TypeDb.SqlServer;
     }
 
-    private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
+    private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin??"", string.IsNullOrEmpty(dbInfo.Password)?"": EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
+            dbInfo.ConnectionLogin ?? "",
+            string.IsNullOrEmpty(dbInfo.Password) ? "" : EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,
@@ -181,12 +192,13 @@ public class SqlServerRemoteDb : IRemoteDb
         return value;
     }
 
-    public async Task<bool> CkeckTableExists(ActivityDbConnection dbInfo, string query)
+    public async Task<bool> CkeckTableExists(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query, conn);
+        sqlCommand.CommandTimeout = dbInfo.CommandTimeOut;
         var reader = await sqlCommand.ExecuteReaderAsync();
 
         if (reader.HasRows)
@@ -205,7 +217,7 @@ public class SqlServerRemoteDb : IRemoteDb
         return false;
     }
 
-    public async Task DeleteTable(ActivityDbConnection dbInfo, string tableName)
+    public async Task DeleteTable(DatabaseConnection dbInfo, string tableName)
     {
         if (string.IsNullOrEmpty(tableName))
             throw new ArgumentNullException(nameof(tableName));
@@ -220,25 +232,28 @@ public class SqlServerRemoteDb : IRemoteDb
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query.ToString(), conn);
+        sqlCommand.CommandTimeout = dbInfo.CommandTimeOut;
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
-    public async Task CreateTable(ActivityDbConnection dbInfo, string query)
+    public async Task CreateTable(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         await using SqlConnection conn = new(remoteConnection.ConnnectionString);
         await conn.OpenAsync();
         var sqlCommand = new SqlCommand(query, conn);
+        sqlCommand.CommandTimeout = dbInfo.CommandTimeOut;
         await sqlCommand.ExecuteNonQueryAsync();
     }
 
-    public async Task<MergeResult> MergeTables(ActivityDbConnection dbInfo, string query)
+    public async Task<MergeResult> MergeTables(DatabaseConnection dbInfo, string query)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
         SqlConnection conn = new(remoteConnection.ConnnectionString);
         await conn.OpenAsync();
 
         var mergeCommand = new SqlCommand(query, conn);
+        mergeCommand.CommandTimeout = dbInfo.CommandTimeOut;
         var reader = await mergeCommand.ExecuteReaderAsync();
         var result = new MergeResult();
 
@@ -274,28 +289,25 @@ public class SqlServerRemoteDb : IRemoteDb
         return result;
     }
 
-    public async Task LoadDatatableToTable(ActivityDbConnection dbInfo, DataTable data, string? targetTable)
+    public async Task LoadDatatableToTable(DatabaseConnection dbInfo, DataTable data, string? targetTable)
     {
         var remoteConnection = CreateConnectionString(dbInfo);
-        await using SqlConnection conn = new(remoteConnection.ConnnectionString);
-        await conn.OpenAsync();
-        using (var bulkCopy = new SqlBulkCopy(conn))
+        using var bulkCopy = new SqlBulkCopy(remoteConnection.ConnnectionString);
+        bulkCopy.DestinationTableName = "dbo." + targetTable;
+        bulkCopy.BulkCopyTimeout = dbInfo.CommandTimeOut;
+
+        var totalRows = data.Rows.Count;
+
+        if (totalRows > 1000000)
         {
-            bulkCopy.DestinationTableName = "dbo." + targetTable;
-
-            var totalRows = data.Rows.Count;
-
-            if (totalRows > 1000000)
-            {
-                var batchsize = 1000000;
-                for (var i = 0; i <= totalRows; i += batchsize)
-                    await bulkCopy.WriteToServerAsync(data.AsEnumerable().Distinct().Skip(i).Take(batchsize)
-                        .CopyToDataTable());
-            }
-            else
-            {
-                await bulkCopy.WriteToServerAsync(data);
-            }
+            var batchsize = 1000000;
+            for (var i = 0; i <= totalRows; i += batchsize)
+                await bulkCopy.WriteToServerAsync(data.AsEnumerable().Distinct().Skip(i).Take(batchsize)
+                    .CopyToDataTable());
+        }
+        else
+        {
+            await bulkCopy.WriteToServerAsync(data);
         }
     }
 }

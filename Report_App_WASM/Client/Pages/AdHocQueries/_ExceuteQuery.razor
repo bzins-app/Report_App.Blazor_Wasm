@@ -1,7 +1,8 @@
-﻿@using Blazor.PivotTable
+﻿@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@using Blazor.PivotTable
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
-@inject IdentityAuthenticationStateProvider AuthenticationStateProvider
+@using SortDirection = MudBlazor.SortDirection
 @implements IDisposable
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -124,7 +125,9 @@
             {
                 @foreach (var key in _values?.FirstOrDefault()?.Keys!)
                 {
-                    <MudTh>@key</MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortLabel="@key" SortDirectionChanged="(value) => Callback(value, key)" T="string">@key</MudTableSortLabel>
+                    </MudTh>
                 }
             }
         </HeaderContent>
@@ -156,9 +159,9 @@ else
 
 @code {
 
-    [Parameter] public int QueryId { get; set; }
+    [Parameter] public long QueryId { get; set; }
 
-    private QueryStoreDto? Item;
+    private StoredQueryDto? Item;
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam;
     bool _formParamValidated = true;
@@ -178,7 +181,9 @@ else
     private string _typeReport = "Grid";
     PivotTable<Dictionary<string, object>>? _pvt;
     List<UserConfigurations> _userConfigs = new();
-    MudMenu _menu;
+    MudMenu _menu = null!;
+    string? _sorting;
+    string? _sortingDirection;
 
     protected override async Task OnInitializedAsync()
     {
@@ -227,7 +232,6 @@ else
         await GetUserSavedConfigs();
     }
 
-
     private async Task GetUserSavedConfigs()
     {
         var uricontroller = $"UserConfigurationGet?IdIntConfiguration={QueryId}&UserName={_userName}";
@@ -239,10 +243,10 @@ else
         var dialog = await DialogService.ShowAsync<_SaveConfigurationDialog>("Create");
         var feedback = await dialog.Result;
 
-        if (!feedback.Canceled)
+        if (!(feedback is { Canceled: true }))
         {
             _errorMessage = string.Empty;
-            var SaveName = feedback.Data.ToString();
+            var SaveName = feedback?.Data!.ToString();
             var config = await _pvt?.GetConfig()!;
             var payload = new UserConfigurationSave { SaveName = SaveName, IdIntConfiguration = QueryId, TypeConfiguration = TypeConfiguration.PitvotReport, SavedValues = config };
             var result = await DataService.PostValues(payload, "UserConfigurationSave");
@@ -259,7 +263,7 @@ else
         }
     }
 
-    private async Task DeleteConfig(int id)
+    private async Task DeleteConfig(long id)
     {
         await _menu.CloseMenuAsync();
         DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
@@ -306,8 +310,8 @@ else
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-                var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true, QueryId = QueryId, ActivityName = Item.ActivityName, PivotTableNbrColumns = parameters.PivotTableNbrOfColumnsMax, QueryName = Item.QueryName };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true, QueryId = QueryId, ProviderName = Item.ProviderName, PivotTableNbrColumns = parameters.PivotTableNbrOfColumnsMax, QueryName = Item.QueryName };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
@@ -355,6 +359,8 @@ else
     private async Task OnchangeReportType(string typeReport)
     {
         _typeReport = typeReport;
+        _sortingDirection = string.Empty;
+        _sorting = string.Empty;
         if (typeReport == "Grid")
         {
             _pivotTable = false;
@@ -427,8 +433,8 @@ else
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-                var remoteDataPayload = new RemoteDataPayload { Values = run, ActivityName = Item.ActivityName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements, ColumSorting = _sorting, SortingDirection = _sortingDirection };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
@@ -476,8 +482,8 @@ else
         {
             _extracting = true;
             _cts = new CancellationTokenSource();
-            var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-            var remoteDataPayload = new RemoteDataPayload { Values = run, ActivityName = Item.ActivityName, QueryId = QueryId, QueryName = Item.QueryName };
+            var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, FileName = Item.QueryName, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+            var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, ColumSorting = _sorting, SortingDirection = _sortingDirection };
             await DataService.ExtractAdHocQuery(remoteDataPayload, _cts.Token);
             _extracting = false;
         }
@@ -519,6 +525,16 @@ else
     public void Dispose()
     {
         GC.SuppressFinalize(this);
+    }
+
+    private async Task Callback(SortDirection obj, string key)
+    {
+        if (_table != null)
+        {
+            _sorting = obj == SortDirection.None ? "" : key;
+            _sortingDirection = obj == SortDirection.Descending ? "DESC" : obj == SortDirection.Ascending ? "ASC" : "";
+            await _table.ReloadServerData();
+        }
     }
 
 }

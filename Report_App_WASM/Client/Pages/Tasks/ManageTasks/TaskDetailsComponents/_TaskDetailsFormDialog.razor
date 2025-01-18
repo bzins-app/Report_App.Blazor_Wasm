@@ -21,7 +21,7 @@
             <MudGrid>
                 <MudItem sm="12" md="4" lg="2" Style="padding-right: 10px">
                     <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required/>
-                    <MudNumericField @bind-Value="Item.DetailSequence" Label="@Localizer.Get("Query sequence")"/>
+                    <MudNumericField @bind-Value="Item.ExecutionOrder" Label="@Localizer.Get("Query sequence")"/>
                     @if (_taskType == TaskType.Report.ToString())
                     {
                         <br/>
@@ -182,13 +182,13 @@
 
 @code {
 
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public TaskDetailDto? Item { get; set; }
+    [Parameter] public ScheduledTaskQueryDto? Item { get; set; }
 
-    [Parameter] public TaskHeaderDto? Header { get; set; }
+    [Parameter] public ScheduledTaskDto? Header { get; set; }
 
-    [Parameter] public int ActivityId { get; set; }
+    [Parameter] public long DataProviderId { get; set; }
 
     [Parameter] public CrudAction Action { get; set; }
 
@@ -196,8 +196,8 @@
     private string? _deletionValidation;
     private _QueryParameters? _refQuery;
 
-    private TaskDetailParameters _param = new();
-    private TaskHeaderParameters? _paramHeader = new();
+    private ScheduledTaskQueryParameters _param = new();
+    private ScheduledTaskParameters? _paramHeader = new();
     private TypeDb _typeDbActivity;
     private string? _taskType;
     private string? _fileType;
@@ -230,20 +230,20 @@
         _isDarkMode = UserAppTheme.DarkTheme;
         _taskType = Header?.TypeName;
         _fileType = Header?.TypeFileName;
-        if (Item!.TaskDetailParameters != "[]" && !string.IsNullOrEmpty(Item.TaskDetailParameters))
+        if (Item!.ExecutionParameters != "[]" && !string.IsNullOrEmpty(Item.ExecutionParameters))
         {
-            _param = JsonSerializer.Deserialize<TaskDetailParameters>(Item.TaskDetailParameters, _jsonOpt)!;
+            _param = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(Item.ExecutionParameters, _jsonOpt)!;
         }
 
-        if (Header?.TaskHeaderParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskHeaderParameters))
+        if (Header?.TaskParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskParameters))
         {
-            _paramHeader = JsonSerializer.Deserialize<TaskHeaderParameters>(Header.TaskHeaderParameters, _jsonOpt);
+            _paramHeader = JsonSerializer.Deserialize<ScheduledTaskParameters>(Header.TaskParameters, _jsonOpt);
         }
 
         _useExcelTemplate = _paramHeader!.UseAnExcelTemplate;
         _useSpecificFileNaming = _paramHeader.UseASpecificFileNaming;
-        var uri = $"GetActivityDbConnection?ActivityId={ActivityId}";
-        var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+        var uri = $"GetActivityDbConnection?DataProviderId={DataProviderId}";
+        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
         if (response.Any())
         {
             _typeDbActivity = response.Select(a => a.TypeDb).First();
@@ -285,7 +285,7 @@
             if (_form.IsValid)
             {
                 _refQuery?.UpdateParameters();
-                Item!.TaskDetailParameters = JsonSerializer.Serialize(_param);
+                Item!.ExecutionParameters = JsonSerializer.Serialize(_param);
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
@@ -298,10 +298,10 @@
             _cts = new CancellationTokenSource();
             List<QueryCommandParameter>? param = new();
             _refQuery?.UpdateParameters();
-            if ((Header!.UseGlobalQueryParameters && Header.QueryParameters != "[]") ||
-                !string.IsNullOrEmpty(Header.QueryParameters))
+            if ((Header!.UseGlobalQueryParameters && Header.GlobalQueryParameters != "[]") ||
+                !string.IsNullOrEmpty(Header.GlobalQueryParameters))
             {
-                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.QueryParameters);
+                param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.GlobalQueryParameters);
             }
 
             if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
@@ -319,7 +319,7 @@
             var _queryTorun = string.Empty;
             _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) ? _querySelectedCode : Item.Query;
 
-            var run = new RemoteDbCommandParameters { ActivityId = ActivityId, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };
+            var run = new RemoteDbCommandParameters { DataProviderId = DataProviderId, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = 20, LastRunDateTime = Item.LastRunDateTime ?? DateTime.Now, QueryCommandParameters = param };
             var remoteDataPayload = new RemoteDataPayload { Values = run };
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
             var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);

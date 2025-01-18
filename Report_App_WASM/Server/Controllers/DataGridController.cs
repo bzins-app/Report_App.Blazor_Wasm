@@ -1,7 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Community.OData.Linq;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Report_App_WASM.Server.Utils.FIles;
 using Report_App_WASM.Shared.DTO;
 
 namespace Report_App_WASM.Server.Controllers;
@@ -29,40 +29,85 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/SystemLogs")]
-    public IQueryable<ApplicationLogSystem> GetSystemLogs()
+    public IQueryable<SystemLog> GetSystemLogs()
     {
-        return _context.ApplicationLogSystem.OrderByDescending(a => a.Id).AsNoTracking();
+        return _context.SystemLog.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
-    [HttpPost("odata/ExtractLogs")]
-    public async Task<FileResult?> ExtractLogsAsync([FromBody] ODataExtractPayload values)
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractSystemLogs")]
+    public async Task<IActionResult> ExtractSystemLogs(ODataQueryOptions<SystemLog> queryOptions)
     {
-        return values.FunctionName switch
-        {
-            "EmailLogs" => await GetExtractFile(GetEmailLogs(), values),
-            "QueryExecutionLogs" => await GetExtractFile(GetQueryExecutionLogs(), values),
-            "ReportResultLogs" => await GetExtractFile(GetReportResultLogs(), values),
-            "TaskLogs" => await GetExtractFile(GetTaskLogs(), values),
-            "AuditTrail" => await GetExtractFile(GetAuditTrail(), values),
-            "QueriesLogs" => await GetExtractFile(GetQueriesLogs(), values),
-            _ => await GetExtractFile(GetSystemLogs(), values)
-        };
+        var logs = await queryOptions.ApplyTo(_context.SystemLog.OrderByDescending(a => a.Id).AsNoTracking())
+            .Cast<SystemLog>().ToListAsync();
+        return GetExtractFile(logs, "SystemLogs", "SystemLogs");
     }
 
-    private async Task<FileResult> GetExtractFile<T>(IQueryable<T> source, ODataExtractPayload values) where T : class
+    [EnableQuery]
+    [HttpGet("odata/ExtractEmailLogs")]
+    public async Task<IActionResult> ExtractEmailLogs(ODataQueryOptions<EmailLog> queryOptions)
     {
-        var q = source.OData();
-        if (!string.IsNullOrEmpty(values.FilterValues)) q = q.Filter(values.FilterValues.Replace("$filter=", ""));
-        if (!string.IsNullOrEmpty(values.SortValues)) q = q.OrderBy(values.SortValues.Replace("$orderby=", ""));
-        var finalQ = q.ToOriginalQuery();
+        var logs = await queryOptions.ApplyTo(_context.EmailLog.OrderByDescending(a => a.Id).AsNoTracking())
+            .Cast<EmailLog>().ToListAsync();
+        return GetExtractFile(logs, "EmailLogs", "EmailLogs");
+    }
 
+    [EnableQuery]
+    [HttpGet("odata/ExtractReportGenerationLogs")]
+    public async Task<IActionResult> ExtractEmailLogs(ODataQueryOptions<ReportGenerationLog> queryOptions)
+    {
+        var logs = await queryOptions.ApplyTo(_context.ReportGenerationLog.OrderByDescending(a => a.Id).AsNoTracking())
+            .Cast<ReportGenerationLog>().ToListAsync();
+        return GetExtractFile(logs, "ReportGenerationLogs", "ReportGenerationLogs");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractTaskLogs")]
+    public async Task<IActionResult> ExtractTaskLogs(ODataQueryOptions<TaskLog> queryOptions)
+    {
+        var systemLogs = await queryOptions.ApplyTo(_context.TaskLog.OrderByDescending(a => a.TaskLogId).AsNoTracking())
+            .Cast<TaskLog>().ToListAsync();
+        return GetExtractFile(systemLogs, "TaskLogs", "TaskLogs");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractQueryExecutionLogs")]
+    public async Task<IActionResult> ExtractQueryExecutionLogs(ODataQueryOptions<QueryExecutionLog> queryOptions)
+    {
+        var logs = await queryOptions.ApplyTo(_context.QueryExecutionLog.OrderByDescending(a => a.Id).AsNoTracking())
+            .Cast<QueryExecutionLog>().ToListAsync();
+        return GetExtractFile(logs, "QueryExecutionLogs", "QueryExecutionLogs");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractAuditTrail")]
+    public async Task<IActionResult> ExtractAuditTrail(ODataQueryOptions<AuditTrail> queryOptions)
+    {
+        var logs = await queryOptions.ApplyTo(_context.AuditTrail.OrderByDescending(a => a.Id).AsNoTracking())
+            .Cast<AuditTrail>().ToListAsync();
+        return GetExtractFile(logs, "AuditTrail", "AuditTrail");
+    }
+
+    [EnableQuery]
+    [HttpGet("odata/ExtractQueriesLogs")]
+    public async Task<IActionResult> ExtractQueriesLogs(ODataQueryOptions<AdHocQueryExecutionLog> queryOptions)
+    {
+        var logs = await queryOptions
+            .ApplyTo(_context.AdHocQueryExecutionLog.OrderByDescending(a => a.Id).AsNoTracking())
+            .Cast<AdHocQueryExecutionLog>().ToListAsync();
+        return GetExtractFile(logs, "QueriesLogs", "QueriesLogs");
+    }
+
+
+    private FileResult GetExtractFile<T>(List<T> items, string fname, string tab = "data") where T : class
+    {
         try
         {
-            _logger.LogInformation("Grid extraction: Start " + values.FunctionName, values.FunctionName);
-            var items = await finalQ.AsQueryable().Take(values.MaxResult).ToListAsync();
-            var fileName = values.FileName + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
+            _logger.LogInformation("Grid extraction: Start " + fname, fname);
+            var fileName = fname + " " + DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".xlsx";
 
-            var file = CreateFile.ExcelFromCollection(fileName, values.TabName, items);
+            var file = CreateFile.ExcelFromCollection(fileName, tab, items);
             _logger.LogInformation($"Grid extraction: End {fileName} {items.Count} lines",
                 $" {fileName} {items.Count} lines");
             return File(file.Content, file.ContentType, file.FileName);
@@ -89,46 +134,46 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/EmailLogs")]
-    public IQueryable<ApplicationLogEmailSender> GetEmailLogs()
+    public IQueryable<EmailLog> GetEmailLogs()
     {
-        return _context.ApplicationLogEmailSender.OrderByDescending(a => a.Id).AsNoTracking();
+        return _context.EmailLog.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/QueriesLogs")]
-    public IQueryable<ApplicationLogAdHocQueries> GetQueriesLogs()
+    public IQueryable<AdHocQueryExecutionLog> GetQueriesLogs()
     {
-        return _context.ApplicationLogAdHocQueries.OrderByDescending(a => a.Id).AsNoTracking();
+        return _context.AdHocQueryExecutionLog.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/QueryExecutionLogs")]
-    public IQueryable<ApplicationLogQueryExecutionDto> GetQueryExecutionLogs()
+    public IQueryable<QueryExecutionLogDto> GetQueryExecutionLogs()
     {
-        return _context.ApplicationLogQueryExecution
-            .ProjectTo<ApplicationLogQueryExecutionDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id)
+        return _context.QueryExecutionLog
+            .ProjectTo<QueryExecutionLogDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id)
             .AsQueryable();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/ReportResultLogs")]
-    public IQueryable<ApplicationLogReportResult> GetReportResultLogs()
+    public IQueryable<ReportGenerationLog> GetReportResultLogs()
     {
-        return _context.ApplicationLogReportResult.OrderByDescending(a => a.Id).AsNoTracking();
+        return _context.ReportGenerationLog.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/TaskLogs")]
-    public IQueryable<ApplicationLogTask> GetTaskLogs()
+    public IQueryable<TaskLog> GetTaskLogs()
     {
-        return _context.ApplicationLogTask.OrderByDescending(a => a.Id).AsNoTracking();
+        return _context.TaskLog.OrderByDescending(a => a.TaskLogId).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/AuditTrail")]
-    public IQueryable<ApplicationAuditTrail> GetAuditTrail()
+    public IQueryable<AuditTrail> GetAuditTrail()
     {
-        return _context.ApplicationAuditTrail.OrderByDescending(a => a.Id).AsNoTracking();
+        return _context.AuditTrail.OrderByDescending(a => a.Id).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
@@ -154,16 +199,16 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery]
     [HttpGet("odata/DepositPath")]
-    public IQueryable<FileDepositPathConfigurationDto> GetDepositPath()
+    public IQueryable<FileStorageLocationDto> GetDepositPath()
     {
-        return _context.FileDepositPathConfiguration
-            .Select(a => new FileDepositPathConfigurationDto
+        return _context.FileStorageLocation
+            .Select(a => new FileStorageLocationDto
             {
                 ConfigurationName = a.ConfigurationName,
                 CreateDateTime = a.CreateDateTime,
                 ModDateTime = a.ModDateTime,
                 CreateUser = a.CreateUser,
-                FileDepositPathConfigurationId = a.FileDepositPathConfigurationId,
+                FileStorageLocationId = a.FileStorageLocationId,
                 FilePath = a.FilePath,
                 ModificationUser = a.ModificationUser,
                 SftpConfigurationId = a.SftpConfiguration == null ? 0 : a.SftpConfiguration.SftpConfigurationId,
@@ -175,25 +220,25 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery]
     [HttpGet("odata/Activities")]
-    public IQueryable<Activity> GetActivities()
+    public IQueryable<DataProvider> GetActivities()
     {
-        return _context.Activity.Where(a => a.ActivityType == ActivityType.SourceDb)
-            .Include(a => a.ActivityDbConnections).AsNoTracking();
+        return _context.DataProvider.Where(a => a.ProviderType == ProviderType.SourceDatabase)
+            .Include(a => a.DatabaseConnection).AsNoTracking();
     }
 
     [EnableQuery]
     [HttpGet("odata/DataTransfers")]
-    public IQueryable<Activity> GetDataTransfers()
+    public IQueryable<DataProvider> GetDataTransfers()
     {
-        return _context.Activity.Where(a => a.ActivityType == ActivityType.TargetDb)
-            .Include(a => a.ActivityDbConnections).AsNoTracking();
+        return _context.DataProvider.Where(a => a.ProviderType == ProviderType.TargetDatabase)
+            .Include(a => a.DatabaseConnection).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/TaskHeader")]
-    public IQueryable<TaskHeader> GetTaskHeader()
+    public IQueryable<ScheduledTask> GetTaskHeader()
     {
-        return _context.TaskHeader.OrderByDescending(a => a.TaskHeaderId).AsNoTracking();
+        return _context.ScheduledTask.OrderByDescending(a => a.ScheduledTaskId).AsNoTracking();
     }
 
     [EnableQuery(EnsureStableOrdering = false)]
@@ -207,8 +252,8 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery(EnsureStableOrdering = false)]
     [HttpGet("odata/Queries")]
-    public IQueryable<QueryStore> GetQueries()
+    public IQueryable<StoredQuery> GetQueries()
     {
-        return _context.QueryStore.OrderByDescending(a => a.Id);
+        return _context.StoredQuery.OrderByDescending(a => a.Id);
     }
 }

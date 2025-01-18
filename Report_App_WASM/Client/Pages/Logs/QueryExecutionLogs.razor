@@ -26,15 +26,19 @@
         </MudCardHeader>
         <MudCardContent>
             <div style="overflow: auto;text-wrap-mode: nowrap;">
-                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="ApplicationLogQueryExecutionDto">
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.ActivityName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
+                <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid" RowClick="@RowClicked" TGridItem="QueryExecutionLogDto">
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Id)" Title="ExcecutionLogId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskLogId)" Title="TaskLogId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.ProviderName)" Title="@Localizer.Get("Activity name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskQueryId)" Title="ScheduledTaskQueryId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.StartDateTime)" Title="@Localizer.Get("Start date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.EndDateTime)" Title="@Localizer.Get("End date time")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TotalDuration)" Title="@Localizer.Get("Total duration")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.SqlExcecutionDuration)" Title="@Localizer.Get("SQL execution duration")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.DownloadDuration)" Title="@Localizer.Get("Download duration")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.NbrOfRows)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.RowsFetched)" Title="@Localizer.Get("Nbr of rows returned")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.TypeDb)" Title="@Localizer.Get("Type of Database")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.Database)" Title="@Localizer.Get("Database name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p!.CommandTimeOut)" Title="@Localizer.Get("Command timeout")" Sortable="true"/>
@@ -71,10 +75,10 @@
 
 @code
 {
-    GridItemsProvider<ApplicationLogQueryExecutionDto>? _itemsProvider;
+    GridItemsProvider<QueryExecutionLogDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ApplicationLogQueryExecutionDto>? _grid;
+    SimpleGrid<QueryExecutionLogDto>? _grid;
     private string? _queryValue = string.Empty;
     private bool _rendering;
 
@@ -86,7 +90,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<ApplicationLogQueryExecutionDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<QueryExecutionLogDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -94,7 +98,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<ApplicationLogQueryExecutionDto>?> GetRemoteData(GridItemsProviderRequest<ApplicationLogQueryExecutionDto> req)
+    private async Task<ApiResponse<QueryExecutionLogDto>?> GetRemoteData(GridItemsProviderRequest<QueryExecutionLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -111,7 +115,7 @@
 
         try
         {
-            return await DataService.GetODataValues<ApplicationLogQueryExecutionDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<QueryExecutionLogDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -130,8 +134,11 @@
     private async Task ExtractElements()
     {
         _rendering = true;
-        var values = new ODataExtractPayload { FunctionName = "QueryExecutionLogs", FilterValues = _grid?.GetODataFilterValues(), SortValues = _grid?.GetODataSortValues(), FileName = "Query execution logs" };
-        await DataService.ExtractGridLogs(values);
+        string fname = "QueryExecutionLogs";
+        var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var url = "odata/ExtractQueryExecutionLogs?";
+        url += odataQuery;
+        await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 
@@ -142,7 +149,7 @@
         _rendering = false;
     }
 
-    void RowClicked(SimpleGridRowClickEventArgs<ApplicationLogQueryExecutionDto> args)
+    void RowClicked(SimpleGridRowClickEventArgs<QueryExecutionLogDto> args)
     {
         _queryValue = args.Item.Query;
     }

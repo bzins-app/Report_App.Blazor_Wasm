@@ -1,13 +1,12 @@
-﻿@page "/QueryEdit/{QueryId:int}"
+﻿@page "/QueryEdit/{QueryId:long}"
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager UriHelper
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
-@using Report_App_WASM.Shared.Extensions
-@using Report_App_WASM.Shared.RemoteQueryParameters
 @using Blazor.AceEditorJs
 @using MudBlazor.Utilities
+@using Report_App_WASM.Shared.Extensions
+@using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -40,12 +39,12 @@
                             <MudItem>
                                 @if (_activities.Any())
                                 {
-                                    <MudSelect T="int" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdActivity"
-                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler" Style="min-width: 200px"
+                                    <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
+                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 200px"
                                                Required>
                                         @foreach (var value in _activities)
                                         {
-                                            <MudSelectItem Value="@value.ActivityId">@value.ActivityName</MudSelectItem>
+                                            <MudSelectItem Value="@value.DataProviderId">@value.ProviderName</MudSelectItem>
                                         }
                                     </MudSelect>
                                 }
@@ -188,9 +187,9 @@
 
 @code {
 
-    [Parameter] public int QueryId { get; set; }
+    [Parameter] public long QueryId { get; set; }
 
-    private QueryStoreDto? Item;
+    private StoredQueryDto? Item;
     private TypeDb _typeDbTask;
     private List<Dictionary<string, object>>? _values = new();
     private string _queryTestResult = string.Empty;
@@ -203,7 +202,7 @@
     MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private bool _changesToSave;
-    private List<SelectItemActivitiesInfo> _activities = new();
+    private List<SelectItemDataproviderInfo> _activities = new();
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam = new();
     bool _formParamValidated = true;
@@ -212,7 +211,7 @@
     private bool _openPopOver;
     string _tagValue = string.Empty;
     List<string> _AvailableTags = new();
-    MudTabs tabs;
+    MudTabs tabs = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -226,8 +225,8 @@
         Item = await DataService.GetUniqueValue(Item, uriAction);
         if (Item != null)
         {
-            var uri = $"GetActivityDbConnection?ActivityId={Item.IdActivity}";
-            var response = await DataService.GetValues<ActivityDbConnectionDto>(uri);
+            var uri = $"GetActivityDbConnection?DataProviderId={Item.IdDataProvider}";
+            var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
             if (response.Any())
             {
                 _typeDbTask = response.Select(a => a.TypeDb).First();
@@ -248,7 +247,7 @@
             },
             Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
         };
-        _activities = await DataService.GetValues<SelectItemActivitiesInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
+        _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _changesToSave = false;
         param.Clear();
 
@@ -366,7 +365,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (!_formParamValidated && param!.Count > 0)
+        else if (!_formParamValidated && param.Count > 0)
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -379,13 +378,13 @@
                 var _queryTorun = string.Empty;
                 _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) && !string.IsNullOrEmpty(_querySelectedCode) ? _querySelectedCode : Item.Query;
 
-                var run = new RemoteDbCommandParameters { ActivityId = Item.IdActivity, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
+                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>(cancellationToken: token);
                     if (result!.Success)
                     {
                         _values = result.Value;
@@ -394,14 +393,14 @@
                     }
                     else
                     {
-                        _queryTestResult = result.Message;
+                        _queryTestResult = result.Message!;
                         _values = new List<Dictionary<string, object>>();
                     }
                 }
                 else
                 {
                     _values = new List<Dictionary<string, object>>();
-                    _queryTestResult = response.Content.ToString();
+                    if (true) _queryTestResult = response.Content.ToString()!;
                 }
             }
             catch (Exception ex)
@@ -448,7 +447,7 @@
             {
                 Item.Parameters = JsonSerializer.Serialize(parameters);
                 Item.Tags = JsonSerializer.Serialize(_tags);
-                Item.ActivityName = _activities.Where(a => a.ActivityId == Item.IdActivity).Select(a => a.ActivityName).FirstOrDefault();
+                Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
                 var result = await DataService.PostValues(Item, "QueryStoreUpdate");
                 if (result.Success)
                 {
@@ -463,16 +462,16 @@
         }
         catch (Exception e)
         {
-            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+            Snackbar.Add(Localizer.Get("An error has occurred") + e.Message, Severity.Error);
         }
     }
 
-    private void OnSelectedItemChangedHandler(IEnumerable<int> actId)
+    private void OnSelectedItemChangedHandler(IEnumerable<long> actId)
     {
-        var _activityId = actId.FirstOrDefault();
-        Item!.Activity = new ActivityDto { ActivityId = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityId).FirstOrDefault(), ActivityName = _activities.Where(a => a.ActivityId == _activityId).Select(a => a.ActivityName).FirstOrDefault() };
-        Item.IdActivity = Item.Activity.ActivityId;
-        Item.ActivityName = Item.Activity.ActivityName;
+        var _DataProviderId = actId.FirstOrDefault();
+        Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
+        Item.IdDataProvider = Item.DataProvider.DataProviderId;
+        Item.ProviderName = Item.DataProvider.ProviderName;
     }
 
     private void FormChanged(FormFieldChangedEventArgs e)

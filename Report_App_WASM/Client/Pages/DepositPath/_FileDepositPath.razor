@@ -59,11 +59,11 @@
 
 @code
 {
-    GridItemsProvider<FileDepositPathConfigurationDto>? _itemsProvider;
+    GridItemsProvider<FileStorageLocationDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
     private bool _processing = false;
-    SimpleGrid<FileDepositPathConfigurationDto> _grid = default!;
+    SimpleGrid<FileStorageLocationDto> _grid = default!;
     private string? _errorMessage = default!;
     private bool _rendering = false;
 
@@ -75,7 +75,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<FileDepositPathConfigurationDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<FileStorageLocationDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -83,7 +83,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<FileDepositPathConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<FileDepositPathConfigurationDto> req)
+    private async Task<ApiResponse<FileStorageLocationDto>?> GetRemoteData(GridItemsProviderRequest<FileStorageLocationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -100,7 +100,7 @@
 
         try
         {
-            return await DataService.GetODataValues<FileDepositPathConfigurationDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<FileStorageLocationDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -129,9 +129,9 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(FileDepositPathConfigurationDto value)
+    private async Task OpenEditDialog(FileStorageLocationDto value)
     {
-        var item = new FileDepositPathConfigurationDto
+        var item = new FileStorageLocationDto
         {
             ConfigurationName = value.ConfigurationName,
             FilePath = value.FilePath,
@@ -167,7 +167,7 @@
         }
     }
 
-    private async Task OpenDeleteDialog(FileDepositPathConfigurationDto value)
+    private async Task OpenDeleteDialog(FileStorageLocationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
@@ -193,7 +193,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new FileDepositPathConfigurationDto();
+        var value = new FileStorageLocationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_FileDepositPathFormDialog>("Create", parameters);

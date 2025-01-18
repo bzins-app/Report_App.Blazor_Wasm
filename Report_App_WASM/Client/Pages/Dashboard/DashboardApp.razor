@@ -1,8 +1,13 @@
 ﻿@page "/DashboardApp"
 @inherits ComponentBase
+@using System.Timers
+@using ApexCharts
 @using Report_App_WASM.Client.Pages.Dashboard.Components
 @using Report_App_WASM.Shared.Dashboard
+@using Color = MudBlazor.Color
+@using Size = MudBlazor.Size
 @implements IAsyncDisposable
+@inject IApexChartService ApexChartService
 @attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
@@ -73,7 +78,7 @@
             </div>
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" sm="12" md="12" lg="6">
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="6">
         <MudGrid Spacing="2">
             <MudItem xs="12" sm="12" md="6" lg="6">
                 <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
@@ -118,27 +123,29 @@
             }
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" sm="6" md="6" xl="4">
-        <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage"/>
-        </MudPaper>
+    <MudItem xs="12" sm="12" md="12" lg="6" xl="6">
+        <MudItem xs="12" sm="12" lg="12" xl="12">
+            <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
+                <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage"/>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" lg="12" xl="12">
+            <MudPaper Elevation="2" Class="pa-2">
+                <div>
+                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
+                    <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored.ToString("N0")</MudText>
+                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
+                    <MudText Typo="Typo.h6">@_metrics.SizeFilesStoredLocally.ToString("N2") MB</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
     </MudItem>
-    <MudItem xs="12" sm="6" md="4" xl="2">
-        <MudPaper Elevation="2" Class="d-flex flex-row pa-2">
-            <div>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
-                <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored.ToString("N0")</MudText>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
-                <MudText Typo="Typo.h6">@_metrics.SizeFilesStoredLocally.ToString("N2") MB</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="12" md="6" xl="3">
+    <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
             <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs"/>
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" sm="12" md="6" xl="3">
+    <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
             <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs"/>
         </MudPaper>
@@ -155,7 +162,7 @@
     private _DblinesFetchedChart _dbFetch = null!;
     private _TasksLogsChart _tasksLogsChart = null!;
     private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
-    private System.Timers.Timer? _timer;
+    private Timer? _timer;
     private bool _isPageVisible = true;
 
     [Inject] IJSRuntime JSRuntime { get; set; } = null!;
@@ -165,11 +172,12 @@
     protected override async Task OnInitializedAsync()
     {
         _isLoading = true;
+        await ApexChartService.InitalizeChartAsync();
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
         _isLoading = false;
 
-        _timer = new System.Timers.Timer(1000 * 60 * 2);
+        _timer = new Timer(1000 * 60 * 2);
         _timer.Elapsed += async (sender, e) => await RefreshData();
         _timer.AutoReset = true;
         _timer.Enabled = true;

@@ -11,26 +11,30 @@ public class PostgreSqlRemoteDb : IRemoteDb
         GC.SuppressFinalize(this);
     }
 
-    public string GetAllTablesScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = !string.IsNullOrEmpty(dbparam.Database)
                 ? $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 				FROM information_schema.tables where TABLE_CATALOG='{dbparam.Database}' and TABLE_SCHEMA='public' order by 1,2"
-                : $@"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
+                : @"				SELECT  case when TABLE_TYPE='BASE TABLE' then 'Table' else 'View' end as ValueType, TABLE_NAME as table_name
 				FROM information_schema.tables where TABLE_SCHEMA='public' order by 1,2";
         }
 
         return script;
     }
 
-    public string GetAllTablesAndColumnsScript(ActivityDbConnection dbInfo)
+    public string GetAllTablesAndColumnsScript(DatabaseConnection dbInfo)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"select t.table_name,
                     c.column_name 
                     from information_schema.tables t
@@ -44,11 +48,13 @@ public class PostgreSqlRemoteDb : IRemoteDb
         return script;
     }
 
-    public string GetTableColumnInfoScript(ActivityDbConnection dbInfo, string tableName)
+    public string GetTableColumnInfoScript(DatabaseConnection dbInfo, string tableName)
     {
         var script = string.Empty;
         if (CheckDbType(dbInfo))
-        {var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
+        {
+            var dbparam =
+                DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, "", "");
             script = @$"                select
 				'Col' as Valuetype,
 				c.COLUMN_NAME,
@@ -64,7 +70,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
         return script;
     }
 
-    public async Task TryConnectAsync(ActivityDbConnection dbInfo)
+    public async Task TryConnectAsync(DatabaseConnection dbInfo)
     {
         var param = CreateConnectionString(dbInfo);
         DbConnection conn = new NpgsqlConnection(param.ConnnectionString);
@@ -80,11 +86,16 @@ public class PostgreSqlRemoteDb : IRemoteDb
     }
 
     public async Task<DataTable> RemoteDbToDatableAsync(DataTable data, RemoteDbCommandParameters run,
-        ActivityDbConnection dbInfo, CancellationToken cts)
+        DatabaseConnection dbInfo, CancellationToken cts)
     {
         if (CheckDbType(dbInfo))
         {
             var connectionInfo = CreateConnectionString(dbInfo);
+
+            var _tzId = string.IsNullOrEmpty(dbInfo.DataProvider.TimeZone)
+                ? TimeZoneInfo.Local.Id
+                : dbInfo.DataProvider.TimeZone;
+            TimeZoneInfo _timeZone = TimeZoneInfo.FindSystemTimeZoneById(_tzId);
 
             var DbConnection = new NpgsqlConnection(connectionInfo.ConnnectionString);
             var DbDataAdapter = new NpgsqlDataAdapter();
@@ -108,7 +119,7 @@ public class PostgreSqlRemoteDb : IRemoteDb
                         NpgsqlParameter para = new(parameter.ParameterIdentifier,
                             NpgsqlDbType.Date)
                         {
-                            Value = timevalue
+                            Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
                         };
                         cmd.Parameters.Add(para);
                     }
@@ -158,14 +169,15 @@ public class PostgreSqlRemoteDb : IRemoteDb
         return data;
     }
 
-    private static bool CheckDbType(ActivityDbConnection dbInfo)
+    private static bool CheckDbType(DatabaseConnection dbInfo)
     {
         return dbInfo.TypeDb == TypeDb.PostgreSql;
     }
 
-    private RemoteConnectionParameter CreateConnectionString(ActivityDbConnection dbInfo)
+    private RemoteConnectionParameter CreateConnectionString(DatabaseConnection dbInfo)
     {
-        var dbparam=DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters, dbInfo.ConnectionLogin, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
+        var dbparam = DatabaseConnectionParametersManager.DeserializeFromJson(dbInfo.DbConnectionParameters,
+            dbInfo.ConnectionLogin ?? string.Empty, EncryptDecrypt.EncryptDecrypt.DecryptString(dbInfo.Password));
         RemoteConnectionParameter value = new()
         {
             TypeDb = dbInfo.TypeDb,

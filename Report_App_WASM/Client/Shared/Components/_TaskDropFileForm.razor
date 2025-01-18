@@ -1,13 +1,13 @@
 ﻿@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-<MudIconButton Icon="@Icons.Material.Outlined.FileDownload" OnClick="OpenRunConfirmationComponent" Disabled="Item!.FileDepositPathConfigurationId == 0">
+<MudIconButton Icon="@Icons.Material.Outlined.FileDownload" OnClick="OpenRunConfirmationComponent" Disabled="Item!.FileStorageLocationId == 0">
     <MudText>@Localizer.Get("Drop file")</MudText>
 </MudIconButton>
 
 @code {
 
-    [Parameter] public TaskHeaderDto? Item { get; set; }
+    [Parameter] public ScheduledTaskDto? Item { get; set; }
 
     private async Task OpenRunConfirmationComponent()
     {
@@ -18,7 +18,7 @@
         var result = feedback != null;
         if (result)
         {
-            var payload = new RunTaskManually { TaskHeaderId = Item!.TaskHeaderId, Emails = new List<EmailRecipient>(), CustomQueryParameters = new List<QueryCommandParameter>(), GenerateFiles = true };
+            var payload = new RunTaskManually { TaskHeaderId = Item!.ScheduledTaskId, Emails = new List<EmailRecipient>(), QueryCommandParameters = new List<QueryCommandParameter>(), GenerateFiles = true };
             await DataService.PostValues(payload, "RunManually", ApiControllers.BackgroudWorkerApi);
             Snackbar.Add(Localizer.Get(Item.TypeName) + " " + Localizer.Get("Job on going"), Severity.Success);
         }

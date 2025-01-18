@@ -9,12 +9,12 @@ using System.Diagnostics.CodeAnalysis;
     SuppressMessage("Interoperability", "CA1416:Valider la compatibilité de la plateforme",
         Justification = "<En attente>", Scope = "member",
         Target =
-            "~M:Report_App_WASM.Server.Services.RemoteDb.RemoteDbConnection.RemoteDbToDatableAsync(Report_App_WASM.Shared.RemoteQueryParameters.RemoteDbCommandParameters,System.Threading.CancellationToken,System.Int32)~System.Threading.Tasks.Task{System.Data.DataTable}")]
+            "~M:Report_App_WASM.Server.Services.RemoteDb.RemoteDatabaseActionsHandler.RemoteDbToDatableAsync(Report_App_WASM.Shared.RemoteQueryParameters.RemoteDbCommandParameters,System.Threading.CancellationToken,System.Int32)~System.Threading.Tasks.Task{System.Data.DataTable}")]
 [assembly:
     SuppressMessage("Interoperability", "CA1416:Valider la compatibilité de la plateforme",
         Justification = "<En attente>", Scope = "member",
         Target =
-            "~M:Report_App_WASM.Server.Services.RemoteDb.RemoteDbConnection.TryConnectAsync(Report_App_WASM.Shared.TypeDb,System.String)~System.Threading.Tasks.Task")]
+            "~M:Report_App_WASM.Server.Services.RemoteDb.RemoteDatabaseActionsHandler.TryConnectAsync(Report_App_WASM.Shared.TypeDb,System.String)~System.Threading.Tasks.Task")]
 [assembly:
     SuppressMessage("Interoperability", "CA1416:Valider la compatibilité de la plateforme",
         Justification = "<En attente>", Scope = "member",

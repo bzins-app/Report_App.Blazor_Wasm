@@ -17,7 +17,7 @@ namespace ReportAppWASM.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -47,7 +47,7 @@ namespace ReportAppWASM.Server.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Roles", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -71,7 +71,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -95,7 +95,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UserClaims", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -118,7 +118,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UserLogins", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -133,7 +133,7 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoles", "auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -154,220 +154,19 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UserTokens", "auth");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.Activity", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.AdHocQueryExecutionLog", b =>
                 {
-                    b.Property<int>("ActivityId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("ActivityLogo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ActivityName")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<string>("ActivityRoleId")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<int>("ActivityType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ActivityTypeName")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("Display")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsActivated")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("ActivityId");
-
-                    b.ToTable("Activity");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ActivityDbConnection", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("AdAuthentication")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("AdHocQueriesMaxNbrofRowsFetched")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CommandFetchSize")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CommandTimeOut")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConnectionLogin")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ConnectionPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConnectionType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("DataTransferMaxNbrofRowsFetched")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DbConnectionParameters")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DbSchema")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("IdDescriptions")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IntentReadOnly")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Port")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TaskSchedulerMaxNbrofRowsFetched")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TypeDb")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TypeDbName")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<bool>("UseDbSchema")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("UseDescriptionsFromAnotherActivity")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("UseTablesDescriptions")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("ActivityDbConnection");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationAuditTrail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AffectedColumns")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NewValues")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OldValues")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PrimaryKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TableName")
-                        .HasMaxLength(600)
-                        .HasColumnType("nvarchar(600)");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("UserId")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DateTime");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("Type", "TableName");
-
-                    b.ToTable("ApplicationAuditTrail");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogAdHocQueries", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ActivityName")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("DurationInSeconds")
                         .HasColumnType("int");
@@ -379,20 +178,26 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("JobDescription")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("NbrOfRows")
                         .HasColumnType("int");
 
-                    b.Property<int>("QueryId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProviderName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<long>("QueryId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Result")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<string>("RunBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("datetime2");
@@ -403,404 +208,9 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId", "QueryId", "JobDescription");
+                    b.HasIndex("DataProviderId", "QueryId", "JobDescription");
 
-                    b.ToTable("ApplicationLogAdHocQueries");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogEmailSender", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DurationInSeconds")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EmailTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Error")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("NbrOfRecipients")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RecipientList")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("StartDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EndDateTime");
-
-                    b.HasIndex("Error", "Result");
-
-                    b.ToTable("ApplicationLogEmailSender");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogQueryExecution", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ActivityName")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<int>("CommandTimeOut")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Database")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan>("DownloadDuration")
-                        .HasColumnType("time");
-
-                    b.Property<DateTime>("EndDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("NbrOfRows")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Query")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QueryName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RunBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan>("SqlExcecutionDuration")
-                        .HasColumnType("time");
-
-                    b.Property<DateTime>("StartDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("TotalDuration")
-                        .HasColumnType("time");
-
-                    b.Property<DateTime>("TransferBeginDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TypeDb")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TypeJob")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationLogQueryExecution");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogReportResult", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ActivityName")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("Error")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FileName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<double>("FileSizeInMb")
-                        .HasColumnType("float");
-
-                    b.Property<string>("FileType")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ReportName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ReportPath")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("TaskHeaderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("IsAvailable");
-
-                    b.HasIndex("TaskHeaderId");
-
-                    b.HasIndex("ActivityId", "ReportPath");
-
-                    b.ToTable("ApplicationLogReportResult");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogSystem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Browser")
-                        .HasMaxLength(600)
-                        .HasColumnType("nvarchar(600)");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FullVersion")
-                        .HasMaxLength(600)
-                        .HasColumnType("nvarchar(600)");
-
-                    b.Property<string>("Host")
-                        .HasMaxLength(600)
-                        .HasColumnType("nvarchar(600)");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Path")
-                        .HasMaxLength(600)
-                        .HasColumnType("nvarchar(600)");
-
-                    b.Property<string>("Platform")
-                        .HasMaxLength(600)
-                        .HasColumnType("nvarchar(600)");
-
-                    b.Property<DateTimeOffset>("TimeStamp")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTime>("TimeStampAppHour")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("User")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("Level");
-
-                    b.HasIndex("TimeStampAppHour");
-
-                    b.ToTable("ApplicationLogSystem");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ActivityName")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<int>("DurationInSeconds")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Error")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JobDescription")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RunBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EndDateTime");
-
-                    b.HasIndex("Error", "Result");
-
-                    b.ToTable("ApplicationLogTask");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationLogTaskDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Info")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Step")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskId", "Id");
-
-                    b.ToTable("ApplicationLogTaskDetails");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationParameters", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("ActivateAdHocQueriesModule")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ActivateTaskSchedulerModule")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("AdminEmails")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlertEmailPrefix")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ApplicationLogo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicationName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("EmailPrefix")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ErrorEMailMessage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ErrorEmailPrefix")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("LoginScreenBackgroundImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LogsRetentionInDays")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("WelcomeEMailMessage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationParameters");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationUniqueKey", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationUniqueKey");
+                    b.ToTable("AdHocQueryExecutionLog");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ApplicationUser", b =>
@@ -824,13 +234,13 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Culture")
                         .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -849,11 +259,11 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime>("ModDateTime")
-                        .HasMaxLength(100)
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModificationUser")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -879,12 +289,12 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserFirstName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("UserLastName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -900,25 +310,63 @@ namespace ReportAppWASM.Server.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("Users", "auth");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.DbTableDescriptions", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.AuditTrail", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("ActivityDbConnectionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ColumnDescription")
+                    b.Property<string>("AffectedColumns")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ColumnName")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NewValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PrimaryKey")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("TableName")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DateTime");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("Type", "TableName");
+
+                    b.ToTable("AuditTrail");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.DataProvider", b =>
+                {
+                    b.Property<long>("DataProviderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("DataProviderId"));
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -927,8 +375,20 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsSnippet")
+                    b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MiscParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -937,33 +397,184 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("TableDescription")
+                    b.Property<string>("ProviderIcon")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ProviderName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("ProviderRoleId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ProviderType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProviderTypeName")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TimeZone")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("DataProviderId");
+
+                    b.ToTable("DataProvider");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
+                {
+                    b.Property<long>("DatabaseConnectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("DatabaseConnectionId"));
+
+                    b.Property<int>("AdHocQueriesMaxNbrofRowsFetched")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommandFetchSize")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommandTimeOut")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConnectionLogin")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ConnectionType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("DataTransferMaxNbrofRowsFetched")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DbConnectionParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<long>("IdTableMetaData")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("MiscParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("RetryPatternParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<int>("TaskSchedulerMaxNbrofRowsFetched")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeDb")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeDbName")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("UseTableMetaData")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("UseTableMetaDataFromAnotherProvider")
+                        .HasColumnType("bit");
+
+                    b.HasKey("DatabaseConnectionId");
+
+                    b.HasIndex("DataProviderId");
+
+                    b.ToTable("DatabaseConnection");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.EmailLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("DurationInSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmailTitle")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("EndDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Error")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NbrOfRecipients")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecipientList")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TableName")
+                    b.Property<string>("Result")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityDbConnectionId");
+                    b.HasIndex("EndDateTime");
 
-                    b.HasIndex("TableName", "ColumnName");
+                    b.HasIndex("Error", "Result");
 
-                    b.ToTable("DbTableDescriptions");
+                    b.ToTable("EmailLog");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.FileDepositPathConfiguration", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageLocation", b =>
                 {
-                    b.Property<int>("FileDepositPathConfigurationId")
+                    b.Property<long>("FileStorageLocationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileDepositPathConfigurationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("FileStorageLocationId"));
 
                     b.Property<string>("ConfigurationName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -974,10 +585,15 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<string>("FilePath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<bool>("IsReachable")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -995,11 +611,11 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<bool>("UseSftpProtocol")
                         .HasColumnType("bit");
 
-                    b.HasKey("FileDepositPathConfigurationId");
+                    b.HasKey("FileStorageLocationId");
 
                     b.HasIndex("SftpConfigurationId");
 
-                    b.ToTable("FileDepositPathConfiguration");
+                    b.ToTable("FileStorageLocation");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.LdapConfiguration", b =>
@@ -1012,8 +628,8 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<string>("ConfigurationName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -1029,6 +645,10 @@ namespace ReportAppWASM.Server.Migrations
                     b.Property<bool>("IsActivated")
                         .HasColumnType("bit");
 
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
 
@@ -1040,88 +660,178 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
                     b.ToTable("LdapConfiguration");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.QueryStore", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.QueryExecutionLog", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CommandTimeOut")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
+                    b.Property<string>("Database")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("ActivityName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<TimeSpan>("DownloadDuration")
+                        .HasColumnType("time");
 
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateDateTime")
+                    b.Property<DateTime>("EndDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("IdActivity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Parameters")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ProviderName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Query")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QueryName")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("QueryParameters")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RowsFetched")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("RunBy")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ScheduledTaskQueryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<TimeSpan>("SqlExcecutionDuration")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("TaskLogId")
+                        .HasColumnType("bigint");
+
+                    b.Property<TimeSpan>("TotalDuration")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("TransferBeginDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TypeDb")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("TypeJob")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId");
-
-                    b.HasIndex("QueryName");
-
-                    b.ToTable("QueryStore");
+                    b.ToTable("QueryExecutionLog");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ServicesStatus", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ReportGenerationLog", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("Error")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("FileGenerationType")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("FileName")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
 
-                    b.Property<bool>("AlertService")
+                    b.Property<double>("FileSizeInMb")
+                        .HasColumnType("float");
+
+                    b.Property<string>("FileType")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CleanerService")
-                        .HasColumnType("bit");
+                    b.Property<string>("ProviderName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("ReportName")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.Property<string>("ReportPath")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Result")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SubName")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.Property<long>("TaskLogId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("IsAvailable");
+
+                    b.HasIndex("ScheduledTaskId");
+
+                    b.HasIndex("DataProviderId", "ReportPath");
+
+                    b.ToTable("ReportGenerationLog");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTask", b =>
+                {
+                    b.Property<long>("ScheduledTaskId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ScheduledTaskId"));
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -1130,11 +840,39 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("DataTransferService")
+                    b.Property<string>("CronParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("FileStorageLocationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("GlobalQueryParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<long>("IdDataProvider")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("EmailService")
-                        .HasColumnType("bit");
+                    b.Property<DateTime?>("LastRunDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MiscParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1143,12 +881,170 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("ReportService")
+                    b.Property<string>("ProviderName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int>("ReportsRetentionInDays")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("SendByEmail")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Tags")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.ToTable("ServicesStatus");
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TaskNamePrefix")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("TaskParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("TimeZone")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeFile")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeFileName")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TypeName")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("UseGlobalQueryParameters")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ScheduledTaskId");
+
+                    b.HasIndex("DataProviderId");
+
+                    b.ToTable("ScheduledTask");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTaskDistributionList", b =>
+                {
+                    b.Property<long>("ScheduledTaskDistributionListId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ScheduledTaskDistributionListId"));
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("EmailMessage")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Recipients")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ScheduledTaskDistributionListId");
+
+                    b.HasIndex("ScheduledTaskId");
+
+                    b.ToTable("ScheduledTaskDistributionList");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTaskQuery", b =>
+                {
+                    b.Property<long>("ScheduledTaskQueryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ScheduledTaskQueryId"));
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ExecutionCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExecutionOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExecutionParameters")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTime?>("LastRunDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Query")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QueryName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("QueryParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ScheduledTaskQueryId");
+
+                    b.HasIndex("ScheduledTaskId");
+
+                    b.ToTable("ScheduledTaskQuery");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.SftpConfiguration", b =>
@@ -1161,8 +1057,8 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<string>("ConfigurationName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -1173,6 +1069,10 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<string>("Host")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1208,8 +1108,8 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<string>("ConfigurationName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -1220,16 +1120,20 @@ namespace ReportAppWASM.Server.Migrations
 
                     b.Property<string>("FromEmail")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("FromFullName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<bool>("IsActivated")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1252,128 +1156,25 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SmtpUserName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
                     b.ToTable("SmtpConfiguration");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskDetail", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.StoredQuery", b =>
                 {
-                    b.Property<int>("TaskDetailId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskDetailId"));
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("DetailSequence")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastRunDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("NbrOfCumulativeOccurences")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Query")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QueryName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("QueryParameters")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskDetailParameters")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TaskHeaderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TaskDetailId");
-
-                    b.HasIndex("TaskHeaderId");
-
-                    b.ToTable("TaskDetail");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskEmailRecipient", b =>
-                {
-                    b.Property<int>("TaskEmailRecipientId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskEmailRecipientId"));
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("TaskHeaderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TaskEmailRecipientId");
-
-                    b.HasIndex("TaskHeaderId");
-
-                    b.ToTable("TaskEmailRecipient");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskHeader", b =>
-                {
-                    b.Property<int>("TaskHeaderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskHeaderId"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ActivityName")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("datetime2");
@@ -1382,100 +1183,20 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("CronParameters")
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IdDataProvider")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("MiscParameters")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
-                    b.Property<int>("FileDepositPathConfigurationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdActivity")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActivated")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastRunDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("QueryParameters")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ReportsRetentionInDays")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("SendByEmail")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskHeaderParameters")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("TaskNamePrefix")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TypeFile")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TypeFileName")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("TypeName")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<bool>("UseGlobalQueryParameters")
-                        .HasColumnType("bit");
-
-                    b.HasKey("TaskHeaderId");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("TaskHeader");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.UserSavedConfiguration", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("IdIntConfiguration")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdStringConfiguration")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ModDateTime")
                         .HasColumnType("datetime2");
@@ -1485,25 +1206,469 @@ namespace ReportAppWASM.Server.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Parameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("ProviderName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Query")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QueryName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("QueryParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("Tags")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DataProviderId");
+
+                    b.HasIndex("QueryName");
+
+                    b.ToTable("StoredQuery");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.SystemLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Browser")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullVersion")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Host")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Platform")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTimeOffset>("TimeStamp")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTime>("TimeStampAppHour")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("User")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("Level");
+
+                    b.HasIndex("TimeStampAppHour");
+
+                    b.ToTable("SystemLog");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.SystemParameters", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("ActivateAdHocQueriesModule")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ActivateTaskSchedulerModule")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("AdminEmails")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("AlertEmailPrefix")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ApplicationLogo")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ApplicationName")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("EmailPrefix")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ErrorEMailMessage")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("ErrorEmailPrefix")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("LoginScreenBackgroundImage")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("LogsRetentionInDays")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("WelcomeEMailMessage")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemParameters");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.SystemServicesStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AlertService")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CleanerService")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("DataTransferService")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EmailService")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Parameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<bool>("ReportService")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemServicesStatus");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.SystemUniqueKey", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemUniqueKey");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.TableMetadata", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ColumnDescription")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.Property<string>("ColumnName")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<long>("DatabaseConnectionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsSnippet")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MiscParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("TableDescription")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.Property<string>("TableName")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DatabaseConnectionId");
+
+                    b.HasIndex("TableName", "ColumnName");
+
+                    b.ToTable("TableMetadata");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskLog", b =>
+                {
+                    b.Property<long>("TaskLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TaskLogId"));
+
+                    b.Property<long>("DataProviderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("DurationInSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Error")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasSteps")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobDescription")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("ProviderName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Result")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RunBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("ScheduledTaskId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.HasKey("TaskLogId");
+
+                    b.HasIndex("EndDateTime");
+
+                    b.HasIndex("Error", "Result");
+
+                    b.ToTable("TaskLog");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskStepLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("Error")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Info")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("RelatedLogId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("RelatedLogType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Step")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<long>("TaskLogId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id", "TimeStamp");
+
+                    b.HasIndex("TaskLogId", "Id");
+
+                    b.HasIndex("TaskLogId", "TimeStamp");
+
+                    b.ToTable("TaskStepLog");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.UserPreferences", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<long>("IdIntConfiguration")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("IdStringConfiguration")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("MiscParameters")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Parameters")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<string>("SaveName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("SavedValues")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<int>("TypeConfiguration")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId", "TypeConfiguration", "IdIntConfiguration");
 
-                    b.ToTable("UserSavedConfiguration");
+                    b.ToTable("UserPreferences");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -1557,29 +1722,18 @@ namespace ReportAppWASM.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ActivityDbConnection", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
                 {
-                    b.HasOne("Report_App_WASM.Server.Models.Activity", "Activity")
-                        .WithMany("ActivityDbConnections")
-                        .HasForeignKey("ActivityId")
+                    b.HasOne("Report_App_WASM.Server.Models.DataProvider", "DataProvider")
+                        .WithMany("DatabaseConnection")
+                        .HasForeignKey("DataProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Activity");
+                    b.Navigation("DataProvider");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.DbTableDescriptions", b =>
-                {
-                    b.HasOne("Report_App_WASM.Server.Models.ActivityDbConnection", "ActivityDbConnection")
-                        .WithMany("DbTableDescriptions")
-                        .HasForeignKey("ActivityDbConnectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ActivityDbConnection");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.FileDepositPathConfiguration", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageLocation", b =>
                 {
                     b.HasOne("Report_App_WASM.Server.Models.SftpConfiguration", "SftpConfiguration")
                         .WithMany("FileDepositPathConfigurations")
@@ -1588,74 +1742,85 @@ namespace ReportAppWASM.Server.Migrations
                     b.Navigation("SftpConfiguration");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.QueryStore", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTask", b =>
                 {
-                    b.HasOne("Report_App_WASM.Server.Models.Activity", "Activity")
-                        .WithMany("QueryStores")
-                        .HasForeignKey("ActivityId")
+                    b.HasOne("Report_App_WASM.Server.Models.DataProvider", "DataProvider")
+                        .WithMany("ScheduledTasks")
+                        .HasForeignKey("DataProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Activity");
+                    b.Navigation("DataProvider");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskDetail", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTaskDistributionList", b =>
                 {
-                    b.HasOne("Report_App_WASM.Server.Models.TaskHeader", "TaskHeader")
-                        .WithMany("TaskDetails")
-                        .HasForeignKey("TaskHeaderId")
+                    b.HasOne("Report_App_WASM.Server.Models.ScheduledTask", "ScheduledTask")
+                        .WithMany("DistributionLists")
+                        .HasForeignKey("ScheduledTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TaskHeader");
+                    b.Navigation("ScheduledTask");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskEmailRecipient", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTaskQuery", b =>
                 {
-                    b.HasOne("Report_App_WASM.Server.Models.TaskHeader", "TaskHeader")
-                        .WithMany("TaskEmailRecipients")
-                        .HasForeignKey("TaskHeaderId")
+                    b.HasOne("Report_App_WASM.Server.Models.ScheduledTask", "ScheduledTask")
+                        .WithMany("TaskQueries")
+                        .HasForeignKey("ScheduledTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TaskHeader");
+                    b.Navigation("ScheduledTask");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskHeader", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.StoredQuery", b =>
                 {
-                    b.HasOne("Report_App_WASM.Server.Models.Activity", "Activity")
-                        .WithMany("TaskHeaders")
-                        .HasForeignKey("ActivityId")
+                    b.HasOne("Report_App_WASM.Server.Models.DataProvider", "DataProvider")
+                        .WithMany("StoredQueries")
+                        .HasForeignKey("DataProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Activity");
+                    b.Navigation("DataProvider");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.Activity", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.TableMetadata", b =>
                 {
-                    b.Navigation("ActivityDbConnections");
+                    b.HasOne("Report_App_WASM.Server.Models.DatabaseConnection", "DatabaseConnection")
+                        .WithMany("TableMetadata")
+                        .HasForeignKey("DatabaseConnectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("QueryStores");
-
-                    b.Navigation("TaskHeaders");
+                    b.Navigation("DatabaseConnection");
                 });
 
-            modelBuilder.Entity("Report_App_WASM.Server.Models.ActivityDbConnection", b =>
+            modelBuilder.Entity("Report_App_WASM.Server.Models.DataProvider", b =>
                 {
-                    b.Navigation("DbTableDescriptions");
+                    b.Navigation("DatabaseConnection");
+
+                    b.Navigation("ScheduledTasks");
+
+                    b.Navigation("StoredQueries");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.DatabaseConnection", b =>
+                {
+                    b.Navigation("TableMetadata");
+                });
+
+            modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTask", b =>
+                {
+                    b.Navigation("DistributionLists");
+
+                    b.Navigation("TaskQueries");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.SftpConfiguration", b =>
                 {
                     b.Navigation("FileDepositPathConfigurations");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.TaskHeader", b =>
-                {
-                    b.Navigation("TaskDetails");
-
-                    b.Navigation("TaskEmailRecipients");
                 });
 #pragma warning restore 612, 618
         }

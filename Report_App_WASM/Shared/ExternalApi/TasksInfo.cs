@@ -2,7 +2,7 @@
 
 public class TasksInfo
 {
-    public int TaksId { get; set; }
+    public long TaksId { get; set; }
     public string? ActivityName { get; set; }
     public string? TaskName { get; set; }
     public string? TaskType { get; set; }
