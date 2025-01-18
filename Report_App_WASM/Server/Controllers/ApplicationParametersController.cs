@@ -66,8 +66,8 @@ public class ApplicationParametersController : ControllerBase, IDisposable
     [HttpGet("SftpInfo")]
     public async Task<IEnumerable<SelectItem>> GetSftpInfo()
     {
-        return await _context.SftpConfiguration
-            .Select(a => new SelectItem { Id = a.SftpConfigurationId, Name = a.ConfigurationName })
+        return await _context.FileStorageConfiguration
+            .Select(a => new SelectItem { Id = a.FileStorageConfigurationId, Name = a.ConfigurationName })
             .ToListAsync();
     }
 
