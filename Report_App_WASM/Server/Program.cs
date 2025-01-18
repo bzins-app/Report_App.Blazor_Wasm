@@ -83,7 +83,7 @@ builder.Services.AddControllersWithViews().AddJsonOptions(x =>
     options => options.AddRouteComponents(
         "odata", OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents().AddAuthenticationStateSerialization();;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -183,7 +183,7 @@ app.UseBlazorFrameworkFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();
+app.MapStaticAssets();
 
 app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 {

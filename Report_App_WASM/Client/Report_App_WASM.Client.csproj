@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Blazor-ApexCharts" Version="5.0.1" />
     <PackageReference Include="Blazor.AceEditorJs" Version="1.1.13" />
@@ -16,23 +14,19 @@
     <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.1.0" />
     <PackageReference Include="CronExpressionDescriptor" Version="2.38.0" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.1" />
     <PackageReference Include="MudBlazor" Version="7.16.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Shared\Report_App_WASM.Shared.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Update="wwwroot\images\TablesDescriptionTemplate.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-
 </Project>
