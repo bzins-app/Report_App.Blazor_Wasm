@@ -7,6 +7,6 @@ public class FileStorageLocationDto : BaseTraceabilityDto, IDto
     [Required] [MaxLength(4000)] public string FilePath { get; set; } = ".";
     public bool IsReachable { get; set; }
     public bool TryToCreateFolder { get; set; }
-    public bool UseSftpProtocol { get; set; } = false;
-    public long SftpConfigurationId { get; set; }
+    public bool UseFileStorageConfiguration { get; set; } = false;
+    public long FileStorageConfigurationId { get; set; }
 }

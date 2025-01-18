@@ -192,9 +192,9 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery]
     [HttpGet("odata/Sftp")]
-    public IQueryable<SftpConfiguration?> GetSftp()
+    public IQueryable<FileStorageConfiguration?> GetSftp()
     {
-        return _context.SftpConfiguration;
+        return _context.FileStorageConfiguration;
     }
 
     [EnableQuery]
@@ -211,9 +211,9 @@ public class DataGridController : ODataController, IDisposable
                 FileStorageLocationId = a.FileStorageLocationId,
                 FilePath = a.FilePath,
                 ModificationUser = a.ModificationUser,
-                SftpConfigurationId = a.SftpConfiguration == null ? 0 : a.SftpConfiguration.SftpConfigurationId,
+                FileStorageConfigurationId = a.FileStorageConfiguration == null ? 0 : a.FileStorageConfiguration.FileStorageConfigurationId,
                 TryToCreateFolder = a.TryToCreateFolder,
-                UseSftpProtocol = a.UseSftpProtocol,
+                UseFileStorageConfiguration = a.UseFileStorageConfiguration,
                 IsReachable = a.IsReachable
             }).AsQueryable();
     }

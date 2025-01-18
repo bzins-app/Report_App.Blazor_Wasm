@@ -57,10 +57,10 @@
 
 @code
 {
-    GridItemsProvider<SftpConfigurationDto>? _itemsProvider;
+    GridItemsProvider<FileStorageConfigurationDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations = default!;
-    SimpleGrid<SftpConfigurationDto> _grid = default!;
+    SimpleGrid<FileStorageConfigurationDto> _grid = default!;
     private string? _errorMessage = default!;
     private bool _rendering = false;
 
@@ -72,7 +72,7 @@
             _rendering = false;
             if (response is null)
             {
-                return GridItemsProviderResult.From(Array.Empty<SftpConfigurationDto>(), 0);
+                return GridItemsProviderResult.From(Array.Empty<FileStorageConfigurationDto>(), 0);
             }
 
             return GridItemsProviderResult.From(response.Value!, response.Count);
@@ -80,7 +80,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<SftpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SftpConfigurationDto> req)
+    private async Task<ApiResponse<FileStorageConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<FileStorageConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -97,7 +97,7 @@
 
         try
         {
-            return await DataService.GetODataValues<SftpConfigurationDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<FileStorageConfigurationDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -127,17 +127,17 @@
         GC.SuppressFinalize(this);
     }
 
-    private async Task OpenEditDialog(SftpConfigurationDto value)
+    private async Task OpenEditDialog(FileStorageConfigurationDto value)
     {
-        var item = new SftpConfigurationDto
+        var item = new FileStorageConfigurationDto
         {
             ConfigurationName = value.ConfigurationName,
             Host = value.Host,
             Port = value.Port,
             UserName = value.UserName,
             Password = value.Password,
-            UseFtpProtocol = value.UseFtpProtocol,
-            SftpConfigurationId = value.SftpConfigurationId
+            ConfigurationType = value.ConfigurationType,
+            FileStorageConfigurationId = value.FileStorageConfigurationId
         };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
@@ -152,8 +152,8 @@
             value.Port = item.Port;
             value.UserName = item.UserName;
             value.Password = item.Password;
-            value.UseFtpProtocol = item.UseFtpProtocol;
-            value.SftpConfigurationId = item.SftpConfigurationId;
+            value.ConfigurationType = item.ConfigurationType;
+            value.FileStorageConfigurationId = item.FileStorageConfigurationId;
 
             var result = await DataService.PostValues(value, "SftpUpdate");
             if (result.Success)
@@ -169,7 +169,7 @@
         }
     }
 
-    private async Task OpenDeleteDialog(SftpConfigurationDto value)
+    private async Task OpenDeleteDialog(FileStorageConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
@@ -195,7 +195,7 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new SftpConfigurationDto();
+        var value = new FileStorageConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
         var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Create", parameters);

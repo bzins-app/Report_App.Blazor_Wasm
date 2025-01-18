@@ -27,3 +27,12 @@ public enum FileGenerationType
     Ftp = 30,
     Sftp = 40
 }
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FileStorageConfigurationType
+{
+    SMB = 10,
+    FTP = 20,
+    FTPs = 30,
+    SFTP = 80
+}
