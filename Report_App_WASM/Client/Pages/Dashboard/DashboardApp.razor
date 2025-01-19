@@ -164,6 +164,7 @@
     private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
     private Timer? _timer;
     private bool _isPageVisible = true;
+    private bool _disposed = false;
 
     [Inject] IJSRuntime JSRuntime { get; set; } = null!;
     private DotNetObjectReference<DashboardApp>? _dotNetRef;
@@ -189,6 +190,8 @@
 
     private async Task RefreshData()
     {
+        if (_disposed)
+            return;
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
 
@@ -251,6 +254,11 @@
 
     public async ValueTask DisposeAsync()
     {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
         if (_timer != null)
         {
             _timer.Stop();
