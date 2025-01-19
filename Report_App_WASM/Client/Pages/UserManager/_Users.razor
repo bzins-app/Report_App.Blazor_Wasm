@@ -108,10 +108,10 @@
 
     readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Large, FullWidth = true };
 
-    private void OpenEditDialog(ApplicationUserDto value)
+    private async Task OpenEditDialog(ApplicationUserDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Update };
-        DialogService.Show<_UserDetails>("Edit", parameters, _maxWidth);
+        await DialogService.ShowAsync<_UserDetails>("Edit", parameters, _maxWidth);
     }
 
     private async Task OpenDeleteDialog(ApplicationUserDto value)

@@ -1122,7 +1122,7 @@ SELECT [ConfigurationName]
       ,[IsReachable]
       ,[TryToCreateFolder]
       ,[UseSftpProtocol]
-      ,coalesce((select FileStorageConfigurationId  from FileStorageConfiguration where MiscValue=[SftpConfigurationId]),0)
+      ,coalesce((select FileStorageConfigurationId  from FileStorageConfiguration where MiscValue=[SftpConfigurationId]),null)
 	  ,[FileDepositPathConfigurationId]
       ,[CreateDateTime]
       ,[CreateUser]

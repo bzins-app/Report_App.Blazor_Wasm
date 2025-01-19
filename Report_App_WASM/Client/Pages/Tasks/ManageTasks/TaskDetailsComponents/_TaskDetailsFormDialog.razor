@@ -197,7 +197,7 @@
     private _QueryParameters? _refQuery;
 
     private ScheduledTaskQueryParameters _param = new();
-    private ScheduledTaskParameters? _paramHeader = new();
+    private ScheduledTaskParameters _paramHeader = new();
     private TypeDb _typeDbActivity;
     private string? _taskType;
     private string? _fileType;
@@ -237,10 +237,10 @@
 
         if (Header?.TaskParameters != "[]" && !string.IsNullOrEmpty(Header?.TaskParameters))
         {
-            _paramHeader = JsonSerializer.Deserialize<ScheduledTaskParameters>(Header.TaskParameters, _jsonOpt);
+            _paramHeader = JsonSerializer.Deserialize<ScheduledTaskParameters>(Header.TaskParameters, _jsonOpt) ?? new ScheduledTaskParameters();
         }
 
-        _useExcelTemplate = _paramHeader!.UseAnExcelTemplate;
+        _useExcelTemplate = _paramHeader.UseAnExcelTemplate;
         _useSpecificFileNaming = _paramHeader.UseASpecificFileNaming;
         var uri = $"GetActivityDbConnection?DataProviderId={DataProviderId}";
         var response = await DataService.GetValues<DatabaseConnectionDto>(uri);

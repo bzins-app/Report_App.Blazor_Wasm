@@ -126,11 +126,11 @@
         _rendering = false;
     }
 
-    private void OpenDetails(long taksId)
+    private async Task OpenDetails(long taksId)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters { ["taskId"] = taksId };
-        DialogService.Show<_TaskDetails>(Localizer.Get("Job details"), parameters, options);
+        await DialogService.ShowAsync<_TaskDetails>(Localizer.Get("Job details"), parameters, options);
     }
 
     public async ValueTask DisposeAsync()
