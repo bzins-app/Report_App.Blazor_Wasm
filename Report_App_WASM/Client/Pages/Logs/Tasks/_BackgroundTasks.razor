@@ -1,4 +1,4 @@
-﻿@implements IAsyncDisposable
+﻿@inherits BaseGridComponent<TaskLogDto>
 @inject IDialogService DialogService
 
 
@@ -51,11 +51,7 @@
 
 @code
 {
-    GridItemsProvider<TaskLogDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 20 };
-    SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<TaskLogDto> _grid = default!;
-    private bool _rendering;
+    new PaginationState _pagination = new() { ItemsPerPage = 20 };
 
 
     protected override void OnInitialized()
@@ -75,7 +71,7 @@
         _translations = AppService.GetGridTranslations();
     }
 
-    private async Task<ApiResponse<TaskLogDto>?> GetRemoteData(GridItemsProviderRequest<TaskLogDto> req)
+    protected override async Task<ApiResponse<TaskLogDto>?> GetRemoteData(GridItemsProviderRequest<TaskLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -83,7 +79,7 @@
         var url = "odata/TaskLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {

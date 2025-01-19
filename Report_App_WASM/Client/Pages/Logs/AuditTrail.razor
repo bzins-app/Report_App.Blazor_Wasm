@@ -1,5 +1,5 @@
 ﻿@page "/AuditTrail"
-@implements IAsyncDisposable
+@inherits BaseGridComponent<AuditTrailDto>
 @attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <PageTitle>@Localizer.Get("Audit Trail")</PageTitle>
@@ -72,12 +72,6 @@
 
 @code
 {
-    GridItemsProvider<AuditTrailDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 10 };
-    SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<AuditTrailDto> _grid = default!;
-    private bool _rendering;
-
     private AuditTrailValuesChanged _values = new();
 
     private class AuditTrailValuesChanged
@@ -87,23 +81,7 @@
         public string? NewValues { get; set; }
     }
 
-    protected override void OnInitialized()
-    {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<AuditTrailDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-        _translations = AppService.GetGridTranslations();
-    }
-
-    private async Task<ApiResponse<AuditTrailDto>?> GetRemoteData(GridItemsProviderRequest<AuditTrailDto> req)
+    protected override async Task<ApiResponse<AuditTrailDto>?> GetRemoteData(GridItemsProviderRequest<AuditTrailDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -111,7 +89,7 @@
         var url = "odata/AuditTrail?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -129,13 +107,6 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
-
     private async Task ExtractElements()
     {
         _rendering = true;
@@ -147,13 +118,6 @@
         _rendering = false;
     }
 
-    private async Task RemoveFilters()
-    {
-        _rendering = true;
-        await _grid.RemoveFilters();
-        _rendering = false;
-    }
-
     void RowClicked(SimpleGridRowClickEventArgs<AuditTrailDto> args)
     {
         _values.AffectedColumns = args.Item.AffectedColumns;
@@ -161,9 +125,4 @@
         _values.NewValues = args.Item.NewValues;
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
-    }
 }

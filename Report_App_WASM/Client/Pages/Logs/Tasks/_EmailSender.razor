@@ -1,4 +1,4 @@
-﻿@implements IAsyncDisposable
+﻿@inherits BaseGridComponent<EmailLogDto>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
@@ -45,30 +45,9 @@
 
 @code
 {
-    GridItemsProvider<EmailLogDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 20 };
-    SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<EmailLogDto> _grid = default!;
-    private bool _rendering;
+    new PaginationState _pagination = new() { ItemsPerPage = 20 };
 
-
-    protected override void OnInitialized()
-    {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<EmailLogDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-        _translations = AppService.GetGridTranslations();
-    }
-
-    private async Task<ApiResponse<EmailLogDto>?> GetRemoteData(GridItemsProviderRequest<EmailLogDto> req)
+    protected override async Task<ApiResponse<EmailLogDto>?> GetRemoteData(GridItemsProviderRequest<EmailLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -76,7 +55,7 @@
         var url = "odata/EmailLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -94,13 +73,6 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
-
     private async Task ExtractElements()
     {
         _rendering = true;
@@ -110,18 +82,5 @@
         url += odataQuery;
         await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
-    }
-
-    private async Task RemoveFilters()
-    {
-        _rendering = true;
-        await _grid.RemoveFilters();
-        _rendering = false;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
     }
 }
