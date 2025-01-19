@@ -19,20 +19,20 @@
     <MudCard Elevation="6">
         <MudCardHeader>
             <MudText Typo="Typo.h6">@_pageTitle</MudText>
-            <MudSpacer/>
+            <MudSpacer />
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OpenCreateDialog)"
-                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")"/>
+                               Icon="@Icons.Material.Filled.Add" title="@Localizer.Get("Add")" />
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(OnRefresh)"
-                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering" />
                 <MudIconButton Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="@(RemoveFilters)"
-                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering" />
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -49,50 +49,50 @@
                 <SimpleGrid ItemsProvider="@_itemsProvider" BuildInFilter="true" Pagination="@_pagination" FieldsContent="@_translations" @ref="_grid">
                     <Blazor.SimpleGrid.TemplateColumn>
                         <MudStack Row="true" Justify="Justify.Center">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" title="@Localizer.Get("Edit")"/>
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context)" title="@Localizer.Get("Edit")" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" OnClick="() => OpenDeleteDialog(context)" title="@Localizer.Get("Delete")" />
                             <CascadingValue Value="@_grid">
-                                <_TaskDuplicateForm Item="context"/>
+                                <_TaskDuplicateForm Item="context" />
                             </CascadingValue>
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskId)" Title="ScheduledTaskId" Sortable="true" />
                     @if (string.IsNullOrEmpty(ProviderName))
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ProviderName)" Title="@Localizer.Get("Activity")" Sortable="true" />
                     }
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TaskName)" Title="@Localizer.Get("Report title")" Sortable="true" />
                     @if (TypeTask == TaskType.Report.ToString())
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TypeFileName)" Title="@Localizer.Get("Type of file")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TypeFileName)" Title="@Localizer.Get("Type of file")" Sortable="true" />
                     }
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Run manually")">
-                        <_TaskRunForm Item="context"/>
+                        <_TaskRunForm Item="context" />
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Is activated?")">
-                        <_TaskActivate Item="context"/>
+                        <_TaskActivate Item="context" />
                     </Blazor.SimpleGrid.TemplateColumn>
                     @if (TypeTask == TaskType.Report.ToString())
                     {
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Send by email?")">
-                            <_TaskEmailActivate Item="context"/>
+                            <_TaskEmailActivate Item="context" />
                         </Blazor.SimpleGrid.TemplateColumn>
                     }
                     @if (TypeTask == TaskType.Report.ToString())
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true" />
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
-                            <_TaskDropFileForm Item="context"/>
+                            <_TaskDropFileForm Item="context" />
                         </Blazor.SimpleGrid.TemplateColumn>
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true"/>
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true" />
                     }
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModificationUser)" Title="@Localizer.Get("Updated by")" Sortable="true" />
                 </SimpleGrid>
             </div>
-            <Paginator Value="@_pagination" FieldsContent="@_translations"/>
+            <Paginator Value="@_pagination" FieldsContent="@_translations" />
         </MudCardContent>
     </MudCard>
 </ErrorBoundary>
@@ -100,15 +100,10 @@
 @code
 {
     [Parameter] public string TypeTask { get; set; } = default!;
-
     [Parameter] public string ProviderName { get; set; } = default!;
-
     [Parameter] public long? DataProviderId { get; set; }
-
-    [Parameter] [SupplyParameterFromQuery] public int? Page { get; set; }
-
-    [Parameter] [SupplyParameterFromQuery] public int? PageSize { get; set; }
-
+    [Parameter][SupplyParameterFromQuery] public int? Page { get; set; }
+    [Parameter][SupplyParameterFromQuery] public int? PageSize { get; set; }
 
     GridItemsProvider<ScheduledTaskDto>? _itemsProvider;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
@@ -125,7 +120,12 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        _pageTitle = TypeTask == TaskType.Report.ToString() ? Localizer.Get("Manage reports") : TypeTask == TaskType.Alert.ToString() ? Localizer.Get("Manage alerts") : Localizer.Get("Manage data transfers");
+        _pageTitle = TypeTask switch
+        {
+            nameof(TaskType.Report) => Localizer.Get("Manage reports"),
+            nameof(TaskType.Alert) => Localizer.Get("Manage alerts"),
+            _ => Localizer.Get("Manage data transfers")
+        };
 
         if (Page.HasValue && PageSize.HasValue)
         {
@@ -134,14 +134,10 @@
         }
 
         selected = null;
-        var type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.Alert.ToString() ? TaskType.Alert : TaskType.DataTransfer;
-        var urlExt = string.Empty;
-        if (!string.IsNullOrEmpty(ProviderName))
-        {
-            urlExt = $"&&DataProviderId={DataProviderId!.Value}";
-        }
-
+        var type = Enum.Parse<TaskType>(TypeTask);
+        var urlExt = DataProviderId.HasValue ? $"&&DataProviderId={DataProviderId.Value}" : string.Empty;
         var uri = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={type}{urlExt}";
+
         try
         {
             _tags = (await Http.GetFromJsonAsync<List<string>>(uri))!;
@@ -151,22 +147,9 @@
             _tags = new List<string>();
         }
 
-        // This could use HttpClient's GetFromJsonAsync, or be a direct database query, etc.
         if ((_empty || _oldActivity != ProviderName || _oldTypeTask != TypeTask) && !_rendering)
         {
-            _itemsProvider = async req =>
-            {
-                var response = await GetRemoteData(req);
-                _rendering = false;
-                if (response is null)
-                {
-                    _empty = true;
-                    return GridItemsProviderResult.From(Array.Empty<ScheduledTaskDto>(), 0);
-                }
-
-                _empty = !response.Value!.Any();
-                return GridItemsProviderResult.From(response.Value!, response.Count);
-            };
+            InitializeItemsProvider();
         }
 
         if (!string.IsNullOrEmpty(ProviderName))
@@ -178,70 +161,44 @@
         _oldTypeTask = TypeTask;
     }
 
-
     protected override void OnInitialized()
     {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                _empty = true;
-                return GridItemsProviderResult.From(Array.Empty<ScheduledTaskDto>(), 0);
-            }
-
-            if (response.Value!.Any())
-            {
-                _empty = false;
-            }
-            else
-            {
-                _empty = true;
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
+        InitializeItemsProvider();
         _oldActivity = ProviderName;
         _oldTypeTask = TypeTask;
         _translations = AppService.GetGridTranslations();
     }
 
+    private void InitializeItemsProvider()
+    {
+        _itemsProvider = async req =>
+        {
+            var response = await GetRemoteData(req);
+            _rendering = false;
+            _empty = response?.Value?.Any() != true;
+            return response is null
+                ? GridItemsProviderResult.From(Array.Empty<ScheduledTaskDto>(), 0)
+                : GridItemsProviderResult.From(response.Value!, response.Count);
+        };
+    }
+
     private async Task<ApiResponse<ScheduledTaskDto>?> GetRemoteData(GridItemsProviderRequest<ScheduledTaskDto> req)
     {
-        // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
-        // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataSort = _grid?.GetODataSortValues();
         var odataPagination = _grid?.GetODataPaginationValues();
         var odataFilters = _grid?.GetODataFilterValues();
-        var url = "odata/TaskHeader?";
-        _rendering = true;
+        var url = "odata/TaskHeader?$count=true";
 
         var customFilters = $"TypeName eq '{TypeTask}'";
         if (DataProviderId.HasValue)
         {
-            customFilters += $" and  IdDataProvider eq {DataProviderId.Value} ";
+            customFilters += $" and IdDataProvider eq {DataProviderId.Value}";
         }
 
-        url += "$count=true";
-        if (!string.IsNullOrEmpty(odataPagination))
-        {
-            url += "&" + odataPagination;
-        }
-
-        if (!string.IsNullOrEmpty(odataSort))
-        {
-            url += "&" + odataSort;
-        }
-
-        if (!string.IsNullOrEmpty(odataFilters))
-        {
-            url += "&" + odataFilters + " and " + customFilters;
-        }
-        else
-        {
-            url += "&$filter=" + customFilters;
-        }
+        if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
+        if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
+        if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
+        else url += "&$filter=" + customFilters;
 
         if (selected != null)
         {
@@ -250,9 +207,10 @@
             {
                 _tagFilter += $" and contains(Tags, '{tagSelected}')";
             }
-
             url += _tagFilter;
         }
+
+        _rendering = true;
 
         try
         {
@@ -260,7 +218,6 @@
         }
         catch
         {
-            // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
     }
@@ -294,7 +251,6 @@
     private async Task OpenDeleteDialog(ScheduledTaskDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
-
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
@@ -324,17 +280,23 @@
     {
         var uri = UriHelper.GetUriWithQueryParameters("TaskEdit/" + value.ScheduledTaskId,
             new Dictionary<string, object>
-            {
-                ["FromTaskManager"] = !string.IsNullOrEmpty(ProviderName),
-                ["Page"] = _pagination.CurrentPageIndex,
-                ["PageSize"] = _pagination.ItemsPerPage
-            }!);
+                {
+                    ["FromTaskManager"] = !string.IsNullOrEmpty(ProviderName),
+                    ["Page"] = _pagination.CurrentPageIndex,
+                    ["PageSize"] = _pagination.ItemsPerPage
+                }!);
         UriHelper.NavigateTo(uri);
     }
 
     private async Task OpenCreateDialog()
     {
-        var value = new ScheduledTaskDto { TypeName = TypeTask, Type = TypeTask == TaskType.Report.ToString() ? TaskType.Report : TypeTask == TaskType.DataTransfer.ToString() ? TaskType.DataTransfer : TaskType.Alert, SendByEmail = TypeTask == TaskType.Alert.ToString() };
+        var value = new ScheduledTaskDto
+            {
+                TypeName = TypeTask,
+                Type = Enum.Parse<TaskType>(TypeTask),
+                SendByEmail = TypeTask == nameof(TaskType.Alert)
+            };
+
         if (DataProviderId.HasValue)
         {
             value.IdDataProvider = DataProviderId.Value;
@@ -342,7 +304,6 @@
         }
 
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
-
         var dialog = await DialogService.ShowAsync<_TaskManagerFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
@@ -358,7 +319,9 @@
                     UriHelper.NavigateTo("TaskEdit/" + result.KeyValue);
                 }
                 else
+                {
                     await OnRefresh();
+                }
             }
             else
             {
