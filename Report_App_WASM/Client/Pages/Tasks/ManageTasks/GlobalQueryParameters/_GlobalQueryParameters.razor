@@ -74,13 +74,13 @@
 
     [Parameter] public bool ChangePending { get; set; }
 
-    List<QueryCommandParameter>? _parameters = new();
+    List<QueryCommandParameter> _parameters = new();
 
     protected override void OnInitialized()
     {
         if (Item?.GlobalQueryParameters != "[]" && !string.IsNullOrEmpty(Item?.GlobalQueryParameters))
         {
-            _parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.GlobalQueryParameters);
+            _parameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.GlobalQueryParameters) ?? new List<QueryCommandParameter>();
         }
     }
 
@@ -103,7 +103,7 @@
 
         if (result != null)
         {
-            _parameters!.Remove(_parameters.FirstOrDefault(a => a.ParameterIdentifier == element.ParameterIdentifier)!);
+            _parameters.Remove(_parameters.FirstOrDefault(a => a.ParameterIdentifier == element.ParameterIdentifier)!);
             await UpdateParameters();
         }
     }

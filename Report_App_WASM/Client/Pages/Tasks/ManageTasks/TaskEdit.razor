@@ -408,21 +408,27 @@
         UriHelper.NavigateTo(uri);
     }
 
-    private void OnSelectedItemChangedHandler(IEnumerable<long> actId)
+    private void OnSelectedItemChangedHandler(IEnumerable<long>? actId)
     {
-        _DataProviderId = actId.FirstOrDefault();
-        Item.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
-        Item.IdDataProvider = Item.DataProvider.DataProviderId;
-        if (Item.DataProvider.ProviderName != null) Item.ProviderName = Item.DataProvider.ProviderName;
+        if (actId != null)
+        {
+            _DataProviderId = actId.FirstOrDefault();
+            Item.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
+            Item.IdDataProvider = Item.DataProvider.DataProviderId;
+            if (Item.DataProvider.ProviderName != null) Item.ProviderName = Item.DataProvider.ProviderName;
+        }
     }
 
-    private async Task OnUploadTemplate(IBrowserFile file)
+    private async Task OnUploadTemplate(IBrowserFile? file)
     {
         _loading = true;
-        var result = await DataService.PostFile(file);
-        if (result.Success)
+        if (file != null)
         {
-            _param.ExcelTemplatePath = result.Message;
+            var result = await DataService.PostFile(file);
+            if (result.Success)
+            {
+                _param.ExcelTemplatePath = result.Message;
+            }
         }
 
         _changesToSave = true;

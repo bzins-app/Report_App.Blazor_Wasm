@@ -66,11 +66,12 @@
     private string _email = "";
     private bool _emailNotValidated;
     private string? _completeLogoPath;
-    EmailAddressAttribute _checkEmail = new() { ErrorMessage = "The email address is invalid" };
+    EmailAddressAttribute _checkEmail = null!;
     private MudForm _form = default!;
 
     protected override async Task OnInitializedAsync()
     {
+        _checkEmail = new EmailAddressAttribute { ErrorMessage = Localizer.Get("The email address is invalid") };
         _param = await DataService.GetUniqueValue(_param, "GetApplicationParameters", ApiControllers.ApplicationParametersApi);
         if (!string.IsNullOrEmpty(_param.AdminEmails))
         {

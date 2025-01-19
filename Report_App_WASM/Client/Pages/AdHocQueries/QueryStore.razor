@@ -51,8 +51,8 @@
     [Parameter] public long? DataProviderId { get; set; }
 
     private string? _pageTitle;
-    private List<StoredQueryDto>? _queries;
-    private List<StoredQueryDto>? _filteredQueries;
+    private List<StoredQueryDto> _queries = null!;
+    private List<StoredQueryDto> _filteredQueries = null!;
 
     public RenderFragment? _QueriesFragment { get; set; }
     public RenderFragment? _queryRender { get; set; }

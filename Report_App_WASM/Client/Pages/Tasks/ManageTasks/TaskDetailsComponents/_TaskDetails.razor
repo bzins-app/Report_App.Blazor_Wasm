@@ -134,7 +134,7 @@
 
         if (!(feedback is { Canceled: true }))
         {
-            Item.TaskQueries.Add((ScheduledTaskQueryDto)feedback.Data);
+            Item.TaskQueries.Add(((ScheduledTaskQueryDto)feedback?.Data!));
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();

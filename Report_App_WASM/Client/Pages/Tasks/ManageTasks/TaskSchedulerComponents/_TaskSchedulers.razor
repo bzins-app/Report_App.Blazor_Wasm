@@ -94,7 +94,9 @@
             if (_crons != null)
             {
                 var toUpdate = _crons.FirstOrDefault(a => a?.CronValue == dataBefore);
-                if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
+                if (toUpdate != null)
+                    if (feedback?.Data != null)
+                        toUpdate.CronValue = feedback.Data.ToString();
             }
 
             ChangePending = true;
@@ -136,7 +138,7 @@
 
         if (!(feedback is { Canceled: true }))
         {
-            _crons?.Add(new CronParameters { CronValue = feedback.Data.ToString() });
+            if (feedback != null) _crons?.Add(new CronParameters { CronValue = feedback.Data?.ToString() });
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();
