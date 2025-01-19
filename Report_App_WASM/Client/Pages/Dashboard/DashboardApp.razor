@@ -255,11 +255,18 @@
     public async ValueTask DisposeAsync()
     {
         if (_disposed)
+        {
+            if (_timer is not null)
+            {
+                _timer.Stop();
+                _timer.Dispose();
+            }
             return;
+        }
 
         _disposed = true;
 
-        if (_timer != null)
+        if (_timer is not null)
         {
             _timer.Stop();
             _timer.Dispose();
