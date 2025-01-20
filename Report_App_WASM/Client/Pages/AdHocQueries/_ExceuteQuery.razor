@@ -119,7 +119,7 @@
 }
 @if (!_pivotTable)
 {
-    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
+    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Bordered="true">
         <HeaderContent>
             @if (_values?.Any() == true)
             {
