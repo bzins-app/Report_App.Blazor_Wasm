@@ -57,7 +57,7 @@
                             @if (!_isLoaded)
                             {
                                 <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
-                                GetTablesViews();
+                                _ = GetTablesViews();
                             }
                             else
                             {
@@ -174,19 +174,18 @@
 
     private class ListTablesViews
     {
-        public TablesColsInfo TablesColsInfo { get; set; }
-        public List<TablesColsInfo> ColNames { get; set; }
+        public TablesColsInfo TablesColsInfo { get; set; } = null!;
+        public List<TablesColsInfo> ColNames { get; set; } = null!;
         public bool hasChildren { get; set; }
         public bool hasDescription { get; set; }
     }
 
     private List<ListTablesViews> ItemsBase = new();
     private List<ListTablesViews> ItemsBaseStored = new();
-    private List<TablesColsInfo> ColNames = new();
-    private bool _isLoaded = false;
-    private bool _loading = false;
-    private bool _loadingTables = false;
-    private MudTable<ListTablesViews> _tableRef;
+    private bool _isLoaded;
+    private bool _loading;
+    private bool _loadingTables;
+    private MudTable<ListTablesViews> _tableRef = null!;
     private string? QueryBuilder;
     private string? QueryRun;
     private string _querySelectedCode = string.Empty;
@@ -198,10 +197,9 @@
     private List<Dictionary<string, object>>? _values;
     private int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
-    private string _SelectedTable = string.Empty;
     public RenderFragment? _editor { get; set; }
     public string _tableHeader = string.Empty;
-    private MudTextField<string> _searchField;
+    private MudTextField<string> _searchField = null!;
 
     private TableGroupDefinition<ListTablesViews> _groupDefinition = new()
         {
@@ -237,7 +235,6 @@
         _isLoaded = false;
         _tableHeader = Localizer.Get("Query output");
         _values = new();
-        ColNames = new List<TablesColsInfo>();
         QueryRun = "";
         QueryBuilder = "";
     }
@@ -282,7 +279,7 @@
         await CancelCurrentTask();
         _cts = new CancellationTokenSource();
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
-        data.Values.ForEach(a => ItemsBaseStored.Add(new ListTablesViews { TablesColsInfo = a, hasDescription = data.HasDescription }));
+        if (data != null) data.Values.ForEach(a => ItemsBaseStored.Add(new ListTablesViews { TablesColsInfo = a, hasDescription = data.HasDescription }));
         ItemsBase = ItemsBaseStored;
         _isLoaded = true;
         _loadingTables = false;
@@ -297,8 +294,11 @@
             await CancelCurrentTask();
             _cts = new CancellationTokenSource();
             var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={table.TablesColsInfo.Name}", _cts.Token);
-            table.ColNames = data.Values;
-            table.hasDescription = data.HasDescription;
+            if (data != null)
+            {
+                table.ColNames = data.Values;
+                table.hasDescription = data.HasDescription;
+            }
         }
     }
 
@@ -418,7 +418,7 @@
         }
 
         var items = _values?.Select(a => a.Values).ToList() ?? new List<Dictionary<string, object>.ValueCollection>();
-        var totalItems = _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1;
+        var totalItems = _values != null && _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1;
 
         return new TableData<Dictionary<string, object>.ValueCollection>
             {
