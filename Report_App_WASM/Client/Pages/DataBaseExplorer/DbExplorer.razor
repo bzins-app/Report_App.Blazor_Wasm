@@ -19,7 +19,7 @@
     </MudCardHeader>
     <MudCardContent>
         <MudGrid Spacing="1">
-            <MudItem md="5" lg="3">
+            <MudItem md="5" lg="4" xl="3">
                 <MudStack Row="true">
                     <MudLoadingButton @bind-Loading="_reloading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ReloadValues" Variant="Variant.Filled" Color="Color.Primary" Disabled="_loadingTables" Size="Size.Small">
                         <LoadingContent>
@@ -55,7 +55,7 @@
                             }
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd style="padding-left:60px;">
+                            <MudTd style="padding-left:40px;">
 
                                 <MudStack Row="true">
                                     <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" title="@Localizer.Get("Display table values")"/>
@@ -78,7 +78,7 @@
                                     }
                                     else
                                     {
-                                        <td colspan="10" style="padding-left:80px;">
+                                        <td colspan="10" style="padding-left:60px;">
                                             <MudCard Elevation="0">
                                                 <MudCardContent Class="pa-0">
                                                     <MudTable Items="@context.ColNames" Context="tcontext" Hover="true" Elevation="0" Dense="true">
@@ -128,7 +128,7 @@
                             }
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd style="padding-left:60px;">
+                            <MudTd style="padding-left:40px;">
                                 <MudStack Row="true">
                                     <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" title="@Localizer.Get("Display table values")"/>
                                     @context.TablesColsInfo.Name
@@ -150,7 +150,7 @@
                                     }
                                     else
                                     {
-                                        <td colspan="10" style="padding-left:80px;">
+                                        <td colspan="10" style="padding-left:60px;">
                                             <MudCard Elevation="0">
                                                 <MudCardContent Class="pa-0">
                                                     <MudTable Items="@context.ColNames" Context="tcontext" Hover="true" Elevation="0" Dense="true">
@@ -183,7 +183,7 @@
                 }
 
             </MudItem>
-            <MudItem md="7" lg="9">
+            <MudItem md="7" lg="8" xl="9">
                 @if (!string.IsNullOrEmpty(_queryTestResult))
                 {
                     <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_queryTestResult</MudText>
