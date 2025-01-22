@@ -1,4 +1,4 @@
-﻿@page "/DbExplorer/{DataProviderId:long}/{ProviderName}"
+﻿@page "/Test/{DataProviderId:long}/{ProviderName}"
 @using Blazor.AceEditorJs
 @using Report_App_WASM.Shared.Extensions
 @using Report_App_WASM.Shared.RemoteQueryParameters
@@ -6,6 +6,7 @@
 @inject HttpClient Http
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
+
 
 <PageTitle>@Localizer.Get("DB explorer")</PageTitle>
 
@@ -22,22 +23,28 @@
             <MudItem md="5" lg="3">
                 <MudTable Items="@ItemsBase" Dense="true" Hover="true" FixedHeader="true" Height="75vh" Elevation="25" Virtualize="true" GroupBy="@_groupDefinition" Style="width:100%" @ref="_tableRef">
                     <ToolBarContent>
-                        <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" @ref="_searchField" Clearable="true"></MudTextField>
+                        <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" @ref="_searchField"></MudTextField>
                         <MudLoadingButton @bind-Loading="_loadingTables" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="GetTablesViews" Variant="Variant.Filled" Color="Color.Primary" Disabled="_loadingTables">
                             <LoadingContent>
                                 <MudText>@Localizer.Get("Processing")</MudText>
                             </LoadingContent>
                             <ChildContent>
-                                <MudText>@Localizer.Get("Reload")</MudText>
+                                <MudText>@Localizer.Get("Reload tables list")</MudText>
                             </ChildContent>
                         </MudLoadingButton>
                         @if (_loadingTables)
                         {
-                            <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="CancelQuery">
+                            <MudButton Variant="Variant.Filled" Color="Color.Warning"  OnClick="CancelQuery">
                                 <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
                             </MudButton>
                         }
                     </ToolBarContent>
+                    @*                             <HeaderContent>
+                                <MudTh>
+                                    @Localizer.Get("Db tables")
+                                </MudTh>
+                            </HeaderContent> *@
+
                     <HeaderContent>
                         @if (_loadingTables)
                         {
@@ -47,12 +54,13 @@
                         }
                     </HeaderContent>
                     <ColGroup>
-                        <col style="width:7px;" />
+                        <col style="width:15px;" />
                     </ColGroup>
                     <GroupHeaderTemplate>
-                        <MudTh colspan="5">@($"{context.Key}s ({(_isLoaded ? context.Items.Count() : 0)})")</MudTh>
+                        <MudTh colspan="5">@($"{context.Key}s ({(_isLoaded ? context.Items.Count() : 0)})") </MudTh>
                     </GroupHeaderTemplate>
                     <RowTemplate>
+
                         <MudTd>
                             @if (!_isLoaded)
                             {
@@ -62,10 +70,11 @@
                             else
                             {
                                 <MudStack Row="true">
-                                    <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" title="@Localizer.Get("Display table values")" />
-                                    @context.TablesColsInfo.Name
+                                    <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" 
+                                                   title="@Localizer.Get("Display table values")" />@context.TablesColsInfo.Name
                                     <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(context.TablesColsInfo.Name))" Class="ms-2" title="@Localizer.Get("Display table values")" />
                                 </MudStack>
+
                             }
                         </MudTd>
                         @if (context.hasDescription && _isLoaded)
@@ -95,14 +104,21 @@
                                                         else
                                                         {
                                                             <MudTd Style="width:7px;">
-                                                                <MudIcon Icon="@(GetIconForColumnType(tcontext.ColType))" Style="padding;0px; padding-right:7px" Size="Size.Small" />
-                                                                @tcontext.Name
+                                                                <MudIcon Icon="@(tcontext.ColType.ToLower() switch
+                                                                               {
+                                                                                   var colType when colType.Contains("date") || colType.Contains("time") => Icons.Material.Filled.DateRange,
+                                                                                   var colType when colType.Contains("char") || colType.Contains("string") || colType.Contains("text") => Icons.Material.Filled.TextSnippet,
+                                                                                   var colType when colType.Contains("number") || colType.Contains("int") => Icons.Material.Filled._123,
+                                                                                   _ => Icons.Material.Filled.Label
+                                                                               })" Style="padding;0px; padding-right:7px" Size="Size.Small" />@tcontext.Name
                                                             </MudTd>
                                                         }
+
                                                         @if (context.hasDescription)
                                                         {
                                                             <MudTh>@tcontext.Description</MudTh>
                                                         }
+
                                                     </RowTemplate>
                                                 </MudTable>
                                             </MudCardContent>
@@ -169,6 +185,7 @@
 </MudCard>
 
 @code {
+
     [Parameter] public string ProviderName { get; set; } = default!;
     [Parameter] public long DataProviderId { get; set; }
 
@@ -179,10 +196,9 @@
         public bool hasChildren { get; set; }
         public bool hasDescription { get; set; }
     }
-
-    private List<ListTablesViews> ItemsBase = new();
-    private List<ListTablesViews> ItemsBaseStored = new();
-    private List<TablesColsInfo> ColNames = new();
+    private List<ListTablesViews> ItemsBase = new List<ListTablesViews>();
+    private List<ListTablesViews> ItemsBaseStored = new List<ListTablesViews>();
+    private List<TablesColsInfo> ColNames;
     private bool _isLoaded = false;
     private bool _loading = false;
     private bool _loadingTables = false;
@@ -194,14 +210,15 @@
     private bool _isDarkMode;
     private AceEditorOptions? _opt;
     private TypeDb _typeDbTask;
-    private MudTable<Dictionary<string, object>.ValueCollection>? _table;
+    MudTable<Dictionary<string, object>.ValueCollection>? _table;
     private List<Dictionary<string, object>>? _values;
-    private int[] _pageSizeOptions = { 10, 20, 50, 100 };
+    int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }
     private string _SelectedTable = string.Empty;
     public RenderFragment? _editor { get; set; }
     public string _tableHeader = string.Empty;
-    private MudTextField<string> _searchField;
+    MudTextField<string> _searchField;
+
 
     private TableGroupDefinition<ListTablesViews> _groupDefinition = new()
         {
@@ -219,13 +236,9 @@
         {
             NavigationManager.NavigateTo("/403");
         }
-        await ResetState();
-        await InitializeEditorOptions();
-        await LoadDatabaseConnection();
-    }
 
-    private async Task ResetState()
-    {
+
+
         _tableRef?.CollapseAllGroups();
         if (_searchField != null)
             await _searchField.ResetAsync();
@@ -235,15 +248,19 @@
         ItemsBase.Add(new ListTablesViews { TablesColsInfo = new TablesColsInfo { TypeValue = "Table", Name = "Table" } });
         ItemsBase.Add(new ListTablesViews { TablesColsInfo = new TablesColsInfo { TypeValue = "View", Name = "View" } });
         _isLoaded = false;
+
         _tableHeader = Localizer.Get("Query output");
         _values = new();
         ColNames = new List<TablesColsInfo>();
         QueryRun = "";
         QueryBuilder = "";
-    }
+        var uri = $"GetActivityDbConnection?DataProviderId={DataProviderId}";
+        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
+        if (response.Any())
+        {
+            _typeDbTask = response.Select(a => a.TypeDb).First();
+        }
 
-    private async Task InitializeEditorOptions()
-    {
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
             {
@@ -259,27 +276,20 @@
                 Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
             };
 
+
         _editor = __builder =>
         {
             <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" />
         };
-    }
 
-    private async Task LoadDatabaseConnection()
-    {
-        var uri = $"GetActivityDbConnection?DataProviderId={DataProviderId}";
-        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
-        if (response.Any())
-        {
-            _typeDbTask = response.Select(a => a.TypeDb).First();
-        }
     }
 
     private async Task GetTablesViews()
     {
         _loadingTables = true;
         ItemsBaseStored.Clear();
-        await CancelCurrentTask();
+        if (_cts is not null)
+            await _cts.CancelAsync();
         _cts = new CancellationTokenSource();
         var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
         data.Values.ForEach(a => ItemsBaseStored.Add(new ListTablesViews { TablesColsInfo = a, hasDescription = data.HasDescription }));
@@ -294,22 +304,27 @@
         table.hasChildren = !table.hasChildren;
         if (table.hasChildren)
         {
-            await CancelCurrentTask();
+            if (_cts is not null)
+                await _cts.CancelAsync();
             _cts = new CancellationTokenSource();
             var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={table.TablesColsInfo.Name}", _cts.Token);
             table.ColNames = data.Values;
             table.hasDescription = data.HasDescription;
         }
+
     }
 
     private void OnSearchTables(string text)
     {
-        ItemsBase = string.IsNullOrWhiteSpace(text)
-            ? ItemsBaseStored
-            : ItemsBaseStored.Where(a => (!string.IsNullOrEmpty(a.TablesColsInfo.Name) && a.TablesColsInfo.Name.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics())) || (!string.IsNullOrEmpty(a.TablesColsInfo.Description) && a.TablesColsInfo.Description.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics()))).ToList();
+        if (string.IsNullOrWhiteSpace(text))
+            ItemsBase = ItemsBaseStored;
+        else
+        {
+            ItemsBase = ItemsBaseStored.Where(a => (!string.IsNullOrEmpty(a.TablesColsInfo.Name) && a.TablesColsInfo.Name.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics())) || (!string.IsNullOrEmpty(a.TablesColsInfo.Description) && a.TablesColsInfo.Description.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics()))).ToList();
+        }
     }
 
-    private void CancelQuery()
+    void CancelQuery()
     {
         _cts?.Cancel();
     }
@@ -322,7 +337,8 @@
     private async Task DisplayTableValues(string tableName)
     {
         _loading = true;
-        QueryRun = $"select  * from {tableName}";
+        var query = $"select  * from {tableName}";
+        QueryRun = query;
         _tableHeader = tableName;
         _table!.CurrentPage = 0;
         await _table.ReloadServerData();
@@ -332,10 +348,10 @@
     private async Task RunSql()
     {
         _loading = true;
-        _queryTestResult = string.Empty;
+        _queryTestResult = String.Empty;
         _tableHeader = Localizer.Get("Query output");
         StateHasChanged();
-        var queryToRun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
+        var _queryTorun = string.IsNullOrWhiteSpace(_querySelectedCode) ? QueryBuilder : _querySelectedCode;
 
         if (string.IsNullOrEmpty(QueryBuilder))
         {
@@ -343,7 +359,7 @@
         }
         else
         {
-            QueryRun = queryToRun;
+            QueryRun = _queryTorun;
             _table!.CurrentPage = 0;
             await _table.ReloadServerData();
         }
@@ -372,7 +388,8 @@
 
         try
         {
-            await CancelCurrentTask();
+            if (_cts is not null)
+                await _cts.CancelAsync();
             _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
             var run = new RemoteDbCommandParameters
@@ -425,22 +442,5 @@
                 TotalItems = totalItems,
                 Items = items
             };
-    }
-
-    private async Task CancelCurrentTask()
-    {
-        if (_cts is not null)
-            await _cts.CancelAsync();
-    }
-
-    private string GetIconForColumnType(string colType)
-    {
-        return colType.ToLower() switch
-        {
-            var type when type.Contains("date") || type.Contains("time") => Icons.Material.Filled.DateRange,
-            var type when type.Contains("char") || type.Contains("string") || type.Contains("text") => Icons.Material.Filled.TextSnippet,
-            var type when type.Contains("number") || type.Contains("int") => Icons.Material.Filled._123,
-            _ => Icons.Material.Filled.Label
-        };
     }
 }
