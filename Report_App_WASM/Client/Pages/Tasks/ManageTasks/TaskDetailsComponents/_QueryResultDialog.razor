@@ -10,7 +10,7 @@
         </div>
         @if (TestResult)
         {
-            <MudTable Items="Data?.Select(a => a.Values).ToList()" Virtualize="true" Hover="true" Dense="true" Height="400px" FixedHeader="true" HorizontalScrollbar="true">
+            <MudTable Items="Data?.Select(a => a.Values).ToList()" Virtualize="true" Hover="true" Dense="true" Height="400px" FixedHeader="true" HorizontalScrollbar="true" Bordered="true">
                 <HeaderContent>
                     @if (Data?.Any() == true)
                     {

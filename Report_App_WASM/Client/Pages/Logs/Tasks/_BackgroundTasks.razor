@@ -53,24 +53,6 @@
 {
     new PaginationState _pagination = new() { ItemsPerPage = 20 };
 
-
-    protected override void OnInitialized()
-    {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<TaskLogDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-
-        _translations = AppService.GetGridTranslations();
-    }
-
     protected override async Task<ApiResponse<TaskLogDto>?> GetRemoteData(GridItemsProviderRequest<TaskLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
@@ -97,12 +79,6 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
 
     private async Task ExtractElements()
     {
@@ -115,12 +91,6 @@
         _rendering = false;
     }
 
-    private async Task RemoveFilters()
-    {
-        _rendering = true;
-        await _grid.RemoveFilters();
-        _rendering = false;
-    }
 
     private async Task OpenDetails(long taksId)
     {
@@ -129,9 +99,5 @@
         await DialogService.ShowAsync<_TaskDetails>(Localizer.Get("Job details"), parameters, options);
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
-    }
+
 }
