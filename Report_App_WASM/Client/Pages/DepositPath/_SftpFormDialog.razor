@@ -13,7 +13,7 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudSwitch @bind-Value="_isFtp" Label="@Localizer.Get("FTP?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete" />
+            <MudSwitch @bind-Value="_isFtp" Label="@Localizer.Get("FTP?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
             <MudTextField @bind-Value="Item!.Host" Label="@Localizer.Get("Host")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             @if (Item is { ConfigurationType: FileStorageConfigurationType.FTP })
             {
@@ -49,6 +49,7 @@
     {
         MudDialog?.Cancel();
     }
+
     protected override void OnInitialized()
     {
         if (Item is { ConfigurationType: FileStorageConfigurationType.FTP })
@@ -79,6 +80,7 @@
                 {
                     Item!.ConfigurationType = FileStorageConfigurationType.SFTP;
                 }
+
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
