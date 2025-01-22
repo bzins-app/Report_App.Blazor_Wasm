@@ -42,12 +42,12 @@
                         @if (_loadingTables)
                         {
                             <MudTh>
-                                <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
                             </MudTh>
                         }
                     </HeaderContent>
                     <ColGroup>
-                        <col style="width:7px;" />
+                        <col style="width:7px;"/>
                     </ColGroup>
                     <GroupHeaderTemplate>
                         <MudTh colspan="5">@($"{context.Key}s ({(_isLoaded ? context.Items.Count() : 0)})")</MudTh>
@@ -56,15 +56,15 @@
                         <MudTd>
                             @if (!_isLoaded)
                             {
-                                <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
                                 _ = GetTablesViews();
                             }
                             else
                             {
                                 <MudStack Row="true">
-                                    <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" title="@Localizer.Get("Display table values")" />
+                                    <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" title="@Localizer.Get("Display table values")"/>
                                     @context.TablesColsInfo.Name
-                                    <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(context.TablesColsInfo.Name))" Class="ms-2" title="@Localizer.Get("Display table values")" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(e => DisplayTableValues(context.TablesColsInfo.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
                                 </MudStack>
                             }
                         </MudTd>
@@ -79,7 +79,7 @@
                             <MudTr>
                                 @if (context.TablesColsInfo == null)
                                 {
-                                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                                    <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
                                 }
                                 else
                                 {
@@ -95,7 +95,7 @@
                                                         else
                                                         {
                                                             <MudTd Style="width:7px;">
-                                                                <MudIcon Icon="@(GetIconForColumnType(tcontext.ColType))" Style="padding;0px; padding-right:7px" Size="Size.Small" />
+                                                                <MudIcon Icon="@(GetIconForColumnType(tcontext.ColType))" Style="padding;0px; padding-right:7px" Size="Size.Small"/>
                                                                 @tcontext.Name
                                                             </MudTd>
                                                         }
@@ -122,11 +122,11 @@
                 <div>
                     <MudPaper Elevation="25">
                         <MudToolBar Dense="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
                         </MudToolBar>
                     </MudPaper>
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="false" />
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
                     @if (_opt != null && _editor != null)
                     {
                         @_editor
@@ -134,7 +134,7 @@
                     <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="32vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="25" Bordered="true">
                         <ToolBarContent>
                             <MudText>@_tableHeader</MudText>
-                            <MudSpacer />
+                            <MudSpacer/>
                         </ToolBarContent>
                         <HeaderContent>
                             @if (_values?.Any() == true)
@@ -159,7 +159,7 @@
                             }
                         </RowTemplate>
                         <PagerContent>
-                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))" />
+                            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
                         </PagerContent>
                     </MudTable>
                 </div>
@@ -202,13 +202,13 @@
     private MudTextField<string> _searchField = null!;
 
     private TableGroupDefinition<ListTablesViews> _groupDefinition = new()
-        {
-            GroupName = "Group",
-            Indentation = false,
-            Expandable = true,
-            IsInitiallyExpanded = false,
-            Selector = (e) => e.TablesColsInfo.TypeValue
-        };
+    {
+        GroupName = "Group",
+        Indentation = false,
+        Expandable = true,
+        IsInitiallyExpanded = false,
+        Selector = (e) => e.TablesColsInfo.TypeValue
+    };
 
     protected override async Task OnParametersSetAsync()
     {
@@ -217,6 +217,7 @@
         {
             NavigationManager.NavigateTo("/403");
         }
+
         await ResetState();
         await InitializeEditorOptions();
         await LoadDatabaseConnection();
@@ -243,22 +244,22 @@
     {
         _isDarkMode = UserAppTheme.DarkTheme;
         _opt = new AceEditorOptions
+        {
+            IsReadOnly = false,
+            Language = _typeDbTask switch
             {
-                IsReadOnly = false,
-                Language = _typeDbTask switch
-                {
-                    TypeDb.MySql => AceLanguage.mysql,
-                    TypeDb.MariaDb => AceLanguage.mysql,
-                    TypeDb.SqlServer => AceLanguage.sqlserver,
-                    TypeDb.PostgreSql => AceLanguage.pgsql,
-                    _ => AceLanguage.sql
-                },
-                Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
-            };
+                TypeDb.MySql => AceLanguage.mysql,
+                TypeDb.MariaDb => AceLanguage.mysql,
+                TypeDb.SqlServer => AceLanguage.sqlserver,
+                TypeDb.PostgreSql => AceLanguage.pgsql,
+                _ => AceLanguage.sql
+            },
+            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
+        };
 
         _editor = __builder =>
         {
-            <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" />
+            <Blazor.AceEditorJs.AceJsEditor Style="height: 38vh" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt"/>
         };
     }
 
@@ -364,10 +365,10 @@
             };
 
             return new TableData<Dictionary<string, object>.ValueCollection>
-                {
-                    TotalItems = 0,
-                    Items = placeholderData.Select(d => d.Values).ToList()
-                };
+            {
+                TotalItems = 0,
+                Items = placeholderData.Select(d => d.Values).ToList()
+            };
         }
 
         try
@@ -376,16 +377,16 @@
             _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
             var run = new RemoteDbCommandParameters
-                {
-                    DataProviderId = DataProviderId,
-                    QueryToRun = QueryRun,
-                    Test = true,
-                    PaginatedResult = true,
-                    StartRecord = currentPage * pageSize,
-                    MaxSize = pageSize + 1,
-                    LastRunDateTime = DateTime.Now,
-                    QueryCommandParameters = new List<QueryCommandParameter>()
-                };
+            {
+                DataProviderId = DataProviderId,
+                QueryToRun = QueryRun,
+                Test = true,
+                PaginatedResult = true,
+                StartRecord = currentPage * pageSize,
+                MaxSize = pageSize + 1,
+                LastRunDateTime = DateTime.Now,
+                QueryCommandParameters = new List<QueryCommandParameter>()
+            };
 
             var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
             var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
@@ -421,10 +422,10 @@
         var totalItems = _values != null && _values.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1;
 
         return new TableData<Dictionary<string, object>.ValueCollection>
-            {
-                TotalItems = totalItems,
-                Items = items
-            };
+        {
+            TotalItems = totalItems,
+            Items = items
+        };
     }
 
     private async Task CancelCurrentTask()
@@ -443,4 +444,5 @@
             _ => Icons.Material.Filled.Label
         };
     }
+
 }
