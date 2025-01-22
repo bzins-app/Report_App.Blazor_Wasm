@@ -164,7 +164,7 @@
     private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
     private Timer? _timer;
     private bool _isPageVisible = true;
-    private bool _disposed = false;
+    private bool _disposed;
 
     [Inject] IJSRuntime JSRuntime { get; set; } = null!;
     private DotNetObjectReference<DashboardApp>? _dotNetRef;
