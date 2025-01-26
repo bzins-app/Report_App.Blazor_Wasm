@@ -9,7 +9,7 @@
 
 <PageTitle>@Localizer.Get("DB explorer") @ProviderName</PageTitle>
 
-<MudStack Spacing="0" StretchItems="StretchItems.Middle" Class="stack-main mud-elevation-25 stack-adorner">
+<MudStack Spacing="0" StretchItems="StretchItems.Middle" Class="stack-main mud-elevation-15 stack-adorner" >
 
     @* Title Bar *@
     <MudStack Row AlignItems="AlignItems.Center"  Class="mud-paper mud-paper-square stack-adorner">
@@ -21,16 +21,30 @@
     <MudStack Row StretchItems="StretchItems.End" AlignItems="AlignItems.Stretch" Spacing="0" Style="height: 0px;" Class="stack-adorner">
 
         @* Side Menu *@
-        <MudStack Justify="Justify.SpaceBetween" Spacing="0" Class="mud-theme-dark stack-adorner z-20">
-            <MudTabs MinimumTabWidth="20px" Position="Position.Left" @ref="_tabs">
-                <MudTabPanel Icon="@Icons.Material.Filled.Search" Class="mud-theme-dark stack-adorner" OnClick="ToogleDrawer" />
-@*                 <MudTabPanel Icon="@Icons.Material.Outlined.FileCopy" Class="mud-theme-dark stack-adorner" OnClick="ToogleDrawer" />
-                <MudTabPanel Icon="@Icons.Material.Filled.AltRoute" Class="mud-theme-dark stack-adorner" OnClick="ToogleDrawer" /> *@
-            </MudTabs>
+        <MudStack Justify="Justify.SpaceBetween" Spacing="0" Class="mud-theme-dark stack-adorner">
             <MudStack Spacing="0" Class="stack-adorner">
-                <MudButton Color="Color.Inherit" Class="pa-3 rounded-0 hideable" Style="min-width: 0;" OnClick="ToogleParameters">
-                    <MudIcon Icon="@Icons.Material.Outlined.Settings" />
-                </MudButton>
+                <MudStack Spacing="0" Row Style="max-width:48px">
+                    <div class="@(_openTables ? "mud-tab-slider mud-tab-slider-vertical" : "")" style="@(_openTables ? "position:unset;background:white;":"position:unset;")">
+                        <MudButton Color="Color.Inherit" Class="pa-3 rounded-0 hideable" Style="min-width: 0;" OnClick="ToogleTablesView">
+                            <MudIcon Icon="@Icons.Material.Filled.Search"/>
+                        </MudButton>
+                    </div>
+                </MudStack>
+            </MudStack>
+
+            @*             <MudTabs MinimumTabWidth="20px" Position="Position.Left" @ref="_tabs">
+                <MudTabPanel Icon="@Icons.Material.Filled.Search" Class="mud-theme-dark stack-adorner" OnClick="ToogleTablesView"/>
+                                 <MudTabPanel Icon="@Icons.Material.Outlined.FileCopy" Class="mud-theme-dark stack-adorner" OnClick="ToogleTablesView" />
+                <MudTabPanel Icon="@Icons.Material.Filled.AltRoute" Class="mud-theme-dark stack-adorner" OnClick="ToogleTablesView" /> 
+            </MudTabs> *@
+            <MudStack Spacing="0" Class="stack-adorner">
+                <MudStack Spacing="0" Row Style="max-width:48px">
+                    <div class="@(_openParameters ? "mud-tab-slider mud-tab-slider-vertical" : "")" style="@(_openParameters ? "position:unset;background:white;":"position:unset;")">
+                        <MudButton Color="Color.Inherit" Class="pa-3 rounded-0 hideable" Style="min-width: 0;" OnClick="ToogleParameters">
+                            <MudIcon Icon="@Icons.Material.Outlined.Settings"/>
+                        </MudButton>
+                    </div>
+                </MudStack>
             </MudStack>
         </MudStack>
 
@@ -38,22 +52,13 @@
         @if (_openTables)
         {
             <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="min-width:400px;overflow:auto;resize:horizontal;">
+                <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
+                    <MudText>@Localizer.Get("Tables view")</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Inherit" OnClick="ToogleTablesView"/>
+                </MudStack>
                 <MudStack Row="true">
-                    <MudLoadingButton @bind-Loading="_reloading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ReloadValues" Variant="Variant.Filled" Color="Color.Primary" Disabled="_loadingTables" Size="Size.Small">
-                        <LoadingContent>
-                            <MudText>@Localizer.Get("Processing")</MudText>
-                        </LoadingContent>
-                        <ChildContent>
-                            <MudText>@Localizer.Get("Reload")</MudText>
-                        </ChildContent>
-                    </MudLoadingButton>
-                    @if (_reloading)
-                    {
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="CancelQuery" Size="Size.Small">
-                            <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
-                        </MudButton>
-                    }
                     <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => SearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" @ref="_searchField" Clearable="true"></MudTextField>
+                    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" Disabled="@(_loading)" OnClick="@(async () => await ReloadValues())" Style="@(_loadingTables?"animation: rotation 8s infinite linear":"")" title="@Localizer.Get("Reload")" />
                 </MudStack>
                 @RenderTableOrView("Table", table, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "Table"))
                 @RenderTableOrView("View", view, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "View"))
@@ -63,26 +68,35 @@
         @if (_openParameters)
         {
             <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="min-width:400px;overflow:auto;resize:horizontal;">
-
-                <MudSelect T="AceTheme" Value="_opt.Theme" Label="Theme" ValueChanged="(AceTheme value)=>LoadTheme(value)">
+                <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
+                    <MudText>@Localizer.Get("Parameters")</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" Size="Size.Small" OnClick="ToogleParameters"/>
+                </MudStack>
+                <MudSelect T="AceTheme" Value="_opt.Theme" Label="Theme" ValueChanged="(AceTheme value)=>LoadTheme(value)" ListClass="mud-background-gray" Dense>
                     @foreach (var item in AcesThemes)
                     {
-                        <MudSelectItem Value="@item.Name"> <MudIcon Icon="@(item.Type==AceThemeType.Dark? Icons.Material.Filled.Square:Icons.Material.Filled.CropSquare)"  Size="Size.Small"/> @item.DisplayName</MudSelectItem>
+                        <MudSelectItem Value="@item.Name">
+                            <span style="@(item.Type==AceThemeType.Dark? "font-size:25px;color:black":"font-size:25px;color:white")">&#9632;</span>
+                            @item.DisplayName</MudSelectItem>
                     }
                 </MudSelect>
-                <MudSelect T="AceLanguage" Value="_opt.Language" Label="Language mode" ValueChanged="(AceLanguage value)=>LoadLanguage(value)">
+                <MudSelect T="AceLanguage" Value="_opt.Language" Label="Language mode" ValueChanged="(AceLanguage value)=>LoadLanguage(value)" ListClass="mud-background-gray" Dense="true">
                     @foreach (AceLanguage item in Enum.GetValues(typeof(AceLanguage)))
                     {
                         <MudSelectItem Value="@item">@item.GetDisplayName()</MudSelectItem>
                     }
                 </MudSelect>
+                <div class="pt-6">
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ResetEditorOptions"><MudText>@Localizer.Get("Reset")</MudText></MudButton>
+                </div>
+                
             </MudPaper>
         }
 
         <MudStack Class="mud-background-gray stack-adorner" Style="overflow-x: auto;" Spacing="0">
             <MudStack Row Class="stack-adorner" Spacing="0">
-                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="@(async ()=> await RunSql())" />
-                <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
+                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="@(_loading||_loadingTables)" aria-label="@Localizer.Get("Test query")" OnClick="@(async ()=> await RunSql())" />
+                <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="@(!_loading&&!_loadingTables)" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
             </MudStack>
             <div style="height:100%;overflow:auto;resize:vertical">
                 @if (_opt != null && _editor != null)
@@ -97,7 +111,7 @@
                 </MudPaper>
             }
             <div style="@(!hasgrid||_error?"height:60px;overflow:auto":"height:100%;overflow:auto")">
-                <MudTable ServerData="ServerReload" Hover="true" Dense="true" FixedHeader="true" Height="calc(100% - 52px);" HorizontalScrollbar="true" @ref="_table" RowsPerPage="100" Bordered="true" Style="display:contents" FixedFooter="true" Virtualize="NbrColumns > 25">
+                <MudTable ServerData="ServerReload" Hover="true" Dense="true" FixedHeader="true" Height="calc(100% - 52px);" HorizontalScrollbar="true" @ref="_table" @bind-RowsPerPage="@_rowPerPage" Bordered="true" Style="display:contents" FixedFooter="true" Virtualize="NbrColumns > 25">
                     <HeaderContent>
                         @if (_values?.Any() == true)
                         {
@@ -130,7 +144,7 @@
 
     @* Status Bar *@
     <MudStack Row Spacing="0" Justify="Justify.SpaceBetween" Class="mud-theme-info stack-adorner" Style="height:26px">
-        @if (_loading)
+        @if (_loading || _loadingTables)
         {
             <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="padding-left:7px">
                 <MudIcon Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Inherit" Class="hideable" Style="animation: rotation 6s infinite linear" />
@@ -152,7 +166,7 @@
             </MudStack>
         }
 
-        <MudStack Row Spacing="0" AlignItems="AlignItems.Center" Class="stack-adorner">
+        <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="stack-adorner">
             @if (_opt != null)
             {
                 @:MODE: @_opt.Language.GetDisplayName()
@@ -173,8 +187,8 @@
     min-width: 300px;
     max-height: 90vh;
     max-width: 100%;
-    resize: both;
-    overflow: hidden;
+    /* resize: both;
+    overflow: hidden; */
     }
 
     .mud-badge {
@@ -204,21 +218,19 @@
         public bool Open { get; set; }
     }
 
-    DbView table = new() { Name = "Table" };
-    DbView view = new() { Name = "View" };
+    DbView table = new() { Name = "Tables" };
+    DbView view = new() { Name = "Views" };
 
     private List<ListTablesViews> ItemsBase = new();
     private List<ListTablesViews> ItemsBaseStored = new();
     private bool _isLoaded;
-    private bool _reloading;
     private bool _loading;
     private bool _loadingTables;
     private MudTable<ListTablesViews> _tableRef = null!;
     private MudTextField<string> _searchField = null!;
-    private MudTabs _tabs = null!;
     private bool _error;
 
-    private string? QueryBuilder = "select * from sys_ben";
+    private string? QueryBuilder;
     private string? QueryRun;
     private string _querySelectedCode = string.Empty;
     private CancellationTokenSource? _cts;
@@ -236,8 +248,8 @@
     private string _tableHeader = string.Empty;
     private int NbrColumns;
     List<AceThemeWithAttributes> AcesThemes = AceThemeRepository.GetThemes();
-
     private AceJsEditor _aceJsEditor;
+    private int _rowPerPage = 100;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -253,37 +265,48 @@
 
     private async Task ResetState()
     {
-        _tableRef?.CollapseAllGroups();
         if (_searchField != null)
             await _searchField.ResetAsync();
         ItemsBase.Clear();
         ItemsBaseStored.Clear();
         _editor = null;
+        _openTables = true;
         table.Open = false;
         view.Open = false;
         _isLoaded = false;
         _tableHeader = Localizer.Get("Query output");
         _values = new();
-        QueryRun = "";
+        QueryRun = string.Empty;
+        QueryBuilder = string.Empty;
+    }
+
+    private void GetBaseEditorOptions()
+    {
+        _isDarkMode = UserAppTheme.DarkTheme;
+        _opt = new AceEditorOptions
+        {
+            IsReadOnly = false,
+            Language = _typeDbTask switch
+            {
+                TypeDb.MySql => AceLanguage.mysql,
+                TypeDb.MariaDb => AceLanguage.mysql,
+                TypeDb.SqlServer => AceLanguage.sqlserver,
+                TypeDb.PostgreSql => AceLanguage.pgsql,
+                _ => AceLanguage.sql
+            },
+            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
+        };
+    }
+
+    private async Task ResetEditorOptions()
+    {
+        GetBaseEditorOptions();
+        if (_opt != null) await _aceJsEditor.SetAceEditorParameters(_opt);
     }
 
     private async Task InitializeEditorOptions()
     {
-        _isDarkMode = UserAppTheme.DarkTheme;
-        _opt = new AceEditorOptions
-            {
-                IsReadOnly = false,
-                Language = _typeDbTask switch
-                {
-                    TypeDb.MySql => AceLanguage.mysql,
-                    TypeDb.MariaDb => AceLanguage.mysql,
-                    TypeDb.SqlServer => AceLanguage.sqlserver,
-                    TypeDb.PostgreSql => AceLanguage.pgsql,
-                    _ => AceLanguage.sql
-                },
-                Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
-            };
-
+        GetBaseEditorOptions();
         _editor = __builder =>
         {
             <Blazor.AceEditorJs.AceJsEditor Style="height: 100%; resize: vertical; overflow: auto;" @bind-Value="@QueryBuilder" @bind-SelectedValue="_querySelectedCode" Options="@_opt" @ref="@_aceJsEditor" />
@@ -402,9 +425,12 @@
         }
         catch (Exception ex)
         {
-            _error = true;
+          //  _error = true;
             _queryTestResult = ex.Message;
-            _values = new List<Dictionary<string, object>>();
+            _values = new List<Dictionary<string, object>>
+            {
+                new() { { "Result", "Table empty or no result with filters" } }
+            };
         }
 
         var items = _values?.Select(a => a.Values).ToList() ?? new List<Dictionary<string, object>.ValueCollection>();
@@ -417,11 +443,10 @@
             };
     }
 
-    private void ToogleDrawer()
+    private void ToogleTablesView()
     {
         _openParameters = false;
         _openTables = !_openTables;
-        _tabs.ActivePanelIndex = _openTables ? 0 : 10;
     }
 
     private async Task CancelCurrentTask()
@@ -430,9 +455,11 @@
             await _cts.CancelAsync();
     }
 
-    private void CancelQuery()
+    private async Task CancelQuery()
     {
-        _cts?.Cancel();
+        await CancelCurrentTask();
+        _loading = false;
+        _loadingTables = false;
     }
 
     public void Dispose()
@@ -444,13 +471,10 @@
     {
         _loading = true;
         QueryRun = $"select * from {tableName}";
-        _tableHeader = tableName;
-        if (hasgrid)
-        {
-            _table!.CurrentPage = 0;
-            await _table.ReloadServerData();
-        }
         hasgrid = true;
+        _tableHeader = tableName;
+        _table!.CurrentPage = 0;
+        await _table.ReloadServerData();
         _loading = false;
     }
 
@@ -473,8 +497,10 @@
 
     private async Task ReloadValues()
     {
-        await LoadTablesViews();
-        _reloading = false;
+        if (!_loadingTables &&! _loading)
+        {
+            await LoadTablesViews();
+        }
     }
 
     private async Task LoadTablesViews()
@@ -545,9 +571,9 @@
     private RenderFragment RenderTableOrView(string type, DbView dbView, IEnumerable<ListTablesViews> items) => __builder =>
     {
         <MudPaper Class="pt-3 mud-background-gray stack-adorner">
-            <MudStack Row="true">
-                <MudIconButton Class="mud-table-row-expander" Icon="@(dbView.Open ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => ToggleTablesViews(dbView.Name)" title="@Localizer.Get($"Display {type.ToLower()} values")" />
-                <MudText Typo="Typo.subtitle1">@type (@ItemsBase.Count(a => a.TablesColsInfo.TypeValue == type))</MudText>
+            <MudStack Row="true" Spacing="1">
+                <MudIconButton Class="mud-table-row-expander" Icon="@(dbView.Open ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => ToggleTablesViews(type)" title="@Localizer.Get($"Display {dbView.Name.ToLower()} values")" />
+                <MudText Typo="Typo.subtitle1">@dbView.Name (@ItemsBase.Count(a => a.TablesColsInfo.TypeValue == type))</MudText>
             </MudStack>
         </MudPaper>
         @if (dbView.Open)
@@ -562,8 +588,8 @@
                     }
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd style="padding-left:40px;font-size:.75rem">
-                        <MudStack Row="true">
+                    <MudTd style="padding-left:30px;font-size:.75rem">
+                        <MudStack Row="true" Spacing="1">
                             <MudIconButton Style="padding:unset" Size="Size.Small" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => LoadColumnsList(context)" title="@Localizer.Get("Display table values")" />
                             @context.TablesColsInfo.Name
                             <MudIconButton Style="padding:unset" Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(_ => DisplayTableValues(context.TablesColsInfo.Name))" Class="ms-2" title="@Localizer.Get("Display table values")" />
