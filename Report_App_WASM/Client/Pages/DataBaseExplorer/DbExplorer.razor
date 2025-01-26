@@ -35,153 +35,10 @@
                             <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
                         </MudButton>
                     }
-                    <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => OnSearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" @ref="_searchField" Clearable="true"></MudTextField>
+                    <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => SearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" @ref="_searchField" Clearable="true"></MudTextField>
                 </MudStack>
-                <MudPaper Class="pa-3">
-                    <MudStack Row="true">
-                        <MudIconButton Class="mud-table-row-expander" Icon="@(table.Open ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetTablesViews(table.Name)" title="@Localizer.Get("Display table values")"/>
-                        <MudText Typo="Typo.subtitle1">Tables (@ItemsBase.Count(a => a.TablesColsInfo.TypeValue=="Table"))</MudText>
-                    </MudStack>
-                </MudPaper>
-                @if (table.Open)
-                {
-                    <MudTable Items="@ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "Table")" Dense="true" Hover="true" FixedHeader="true" Height="@(view.Open ? "35vh" : "70vh")" Elevation="25" Virtualize="true" Style="width:100%" @ref="_tableRef">
-                        <HeaderContent>
-                            @if (_loadingTables)
-                            {
-                                <MudTh>
-                                    <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
-                                </MudTh>
-                            }
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd style="padding-left:40px;">
-
-                                <MudStack Row="true">
-                                    <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" title="@Localizer.Get("Display table values")"/>
-                                    @context.TablesColsInfo.Name
-                                    <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(_ => DisplayTableValues(context.TablesColsInfo.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
-                                </MudStack>
-                            </MudTd>
-                            @if (context.hasDescription && _isLoaded)
-                            {
-                                <MudTh>@context.TablesColsInfo.Description</MudTh>
-                            }
-                        </RowTemplate>
-                        <ChildRowContent>
-                            @if (context.hasChildren)
-                            {
-                                <MudTr>
-                                    @if (context.TablesColsInfo == null)
-                                    {
-                                        <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
-                                    }
-                                    else
-                                    {
-                                        <td colspan="10" style="padding-left:60px;">
-                                            <MudCard Elevation="0">
-                                                <MudCardContent Class="pa-0">
-                                                    <MudTable Items="@context.ColNames" Context="tcontext" Hover="true" Elevation="0" Dense="true">
-                                                        <RowTemplate>
-                                                            @if (tcontext.IsSnippet)
-                                                            {
-                                                                <MudTd Style="Color: crimson">@tcontext.Name</MudTd>
-                                                            }
-                                                            else
-                                                            {
-                                                                <MudTd Style="width:7px;">
-                                                                    <MudIcon Icon="@(GetIconForColumnType(tcontext.ColType))" Style="padding;0px; padding-right:7px" Size="Size.Small"/>
-                                                                    @tcontext.Name
-                                                                </MudTd>
-                                                            }
-                                                            @if (context.hasDescription)
-                                                            {
-                                                                <MudTh>@tcontext.Description</MudTh>
-                                                            }
-                                                        </RowTemplate>
-                                                    </MudTable>
-                                                </MudCardContent>
-                                            </MudCard>
-                                        </td>
-                                    }
-                                </MudTr>
-                            }
-                        </ChildRowContent>
-                    </MudTable>
-                }
-
-                <MudPaper Class="pa-3">
-                    <MudStack Row="true">
-                        <MudIconButton Class="mud-table-row-expander" Icon="@(view.Open ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetTablesViews(view.Name)" title="@Localizer.Get("Display table values")"/>
-                        <MudText Typo="Typo.subtitle1">Views (@ItemsBase.Count(a => a.TablesColsInfo.TypeValue == "View"))</MudText>
-                    </MudStack>
-                </MudPaper>
-                @if (view.Open)
-                {
-                    <MudTable Items="@ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "View")" Dense="true" Hover="true" FixedHeader="true" Height="@(table.Open ? "35vh" : "70vh")" Elevation="25" Virtualize="true" Style="width:100%" @ref="_tableRef">
-                        <HeaderContent>
-                            @if (_loadingTables)
-                            {
-                                <MudTh>
-                                    <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
-                                </MudTh>
-                            }
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd style="padding-left:40px;">
-                                <MudStack Row="true">
-                                    <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => GetColumnsList(context)" title="@Localizer.Get("Display table values")"/>
-                                    @context.TablesColsInfo.Name
-                                    <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(_ => DisplayTableValues(context.TablesColsInfo.Name))" Class="ms-2" title="@Localizer.Get("Display table values")"/>
-                                </MudStack>
-                            </MudTd>
-                            @if (context.hasDescription && _isLoaded)
-                            {
-                                <MudTh>@context.TablesColsInfo.Description</MudTh>
-                            }
-                        </RowTemplate>
-                        <ChildRowContent>
-                            @if (context.hasChildren)
-                            {
-                                <MudTr>
-                                    @if (context.TablesColsInfo == null)
-                                    {
-                                        <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
-                                    }
-                                    else
-                                    {
-                                        <td colspan="10" style="padding-left:60px;">
-                                            <MudCard Elevation="0">
-                                                <MudCardContent Class="pa-0">
-                                                    <MudTable Items="@context.ColNames" Context="tcontext" Hover="true" Elevation="0" Dense="true">
-                                                        <RowTemplate>
-                                                            @if (tcontext.IsSnippet)
-                                                            {
-                                                                <MudTd Style="Color: crimson">@tcontext.Name</MudTd>
-                                                            }
-                                                            else
-                                                            {
-                                                                <MudTd Style="width:7px;" >
-                                                                    <MudIcon Icon="@(GetIconForColumnType(tcontext.ColType))" Style="padding;0px; padding-right:7px" Size="Size.Small"/>
-                                                                    @tcontext.Name
-                                                                </MudTd>
-                                                            }
-                                                            @if (context.hasDescription)
-                                                            {
-                                                                <MudTh>@tcontext.Description</MudTh>
-                                                            }
-                                                        </RowTemplate>
-                                                    </MudTable>
-                                                </MudCardContent>
-                                            </MudCard>
-                                        </td>
-                                    }
-                                </MudTr>
-                            }
-                        </ChildRowContent>
-                    </MudTable>
-                }
-
+                @RenderTableOrView("Table", table, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "Table"))
+                @RenderTableOrView("View", view, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "View"))
             </MudItem>
             <MudItem md="7" lg="8" xl="9">
                 @if (!string.IsNullOrEmpty(_queryTestResult))
@@ -301,7 +158,7 @@
         ItemsBase.Clear();
         ItemsBaseStored.Clear();
         _editor = null;
-        table.Open=false;
+        table.Open = false;
         view.Open = false;
         _isLoaded = false;
         _tableHeader = Localizer.Get("Query output");
@@ -343,22 +200,9 @@
         }
     }
 
-    private async Task GetTablesViews()
+    private async Task ToggleTablesViews(string typeValue)
     {
-        _loadingTables = true;
-        ItemsBaseStored.Clear();
-        await CancelCurrentTask();
-        _cts = new CancellationTokenSource();
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
-        if (data != null) data.Values.ForEach(a => ItemsBaseStored.Add(new ListTablesViews { TablesColsInfo = a, hasDescription = data.HasDescription }));
-        ItemsBase = ItemsBaseStored;
-        _isLoaded = true;
-        _loadingTables = false;
-    }
-
-    private async Task GetTablesViews(string _typeValue)
-    {
-        if (_typeValue == "Table")
+        if (typeValue == "Table")
         {
             table.Open = !table.Open;
         }
@@ -366,21 +210,36 @@
         {
             view.Open = !view.Open;
         }
+
         if (!_isLoaded)
         {
-            await GetTablesViews();
+            await LoadTablesViews();
         }
     }
 
-
     private async Task ReloadValues()
     {
-        await GetTablesViews();
+        await LoadTablesViews();
         _reloading = false;
     }
 
+    private async Task LoadTablesViews()
+    {
+        _loadingTables = true;
+        ItemsBaseStored.Clear();
+        await CancelCurrentTask();
+        _cts = new CancellationTokenSource();
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
+        if (data != null)
+        {
+            data.Values.ForEach(a => ItemsBaseStored.Add(new ListTablesViews { TablesColsInfo = a, hasDescription = data.HasDescription }));
+        }
+        ItemsBase = ItemsBaseStored;
+        _isLoaded = true;
+        _loadingTables = false;
+    }
 
-    private async Task GetColumnsList(ListTablesViews table)
+    private async Task LoadColumnsList(ListTablesViews table)
     {
         table.hasChildren = !table.hasChildren;
         if (table.hasChildren)
@@ -396,11 +255,14 @@
         }
     }
 
-    private void OnSearchTables(string text)
+    private void SearchTables(string text)
     {
         ItemsBase = string.IsNullOrWhiteSpace(text)
             ? ItemsBaseStored
-            : ItemsBaseStored.Where(a => (!string.IsNullOrEmpty(a.TablesColsInfo.Name) && a.TablesColsInfo.Name.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics())) || (!string.IsNullOrEmpty(a.TablesColsInfo.Description) && a.TablesColsInfo.Description.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics()))).ToList();
+            : ItemsBaseStored.Where(a => 
+                (!string.IsNullOrEmpty(a.TablesColsInfo.Name) && a.TablesColsInfo.Name.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics())) || 
+                (!string.IsNullOrEmpty(a.TablesColsInfo.Description) && a.TablesColsInfo.Description.ToLower().RemoveDiacritics().Contains(text.ToLower().RemoveDiacritics()))
+            ).ToList();
     }
 
     private void CancelQuery()
@@ -416,7 +278,7 @@
     private async Task DisplayTableValues(string tableName)
     {
         _loading = true;
-        QueryRun = $"select  * from {tableName}";
+        QueryRun = $"select * from {tableName}";
         _tableHeader = tableName;
         _table!.CurrentPage = 0;
         await _table.ReloadServerData();
@@ -537,5 +399,80 @@
             _ => Icons.Material.Filled.Label
         };
     }
+
+    private RenderFragment RenderTableOrView(string type, DbView dbView, IEnumerable<ListTablesViews> items) => __builder =>
+    {
+        <MudPaper Class="pa-3">
+            <MudStack Row="true">
+                <MudIconButton Class="mud-table-row-expander" Icon="@(dbView.Open ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => ToggleTablesViews(dbView.Name)" title="@Localizer.Get($"Display {type.ToLower()} values")" />
+                <MudText Typo="Typo.subtitle1">@type (@ItemsBase.Count(a => a.TablesColsInfo.TypeValue == type))</MudText>
+            </MudStack>
+        </MudPaper>
+        @if (dbView.Open)
+        {
+            <MudTable Items="@items" Dense="true" Hover="true" FixedHeader="true" Height="@(type == "Table" && view.Open ? "35vh":type == "View" && table.Open ? "35vh"  : "70vh")" Elevation="25" Virtualize="true" Style="width:100%" @ref="_tableRef">
+                <HeaderContent>
+                    @if (_loadingTables)
+                    {
+                        <MudTh>
+                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                        </MudTh>
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd style="padding-left:40px;">
+                        <MudStack Row="true">
+                            <MudIconButton Class="mud-table-row-expander" Icon="@(context.hasChildren ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)" OnClick="() => LoadColumnsList(context)" title="@Localizer.Get("Display table values")" />
+                            @context.TablesColsInfo.Name
+                            <MudIconButton Icon="@Icons.Material.Filled.Pageview" Size="Size.Small" OnClick="@(_ => DisplayTableValues(context.TablesColsInfo.Name))" Class="ms-2" title="@Localizer.Get("Display table values")" />
+                        </MudStack>
+                    </MudTd>
+                    @if (context.hasDescription && _isLoaded)
+                    {
+                        <MudTh>@context.TablesColsInfo.Description</MudTh>
+                    }
+                </RowTemplate>
+                <ChildRowContent>
+                    @if (context.hasChildren)
+                    {
+                        <MudTr>
+                            @if (context.TablesColsInfo == null)
+                            {
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                            }
+                            else
+                            {
+                                <td colspan="10" style="padding-left:60px;">
+                                    <MudCard Elevation="0">
+                                        <MudCardContent Class="pa-0">
+                                            <MudTable Items="@context.ColNames" Context="tcontext" Hover="true" Elevation="0" Dense="true">
+                                                <RowTemplate>
+                                                    @if (tcontext.IsSnippet)
+                                            {
+                                                <MudTd Style="Color: crimson">@tcontext.Name</MudTd>
+                                            }
+                                            else
+                                            {
+                                                <MudTd Style="width:7px;">
+                                                    <MudIcon Icon="@(GetIconForColumnType(tcontext.ColType))" Style="padding;0px; padding-right:7px" Size="Size.Small" />
+                                                    @tcontext.Name
+                                                </MudTd>
+                                            }
+                                            @if (context.hasDescription)
+                                            {
+                                                <MudTh>@tcontext.Description</MudTh>
+                                            }
+                                        </RowTemplate>
+                                    </MudTable>
+                                </MudCardContent>
+                            </MudCard>
+                        </td>
+                            }
+                        </MudTr>
+                    }
+                </ChildRowContent>
+            </MudTable>
+        }
+    };
 
 }
