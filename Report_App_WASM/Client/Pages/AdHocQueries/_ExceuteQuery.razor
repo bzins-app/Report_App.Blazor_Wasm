@@ -13,7 +13,11 @@
     <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_errorMessage</MudText>
 }
 
+<div style="height:80vh">
+    <MudStack Style="overflow-x:auto;height:100%">
+
 <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
+
     @if (param.Count > 0)
     {
         <MudForm @ref="_validateParam">
@@ -119,14 +123,15 @@
 }
 @if (!_pivotTable)
 {
-    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Bordered="true">
+    <div style="height: 100%; overflow: auto;"> 
+    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="calc(100% - 52px);" Style="display:contents"FixedFooter="true" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" @bind-RowsPerPage="@_rowsPerPage" Virtualize="NbrColumns > 25" Bordered="true">
         <HeaderContent>
             @if (_values?.Any() == true)
             {
                 @foreach (var key in _values?.FirstOrDefault()?.Keys!)
                 {
                     <MudTh>
-                        <MudTableSortLabel SortLabel="@key" SortDirectionChanged="(value) => Callback(value, key)" T="string">@key</MudTableSortLabel>
+                                    <MudTableSortLabel SortLabel="@key" SortDirectionChanged="(value) => Callback(value, key)" T="string"><b>@key</b></MudTableSortLabel>
                     </MudTh>
                 }
             }
@@ -151,12 +156,14 @@
             <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
         </PagerContent>
     </MudTable>
+    </div>
 }
 else
 {
     <PivotTable @ref="_pvt" Value="_values" Style="height: 65vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name"/>
 }
-
+    </MudStack>
+</div>
 @code {
 
     [Parameter] public long QueryId { get; set; }
@@ -184,6 +191,8 @@ else
     MudMenu _menu = null!;
     string? _sorting;
     string? _sortingDirection;
+    private int NbrColumns;
+    private int _rowsPerPage = 100;
 
     protected override async Task OnInitializedAsync()
     {
@@ -449,6 +458,7 @@ else
                             _total = result.TotalElements;
                             _hasTotal = true;
                         }
+                        NbrColumns = result.Value!.FirstOrDefault()!.Keys.Count;
                     }
                     else
                     {
