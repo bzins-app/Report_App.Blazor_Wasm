@@ -19,7 +19,7 @@
             {
                 <MudSwitch @bind-Value="Item.UseFileStorageConfiguration" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
                 <MudSelect T="long" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="Item.FileStorageConfigurationId"
-                           AnchorOrigin="Origin.BottomCenter" Disabled="!Item.UseFileStorageConfiguration"
+                           Disabled="!Item.UseFileStorageConfiguration"
                            Required>
                     @foreach (var value in _listConfigs)
                     {
