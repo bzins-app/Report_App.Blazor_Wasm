@@ -58,7 +58,6 @@
                         {
                             <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")"/>
                             <MudSelect T="string" Label="@Localizer.Get("Encoding type")" @bind-Value="@_param.EncodingType"
-                                       AnchorOrigin="Origin.BottomCenter"
                                        Required>
                                 @foreach (EncodingType item in Enum.GetValues(typeof(EncodingType)))
                                 {
@@ -82,7 +81,7 @@
                         @if (_param.DataTransferUsePk)
                         {
                             <MudSelect T="string" Label="@Localizer.Get("Command behaviour")"
-                                       AnchorOrigin="Origin.BottomCenter" @bind-Value="_param.DataTransferCommandBehaviour"
+                                       @bind-Value="_param.DataTransferCommandBehaviour"
                                        Required>
                                 @foreach (DataTransferAdvancedBehaviour item in Enum.GetValues(typeof(DataTransferAdvancedBehaviour)))
                                 {
@@ -114,7 +113,7 @@
                         else
                         {
                             <MudSelect T="string" Label="@Localizer.Get("Command behaviour")"
-                                       AnchorOrigin="Origin.BottomCenter" @bind-Value="_param.DataTransferCommandBehaviour"
+                                       @bind-Value="_param.DataTransferCommandBehaviour"
                                        Required>
                                 @foreach (DataTransferBasicBehaviour item in Enum.GetValues(typeof(DataTransferBasicBehaviour)))
                                 {

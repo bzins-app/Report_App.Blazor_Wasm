@@ -20,7 +20,7 @@
 <MudForm Model="@Item" @ref="@_form">
     <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete"/>
     <MudStack Row="true">
-        <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
+        <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
             @if (DbCon.TypeDb == 0)
             {
                 <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
@@ -31,7 +31,7 @@
             }
         </MudSelect>
 
-        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item.TimeZone" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
+        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item.TimeZone"  Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
 
             @foreach (var z in TimeZoneInfo.GetSystemTimeZones())
             {
@@ -84,7 +84,7 @@
                 </MudStack>
                 <MudStack Row="true">
                     <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" Margin="Margin.Dense"/>
-                    <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                    <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent"  Margin="Margin.Dense">
                         @foreach (ApplicationIntent item in Enum.GetValues(typeof(ApplicationIntent)))
                         {
                             <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -309,7 +309,7 @@
                     <MudSwitch @bind-Value="DbCon.UseTableMetaDataFromAnotherProvider" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary"/>
                 </MudItem>
                 <MudItem md="6">
-                    <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdTableMetaData" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseTableMetaDataFromAnotherProvider">
+                    <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdTableMetaData" Dense="true" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseTableMetaDataFromAnotherProvider">
                         @if (DbCon.IdTableMetaData == 0)
                         {
                             <MudSelectItem Value="DbCon.IdTableMetaData">@Localizer.Get("Activity name")</MudSelectItem>

@@ -69,7 +69,7 @@
                 @if (parameters.UsePivotTable)
                 {
                     <MudItem>
-                        <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
+                        <MudSelect Label="@Localizer.Get("Type report")"  Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
                             <MudSelectItem Value="@("Grid")"/>
                             <MudSelectItem Value="@("pivot")"/>
                         </MudSelect>
@@ -82,7 +82,7 @@
                 </MudItem>
                 <MudItem>
                     <MudMenu Variant="Variant.Outlined"
-                             Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
+                             Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" @ref="_menu"
                              Dense="true">
                         <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
                             @foreach (var config in _userConfigs)

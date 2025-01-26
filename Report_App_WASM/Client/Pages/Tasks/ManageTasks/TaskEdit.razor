@@ -40,7 +40,7 @@
                             @if (_activities.Any())
                             {
                                 <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-Value="@_DataProviderId"
-                                           AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler"
+                                           SelectedValuesChanged="OnSelectedItemChangedHandler"
                                            Required>
                                     @foreach (var value in _activities)
                                     {
@@ -63,7 +63,6 @@
                             @if (Item.Type == TaskType.Report)
                             {
                                 <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile"
-                                           AnchorOrigin="Origin.BottomCenter"
                                            Required>
                                     @foreach (FileType item in Enum.GetValues(typeof(FileType)))
                                     {
@@ -134,7 +133,6 @@
                                 @if (_dataTransfers.Any())
                                 {
                                     <MudSelect T="long" Label="@Localizer.Get("Target data transfer")" @bind-Value="@_param.DataTransferId"
-                                               AnchorOrigin="Origin.BottomCenter"
                                                Required>
                                         @foreach (var value in _dataTransfers)
                                         {
@@ -148,7 +146,6 @@
                                 <AuthorizeView Roles="Admin">
                                     <Authorized>
                                         <MudSelect T="long" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId"
-                                                   AnchorOrigin="Origin.BottomCenter"
                                                    Clearable>
                                             @if (Item.FileStorageLocationId == 0)
                                             {
@@ -162,7 +159,6 @@
                                     </Authorized>
                                     <NotAuthorized>
                                         <MudSelect T="long" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId" Disabled="true"
-                                                   AnchorOrigin="Origin.BottomCenter"
                                                    Clearable>
                                             @if (Item.FileStorageLocationId == 0)
                                             {
