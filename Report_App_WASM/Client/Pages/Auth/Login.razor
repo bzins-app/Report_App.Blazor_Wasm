@@ -6,7 +6,25 @@
 
 <PageTitle>@Localizer.Get("Log in")</PageTitle>
 
-@if (_ldap)
+@if(_demo)
+{
+    <div class="form-signin"  >
+        <div class="row">
+            <div class="col-10">
+                <h3 class="mb-4">@Localizer.Get("Demo connection")</h3>
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary shadow-2 mb-4" onclick="@(()=>OnSubmit())">@Localizer.Get("Connect to demo account")</button>
+            <p class="mb-2 text-muted">
+                @Localizer.Get("Need to connect locally?") <MudLink id="local-login" OnClick="ChangeTypeLogin">@Localizer.Get("Local login")</MudLink>
+            </p>
+        </div>
+
+        <label class="text-danger">@Error</label>
+    </div>
+}
+else if (_ldap)
 {
     <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="LoginParameters">
         <DataAnnotationsValidator/>
@@ -80,16 +98,19 @@ else
     LoginParameters LoginParameters { get; } = new();
     string? Error { get; set; }
     bool _ldap;
+    bool _demo;
 
     protected override async Task OnInitializedAsync()
     {
         var values = await Http.GetFromJsonAsync<ApplicationConstantsValues>($"{ApiControllers.ApplicationParametersApi}ApplicationConstants");
         if (values != null) _ldap = values.LdapLogin;
+        _demo = ApplicationInfo.Demo;
     }
 
     void ChangeTypeLogin()
     {
         _ldap = false;
+        _demo = false;
     }
 
     async Task OnSubmit()
@@ -97,6 +118,15 @@ else
         Error = null;
         try
         {
+            if (_demo)
+            {
+                var randomValue = Guid.NewGuid().ToString()[..8];
+                LoginParameters.UserName = "DemoUser" + randomValue + "@bzins.app";
+                LoginParameters.Password = randomValue + "DemoUser!";
+                await AuthStateProvider.LoginDemo(LoginParameters);
+
+            }
+            else
             if (_ldap)
             {
                 await AuthStateProvider.LoginLdap(LoginParameters);

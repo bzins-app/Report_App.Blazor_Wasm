@@ -1,6 +1,6 @@
 ﻿@page "/AuditTrail"
 @inherits BaseGridComponent<AuditTrailDto>
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+@attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <PageTitle>@Localizer.Get("Audit Trail")</PageTitle>
 

@@ -5,7 +5,7 @@
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 @implements IDisposable
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+@attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <PageTitle>@Localizer.Get("DB explorer")</PageTitle>
 

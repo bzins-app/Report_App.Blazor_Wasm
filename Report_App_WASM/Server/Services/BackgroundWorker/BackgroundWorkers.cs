@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.Formats.Asn1;
+using System.Net.Mail;
 using System.Text.Json;
 using Hangfire;
 using Hangfire.Storage;
@@ -272,7 +273,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
 
             var filesToDelete = await qry
                 .Where(a => a.reportResult.CreatedAt.Date <
-                            DateTime.Now.AddDays(-(a.taskHeader == null ? 90 : a.taskHeader.ReportsRetentionInDays)))
+                            DateTime.Now.AddDays(-(a.taskHeader == null ? 15 : a.taskHeader.ReportsRetentionInDays)))
                 .Select(a => a.reportResult).ToListAsync();
 
             if (filesToDelete.Any()) await _fileDeposit.RemoveLocalFilesAsync(filesToDelete);
@@ -290,8 +291,32 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             await _emailSender.GenerateErrorEmailAsync(ex.Message, "File deletion: ");
         }
 
+
+        await DeleteDemoSFTPDirectory();
         await _context.AddAsync(logTask);
         await _context.SaveChangesAsync();
+    }
+
+
+    private async Task DeleteDemoSFTPDirectory()
+    {
+        var data = await _context.FileStorageLocation.Where(a=>a.UseFileStorageConfiguration)
+            .Select(a => new { SftpConfId = a.FileStorageConfiguration.FileStorageConfigurationId, Path = a.FilePath })
+            .Distinct()
+            .ToListAsync();
+
+        if (data.Any())
+        {
+            using var sftp = new SftpService(_context);
+            foreach (var v in data)
+            {
+                var deleteTasks = await  sftp.DeleteDirectoryFilesAsync(v.SftpConfId, v.Path);
+                if (deleteTasks.Success == false)
+                {
+                    Console.WriteLine($@"An error occurred: {deleteTasks.Message}");
+                }
+            }
+        }
     }
 
     public async Task DeleteLogsAsync()

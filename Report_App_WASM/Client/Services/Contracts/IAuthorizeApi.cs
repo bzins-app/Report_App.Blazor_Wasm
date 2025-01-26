@@ -4,6 +4,7 @@ public interface IAuthorizeApi
 {
     Task Login(LoginParameters loginParameters);
     Task LoginLdap(LoginParameters loginParameters);
+    Task LoginDemo(LoginParameters loginParameters);
     Task Register(RegisterParameters registerParameters);
     Task Logout();
     Task<UserInfo?> GetUserInfo();

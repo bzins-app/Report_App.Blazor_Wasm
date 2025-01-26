@@ -1,7 +1,7 @@
 ﻿@inherits BaseGridComponent<LdapConfigurationDto>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+@attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
