@@ -523,9 +523,6 @@ public class DataCrudController : ControllerBase, IDisposable
             _context.Update(dbItem);
             await SaveDbAsync(values.UserName);
             _context.Entry(dbItem).State = EntityState.Detached;
-            _context.Entry(values.EntityValue).State = EntityState.Deleted;
-
-
             return Ok(new SubmitResult { Success = true });
         }
         catch (Exception ex)
