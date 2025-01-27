@@ -65,7 +65,7 @@
                                 @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Demo"))
                                 {
                                     <MudItem sm="3" md="3">
-                                        <a class="nav-link" href="/DbExplorer2/@t.DataProviderId/@t.ProviderName">
+                                        <a class="nav-link" href="/DbExplorer/@t.DataProviderId/@t.ProviderName">
                                             <span class="pcoded-micon">
                                                 <i class="fa fa-arrow-right"></i>
                                             </span><span class="pcoded-mtext">@Localizer.Get("DB explorer")</span>
