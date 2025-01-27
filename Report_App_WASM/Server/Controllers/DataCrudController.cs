@@ -504,7 +504,7 @@ public class DataCrudController : ControllerBase, IDisposable
         {
             var dbItem = await _context.ScheduledTask.Include(a => a.DataProvider).Include(a => a.TaskQueries)
                 .Include(scheduledTask => scheduledTask.DistributionLists)
-                .Include(a => a.ScheduledTaskId).Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
+                .Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
                 .AsNoTracking().FirstOrDefaultAsync();
 
             if (dbItem == null) return NotFound(new SubmitResult { Success = false, Message = "Item not found" });
@@ -530,7 +530,7 @@ public class DataCrudController : ControllerBase, IDisposable
         }
         catch (Exception ex)
         {
-            return Ok(new SubmitResult { Success = true, Message = ex.Message });
+            return Ok(new SubmitResult { Success = false, Message = ex.Message });
         }
     }
 
