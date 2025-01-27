@@ -24,7 +24,7 @@
                         <MudGrid>
                             @if (_appConst.ActivateTaskSchedulerModule)
                             {
-                                @if (!context.User.IsInRole("Supervisor"))
+                                @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Demo"))
                                 {
                                     <MudItem sm="3" md="3">
                                         <a class="nav-link" href="/TasksView/@t.ProviderName/@t.DataProviderId">
@@ -35,7 +35,7 @@
                                     </MudItem>
                                 }
 
-                                @if (context.User.IsInRole("Supervisor"))
+                                @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Demo"))
                                 {
                                     <MudItem sm="3" md="3">
                                         <a class="nav-link" href="/RetrieveFiles/@t.ProviderName/@t.DataProviderId">
@@ -62,7 +62,7 @@
                                         </span><span class="pcoded-mtext">@Localizer.Get("Queries store")</span>
                                     </a>
                                 </MudItem>
-                                @if (context.User.IsInRole("Supervisor"))
+                                @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Demo"))
                                 {
                                     <MudItem sm="3" md="3">
                                         <a class="nav-link" href="/DbExplorer2/@t.DataProviderId/@t.ProviderName">
