@@ -35,7 +35,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     }
 
 
-    public void SendEmail(List<EmailRecipient>? email, string? subject, string message,
+    public void SendEmail(List<EmailRecipient> email, string subject, string message,
         List<Attachment>? attachment = null)
 
     {

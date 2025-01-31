@@ -367,7 +367,7 @@
 
         if (string.IsNullOrEmpty(QueryRun))
         {
-            _error = hasgrid ? true : false;
+            _error = hasgrid;
             _queryTestResult = "Please enter SQL code";
             var placeholderData = new List<Dictionary<string, object>>
             {
