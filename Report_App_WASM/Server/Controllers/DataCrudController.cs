@@ -394,9 +394,13 @@ public class DataCrudController : ControllerBase, IDisposable
                 }
             }
 
-            if (values.EntityValue.DatabaseConnection != null)
+            if (values.EntityValue.DatabaseConnection is not null)
             {
-                await UpdateEntity(values.EntityValue.DatabaseConnection, values.UserName!);
+                foreach (var i in values.EntityValue.DatabaseConnection)
+                {
+                    await UpdateEntity(i, values.UserName!);
+                }
+                
             }
 
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
