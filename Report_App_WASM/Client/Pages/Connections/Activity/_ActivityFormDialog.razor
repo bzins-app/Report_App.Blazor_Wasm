@@ -230,7 +230,7 @@
             </div>
             <MudGrid>
                 <MudItem>
-                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo!" Accept=".jpg, .jpeg, .png, .gif">
                         <ActivatorContent>
                             <MudFab HtmlTag="label" Class="pa-4"
                                     Color="Color.Secondary"
@@ -256,7 +256,7 @@
             @if (!_loadingDescription)
             {
                 <MudItem>
-                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions!" Accept=".csv, text/csv">
                         <ActivatorContent>
                             <MudFab HtmlTag="label"
                                     Color="Color.Secondary"
@@ -515,7 +515,7 @@
         return true;
     }
 
-    private async Task OnUploadLogo(IBrowserFile? file)
+    private async Task OnUploadLogo(IBrowserFile file)
     {
         var result = await DataService.PostFile(file);
         if (result.Success)

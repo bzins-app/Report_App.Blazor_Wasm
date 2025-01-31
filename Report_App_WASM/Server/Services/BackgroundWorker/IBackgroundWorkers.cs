@@ -5,7 +5,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker;
 
 public interface IBackgroundWorkers
 {
-    void SendEmail(List<EmailRecipient>? email, string? subject, string message, List<Attachment>? attachment = null);
+    void SendEmail(List<EmailRecipient> email, string subject, string message, List<Attachment>? attachment = null);
 
     void DeleteFile(string filePath);
     Task SwitchBackgroundTasksPerActivityAsync(long activityId, bool activate);
