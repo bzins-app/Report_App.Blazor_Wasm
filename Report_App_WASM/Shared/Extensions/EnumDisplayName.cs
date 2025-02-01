@@ -14,5 +14,3 @@ namespace Report_App_WASM.Shared.Extensions
         }
     }
 }
-
-

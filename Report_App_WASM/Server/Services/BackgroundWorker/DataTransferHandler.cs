@@ -99,7 +99,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                                          END;";
             var result = await _dbReader.CkeckTableExists(checkTableQuery, activityIdTransfer);
 
-            if (!result&&detailParam != null)
+            if (!result && detailParam != null)
             {
                 string queryCreate = CreateTableQuery(data, detailParam, loopNumber);
                 await _dbReader.CreateTable(queryCreate, activityIdTransfer);
