@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Report_App_WASM.Shared", "R
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B4BC2794-FABD-416F-A695-F219BB6047DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report_App_WASM.Server.Tests", "..\Report_App_WASM.Tests\Report_App_WASM.Server.Tests.csproj", "{28F9C7C2-26DB-4BC9-A584-6FA2138E5207}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report_App_WASM.Tests", "..\Report_App_WASM.Tests\Report_App_WASM.Tests.csproj", "{28F9C7C2-26DB-4BC9-A584-6FA2138E5207}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
