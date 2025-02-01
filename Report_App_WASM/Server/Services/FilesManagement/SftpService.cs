@@ -21,14 +21,16 @@ public class SftpService : IDisposable
 
     private async Task<FileStorageConfiguration> GetSftpConfigurationAsync(long sftpconfigurationId)
     {
-        return (await _context.FileStorageConfiguration.Where(a => a.FileStorageConfigurationId == sftpconfigurationId).AsNoTracking()
+        return (await _context.FileStorageConfiguration.Where(a => a.FileStorageConfigurationId == sftpconfigurationId)
+            .AsNoTracking()
             .FirstOrDefaultAsync())!;
     }
 
     public async Task<IEnumerable<ISftpFile>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
+        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
+            config.UserName ?? string.Empty,
             EncryptDecrypt.DecryptString(config.Password));
         try
         {
@@ -50,7 +52,8 @@ public class SftpService : IDisposable
         string remoteDirectory, string fileName, bool tryCreateFolder = false)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
+        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
+            config.UserName ?? string.Empty,
             EncryptDecrypt.DecryptString(config.Password));
         try
         {
@@ -79,7 +82,8 @@ public class SftpService : IDisposable
         string localFilePath)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
+        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
+            config.UserName ?? string.Empty,
             EncryptDecrypt.DecryptString(config.Password));
         try
         {
@@ -104,7 +108,8 @@ public class SftpService : IDisposable
     public async Task<SubmitResult> DeleteFileAsync(int sftpconfigurationId, string remoteFilePath)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
+        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
+            config.UserName ?? string.Empty,
             EncryptDecrypt.DecryptString(config.Password));
         try
         {
@@ -164,7 +169,8 @@ public class SftpService : IDisposable
         bool tryCreateFolder = false)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host, config.Port == 0 ? 22 : config.Port, config.UserName,
+        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
+            config.UserName ?? string.Empty,
             EncryptDecrypt.DecryptString(config.Password));
         bool checkAcces;
         try

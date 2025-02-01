@@ -408,7 +408,6 @@ public class DataCrudController : ControllerBase, IDisposable
                 {
                     await UpdateEntity(i, values.UserName!);
                 }
-                
             }
 
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
@@ -586,7 +585,8 @@ public class DataCrudController : ControllerBase, IDisposable
         var val = new FileStorageLocation();
         if (values.EntityValue.FileStorageConfigurationId > 0)
             val.FileStorageConfiguration = await _context.FileStorageConfiguration
-                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId).FirstOrDefaultAsync();
+                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId)
+                .FirstOrDefaultAsync();
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
@@ -613,7 +613,8 @@ public class DataCrudController : ControllerBase, IDisposable
             .FirstOrDefaultAsync();
         if (values.EntityValue.FileStorageConfigurationId > 0)
             val.FileStorageConfiguration = await _context.FileStorageConfiguration
-                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId).FirstOrDefaultAsync();
+                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId)
+                .FirstOrDefaultAsync();
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;

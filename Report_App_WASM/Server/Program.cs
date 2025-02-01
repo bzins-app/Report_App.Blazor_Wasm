@@ -121,7 +121,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var retryCount = 0;
     const int maxRetries = 5;
-    while (retryCount < maxRetries)
+    while (true)
     {
         try
         {

@@ -48,8 +48,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var _resultInfo = "Ok";
                 if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
                     _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
-                        .Select(a => a.Recipients).FirstOrDefault()!);
-                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
+                        .Select(a => a.Recipients).FirstOrDefault()!)!;
+                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails!;
 
                 foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
                 {
@@ -177,12 +177,13 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 {
                     var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
                     var localfilePath = Path.Combine(storagePath, fName);
-                    if (config.FileStorageConfiguration.ConfigurationType==FileStorageConfigurationType.FTP)
+                    if (config.FileStorageConfiguration.ConfigurationType == FileStorageConfigurationType.FTP)
                     {
                         filecreationRemote.FileGenerationType = FileGenerationType.Ftp;
                         completePath = "FTP Host:" + config.FileStorageConfiguration.Host + " Path:" + config.FilePath;
                         using var ftp = new FtpService(_context);
-                        resultDeposit = await ftp.UploadFileAsync(config.FileStorageConfiguration.FileStorageConfigurationId,
+                        resultDeposit = await ftp.UploadFileAsync(
+                            config.FileStorageConfiguration.FileStorageConfigurationId,
                             localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                         await _context.AddAsync(new TaskStepLog
                         {
@@ -198,7 +199,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         filecreationRemote.FileGenerationType = FileGenerationType.Sftp;
                         completePath = "Sftp Host:" + config.FileStorageConfiguration.Host + " Path:" + config.FilePath;
                         using var sftp = new SftpService(_context);
-                        resultDeposit = await sftp.UploadFileAsync(config.FileStorageConfiguration.FileStorageConfigurationId,
+                        resultDeposit = await sftp.UploadFileAsync(
+                            config.FileStorageConfiguration.FileStorageConfigurationId,
                             localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                         await _context.AddAsync(new TaskStepLog
                         {

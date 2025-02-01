@@ -31,7 +31,7 @@
             }
         </MudSelect>
 
-        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item.TimeZone"  Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
+        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item!.TimeZone" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
 
             @foreach (var z in TimeZoneInfo.GetSystemTimeZones())
             {
@@ -84,7 +84,7 @@
                 </MudStack>
                 <MudStack Row="true">
                     <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" Margin="Margin.Dense"/>
-                    <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent"  Margin="Margin.Dense">
+                    <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" Margin="Margin.Dense">
                         @foreach (ApplicationIntent item in Enum.GetValues(typeof(ApplicationIntent)))
                         {
                             <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -339,14 +339,11 @@
 @code {
 
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
-
     [Parameter] public DataProviderDto? Item { get; set; }
-
     [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = null!;
     private string _deletionValidation = null!;
-
     private DatabaseConnectionDto DbCon { get; set; } = new();
 
     // private DatabaseParameters DbParameters { get; set; }

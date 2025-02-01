@@ -21,7 +21,8 @@ public class FtpService : IDisposable
 
     private async Task<FileStorageConfiguration?> GetSftpConfigurationAsync(long sftpconfigurationId)
     {
-        return await _context.FileStorageConfiguration.Where(a => a.FileStorageConfigurationId == sftpconfigurationId).AsNoTracking()
+        return await _context.FileStorageConfiguration.Where(a => a.FileStorageConfigurationId == sftpconfigurationId)
+            .AsNoTracking()
             .FirstOrDefaultAsync();
     }
 
