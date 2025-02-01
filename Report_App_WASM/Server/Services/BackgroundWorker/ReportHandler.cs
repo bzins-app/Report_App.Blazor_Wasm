@@ -48,8 +48,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var _resultInfo = "Ok";
                 if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
                     _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
-                        .Select(a => a.Recipients).FirstOrDefault()!);
-                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
+                        .Select(a => a.Recipients).FirstOrDefault()!)!;
+                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails!;
 
                 foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
                 {

@@ -131,7 +131,7 @@
                             @foreach (var key in _values?.FirstOrDefault()?.Keys!)
                             {
                                 <MudTh>
-                                    <MudTableSortLabel SortLabel="@key" SortDirectionChanged="(value) => Callback(value, key)" T="string"><b>@key</b></MudTableSortLabel>
+                                    <MudTableSortLabel SortLabel="@key" SortDirectionChanged="value => Callback(value, key)" T="string"><b>@key</b></MudTableSortLabel>
                                 </MudTh>
                             }
                         }

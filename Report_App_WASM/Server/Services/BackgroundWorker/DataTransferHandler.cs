@@ -99,7 +99,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                                          END;";
             var result = await _dbReader.CkeckTableExists(checkTableQuery, activityIdTransfer);
 
-            if (!result)
+            if (!result&&detailParam != null)
             {
                 string queryCreate = CreateTableQuery(data, detailParam, loopNumber);
                 await _dbReader.CreateTable(queryCreate, activityIdTransfer);
@@ -122,11 +122,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
                     detailParam.DataTransferTargetTableName, false, detailParam.DataTransferPk);
             }
-            else
-            {
-                return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
-                    detailParam.DataTransferTargetTableName, loopNumber == 0);
-            }
+
+            return CreateSqlServerTableFromDatatable.CreateTableFromSchema(data,
+                detailParam.DataTransferTargetTableName, loopNumber == 0);
         }
 
         private async Task BulkInsertData(DataTable data, ScheduledTaskQueryParameters detailParam,

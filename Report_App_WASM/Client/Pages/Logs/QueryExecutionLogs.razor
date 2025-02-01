@@ -52,7 +52,7 @@
         </MudCardContent>
         <MudCard Elevation="6">
             <MudCardContent>
-                <MudTextField Label="@Localizer.Get("Query")" ReadOnly="true" T="string" AutoGrow MaxLines="15" Typo="Typo.caption" Lines="2" Text="@(string.IsNullOrEmpty(_queryValue) ? @Localizer.Get("Select a log to display the message") : _queryValue)"/>
+                <MudTextField Label="@Localizer.Get("Query")" ReadOnly="true" T="string" AutoGrow MaxLines="15" Typo="Typo.caption" Lines="2" Text="@(string.IsNullOrEmpty(_queryValue) ? Localizer.Get("Select a log to display the message") : _queryValue)"/>
             </MudCardContent>
         </MudCard>
     </MudCard>

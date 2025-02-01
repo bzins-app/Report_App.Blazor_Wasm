@@ -236,7 +236,7 @@
     private string _querySelectedCode = string.Empty;
     private CancellationTokenSource? _cts;
     private bool _isDarkMode;
-    private AceEditorOptions? _opt;
+    private AceEditorOptions _opt=new();
     private TypeDb _typeDbTask;
     private MudTable<Dictionary<string, object>.ValueCollection>? _table = new MudTable<Dictionary<string, object>.ValueCollection>();
     private List<Dictionary<string, object>>? _values;
@@ -249,7 +249,7 @@
     private string _tableHeader = string.Empty;
     private int NbrColumns;
     List<AceThemeWithAttributes> AcesThemes = AceThemeRepository.GetThemes();
-    private AceJsEditor _aceJsEditor;
+    private AceJsEditor _aceJsEditor = null!;
     private int _rowPerPage = 100;
 
     protected override async Task OnParametersSetAsync()

@@ -101,9 +101,15 @@ public class RemoteDbController : ControllerBase, IDisposable
         {
             if (!string.IsNullOrEmpty(payload.SortingDirection))
             {
-                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
-                    payload.ColumSorting, payload.SortingDirection);
-                payload.Values.QueryToRun = query;
+                if (payload.ColumSorting != null)
+                {
+                    if (payload.Values.QueryToRun != null)
+                    {
+                        var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
+                            payload.ColumSorting, payload.SortingDirection);
+                        payload.Values.QueryToRun = query;
+                    }
+                }
             }
 
             var data = await _remoteDb.RemoteDbToDatableAsync(payload.Values!, ct);
@@ -221,9 +227,12 @@ public class RemoteDbController : ControllerBase, IDisposable
         {
             if (!string.IsNullOrEmpty(payload.SortingDirection))
             {
-                var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
-                    payload.ColumSorting, payload.SortingDirection);
-                payload.Values.QueryToRun = query;
+                if (payload.Values.QueryToRun != null&&payload.ColumSorting != null)
+                {
+                    var query = await GetQuerySorted(payload.Values.DataProviderId, payload.Values.QueryToRun,
+                        payload.ColumSorting, payload.SortingDirection);
+                    payload.Values.QueryToRun = query;
+                }
             }
 
             _logger.LogInformation("Grid extraction: Start " + payload.Values.FileName, payload.Values.FileName);
@@ -304,7 +313,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                     .FirstOrDefaultAsync(ct);
 
                 var tables = data.AsEnumerable().Select(selector: r => new TablesColsInfo
-                    { TypeValue = r.Field<string>(0), Name = r.Field<string>(1) }).ToList();
+                    { TypeValue = r.Field<string>(0) ?? string.Empty, Name = r.Field<string>(1) ?? string.Empty }).ToList();
                 if (tables != null)
                 {
                     if (description.tableDesc || description.UseTableMetaDataFromAnotherProvider)
@@ -364,7 +373,7 @@ public class RemoteDbController : ControllerBase, IDisposable
                 if (data.Rows.Count > 0)
                 {
                     var cols = data.AsEnumerable().Select(selector: r => new TablesColsInfo
-                            { TypeValue = r.Field<string>(0), Name = r.Field<string>(1), ColType = r.Field<string>(2) })
+                            { TypeValue = r.Field<string>(0) ?? string.Empty, Name = r.Field<string>(1) ?? string.Empty, ColType = r.Field<string>(2) ?? string.Empty })
                         .ToList();
                     if (cols != null)
                     {

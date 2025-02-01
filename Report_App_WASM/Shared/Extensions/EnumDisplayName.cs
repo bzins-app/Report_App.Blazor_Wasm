@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 
-
 namespace Report_App_WASM.Shared.Extensions
 {
     public static class EnumExtensions

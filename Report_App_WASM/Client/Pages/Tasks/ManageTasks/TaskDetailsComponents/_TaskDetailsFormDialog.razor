@@ -182,10 +182,8 @@
 @code {
 
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
-
-    [Parameter] public ScheduledTaskQueryDto? Item { get; set; }
-
-    [Parameter] public ScheduledTaskDto? Header { get; set; }
+    [Parameter] public required ScheduledTaskQueryDto Item { get; set; }
+    [Parameter] public required ScheduledTaskDto Header { get; set; }
 
     [Parameter] public long DataProviderId { get; set; }
 
@@ -229,7 +227,7 @@
         _isDarkMode = UserAppTheme.DarkTheme;
         _taskType = Header?.TypeName;
         _fileType = Header?.TypeFileName;
-        if (Item!.ExecutionParameters != "[]" && !string.IsNullOrEmpty(Item.ExecutionParameters))
+        if (Item.ExecutionParameters != "[]" && !string.IsNullOrEmpty(Item.ExecutionParameters))
         {
             _param = JsonSerializer.Deserialize<ScheduledTaskQueryParameters>(Item.ExecutionParameters, _jsonOpt)!;
         }
@@ -284,7 +282,7 @@
             if (_form.IsValid)
             {
                 _refQuery?.UpdateParameters();
-                Item!.ExecutionParameters = JsonSerializer.Serialize(_param);
+                Item.ExecutionParameters = JsonSerializer.Serialize(_param);
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }
@@ -297,13 +295,13 @@
             _cts = new CancellationTokenSource();
             List<QueryCommandParameter>? param = new();
             _refQuery?.UpdateParameters();
-            if ((Header!.UseGlobalQueryParameters && Header.GlobalQueryParameters != "[]") ||
+            if ((Header.UseGlobalQueryParameters && Header.GlobalQueryParameters != "[]") ||
                 !string.IsNullOrEmpty(Header.GlobalQueryParameters))
             {
                 param = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.GlobalQueryParameters);
             }
 
-            if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+            if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
             {
                 var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
                 foreach (var value in desParam!)

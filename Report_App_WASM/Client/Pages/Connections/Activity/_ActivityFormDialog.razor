@@ -31,7 +31,7 @@
             }
         </MudSelect>
 
-        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item.TimeZone"  Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
+        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item!.TimeZone"  Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
 
             @foreach (var z in TimeZoneInfo.GetSystemTimeZones())
             {
@@ -339,14 +339,11 @@
 @code {
 
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
-
     [Parameter] public DataProviderDto? Item { get; set; }
-
     [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = null!;
     private string _deletionValidation = null!;
-
     private DatabaseConnectionDto DbCon { get; set; } = new();
 
     // private DatabaseParameters DbParameters { get; set; }

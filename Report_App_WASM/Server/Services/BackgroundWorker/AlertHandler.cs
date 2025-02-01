@@ -1,10 +1,10 @@
-﻿using Report_App_WASM.Server.Services.EmailSender;
+﻿using System.Net.Mail;
+using System.Text.Json;
+using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
 using Report_App_WASM.Server.Services.RemoteDb;
-using Report_App_WASM.Server.Utils.FIles;
-using System.Net.Mail;
-using System.Text.Json;
 using Report_App_WASM.Server.Utils.BackgroundWorker;
+using Report_App_WASM.Server.Utils.FIles;
 
 namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
@@ -112,7 +112,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                                 ExcelCreationDatatable dataExcel = new()
                                     { TabName = a.ScheduledTask?.TaskName, Data = table.Value };
                                 var fileResult =
-                                    CreateFile.ExcelFromDatable((string?)(a.ScheduledTask?.TaskName), dataExcel);
+                                    CreateFile.ExcelFromDatable(a.ScheduledTask?.TaskName, dataExcel);
                                 var fName =
                                     $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{table.Key.QueryName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
                                 listAttach.Add(new Attachment(new MemoryStream(fileResult.Content), fName,
