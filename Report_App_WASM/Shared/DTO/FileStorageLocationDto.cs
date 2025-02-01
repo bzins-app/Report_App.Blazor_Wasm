@@ -10,3 +10,4 @@ public class FileStorageLocationDto : BaseTraceabilityDto, IDto
     public bool UseFileStorageConfiguration { get; set; } = false;
     public long FileStorageConfigurationId { get; set; }
 }
+
