@@ -11,13 +11,13 @@
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h6">
-                <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1"/>
+                <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
                 @Localizer.Get(Item.Type switch
-                {
-                    TaskType.Report => "Edit a report",
-                    TaskType.Alert => "Edit an alert",
-                    _ => "Edit a data transfer"
-                })
+                    {
+                        TaskType.Report => "Edit a report",
+                        TaskType.Alert => "Edit an alert",
+                        _ => "Edit a data transfer"
+                    })
             </MudText>
         </CardHeaderContent>
         <CardHeaderActions>
@@ -31,12 +31,13 @@
         {
             <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
         }
-        <MudGrid>
+        <MudGrid Class="pb-2">
             <MudItem sm="12" lg="8">
-                <MudGrid>
-                    <MudItem sm="12" lg="6">
-                        <MudForm FieldChanged="FormChanged">
-                            <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text"/>
+                <MudForm FieldChanged="FormChanged" @ref="_form">
+                    <MudGrid>
+                        <MudItem sm="12" lg="6">
+
+                            <MudTextField @bind-Value="Item.TaskName" Label="@Localizer.Get("Name")" InputType="InputType.Text" />
                             @if (_activities.Any())
                             {
                                 <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-Value="@_DataProviderId"
@@ -50,107 +51,19 @@
                             }
                             @if (Item.Type == TaskType.Report)
                             {
-                                <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")"/>
+                                <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")" />
                             }
                             @if (_typeDbTask != TypeDb.OlebDb)
                             {
-                                <MudSwitch @bind-Value="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary"/>
-                            }
-                        </MudForm>
-                    </MudItem>
-                    <MudItem sm="12" lg="6">
-                        <MudForm FieldChanged="FormChanged">
-                            @if (Item.Type == TaskType.Report)
-                            {
-                                <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile"
-                                           Required>
-                                    @foreach (FileType item in Enum.GetValues(typeof(FileType)))
-                                    {
-                                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                                    }
-                                </MudSelect>
-                                <MudSwitch @bind-Value="_param.UseASpecificFileNaming" Label="@Localizer.Get("Use a specific file naming?")" Color="Color.Primary"/>
-                                @if (Item.TypeFile == FileType.Excel)
-                                {
-                                    <MudSwitch @bind-Value="_param.UseAnExcelTemplate" Label="@Localizer.Get("Use an excel template?")" Color="Color.Primary"/>
-                                }
-
-                                @if (Item.TypeFile == FileType.Csv)
-                                {
-                                    <MudTextField @bind-Value="_param.Delimiter" Label="@Localizer.Get("CSV delimiter")"/>
-                                }
-
-                                @if (Item.TypeFile == FileType.Excel && _param.UseASpecificFileNaming)
-                                {
-                                    <MudTextField @bind-Value="_param.ExcelFileName" Label="@Localizer.Get("File name")"/>
-                                    <p> * @Localizer.Get("Only when query does not require a separate file")</p>
-                                }
-
-                                @if (Item.TypeFile == FileType.Excel && _param.UseAnExcelTemplate)
-                                {
-                                    <MudTextField @bind-Value="_param.ExcelTemplatePath" Label="@Localizer.Get("Excel Template")" Required ReadOnly/>
-                                    @if (!_loading)
-                                    {
-                                        <MudLink Class="d-flex pa-4" Href="@("/" + _param.ExcelTemplatePath)" Target="_blank" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
-                                        <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadTemplate" Accept=".xlsx">
-                                            <ActivatorContent>
-                                                <MudFab HtmlTag="label" Class="pa-4"
-                                                        Color="Color.Primary"
-                                                        StartIcon="@Icons.Material.Filled.UploadFile"
-                                                        Label="@Localizer.Get("Select an excel template")"
-                                                        Size="Size.Small"
-                                                        Style="text-transform: none"/>
-                                            </ActivatorContent>
-                                        </MudFileUpload>
-                                    }
-
-                                    @if (_loading)
-                                    {
-                                        <MudButton Disabled="@_loading" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
-                                            @if (_loading)
-                                            {
-                                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
-                                                <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
-                                            }
-                                        </MudButton>
-                                    }
-                                }
-
-                                @if (Item.TypeFile == FileType.Excel)
-                                {
-                                    <MudTextField @bind-Value="_param.ValidationSheetText" Label="@Localizer.Get("Information sheet text")"/>
-                                }
-                            }
-                            @if (Item.Type == TaskType.Alert)
-                            {
-                                <MudSwitch @bind-Value="_param.AlertOccurenceByTime" Label="@Localizer.Get("Manage by duration?")" Color="Color.Primary"/>
-                                <p>@Localizer.Get("In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences")</p>
-                                <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")"/>
-                                <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")"/>
-                            }
-                            @if (Item.Type == TaskType.DataTransfer)
-                            {
-                                @if (_dataTransfers.Any())
-                                {
-                                    <MudSelect T="long" Label="@Localizer.Get("Target data transfer")" @bind-Value="@_param.DataTransferId"
-                                               Required>
-                                        @foreach (var value in _dataTransfers)
-                                        {
-                                            <MudSelectItem Value="@value.DataProviderId">@value.ProviderName</MudSelectItem>
-                                        }
-                                    </MudSelect>
-                                }
+                                <MudSwitch @bind-Value="Item.UseGlobalQueryParameters" Label="@Localizer.Get("Use global query parameters?")" Color="Color.Primary" />
                             }
                             @if (Item.Type == TaskType.Report && _depositPathSelect.Any())
                             {
                                 <AuthorizeView Roles="Admin">
                                     <Authorized>
                                         <MudSelect T="long" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId"
-                                                   Clearable>
-                                            @if (Item.FileStorageLocationId == 0)
-                                            {
-                                                <MudSelectItem Value="@Item.FileStorageLocationId">@Localizer.Get("Empty")</MudSelectItem>
-                                            }
+                                                   Clearable OnClearButtonClick="ClearDepositPath">
+                                            <MudSelectItem Value="@((long)0)">@Localizer.Get("Empty")</MudSelectItem>
                                             @foreach (var value in _depositPathSelect)
                                             {
                                                 <MudSelectItem Value="@value.Id">@value.Name</MudSelectItem>
@@ -172,13 +85,98 @@
                                     </NotAuthorized>
                                 </AuthorizeView>
                             }
-                        </MudForm>
-                    </MudItem>
-                </MudGrid>
+                        </MudItem>
+                        <MudItem sm="12" lg="6">
+                            @if (Item.Type == TaskType.Report)
+                            {
+                                <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile"
+                                           Required>
+                                    @foreach (FileType item in Enum.GetValues(typeof(FileType)))
+                                    {
+                                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                                    }
+                                </MudSelect>
+                                @if (Item.TypeFile == FileType.Csv)
+                                {
+                                    <MudTextField @bind-Value="_param.Delimiter" Label="@Localizer.Get("CSV delimiter")" />
+                                }
+                                <MudSwitch @bind-Value="_param.UseASpecificFileNaming" Label="@Localizer.Get("Use a specific file naming?")" Color="Color.Primary" />
+
+                                @if (Item.TypeFile == FileType.Excel && _param.UseASpecificFileNaming)
+                                {
+                                    <MudTextField @bind-Value="_param.SpecificFileNaming" Label="@Localizer.Get("File name")"  Required/>
+                                    <p> * @Localizer.Get("Only when query does not require a separate file")</p>
+                                }
+                                @if (Item.TypeFile == FileType.Excel)
+                                {
+                                    <MudSwitch @bind-Value="_param.UseAnExcelTemplate" Label="@Localizer.Get("Use an excel template?")" Color="Color.Primary" />
+                                }
+                                @if (Item.TypeFile == FileType.Excel && _param.UseAnExcelTemplate)
+                                {
+                                    <MudTextField @bind-Value="_param.ExcelTemplatePath" Label="@Localizer.Get("Excel Template")" Required ReadOnly />
+                                    @if (!_loading)
+                                    {
+                                        @if (!string.IsNullOrEmpty(_param.ExcelTemplatePath))
+                                        {
+                                            <MudLink Class="d-flex pa-4" Href="@("/" + _param.ExcelTemplatePath)" Target="_blank" Disabled="@string.IsNullOrEmpty(_param.ExcelTemplatePath)">@Localizer.Get("Download")</MudLink>
+                                        }
+                                        <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadTemplate" Accept=".xlsx">
+                                            <ActivatorContent>
+                                                <MudFab HtmlTag="label" Class="pa-4"
+                                                        Color="Color.Primary"
+                                                        StartIcon="@Icons.Material.Filled.UploadFile"
+                                                        Label="@Localizer.Get("Select an excel template")"
+                                                        Size="Size.Small"
+                                                        Style="text-transform: none" />
+                                            </ActivatorContent>
+                                        </MudFileUpload>
+                                    }
+
+                                    @if (_loading)
+                                    {
+                                        <MudButton Disabled="@_loading" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                                            @if (_loading)
+                                            {
+                                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                                <MudText Class="ms-2">@Localizer.Get("Processing")</MudText>
+                                            }
+                                        </MudButton>
+                                    }
+                                }
+
+@*                                 @if (Item.TypeFile == FileType.Excel)
+                                {
+                                    <MudTextField @bind-Value="_param.ValidationSheetText" Label="@Localizer.Get("Information sheet text")" />
+                                } *@
+                            }
+                            @if (Item.Type == TaskType.Alert)
+                            {
+                                <MudSwitch @bind-Value="_param.AlertOccurenceByTime" Label="@Localizer.Get("Manage by duration?")" Color="Color.Primary" />
+                                <p>@Localizer.Get("In order to avoid a too large flow of alerts, you can set the behavior in case of multiple occurrences. Either it can be based on a duration between occurrences or by number or by number of occurrences")</p>
+                                <MudNumericField @bind-Value="_param.NbrOfMinutesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of minutes between occcurences")" />
+                                <MudNumericField @bind-Value="_param.NbrOfOccurencesBeforeResendAlertEmail" Label="@Localizer.Get("Nbr of occurences before to resubmit alert")" />
+                            }
+                            @if (Item.Type == TaskType.DataTransfer)
+                            {
+                                @if (_dataTransfers.Any())
+                                {
+                                    <MudSelect T="long" Label="@Localizer.Get("Target data transfer")" @bind-Value="@_param.DataTransferId"
+                                               Required>
+                                        @foreach (var value in _dataTransfers)
+                                        {
+                                            <MudSelectItem Value="@value.DataProviderId">@value.ProviderName</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                }
+                            }
+
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
             </MudItem>
             <MudItem sm="12" lg="4">
                 <MudForm FieldChanged="FormChanged">
-                    <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3"/>
+                    <MudTextField T="string" Label="@Localizer.Get("Comment")" Variant="Variant.Filled" @bind-Text="@Item.Comment" Lines="3" />
                 </MudForm>
                 <MudField Variant="Variant.Text" InnerPadding="false">Tags</MudField>
                 <MudPaper Class="pa-2" Outlined="true">
@@ -191,7 +189,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="OpenPopOver">@Localizer.Get("Add")</MudIconButton>
                     <MudPopover Open="@_openPopOver" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
                         <div class="d-flex flex-column">
-                            <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags"/>
+                            <MudAutocomplete @bind-Value="_tagValue" Variant="Variant.Outlined" Margin="Margin.Dense" CoerceText="true" CoerceValue="true" SearchFunc="@SearchTags" />
                             <MudButton OnClick="@ClosePopOver" Variant="Variant.Text" Color="Color.Error">@Localizer.Get("Validate")</MudButton>
                         </div>
                     </MudPopover>
@@ -202,18 +200,18 @@
         <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true"
                  ApplyEffectsToContainer="true">
             <MudTabPanel Text="@Localizer.Get("Queries")">
-                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" ItemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave"/>
+                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskDetailsComponents._TaskDetails Item="@Item" ItemToDelete="@_itemToDelete" @bind-changePending="@_changesToSave" />
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Global query parameters")" Disabled="@(!Item.UseGlobalQueryParameters)">
-                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.GlobalQueryParameters._GlobalQueryParameters Item="@Item" @bind-changePending="@_changesToSave"/>
+                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.GlobalQueryParameters._GlobalQueryParameters Item="@Item" @bind-changePending="@_changesToSave" />
             </MudTabPanel>
             <MudTabPanel Text="@Localizer.Get("Scheduler")">
-                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskSchedulerComponents._TaskSchedulers Item="@Item" @bind-changePending="@_changesToSave"/>
+                <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskSchedulerComponents._TaskSchedulers Item="@Item" @bind-changePending="@_changesToSave" />
             </MudTabPanel>
             @if (Item.Type != TaskType.DataTransfer)
             {
                 <MudTabPanel Text="@Localizer.Get("Manage recipients")">
-                    <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskEmailRecipients._TaskRecipients Item="@Item" @bind-changePending="@_changesToSave"/>
+                    <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskEmailRecipients._TaskRecipients Item="@Item" @bind-changePending="@_changesToSave" />
                 </MudTabPanel>
             }
         </MudTabs>
@@ -223,12 +221,9 @@
 @code {
 
     [Parameter] public long TaskHeaderId { get; set; }
-
-    [Parameter] [SupplyParameterFromQuery] public bool? FromTaskManager { get; set; }
-
-    [Parameter] [SupplyParameterFromQuery] public int? Page { get; set; }
-
-    [Parameter] [SupplyParameterFromQuery] public int? PageSize { get; set; }
+    [Parameter][SupplyParameterFromQuery] public bool? FromTaskManager { get; set; }
+    [Parameter][SupplyParameterFromQuery] public int? Page { get; set; }
+    [Parameter][SupplyParameterFromQuery] public int? PageSize { get; set; }
 
     private ScheduledTaskDto Item { get; set; } = new();
     private List<SelectItemDataproviderInfo> _activities = new();
@@ -238,6 +233,7 @@
     private string? _errorMessage;
     private readonly List<ScheduledTaskQueryDto> _itemToDelete = new();
     private ScheduledTaskParameters _param = new();
+    private MudForm _form = null!;
 
     private bool _loading;
     private TypeDb _typeDbTask;
@@ -249,9 +245,9 @@
     string _tagValue = string.Empty;
 
     JsonSerializerOptions _jsonOpt = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -266,8 +262,23 @@
         Item.TimeZone = string.IsNullOrEmpty(Item.DataProvider.TimeZone) ? TimeZoneInfo.Local.Id : Item.DataProvider.TimeZone;
         _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
 
-        var controllerActionDepositPath = "DepositPathInfo";
-        _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
+        var uri = $"GetActivityDbConnection?DataProviderId={Item.DataProvider.DataProviderId}";
+        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
+        if (response.Any())
+        {
+            _typeDbTask = response.Select(a => a.TypeDb).First();
+        }
+
+        if (Item.Type == TaskType.Report)
+        {
+            var controllerActionDepositPath = "DepositPathInfo";
+            _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
+
+            if (Item.FileStorageLocationId != 0)
+            {
+                _depositPathSelect.Where(a => a.Id == Item.FileStorageLocationId).Select(a => a.Name).FirstOrDefault();
+            }
+        }
 
         if (!string.IsNullOrEmpty(Item.TaskParameters) && Item.TaskParameters != "[]")
         {
@@ -279,17 +290,6 @@
             _tags = JsonSerializer.Deserialize<List<string>>(Item.Tags, _jsonOpt)!;
         }
 
-        if (Item.FileStorageLocationId != 0)
-        {
-            _depositPathSelect.Where(a => a.Id == Item.FileStorageLocationId).Select(a => a.Name).FirstOrDefault();
-        }
-
-        var uri = $"GetActivityDbConnection?DataProviderId={Item.DataProvider.DataProviderId}";
-        var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
-        if (response.Any())
-        {
-            _typeDbTask = response.Select(a => a.TypeDb).First();
-        }
 
         var uriTags = $"{ApiControllers.CrudDataApi}GetTagsTasks?type={Item.Type}";
         _AvailableTags = (await Http.GetFromJsonAsync<List<string>>(uriTags))!;
@@ -305,64 +305,69 @@
 
     private async Task SaveChangeAsync()
     {
-        try
+        await _form.Validate();
+        if (_form.IsValid)
         {
-            _errorMessage = "";
-            if (Item.Type == TaskType.DataTransfer && _param.DataTransferId == 0)
+
+            try
+            {
+                _errorMessage = "";
+                if (Item.Type == TaskType.DataTransfer && _param.DataTransferId == 0)
+                {
+                    Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                    _errorMessage = Localizer.Get("A Target database must be selected");
+                    return;
+                }
+
+                if (Item.IsEnabled)
+                {
+                    await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = Item.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+                }
+
+                if (Item.Type == TaskType.Alert && Item.SendByEmail == false)
+                {
+                    Item.SendByEmail = true;
+                }
+
+                if (!Item.DistributionLists.Any())
+                {
+                    var recipients = new ScheduledTaskDistributionListDto { ScheduledTask = Item, Recipients = "[]", EmailMessage = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
+                    Item.DistributionLists = new List<ScheduledTaskDistributionListDto> { recipients };
+                }
+
+                Item.TaskParameters = JsonSerializer.Serialize(_param);
+                Item.Tags = JsonSerializer.Serialize(_tags);
+
+                if (Item.CronParameters == "[]" || string.IsNullOrEmpty(Item.CronParameters))
+                {
+                    Item.IsEnabled = false;
+                }
+
+                if (Item.GlobalQueryParameters == "[]" || string.IsNullOrEmpty(Item.GlobalQueryParameters))
+                {
+                    Item.UseGlobalQueryParameters = false;
+                }
+
+                await DataService.PostValues(Item, "TaskHeaderUpdate");
+
+                foreach (var detail in _itemToDelete)
+                {
+                    await DataService.PostValues(detail, "TaskDetailDelete");
+                }
+
+                if (Item.IsEnabled)
+                {
+                    await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = true, Value = Item.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
+                }
+
+                await UpdateValues();
+                Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
+            }
+            catch (Exception e)
             {
                 Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-                _errorMessage = Localizer.Get("A Target database must be selected");
-                return;
+                _errorMessage = e.Message;
             }
-
-            if (Item.IsEnabled)
-            {
-                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = false, Value = Item.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
-            }
-
-            if (Item.Type == TaskType.Alert && Item.SendByEmail == false)
-            {
-                Item.SendByEmail = true;
-            }
-
-            if (!Item.DistributionLists.Any())
-            {
-                var recipients = new ScheduledTaskDistributionListDto { ScheduledTask = Item, Recipients = "[]", EmailMessage = Item.Type == TaskType.Alert ? "<p>Hello,</p><p>An alert has been raised:</p><p>{0}</p>" : "<p>Hello,</p><p>Please find enclosed, the report.</p><p>&nbsp;</p>" };
-                Item.DistributionLists = new List<ScheduledTaskDistributionListDto> { recipients };
-            }
-
-            Item.TaskParameters = JsonSerializer.Serialize(_param);
-            Item.Tags = JsonSerializer.Serialize(_tags);
-
-            if (Item.CronParameters == "[]" || string.IsNullOrEmpty(Item.CronParameters))
-            {
-                Item.IsEnabled = false;
-            }
-
-            if (Item.GlobalQueryParameters == "[]" || string.IsNullOrEmpty(Item.GlobalQueryParameters))
-            {
-                Item.UseGlobalQueryParameters = false;
-            }
-
-            await DataService.PostValues(Item, "TaskHeaderUpdate");
-
-            foreach (var detail in _itemToDelete)
-            {
-                await DataService.PostValues(detail, "TaskDetailDelete");
-            }
-
-            if (Item.IsEnabled)
-            {
-                await DataService.PostValues(new ApiBackgroundWorkerPayload { Activate = true, Value = Item.ScheduledTaskId }, "ActivatePerTask", ApiControllers.BackgroudWorkerApi);
-            }
-
-            await UpdateValues();
-            Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
-        }
-        catch (Exception e)
-        {
-            Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
-            _errorMessage = e.Message;
         }
     }
 
@@ -373,19 +378,19 @@
         {
             uri = UriHelper.GetUriWithQueryParameters($"TasksPerActivity/{Item.Type.ToString()}/{Item.DataProvider.DataProviderId}/{Item.DataProvider.ProviderName}",
                 new Dictionary<string, object>
-                {
-                    ["Page"] = Page!,
-                    ["PageSize"] = PageSize!
-                }!);
+                    {
+                        ["Page"] = Page!,
+                        ["PageSize"] = PageSize!
+                    }!);
         }
         else
         {
             uri = UriHelper.GetUriWithQueryParameters("TaskManager/" + Item.Type,
                 new Dictionary<string, object>
-                {
-                    ["Page"] = Page!,
-                    ["PageSize"] = PageSize!
-                }!);
+                    {
+                        ["Page"] = Page!,
+                        ["PageSize"] = PageSize!
+                    }!);
         }
 
         if (_changesToSave)
@@ -468,5 +473,9 @@
         return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-
+    private void ClearDepositPath()
+    {
+        Item.FileStorageLocationId = 0;
+        _changesToSave = true;
+    }
 }

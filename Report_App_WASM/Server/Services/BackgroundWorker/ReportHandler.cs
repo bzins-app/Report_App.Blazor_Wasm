@@ -343,9 +343,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
             if (excelMultipleTabs.Any())
             {
-                fName = string.IsNullOrEmpty(headerParam?.ExcelFileName)
+                fName = string.IsNullOrEmpty(headerParam?.SpecificFileNaming)
                     ? $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}"
-                    : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
+                    : $"{headerParam.SpecificFileNaming.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
 
                 MemoryFileContainer fileCreated;
                 if (!headerParam!.UseAnExcelTemplate)
