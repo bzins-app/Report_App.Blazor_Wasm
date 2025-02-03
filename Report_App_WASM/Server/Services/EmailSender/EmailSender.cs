@@ -23,12 +23,12 @@ public class EmailSender : IEmailSender
             var emails = JsonSerializer.Deserialize<List<EmailRecipient>>(emailInfos.AdminEmails!);
             var subject = $@"{emailInfos.ErrorEmailPrefix}-{subjectSuffix}";
             var messageMail = string.Format(emailInfos.ErrorEMailMessage!, errorMessage);
-            await SendEmailAsync(emails, subject, messageMail);
+            if (emails != null) await SendEmailAsync(emails, subject, messageMail);
         }
     }
 
     public async Task<SubmitResult> SendEmailAsync(List<EmailRecipient> email, string subject, string message,
-        List<Attachment> attachment = null!)
+        List<Attachment>? attachment = null!)
     {
         var smtp = await Context.SmtpConfiguration.Where(a => a.IsActivated == true).AsNoTracking()
             .FirstOrDefaultAsync();
@@ -138,13 +138,11 @@ public class EmailSender : IEmailSender
             }
         }
 
-        using var smtp = new SmtpClient
-        {
-            Credentials = new NetworkCredential(smtpUser, smtpPassword),
-            Host = smtpHost!,
-            Port = smtpPort,
-            EnableSsl = smtpSsl
-        };
+        using var smtp = new SmtpClient();
+        smtp.Credentials = new NetworkCredential(smtpUser, smtpPassword);
+        smtp.Host = smtpHost!;
+        smtp.Port = smtpPort;
+        smtp.EnableSsl = smtpSsl;
 
         await smtp.SendMailAsync(message).ConfigureAwait(false);
     }

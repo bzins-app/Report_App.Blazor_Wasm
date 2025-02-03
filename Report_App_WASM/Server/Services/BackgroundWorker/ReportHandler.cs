@@ -87,7 +87,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var emailPrefix = await _context.SystemParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                 var subject = emailPrefix + " - " + _header.ProviderName + ": " + _header.TaskName;
 
-                List<Attachment> listAttach = new();
+                List<Attachment>? listAttach = new();
                 listAttach.AddRange(_fileResults.Select(a =>
                     new Attachment(new MemoryStream(a.Content), a.FileName, a.ContentType)).ToList());
 

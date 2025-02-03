@@ -151,9 +151,10 @@
         StateHasChanged();
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
     }
 
     private void ToggleTree()
@@ -161,7 +162,7 @@
         _open = !_open;
     }
 
-    private async Task OnTagSelected()
+    private Task OnTagSelected()
     {
         _filteredQueries = _queries;
         if (selected != null && selected.Any())
@@ -171,6 +172,8 @@
                 _filteredQueries = _filteredQueries.Where(a => a.Tags.Contains(t)).ToList();
             }
         }
+
+        return Task.CompletedTask;
     }
 
 }

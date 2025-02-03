@@ -70,7 +70,7 @@
                 <MudSelect T="AceTheme" Value="_opt.Theme" Label="Theme" ValueChanged="(AceTheme value) => LoadTheme(value)" ListClass="mud-background-gray" Dense>
                     @foreach (var item in AcesThemes)
                     {
-                        <MudSelectItem Value="@item.Name">
+                        <MudSelectItem Value="@item.Name" Style="padding-top:unset;padding-bottom:une">
                             <span style="@(item.Type == AceThemeType.Dark ? "font-size:25px;color:black" : "font-size:25px;color:white")">&#9632;</span>
                             @item.DisplayName
                         </MudSelectItem>
@@ -586,7 +586,7 @@
         </MudPaper>
         @if (dbView.Open)
         {
-            <MudTable Items="@items" Dense="true" Class="mud-background-gray stack-adorner" Hover="true" HorizontalScrollbar="true" Height="@(type == "Table" && view.Open ? "35vh" : type == "View" && table.Open ? "35vh" : "70vh")" Elevation="25" Virtualize="@(items.Count() > 150)" Style="width:100%;" @ref="_tableRef">
+            <MudTable Items="@(items)" Dense="true" Class="mud-background-gray stack-adorner" Hover="true" HorizontalScrollbar="true" Height="@(type == "Table" && view.Open ? "35vh" : type == "View" && table.Open ? "35vh" : "70vh")" Elevation="25" Virtualize="@(items.Count() > 150)" Style="width:100%;" @ref="_tableRef">
                 <HeaderContent>
                     @if (_loadingTables)
                     {

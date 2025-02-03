@@ -31,7 +31,7 @@
         {
             <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_errorMessage</MudText>
         }
-        <MudGrid Class="pb-2">
+        <MudGrid Class="pb-4">
             <MudItem sm="12" lg="8">
                 <MudForm FieldChanged="FormChanged" @ref="_form">
                     <MudGrid>
@@ -62,7 +62,7 @@
                                 <AuthorizeView Roles="Admin">
                                     <Authorized>
                                         <MudSelect T="long" Label="@Localizer.Get("Report deposit path")" @bind-Value="@Item.FileStorageLocationId"
-                                                   Clearable OnClearButtonClick="ClearDepositPath">
+                                                   Clearable>
                                             <MudSelectItem Value="@((long)0)">@Localizer.Get("Empty")</MudSelectItem>
                                             @foreach (var value in _depositPathSelect)
                                             {
@@ -473,9 +473,4 @@
         return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private void ClearDepositPath()
-    {
-        Item.FileStorageLocationId = 0;
-        _changesToSave = true;
-    }
 }
