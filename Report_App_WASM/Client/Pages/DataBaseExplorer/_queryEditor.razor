@@ -3,13 +3,14 @@
 @using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
 @inject HttpClient Http
+@inject IDialogService DialogService
 
 <MudStack Spacing="0" StretchItems="StretchItems.Middle" Class="stack-main mud-elevation-15 stack-adorner">
 
     @* Title Bar *@
     <MudStack Row AlignItems="AlignItems.Center" Class="mud-paper mud-paper-square stack-adorner">
         <MudIcon Icon="@Icons.Material.Filled.Code" Color="Color.Default" Class="ml-3 my-1 hideable" />
-        <MudText Class="hideable">@EditorTitle</MudText>
+        <MudText Class="hideable">@Options.EditorTitle</MudText>
     </MudStack>
 
     @* Middle Section *@
@@ -17,24 +18,32 @@
 
         @* Side Menu *@
         <MudStack Justify="Justify.SpaceBetween" Spacing="0" Class="mud-theme-dark stack-adorner">
-            <MudStack Spacing="0" Class="stack-adorner">
-                <MudStack Spacing="0" Row Style="max-width:48px">
-                    <div class="@(_openTables ? "mud-tab-slider mud-tab-slider-vertical" : "")" style="@(_openTables ? "position:unset;background:white;" : "position:unset;")">
-                        <MudButton Color="Color.Inherit" Class="pa-3 rounded-0 hideable" Style="min-width: 0;" OnClick="ToogleTablesView">
-                            <MudIcon Icon="@Icons.Material.Filled.Search" />
-                        </MudButton>
-                    </div>
-                </MudStack>
+            <MudStack Spacing="0" Class="stack-adorner" Style="width:48px">
+                @if (Options.EnableQueryParametersPanel)
+                {
+                    <MudStack Spacing="0" Row Style="max-width:48px">
+                        <div class="@(_openQueryParameters ? "mud-tab-slider mud-tab-slider-vertical" : "")" style="@(_openQueryParameters ? "position:unset;background:white;" : "position:unset;")">
+                            <MudButton Color="Color.Inherit" Class="pa-3 rounded-0 hideable" Style="min-width: 0;" OnClick="ToogleQueryParametersView">
+                                <MudIcon Icon="@Icons.Material.Filled.AltRoute" />
+                            </MudButton>
+                        </div>
+                    </MudStack>
+                }
+                @if (Options.EnableTablesViewsPanel)
+                {
+                    <MudStack Spacing="0" Row Style="max-width:48px">
+                        <div class="@(_openTables ? "mud-tab-slider mud-tab-slider-vertical" : "")" style="@(_openTables ? "position:unset;background:white;" : "position:unset;")">
+                            <MudButton Color="Color.Inherit" Class="pa-3 rounded-0 hideable" Style="min-width: 0;" OnClick="ToogleTablesView">
+                                <MudIcon Icon="@Icons.Material.Filled.Search" />
+                            </MudButton>
+                        </div>
+                    </MudStack>
+                }
             </MudStack>
 
-            @*             <MudTabs MinimumTabWidth="20px" Position="Position.Left" @ref="_tabs">
-                <MudTabPanel Icon="@Icons.Material.Filled.Search" Class="mud-theme-dark stack-adorner" OnClick="ToogleTablesView"/>
-                                 <MudTabPanel Icon="@Icons.Material.Outlined.FileCopy" Class="mud-theme-dark stack-adorner" OnClick="ToogleTablesView" />
-                <MudTabPanel Icon="@Icons.Material.Filled.AltRoute" Class="mud-theme-dark stack-adorner" OnClick="ToogleTablesView" /> 
-            </MudTabs> *@
             <MudStack Spacing="0" Class="stack-adorner">
                 <MudStack Spacing="0" Row Style="max-width:48px">
-                    <div class="@(_openParameters ? "mud-tab-slider mud-tab-slider-vertical" : "")" style="@(_openParameters ? "position:unset;background:white;" : "position:unset;")">
+                    <div class="@(_openEditorParameters ? "mud-tab-slider mud-tab-slider-vertical" : "")" style="@(_openEditorParameters ? "position:unset;background:white;" : "position:unset;")">
                         <MudButton Color="Color.Inherit" Class="pa-3 rounded-0 hideable" Style="min-width: 0;" OnClick="ToogleParameters">
                             <MudIcon Icon="@Icons.Material.Outlined.Settings" />
                         </MudButton>
@@ -44,7 +53,7 @@
         </MudStack>
 
         @* Main *@
-        @if (_openTables)
+        @if (_openTables && Options.EnableTablesViewsPanel)
         {
             <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="min-width:400px;overflow:auto;resize:horizontal;">
                 <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
@@ -59,8 +68,110 @@
                 @RenderTableOrView("View", view, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "View"))
             </MudPaper>
         }
+        @if (_openQueryParameters && Options.EnableQueryParametersPanel)
+        {
+            <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="min-width:400px;overflow:auto;resize:horizontal;">
+                <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
+                    <MudText>@Localizer.Get("Query parameters")</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Inherit" OnClick="ToogleQueryParametersView" />
+                </MudStack>
+                @if (GlobalQueryParameters.Any())
+                {
+                    <MudPaper Class="pt-3 mud-background-gray stack-adorner">
+                        <MudStack Row Justify="Justify.SpaceBetween" Class="pa-2">
+                            <MudText Typo="Typo.subtitle1">@Localizer.Get("Global query parameters")</MudText>
+                        </MudStack>
+                    </MudPaper>
+                    <MudTable Items="@GlobalQueryParameters" Dense="true" Class="mud-background-gray stack-adorner" Bordered="true" Hover="true" Height="100%" Elevation="25" Style="width:auto">
+                        <HeaderContent>
+                            <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Display name")</MudTh>
+                            <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Parameter identifier")</MudTh>
+                            <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Data type")</MudTh>
+                            <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Value")</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DisplayName</MudTd>
+                            <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ParameterIdentifier</MudTd>
+                            <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ValueType</MudTd>
+                            <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
+                                @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
+                                {
+                                    <MudStack Row>
+                                        @*  <MudText Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DateOption</MudText> *@
+                                        <MudText Style="text-wrap-mode: nowrap;font-size:.75rem">
+                                            @if (context.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
+                                            {
+                                                var valueDateTime = DateTime.Now;
+                                                @(context.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date.ToString("d") : valueDateTime)
+                                            }
+                                            else
+                                            {
+                                                @(context.ValueType == QueryCommandParameterValueType.Date ? context.DateOption.GetCalculateDateTime().Date.ToString("d") : context.DateOption.GetCalculateDateTime())
+                                            }
+                                        </MudText>
+                                    </MudStack>
+                                }
+                                else
+                                {
+                                    @context.Value
+                                }
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+                <MudPaper Class="pt-3 mud-background-gray stack-adorner">
+                    <MudStack Row Justify="Justify.SpaceBetween" Class="pa-2">
+                        <MudText Typo="Typo.subtitle1">Local</MudText>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" OnClick="OpenCreateDialog" Size="Size.Small">@Localizer.Get("Add a parameter")</MudButton>
+                    </MudStack>
+                </MudPaper>
+                <MudTable Items="@QueryParameters" Dense="true" Class="mud-background-gray stack-adorner" Bordered="true" Hover="true" Height="100%" Elevation="25" Style="width:auto">
+                    <HeaderContent>
+                        <MudTh Style="text-wrap-mode: nowrap;"></MudTh>
+                        <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Display name")</MudTh>
+                        <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Parameter identifier")</MudTh>
+                        <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Data type")</MudTh>
+                        <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Value")</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>
+                            <MudStack Row>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Size="Size.Small" />
+                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Color="Color.Default" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" Size="Size.Small" />
+                            </MudStack>
+                        </MudTd>
+                        <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DisplayName</MudTd>
+                        <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ParameterIdentifier</MudTd>
+                        <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ValueType</MudTd>
+                        <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
+                            @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
+                            {
+                                <MudStack Row>
+                                    @*   <MudText Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DateOption</MudText> *@
+                                    <MudText Style="text-wrap-mode: nowrap;font-size:.75rem">
+                                        @if (context.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
+                                        {
+                                            var valueDateTime = DateTime.Now;
+                                            @(context.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date.ToString("d") : valueDateTime)
+                                        }
+                                        else
+                                        {
+                                            @(context.ValueType == QueryCommandParameterValueType.Date ? context.DateOption.GetCalculateDateTime().Date.ToString("d") : context.DateOption.GetCalculateDateTime())
+                                        }
+                                    </MudText>
+                                </MudStack>
+                            }
+                            else
+                            {
+                                @context.Value
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
+        }
 
-        @if (_openParameters)
+        @if (_openEditorParameters)
         {
             <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="min-width:400px;overflow:auto;resize:horizontal;">
                 <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
@@ -87,13 +198,12 @@
                         <MudText>@Localizer.Get("Reset")</MudText>
                     </MudButton>
                 </div>
-
             </MudPaper>
         }
 
         <MudStack Class="mud-background-gray stack-adorner" Style="overflow-x: auto;" Spacing="0">
             <MudStack Row Class="stack-adorner" Spacing="0">
-                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="@(_loading || _loadingTables)" aria-label="@Localizer.Get("Test query")" OnClick="@(async () => await RunSql())" />
+                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="@(_loading || _loadingTables)" aria-label="@Localizer.Get("Test query")" OnClick="@(async () => await RunSql(true))" />
                 <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="@(!_loading && !_loadingTables)" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery" />
             </MudStack>
             <div style="height:100%;overflow:auto;resize:vertical">
@@ -188,7 +298,7 @@
         max-height: 90vh;
         max-width: 100%;
         /* resize: both;
-        overflow: hidden; */
+                        overflow: hidden; */
     }
 
     .mud-badge {
@@ -200,10 +310,29 @@
 </style>
 
 @code {
-    [Parameter] public string EditorTitle { get; set; } = "Query Editor";
     [Parameter] public long DataProviderId { get; set; }
     [Parameter] public string QueryText { get; set; } = null!;
     [Parameter] public EventCallback<string> QueryTextChanged { get; set; }
+    [Parameter] public QueryEditorOptions Options { get; set; } = new QueryEditorOptions();
+    [Parameter] public List<QueryCommandParameter> GlobalQueryParameters { get; set; } = new();
+    [Parameter] public List<QueryCommandParameter> QueryParameters { get; set; } = new();
+    [Parameter] public EventCallback<List<QueryCommandParameter>> QueryParametersChanged { get; set; }
+
+    public class QueryEditorOptions
+    {
+        public string EditorTitle { get; set; } = "Query Editor";
+        public bool EnableTablesViewsPanel { get; set; }
+        public bool EnableQueryParametersPanel { get; set; }
+        public EditorPanel DefaultPanel { get; set; } = EditorPanel.None;
+    }
+
+    public enum EditorPanel
+    {
+        None,
+        TablesViews,
+        QueryParameters
+    }
+
 
     private class ListTablesViews
     {
@@ -245,7 +374,9 @@
     private RenderFragment? _editor { get; set; }
     bool hasgrid { get; set; }
     bool _openTables;
-    bool _openParameters;
+    bool _openQueryParameters;
+    bool _openEditorParameters;
+    bool _UseParam;
     private string _tableHeader = string.Empty;
     private int NbrColumns;
     List<AceThemeWithAttributes> AcesThemes = AceThemeRepository.GetThemes();
@@ -271,7 +402,15 @@
         ItemsBase.Clear();
         ItemsBaseStored.Clear();
         _editor = null;
-        _openTables = true;
+        if (Options.DefaultPanel == EditorPanel.TablesViews)
+        {
+            _openTables = true;
+        }
+        else if (Options.DefaultPanel == EditorPanel.QueryParameters)
+        {
+            _openQueryParameters = true;
+        }
+
         table.Open = false;
         view.Open = false;
         _isLoaded = false;
@@ -330,9 +469,10 @@
         await QueryTextChanged.InvokeAsync(QueryBuilder);
     }
 
-    private async Task RunSql()
+    private async Task RunSql(bool _withParam = false)
     {
         _loading = true;
+        _UseParam = _withParam;
         _queryTestResult = string.Empty;
         _tableHeader = Localizer.Get("Query output");
         StateHasChanged();
@@ -391,6 +531,24 @@
             await CancelCurrentTask();
             _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
+            var _queryCommandParameters = new List<QueryCommandParameter>();
+
+            if (GlobalQueryParameters.Any() && _UseParam)
+            {
+                _queryCommandParameters = GlobalQueryParameters;
+            }
+
+            if (QueryParameters.Any() && _UseParam)
+            {
+                foreach (var value in QueryParameters)
+                {
+                    if (_queryCommandParameters.All(a => a.ParameterIdentifier != value.ParameterIdentifier))
+                    {
+                        _queryCommandParameters.Add(value);
+                    }
+                }
+            }
+
             var run = new RemoteDbCommandParameters
                 {
                     DataProviderId = DataProviderId,
@@ -400,7 +558,7 @@
                     StartRecord = currentPage * pageSize,
                     MaxSize = pageSize + 1,
                     LastRunDateTime = DateTime.Now,
-                    QueryCommandParameters = new List<QueryCommandParameter>()
+                    QueryCommandParameters = _queryCommandParameters
                 };
 
             var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
@@ -452,8 +610,16 @@
 
     private void ToogleTablesView()
     {
-        _openParameters = false;
+        _openEditorParameters = false;
+        _openQueryParameters = false;
         _openTables = !_openTables;
+    }
+
+    private void ToogleQueryParametersView()
+    {
+        _openTables = false;
+        _openEditorParameters = false;
+        _openQueryParameters = !_openQueryParameters;
     }
 
     private async Task CancelCurrentTask()
@@ -605,7 +771,7 @@
                     </MudTd>
                     @if (context.hasDescription && _isLoaded)
                     {
-                        <MudTh Style="font-size:.75rem">@context.TablesColsInfo.Description</MudTh>
+                        <MudTd Style="font-size:.75rem">@context.TablesColsInfo.Description</MudTd>
                     }
                 </RowTemplate>
                 <ChildRowContent>
@@ -636,7 +802,7 @@
                                             }
                                             @if (context.hasDescription)
                                             {
-                                                <MudTh Style="font-size:.75rem;padding: 0px 16px;">@tcontext.Description</MudTh>
+                                                <MudTd Style="font-size:.75rem;padding: 0px 16px;">@tcontext.Description</MudTd>
                                             }
                                         </RowTemplate>
                                     </MudTable>
@@ -654,7 +820,54 @@
     private void ToogleParameters()
     {
         _openTables = false;
-        _openParameters = !_openParameters;
+        _openQueryParameters = false;
+        _openEditorParameters = !_openEditorParameters;
+    }
+    private async Task OpenCreateDialog()
+    {
+        var dialog = await DialogService.ShowAsync<_QueryParametersFormDialog>("Create");
+        var feedback = await dialog.Result;
+
+        if (!(feedback is { Canceled: true }))
+        {
+            if (feedback != null) QueryParameters?.Add(((QueryCommandParameter)feedback.Data!));
+            await QueryParametersChanged.InvokeAsync(QueryParameters);
+        }
+    }
+
+    private async Task OpenEditDialog(QueryCommandParameter element)
+    {
+        var CopyElement = new QueryCommandParameter { DisplayName = element.DisplayName, ParameterIdentifier = element.ParameterIdentifier, Value = element.Value, ValueType = element.ValueType, DateOption = element.DateOption, Required = element.Required };
+        var parameters = new DialogParameters<_QueryParametersFormDialog> { { x => x._param, CopyElement } };
+        var dialog = await DialogService.ShowAsync<_QueryParametersFormDialog>("Edit", parameters);
+        var feedback = await dialog.Result;
+
+        if (!(feedback is { Canceled: true }))
+        {
+            if (feedback != null)
+            {
+                element.ParameterIdentifier = CopyElement.ParameterIdentifier;
+                element.DateOption = CopyElement.DateOption;
+                element.Value = CopyElement.Value;
+                element.ValueType = CopyElement.ValueType;
+                element.DisplayName = CopyElement.DisplayName;
+                element.Required = CopyElement.Required;
+                await QueryParametersChanged.InvokeAsync(QueryParameters);
+            }
+
+        }
+    }
+
+    private async Task Delete(QueryCommandParameter element)
+    {
+        DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
+        var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?"), Localizer.Get("Delete"), null, Localizer.Get("Cancel"), dialogOptions);
+
+        if (result != null)
+        {
+            QueryParameters.Remove(QueryParameters.FirstOrDefault(a => a.ParameterIdentifier == element.ParameterIdentifier)!);
+            await QueryParametersChanged.InvokeAsync(QueryParameters);
+        }
     }
 
 }

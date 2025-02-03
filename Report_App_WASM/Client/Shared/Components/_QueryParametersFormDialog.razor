@@ -2,7 +2,7 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1"/>
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
             @Localizer.Get(MudDialog.Title)
         </MudText>
     </TitleContent>
@@ -26,7 +26,18 @@
                 </MudSelect>
                 <MudField Label="@Localizer.Get("Calculated date")">@(_param.ValueType == QueryCommandParameterValueType.Date ? _param.DateOption.GetCalculateDateTime().Date.ToString("d") : _param.DateOption.GetCalculateDateTime())</MudField>
             }
-            <MudSwitch T="bool" @bind-Value="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
+            else
+            {
+                @if (_param.ValueType == QueryCommandParameterValueType.String)
+                {
+                    <MudTextField @bind-Value="_param.Value" Label="@Localizer.Get("Enter value")" Variant="Variant.Text" Required></MudTextField>
+                }
+                else
+                {
+                    <MudTextField @bind-Value="_param.Value" Label="@Localizer.Get("Enter value")" InputType="InputType.Number" Required></MudTextField>
+                }
+            }
+            <MudSwitch T="bool" @bind-Value="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" />
         </MudForm>
     </DialogContent>
     <DialogActions>

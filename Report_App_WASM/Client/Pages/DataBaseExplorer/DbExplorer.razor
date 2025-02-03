@@ -5,7 +5,7 @@
 
 <PageTitle>@Localizer.Get("DB explorer") @ProviderName</PageTitle>
 
-<_queryEditor DataProviderId="@DataProviderId" EditorTitle="@_editorTitle"  />
+<_queryEditor DataProviderId="@DataProviderId" Options="@_opts"  />
 
 
 @code {
@@ -13,8 +13,7 @@
     [Parameter] public string ProviderName { get; set; } = default!;
     [Parameter] public long DataProviderId { get; set; }
     private string? Query { get; set; } 
-    private string _editorTitle { get; set; } = default!;
-
+    private _queryEditor.QueryEditorOptions _opts = new _queryEditor.QueryEditorOptions();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -24,8 +23,9 @@
         {
             NavigationManager.NavigateTo("/403");
         }
-        _editorTitle = Localizer.Get("DB explorer") + ": " + ProviderName;
-
+        _opts.EditorTitle = Localizer.Get("DB explorer") + ": " + ProviderName;
+        _opts.EnableTablesViewsPanel = true;
+        _opts.DefaultPanel = _queryEditor.EditorPanel.TablesViews;
     }
 
     public void Dispose()
