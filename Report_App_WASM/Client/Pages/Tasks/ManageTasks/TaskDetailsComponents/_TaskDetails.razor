@@ -43,18 +43,15 @@
 @code {
 
     [Parameter] public ScheduledTaskDto? Item { get; set; }
-
     [Parameter] public List<ScheduledTaskQueryDto>? ItemToDelete { get; set; }
-
     [Parameter] public bool ChangePending { get; set; }
-
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
     IEnumerable<ScheduledTaskQueryDto>? _elements = new List<ScheduledTaskQueryDto>();
     SimpleGrid<ScheduledTaskQueryDto>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 5 };
     SimpleGridFieldsContent? _translations = default!;
-    DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
+    DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true };
     private bool _disable;
 
     protected override void OnParametersSet()
