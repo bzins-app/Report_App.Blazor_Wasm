@@ -87,7 +87,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var emailPrefix = await _context.SystemParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                 var subject = emailPrefix + " - " + _header.ProviderName + ": " + _header.TaskName;
 
-                List<Attachment> listAttach = new();
+                List<Attachment>? listAttach = new();
                 listAttach.AddRange(_fileResults.Select(a =>
                     new Attachment(new MemoryStream(a.Content), a.FileName, a.ContentType)).ToList());
 
@@ -343,9 +343,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
             if (excelMultipleTabs.Any())
             {
-                fName = string.IsNullOrEmpty(headerParam?.ExcelFileName)
+                fName = string.IsNullOrEmpty(headerParam?.SpecificFileNaming)
                     ? $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}"
-                    : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
+                    : $"{headerParam.SpecificFileNaming.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
 
                 MemoryFileContainer fileCreated;
                 if (!headerParam!.UseAnExcelTemplate)

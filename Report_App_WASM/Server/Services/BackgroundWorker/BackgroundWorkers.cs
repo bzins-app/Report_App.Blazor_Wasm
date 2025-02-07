@@ -39,7 +39,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         List<Attachment>? attachment = null)
 
     {
-        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment));
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment ?? null));
     }
 
     public void DeleteFile(string filePath)
