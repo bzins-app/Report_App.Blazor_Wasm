@@ -49,6 +49,7 @@
                                     }
                                 </MudSelect>
                             }
+                            <MudTextField @bind-Value="Item.LastRunDateTime" Disabled Label="@Localizer.Get("Lastest run")" InputType="InputType.DateTimeLocal" />
                             @if (Item.Type == TaskType.Report)
                             {
                                 <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")" />
