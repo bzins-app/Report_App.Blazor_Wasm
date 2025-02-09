@@ -55,7 +55,7 @@
         @* Main *@
         @if (_openTables && Options.EnableTablesViewsPanel && _typeDbTask != TypeDb.OlebDb)
         {
-            <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:50%;overflow:auto;resize:horizontal;">
+            <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 50%, 600px);overflow:auto;resize:horizontal;">
                 <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
                     <MudText>@Localizer.Get("Tables view")</MudText>
                     <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Inherit" OnClick="ToogleTablesView" />
@@ -70,7 +70,7 @@
         }
         @if (_openQueryParameters && Options.EnableQueryParametersPanel && _typeDbTask != TypeDb.OlebDb)
         {
-            <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:60%;overflow:auto;resize:horizontal;">
+            <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 60%, 1000px);overflow:auto;resize:horizontal;">
                 <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
                     <MudText>@Localizer.Get("Query parameters")</MudText>
                     <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Inherit" OnClick="ToogleQueryParametersView" />
@@ -85,7 +85,7 @@
                     <MudTable Items="@GlobalQueryParameters" Dense="true" Class="mud-background-gray stack-adorner" Bordered="true" Hover="true" Height="100%" Elevation="25" Style="width:auto">
                         <HeaderContent>
                             <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Display name")</MudTh>
-                            <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Parameter identifier")</MudTh>
+                            <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Identifier")</MudTh>
                             <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Data type")  @Localizer.Get("Value")</MudTh>
                             @if (Options.DisplayAllParametersForQueryParmaters)
                             {
@@ -96,7 +96,7 @@
                             <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DisplayName</MudTd>
                             <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ParameterIdentifier</MudTd>
                             <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
-                                <MudStack Row>
+                                <MudStack Row Spacing="1">
                                      @context.ValueType
                                     @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
                                     {
@@ -126,7 +126,7 @@
                             @if (Options.DisplayAllParametersForQueryParmaters)
                             {
                                 <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
-                                    <MudStack Row>
+                                    <MudStack Spacing="0">
                                         <MudSwitch Value="context.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" Disabled Size="Size.Small" />
                                         <MudSwitch Value="context.HideParameter" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" Disabled Size="Size.Small" />
                                     </MudStack>
@@ -145,7 +145,7 @@
                     <HeaderContent>
                         <MudTh Style="text-wrap-mode: nowrap;"></MudTh>
                         <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Display name")</MudTh>
-                        <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Parameter identifier")</MudTh>
+                        <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Identifier")</MudTh>
                         <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Data type")  @Localizer.Get("Value")</MudTh>
                         @if (Options.DisplayAllParametersForQueryParmaters)
                         {
@@ -154,7 +154,7 @@
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd>
-                            <MudStack Row>
+                            <MudStack Row Spacing="1">
                                 <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Size="Size.Small" />
                                 <MudIconButton Icon="@Icons.Material.Outlined.Edit" Color="Color.Default" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" Size="Size.Small" />
                             </MudStack>
@@ -162,7 +162,7 @@
                         <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DisplayName</MudTd>
                         <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ParameterIdentifier</MudTd>
                         <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
-                            <MudStack Row>
+                            <MudStack Row Spacing="1">
                                  @context.ValueType
                                 @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
                                 {
@@ -192,7 +192,7 @@
                         @if (Options.DisplayAllParametersForQueryParmaters)
                         {
                             <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
-                                <MudStack Row>
+                                <MudStack Spacing="0">
                                     <MudSwitch Value="context.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" Disabled Size="Size.Small" />
                                     <MudSwitch Value="context.HideParameter" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" Disabled Size="Size.Small" />
                                 </MudStack>
@@ -205,7 +205,7 @@
 
         @if (_openEditorParameters)
         {
-            <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:40%;overflow:auto;resize:horizontal;">
+            <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 40%, 400px);overflow:auto;resize:horizontal;">
                 <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
                     <MudText>@Localizer.Get("Parameters")</MudText>
                     <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" Size="Size.Small" OnClick="ToogleParameters" />
@@ -345,7 +345,7 @@
     [Parameter] public long DataProviderId { get; set; }
     [Parameter] public string QueryText { get; set; } = null!;
     [Parameter] public EventCallback<string> QueryTextChanged { get; set; }
-    [Parameter] public QueryEditorOptions Options { get; set; } = new QueryEditorOptions();
+    [Parameter] public QueryEditorOptions Options { get; set; } = new();
     [Parameter] public List<QueryCommandParameter> GlobalQueryParameters { get; set; } = new();
     [Parameter] public List<QueryCommandParameter> QueryParameters { get; set; } = new();
     [Parameter] public EventCallback<List<QueryCommandParameter>> QueryParametersChanged { get; set; }
@@ -402,7 +402,7 @@
     private bool _isDarkMode;
     private AceEditorOptions _opt = new();
     private TypeDb _typeDbTask;
-    private MudTable<Dictionary<string, object>.ValueCollection>? _table = new MudTable<Dictionary<string, object>.ValueCollection>();
+    private MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     private List<Dictionary<string, object>>? _values;
     private int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }

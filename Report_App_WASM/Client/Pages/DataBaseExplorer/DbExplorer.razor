@@ -11,10 +11,10 @@
 
 @code {
 
-    [Parameter] public string ProviderName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = null!;
     [Parameter] public long DataProviderId { get; set; }
     private string? Query { get; set; } 
-    private _queryEditor.QueryEditorOptions _opts = new _queryEditor.QueryEditorOptions();
+    private _queryEditor.QueryEditorOptions _opts = new();
 
     protected override async Task OnParametersSetAsync()
     {

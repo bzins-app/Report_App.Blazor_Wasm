@@ -116,14 +116,14 @@
     [Parameter] public DataProviderDto? Item { get; set; }
 
     [Parameter] public CrudAction Action { get; set; }
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string _deletionValidation = null!;
     private DatabaseConnectionDto DbCon { get; set; } = new() { TypeDb = TypeDb.SqlServer };
     private string _connectionTestResult = null!;
     private List<SelectItemDataproviderInfo> _activities = new();
     private ApplicationConstantsValues? _appConst;
     private bool _loading;
-    SqlServerParameters sqlServerParameters = new SqlServerParameters();
+    SqlServerParameters sqlServerParameters = new();
 
 
     private void Cancel()
