@@ -28,7 +28,7 @@
 @code {
 
     [Parameter] public long QueryId { get; set; }
-    [Parameter] public string ProviderName { get; set; } = default!;
+    [Parameter] public string ProviderName { get; set; } = null!;
     [Parameter] public long DataProviderId { get; set; }
 
     private StoredQueryDto Item = null!;

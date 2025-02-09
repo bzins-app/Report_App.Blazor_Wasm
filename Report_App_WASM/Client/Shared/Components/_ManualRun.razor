@@ -73,7 +73,7 @@
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
 
     public bool SendForReportRecipients { get; set; }
-    private MudForm _form = default!;
+    private MudForm _form = null!;
 
     [Parameter] public List<string>? UserEmail { get; set; }
 

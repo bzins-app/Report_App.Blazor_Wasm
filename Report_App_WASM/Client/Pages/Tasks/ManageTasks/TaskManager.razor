@@ -99,8 +99,8 @@
 
 @code
 {
-    [Parameter] public string TypeTask { get; set; } = default!;
-    [Parameter] public string ProviderName { get; set; } = default!;
+    [Parameter] public string TypeTask { get; set; } = null!;
+    [Parameter] public string ProviderName { get; set; } = null!;
     [Parameter] public long? DataProviderId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? Page { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? PageSize { get; set; }

@@ -169,7 +169,7 @@ public class DataCrudController : ControllerBase, IDisposable
         if (targetInfo != null) return targetInfo;
 
         var connections = new List<DatabaseConnection>
-            { new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer } };
+            { new() { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer } };
 
         targetInfo = new DataProvider
         {

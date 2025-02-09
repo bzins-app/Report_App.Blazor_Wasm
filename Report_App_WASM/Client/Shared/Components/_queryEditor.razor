@@ -345,7 +345,7 @@
     [Parameter] public long DataProviderId { get; set; }
     [Parameter] public string QueryText { get; set; } = null!;
     [Parameter] public EventCallback<string> QueryTextChanged { get; set; }
-    [Parameter] public QueryEditorOptions Options { get; set; } = new QueryEditorOptions();
+    [Parameter] public QueryEditorOptions Options { get; set; } = new();
     [Parameter] public List<QueryCommandParameter> GlobalQueryParameters { get; set; } = new();
     [Parameter] public List<QueryCommandParameter> QueryParameters { get; set; } = new();
     [Parameter] public EventCallback<List<QueryCommandParameter>> QueryParametersChanged { get; set; }
@@ -402,7 +402,7 @@
     private bool _isDarkMode;
     private AceEditorOptions _opt = new();
     private TypeDb _typeDbTask;
-    private MudTable<Dictionary<string, object>.ValueCollection>? _table = new MudTable<Dictionary<string, object>.ValueCollection>();
+    private MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
     private List<Dictionary<string, object>>? _values;
     private int[] _pageSizeOptions = { 10, 20, 50, 100 };
     private string? _queryTestResult { get; set; }

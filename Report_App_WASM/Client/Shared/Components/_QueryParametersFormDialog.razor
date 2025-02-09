@@ -56,7 +56,7 @@
     [Parameter] public QueryCommandParameter _param { get; set; } = new();
     [Parameter] public bool UseAllParameters { get; set; } = true;
 
-    private MudForm _form = default!;
+    private MudForm _form = null!;
 
     private void Cancel()
     {

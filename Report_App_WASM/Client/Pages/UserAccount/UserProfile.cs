@@ -8,5 +8,5 @@ public class UserProfile
     public string? Password { get; set; }
     public string? ConfirmPassword { get; set; }
     public DateTimeOffset? LockoutEnd { get; set; }
-    public IdentityDefaultOptions Options { get; set; } = default!;
+    public IdentityDefaultOptions Options { get; set; } = null!;
 }

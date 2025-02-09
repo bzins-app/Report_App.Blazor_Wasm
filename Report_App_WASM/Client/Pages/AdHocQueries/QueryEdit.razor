@@ -3,11 +3,8 @@
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
-@using Blazor.AceEditorJs
 @using MudBlazor.Utilities
-@using Report_App_WASM.Client.Pages.DataBaseExplorer
 @using Report_App_WASM.Shared.Extensions
-@using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -118,7 +115,7 @@
     string _tagValue = string.Empty;
     List<string> _AvailableTags = new();
 
-    private _queryEditor.QueryEditorOptions _opts = new _queryEditor.QueryEditorOptions();
+    private _queryEditor.QueryEditorOptions _opts = new();
 
     protected override async Task OnInitializedAsync()
     {

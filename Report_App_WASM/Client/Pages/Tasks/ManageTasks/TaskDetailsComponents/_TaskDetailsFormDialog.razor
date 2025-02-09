@@ -1,8 +1,4 @@
-﻿@using Blazor.AceEditorJs
-@using Report_App_WASM.Client.Pages.DataBaseExplorer
-@using Report_App_WASM.Shared.Extensions
-@using Report_App_WASM.Shared.RemoteQueryParameters
-@inject HttpClient Http
+﻿@using Report_App_WASM.Shared.Extensions
 @inject IDialogService DialogService
 
 
@@ -154,7 +150,7 @@
 
     [Parameter] public CrudAction Action { get; set; }
 
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string? _deletionValidation;
 
     private ScheduledTaskQueryParameters _param = new();
@@ -166,7 +162,7 @@
 
     private List<QueryCommandParameter> _queryParameters = new();
     private List<QueryCommandParameter> _globalQueryParameters = new();
-    private _queryEditor.QueryEditorOptions _opts = new _queryEditor.QueryEditorOptions();
+    private _queryEditor.QueryEditorOptions _opts = new();
   
     private string? _pKName;
 
