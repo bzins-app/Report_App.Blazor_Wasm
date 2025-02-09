@@ -49,7 +49,7 @@
             }
             <div class="d-flex align-center justify-space-between">
                 <div>
-                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary">
+                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunQuery" Variant="Variant.Filled" Color="Color.Primary">
                         <LoadingContent>
                             <MudText>@Localizer.Get("Processing")</MudText>
                         </LoadingContent>
@@ -196,6 +196,7 @@
     string? _sortingDirection;
     private int NbrColumns;
     private int _rowsPerPage = 100;
+    string _queryToRun;
 
     protected override async Task OnInitializedAsync()
     {
@@ -304,7 +305,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (string.IsNullOrEmpty(Item.Query))
+        else if (string.IsNullOrEmpty(_queryToRun))
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -321,7 +322,7 @@
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = _queryToRun, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true, QueryId = QueryId, ProviderName = Item.ProviderName, PivotTableNbrColumns = parameters.PivotTableNbrOfColumnsMax, QueryName = Item.QueryName };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -390,8 +391,9 @@
         await _pvt?.LoadConfig(config)!;
     }
 
-    private async Task ConfirmText()
+    private async Task RunQuery()
     {
+        _queryToRun = Item.Query;
         _hasTotal = false;
         if (param.Count > 0)
         {
@@ -427,7 +429,7 @@
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (string.IsNullOrEmpty(Item.Query))
+        else if (string.IsNullOrEmpty(_queryToRun))
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -444,7 +446,7 @@
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = _queryToRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements, ColumSorting = _sorting, SortingDirection = _sortingDirection };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -453,6 +455,7 @@
                     var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
                     if (result!.Success)
                     {
+                        _loading = false;
                         _values = result.Value;
                         _errorMessage = string.Empty;
                         if (!_hasTotal && parameters.CalculateTotalItems)
