@@ -14,7 +14,7 @@
 }
 
 <div style="height:80vh">
-    <MudStack Style="overflow-x:auto;height:100%">
+    <MudStack Style="overflow-x:auto;height:100%;padding:2px">
 
         <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
 
@@ -77,13 +77,13 @@
                         }
                         <MudItem>
                             <MudIconButton Variant="Variant.Outlined"
-                                           OnClick="@(SaveConfiguration)"
-                                           Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                            OnClick="@(SaveConfiguration)"
+                            Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
                         </MudItem>
                         <MudItem>
                             <MudMenu Variant="Variant.Outlined"
-                                     Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" @ref="_menu"
-                                     Dense="true">
+                            Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" @ref="_menu"
+                            Dense="true">
                                 <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
                                     @foreach (var config in _userConfigs)
                                     {
@@ -110,8 +110,8 @@
                         </MudItem>
                         <MudItem>
                             <MudIconButton Variant="Variant.Outlined"
-                                           OnClick="@(ExtractElements)"
-                                           Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                            OnClick="@(ExtractElements)"
+                            Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
                         </MudItem>
                     </MudGrid>
                 </div>
@@ -169,9 +169,9 @@
 
 @code {
 
-    [Parameter] public long QueryId { get; set; }
+    [Parameter] public required StoredQueryDto Item { get; set; }
 
-    private StoredQueryDto? Item;
+    private long QueryId;
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam;
     bool _formParamValidated = true;
@@ -202,8 +202,7 @@
         var user = await AuthenticationStateProvider.GetUserInfo();
         _userName = user?.UserName;
 
-        var uriAction = $"GetQueryStore?queryId={QueryId}";
-        Item = await DataService.GetUniqueValue(Item, uriAction);
+        QueryId = Item.Id;
 
         if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
         {

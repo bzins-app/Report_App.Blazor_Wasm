@@ -37,7 +37,12 @@
                     <MudTextField @bind-Value="_param.Value" Label="@Localizer.Get("Enter value")" InputType="InputType.Number" Required></MudTextField>
                 }
             }
-            <MudSwitch T="bool" @bind-Value="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" />
+            @if (UseAllParameters)
+            {
+                <MudSwitch T="bool" @bind-Value="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary" />
+                <MudSwitch T="bool" @bind-Value="_param.HideParameter" Label="@Localizer.Get("Required")" Color="Color.Primary" />
+            }
+
         </MudForm>
     </DialogContent>
     <DialogActions>
@@ -49,6 +54,7 @@
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
     [Parameter] public QueryCommandParameter _param { get; set; } = new();
+    [Parameter] public bool UseAllParameters { get; set; } = true;
 
     private MudForm _form = default!;
 

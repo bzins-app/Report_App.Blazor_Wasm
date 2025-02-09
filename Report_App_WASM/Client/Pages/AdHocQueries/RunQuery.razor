@@ -18,19 +18,20 @@
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
-        <_ExcecuteQuery QueryId="@QueryId"/>
+        @if (Item != null)
+        {
+            <_ExcecuteQuery Item="@Item" />
+        }
     </MudCardContent>
 </MudCard>
 
 @code {
 
     [Parameter] public long QueryId { get; set; }
-
     [Parameter] public string ProviderName { get; set; } = default!;
-
     [Parameter] public long DataProviderId { get; set; }
 
-    private StoredQueryDto? Item;
+    private StoredQueryDto Item = null!;
 
 
     protected override async Task OnInitializedAsync()
