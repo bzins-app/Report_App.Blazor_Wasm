@@ -82,6 +82,7 @@
 
         if (!string.IsNullOrEmpty(customFilters))
         {
+            url += $"$count=true";
             if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
             if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
             if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
