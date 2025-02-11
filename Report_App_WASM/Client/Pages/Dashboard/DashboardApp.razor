@@ -25,7 +25,7 @@
             <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
             <div>
                 <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of tasks")</MudText>
-                @if (_metrics.NbrOfTasksExcecutedToday > 0)
+                @if (_metrics.NbrOfTasksExcecutedToday == 0)
                 {
                     <MudLink Typo="Typo.h5" OnClick="DisplayDayLogs">@_metrics.NbrOfTasksExcecutedToday.ToString("N0")</MudLink>
                 }
@@ -303,7 +303,7 @@
     private async Task DisplayErrorLogs()
     {
         var _pageSize = _metrics.NbrTasksInError <= 5 ? 5 : _metrics.NbrTasksInError <= 10 ? 10 : 20;
-        var _from = DateTime.Now.Date;
+        var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
         var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from };
         await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Tasks logs"), parameters, options);
@@ -311,7 +311,7 @@
 
     private async Task DisplayDayLogs()
     {
-        var _from = DateTime.Now.Date;
+        var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
         var parameters = new DialogParameters { ["From"] = _from };
         await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Error logs"), parameters, options);
