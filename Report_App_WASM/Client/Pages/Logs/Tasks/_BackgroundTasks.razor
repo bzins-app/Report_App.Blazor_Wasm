@@ -173,22 +173,22 @@
 
             if (!string.IsNullOrEmpty(customFilters))
             {
-                customFilters += $" and StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss}";
+                customFilters += $" and StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
             }
             else
             {
-                customFilters = $"StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss}";
+                customFilters = $"StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
             }
         }
         if (To.HasValue)
         {
             if (!string.IsNullOrEmpty(customFilters))
             {
-                customFilters += $" and EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss}";
+                customFilters += $" and EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
             }
             else
             {
-                customFilters = $"EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss}";
+                customFilters = $"EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
             }
         }
     }
