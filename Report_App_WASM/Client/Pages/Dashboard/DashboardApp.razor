@@ -25,7 +25,7 @@
             <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
             <div>
                 <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of tasks")</MudText>
-                @if (_metrics.NbrOfTasksExcecutedToday == 0)
+                @if (_metrics.NbrOfTasksExcecutedToday > 0)
                 {
                     <MudLink Typo="Typo.h5" OnClick="DisplayDayLogs">@_metrics.NbrOfTasksExcecutedToday.ToString("N0")</MudLink>
                 }
