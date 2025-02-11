@@ -49,7 +49,7 @@
                                     }
                                 </MudSelect>
                             }
-                            <MudTextField Value="Item.LastRunDateTime" Disabled Label="@Localizer.Get("Lastest run")"  />
+                            <MudTextField Value="Item.LastRunDateTime.ToString()"  Disabled Label="@Localizer.Get("Lastest run")"  />
                             @if (Item.Type == TaskType.Report)
                             {
                                 <MudNumericField @bind-Value="Item.ReportsRetentionInDays" Label="@Localizer.Get("Archiving duration in days")" />
@@ -215,6 +215,9 @@
                     <Report_App_WASM.Client.Pages.Tasks.ManageTasks.TaskEmailRecipients._TaskRecipients Item="@Item" @bind-changePending="@_changesToSave" />
                 </MudTabPanel>
             }
+            <MudTabPanel Text="@Localizer.Get("Logs")">
+                <Report_App_WASM.Client.Pages.Logs.Tasks._BackgroundTasks ScheduledTaskId="@Item.ScheduledTaskId" PageSize="10"/>
+            </MudTabPanel>
         </MudTabs>
     </MudCardContent>
 </MudCard>

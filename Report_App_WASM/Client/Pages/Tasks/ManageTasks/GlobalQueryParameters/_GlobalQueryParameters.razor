@@ -20,7 +20,7 @@
                 <MudTd Style="min-width:200px">
                     <MudTextField @bind-Value="@context.ParameterIdentifier" @bind-Value:after="UpdateParameters" T="string" Label="@Localizer.Get("Parameter identifier")" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd Style="width:150px">
+                <MudTd Style="min-width:200px">
                     <MudField Label="@Localizer.Get("Data type")" Margin="Margin.Dense"> @Localizer.Get(context.ValueType.ToString())</MudField>
                 </MudTd>
                 <MudTd>
@@ -58,7 +58,7 @@
                     <MudSwitch @bind-Value="@context.Required" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Required")" Color="Color.Primary" />
                 </MudTd>
                 <MudTd>
-                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Hide parameter")" Color="Color.Primary" />
+                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Hide")" Color="Color.Primary" />
                 </MudTd>
             </RowTemplate>
         </MudTable>
