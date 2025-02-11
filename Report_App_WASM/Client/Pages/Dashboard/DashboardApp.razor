@@ -306,7 +306,7 @@
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
         var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from };
-        await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Tasks logs"), parameters, options);
+        await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Error logs"), parameters, options);
     }
 
     private async Task DisplayDayLogs()
@@ -314,7 +314,7 @@
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
         var parameters = new DialogParameters { ["From"] = _from };
-        await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Error logs"), parameters, options);
+        await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Tasks logs"), parameters, options);
     }
 
 }
