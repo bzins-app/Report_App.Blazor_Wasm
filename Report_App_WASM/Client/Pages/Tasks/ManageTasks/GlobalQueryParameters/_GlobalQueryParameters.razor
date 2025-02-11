@@ -6,7 +6,7 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small" OnClick="OpenCreateDialog">@Localizer.Get("Add a parameter")</MudButton>
     </MudCardContent>
     <MudCardContent Style="overflow:auto;height:100%">
-        <MudTable Items="_parameters.OrderBy(a => a.DisplaySequence)" Hover="true" Dense HorizontalScrollbar Height="50vh">
+        <MudTable Items="_parameters.OrderBy(a => a.DisplaySequence)" Hover="true" Dense HorizontalScrollbar Height="30vh">
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Delete")" Style="width:10px">
                     <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Class="pa-2" />
