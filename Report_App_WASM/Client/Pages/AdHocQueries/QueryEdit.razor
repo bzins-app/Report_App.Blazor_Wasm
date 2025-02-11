@@ -30,15 +30,15 @@
             <MudForm FieldChanged="FormChanged" @ref="@_form">
                 <MudGrid>
                     <MudItem sm="12" lg="6">
-                        <MudGrid>
+                        <MudGrid Spacing="1">
                             <MudItem>
-                                <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width: 200px"/>
+                                <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width: 300px"/>
                             </MudItem>
                             <MudItem>
                                 @if (_activities.Any())
                                 {
                                     <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
-                                    SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 200px"
+                                    SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 250px"
                                     Required>
                                         @foreach (var value in _activities)
                                         {
@@ -47,7 +47,7 @@
                                     </MudSelect>
                                 }
                             </MudItem>
-                            <MudItem>
+                            <MudItem >
                                 <MudSwitch @bind-Value="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
                             </MudItem>
                             <MudItem>
@@ -56,10 +56,10 @@
                             <MudItem>
                                 <MudSwitch @bind-Value="parameters.PivotTableAsDefaultView" Label="@Localizer.Get("Use pivot table as default view?")" Color="Color.Primary" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
-                            <MudItem>
+                            <MudItem Style="min-width: 300px">
                                 <MudNumericField @bind-Value="parameters.PivotTableNbrOfColumnsMax" Label="@Localizer.Get("Pivot Table: nbr max of columns")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
-                            <MudItem>
+                            <MudItem Style="min-width: 300px">
                                 <MudNumericField @bind-Value="parameters.PivotTableMaxRowsFetched" Label="@Localizer.Get("Pivot Table: nbr max of rows")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
                         </MudGrid>
@@ -88,7 +88,7 @@
             </MudForm>
             <MudStack Row>
                 <MudSpacer />
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="RenderQuery">@Localizer.Get("Simulate rendering")</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="RenderQuery" Size="Size.Small"><MudText>@Localizer.Get("Simulate rendering")</MudText></MudButton>
             </MudStack>
         }
         <MudPaper Outlined="true" Height="70vh">
