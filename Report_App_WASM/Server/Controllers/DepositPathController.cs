@@ -35,7 +35,7 @@ public class DepositPathController : ControllerBase, IDisposable
         {
             var useFtpProtocol = await _context.FileStorageConfiguration
                 .Where(a => a.FileStorageConfigurationId == value.EntityValue.SftpConfigurationId)
-                .Select(a => a.ConfigurationType == FileStorageConfigurationType.FTP)
+                .Select(a => a.ConfigurationType == FileStorageConfigurationType.FTP||a.ConfigurationType == FileStorageConfigurationType.FTPs)
                 .FirstOrDefaultAsync();
 
             if (useFtpProtocol)

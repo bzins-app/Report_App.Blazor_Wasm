@@ -107,7 +107,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                             });
                         else
                             await _context.AddAsync(new TaskStepLog
-                                { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
+                            { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
                     }
             }
         }
@@ -189,6 +189,23 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         {
                             TaskLogId = _taskId,
                             Step = "File FTP drop",
+                            Info = config.FilePath,
+                            RelatedLogType = LogType.ReportGenerationLog,
+                            RelatedLogId = filecreationRemote.Id
+                        });
+                    }
+                    else if (config.FileStorageConfiguration.ConfigurationType == FileStorageConfigurationType.FTPs)
+                    {
+                        filecreationRemote.FileGenerationType = FileGenerationType.Ftps;
+                        completePath = "FTPs Host:" + config.FileStorageConfiguration.Host + " Path:" + config.FilePath;
+                        using var ftp = new FtpService(_context);
+                        resultDeposit = await ftp.UploadFileAsync(
+                            config.FileStorageConfiguration.FileStorageConfigurationId,
+                            localfilePath, config.FilePath, fName, config.TryToCreateFolder);
+                        await _context.AddAsync(new TaskStepLog
+                        {
+                            TaskLogId = _taskId,
+                            Step = "File FTPs drop",
                             Info = config.FilePath,
                             RelatedLogType = LogType.ReportGenerationLog,
                             RelatedLogId = filecreationRemote.Id
@@ -312,7 +329,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         }
 
                         excelMultipleTabs.Add(new ExcelCreationDatatable
-                            { TabName = tabName, ExcelTemplate = template, Data = d.Value });
+                        { TabName = tabName, ExcelTemplate = template, Data = d.Value });
                         continue;
                     }
                 }
@@ -338,7 +355,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
                 _fileResults.Add(fileCreated);
                 await _context.AddAsync(new TaskStepLog
-                    { TaskLogId = _taskId, Step = "File created", Info = fName });
+                { TaskLogId = _taskId, Step = "File created", Info = fName });
             }
 
             if (excelMultipleTabs.Any())
@@ -378,7 +395,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 _fileResults.Add(fileCreated);
                 excelMultipleTabs.Clear();
                 await _context.AddAsync(new TaskStepLog
-                    { TaskLogId = _taskId, Step = "File created", Info = fName });
+                { TaskLogId = _taskId, Step = "File created", Info = fName });
             }
 
             _fetchedData.Clear();

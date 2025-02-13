@@ -25,13 +25,14 @@ public enum FileGenerationType
     LocalCopy = 10,
     DirectToFolder = 20,
     Ftp = 30,
-    Sftp = 40
+    Sftp = 40,
+    Ftps = 30,
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FileStorageConfigurationType
 {
-    SMB = 10,
+   // SMB = 10,
     FTP = 20,
     FTPs = 30,
     SFTP = 80
