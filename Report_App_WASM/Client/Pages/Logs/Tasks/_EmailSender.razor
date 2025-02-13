@@ -29,7 +29,11 @@
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EmailTitle)" Title="@Localizer.Get("Email title")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RecipientList)" Title="@Localizer.Get("List of recipient")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.NbrOfRecipients)" Title="@Localizer.Get("Nbr of recipients")" Sortable="true" />
+                    @if (DisplayEmails)
+                    {
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RecipientList)" Title="@Localizer.Get("List of recipient")" Sortable="true"/>
+                    }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true"/>
                 </SimpleGrid>
             </div>
@@ -50,6 +54,7 @@
     [Parameter] public DateTime? From { get; set; }
     [Parameter] public DateTime? To { get; set; }
     [Parameter] public int? PageSize { get; set; }
+    [Parameter] public bool DisplayEmails { get; set; } = true;
     new PaginationState _pagination = new() { ItemsPerPage = 20 };
     string customFilters = string.Empty;
 

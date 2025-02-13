@@ -415,7 +415,7 @@
         var _pageSize = _metrics.TasksInError <= 5 ? 5 : _metrics.TasksInError <= 10 ? 10 : 20;
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
-        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from };
+        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from, ["DisplayEmails"]=false};
         await DialogService.ShowAsync<_EmailSender>(Localizer.Get("Error logs"), parameters, options);
     }
 
@@ -423,7 +423,7 @@
     {
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
-        var parameters = new DialogParameters { ["From"] = _from };
+        var parameters = new DialogParameters { ["From"] = _from, ["DisplayEmails"] = false };
         await DialogService.ShowAsync<_EmailSender>(Localizer.Get("Emails logs"), parameters, options);
     }
 
