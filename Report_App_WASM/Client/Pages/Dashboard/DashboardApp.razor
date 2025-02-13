@@ -42,8 +42,8 @@
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                             <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5" Color="Color.Error" OnClick="DisplayTasksErrorLogs">@_metrics.TasksInError.ToString("N0")</MudLink>
-                            <MudText Typo="Typo.subtitle2" Color="Color.Error" Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("Error") : Localizer.Get("Errors"))</MudText>
+                            <MudLink Typo="Typo.h5"  OnClick="DisplayTasksErrorLogs">@_metrics.TasksInError.ToString("N0")</MudLink>
+                            <MudText Typo="Typo.subtitle2"  Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("Error") : Localizer.Get("Errors"))</MudText>
                         </MudStack>
                     }
                     else
@@ -79,8 +79,8 @@
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                             <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5" Color="Color.Error" OnClick="DisplayEmailsErrorLogs">@_metrics.EmailsInError.ToString("N0")</MudLink>
-                            <MudText Typo="Typo.subtitle2" Color="Color.Error" Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                            <MudLink Typo="Typo.h5"  OnClick="DisplayEmailsErrorLogs">@_metrics.EmailsInError.ToString("N0")</MudLink>
+                            <MudText Typo="Typo.subtitle2"  Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
                     }
                     else
@@ -116,8 +116,8 @@
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                             <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5" Color="Color.Error" OnClick="DisplayUploadErrorLogs">@_metrics.FileUploadsInError.ToString("N0")</MudLink>
-                            <MudText Typo="Typo.subtitle2" Color="Color.Error" Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                            <MudLink Typo="Typo.h5" OnClick="DisplayUploadErrorLogs">@_metrics.FileUploadsInError.ToString("N0")</MudLink>
+                            <MudText Typo="Typo.subtitle2"  Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
                     }
                     else
