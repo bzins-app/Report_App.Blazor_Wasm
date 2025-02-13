@@ -2643,8 +2643,8 @@
   <data name="Source" xml:space="preserve">
     <value>Quelle</value>
   </data>
-  <data name="Data providers" xml:space="preserve">
-    <value>Datenanbieter</value>
+  <data name="Data link" xml:space="preserve">
+    <value>Datenverbindung</value>
   </data>
   <data name="Uploads logs" xml:space="preserve">
     <value>Protokolle der Uploads</value>
