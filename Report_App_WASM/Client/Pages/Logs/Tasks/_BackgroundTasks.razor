@@ -152,11 +152,11 @@
 
             if (!string.IsNullOrEmpty(customFilters))
             {
-                customFilters += $" and Error eq {Error.Value}";
+                customFilters += $" and Error eq {Error.Value.ToString().ToLower()}";
             }
             else
             {
-                customFilters = $"Error eq {Error.Value}";
+                customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
             }
         }
         if (ScheduledTaskId.HasValue)
