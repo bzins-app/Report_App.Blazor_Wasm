@@ -42,7 +42,7 @@
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                             <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5" Color="Color.Error" Underline="Underline.Always" OnClick="DisplayTasksErrorLogs">@_metrics.TasksInError.ToString("N0")</MudLink>
+                            <MudLink Typo="Typo.h5" Color="Color.Error" OnClick="DisplayTasksErrorLogs">@_metrics.TasksInError.ToString("N0")</MudLink>
                             <MudText Typo="Typo.subtitle2" Color="Color.Error" Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("Error") : Localizer.Get("Errors"))</MudText>
                         </MudStack>
                     }
@@ -79,7 +79,7 @@
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                             <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5" Color="Color.Error" Underline="Underline.Always" OnClick="DisplayEmailsErrorLogs">@_metrics.EmailsInError.ToString("N0")</MudLink>
+                            <MudLink Typo="Typo.h5" Color="Color.Error" OnClick="DisplayEmailsErrorLogs">@_metrics.EmailsInError.ToString("N0")</MudLink>
                             <MudText Typo="Typo.subtitle2" Color="Color.Error" Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
                     }
@@ -116,7 +116,7 @@
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                             <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5" Color="Color.Error" Underline="Underline.Always" OnClick="DisplayUploadErrorLogs">@_metrics.FileUploadsInError.ToString("N0")</MudLink>
+                            <MudLink Typo="Typo.h5" Color="Color.Error" OnClick="DisplayUploadErrorLogs">@_metrics.FileUploadsInError.ToString("N0")</MudLink>
                             <MudText Typo="Typo.subtitle2" Color="Color.Error" Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
                     }
@@ -432,7 +432,7 @@
         var _pageSize = _metrics.TasksInError <= 5 ? 5 : _metrics.TasksInError <= 10 ? 10 : 20;
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
-        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from };
+        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from};
         await DialogService.ShowAsync<_FileCreation>(Localizer.Get("Error logs"), parameters, options);
     }
 
@@ -440,7 +440,7 @@
     {
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
-        var parameters = new DialogParameters { ["From"] = _from };
+        var parameters = new DialogParameters { ["From"] = _from, ["OnlyUpload"] = true };
         await DialogService.ShowAsync<_FileCreation>(Localizer.Get("Uploads logs"), parameters, options);
     }
 }
