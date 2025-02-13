@@ -29,13 +29,11 @@ public class FtpService : IDisposable
     public async Task<IEnumerable<FtpListItem>?> ListAllFilesAsync(int sftpconfigurationId,
         string remoteDirectory = ".")
     {
-        var config = await GetSftpConfigurationAsync(sftpconfigurationId);
+        using var client = await getClient( sftpconfigurationId);
 
-        using var client =
-            new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
         try
         {
-            await client.Connect();
+            await client.AutoConnect();
             return await client.GetListing(remoteDirectory);
         }
         catch (Exception)
@@ -52,14 +50,11 @@ public class FtpService : IDisposable
     public async Task<SubmitResult> UploadFileAsync(long sftpconfigurationId, string localFilePath,
         string remoteDirectory, string fileName, bool tryCreateFolder = false)
     {
-        var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-
-        using var client =
-            new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
+        using var client = await getClient( sftpconfigurationId);
 
         try
         {
-            await client.Connect();
+            await client.AutoConnect();
             if (tryCreateFolder && !await client.DirectoryExists(remoteDirectory))
                 await client.CreateDirectory(remoteDirectory);
             var destinationPath = Path.Combine(remoteDirectory, fileName);
@@ -80,17 +75,29 @@ public class FtpService : IDisposable
         return new SubmitResult { Success = true, Message = "Ok" };
     }
 
-    public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath,
-        string localFilePath)
+
+    private async Task<AsyncFtpClient> getClient(long sftpconfigurationId)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
 
-        using var client =
-            new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
+        var client = new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
+        if (config.ConfigurationType == FileStorageConfigurationType.FTPs)
+        {
+            client.Config.EncryptionMode = FtpEncryptionMode.Auto;
+            client.Config.ValidateAnyCertificate = true;
+        }
+
+        return client;
+    }
+
+    public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath,
+        string localFilePath)
+    {
+        using var client = await getClient( sftpconfigurationId);
 
         try
         {
-            await client.Connect();
+            await client.AutoConnect();
             await client.DownloadFile(remoteFilePath, localFilePath);
             //  _logger.LogInformation($"Finished downloading file [{localFilePath}] from [{remoteFilePath}]");
         }
@@ -109,14 +116,11 @@ public class FtpService : IDisposable
 
     public async Task<SubmitResult> DeleteFileAsync(int sftpconfigurationId, string remoteFilePath)
     {
-        var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-
-        using var client =
-            new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
+        using var client = await getClient( sftpconfigurationId);
 
         try
         {
-            await client.Connect();
+            await client.AutoConnect();
             await client.DeleteFile(remoteFilePath);
             // _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
@@ -136,15 +140,12 @@ public class FtpService : IDisposable
     public async Task<SubmitResult> TestDirectoryAsync(int sftpconfigurationId, string? remoteFilePath,
         bool tryCreateFolder = false)
     {
-        var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-
-        using var client =
-            new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
+        using var client = await getClient( sftpconfigurationId);
 
         bool checkAcces;
         try
         {
-            await client.Connect();
+            await client.AutoConnect();
             checkAcces = await client.DirectoryExists(remoteFilePath);
             if (!checkAcces && tryCreateFolder)
             {
@@ -164,6 +165,6 @@ public class FtpService : IDisposable
         }
 
         return new SubmitResult
-            { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" };
+        { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" };
     }
 }

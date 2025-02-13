@@ -57,7 +57,7 @@
         {
             <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 50%, 600px);overflow:auto;resize:horizontal;">
                 <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
-                    <MudText>@Localizer.Get("Tables view")</MudText>
+                    <MudText>@Localizer.Get("Tables explorer")</MudText>
                     <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Inherit" OnClick="ToogleTablesView" />
                 </MudStack>
                 <MudStack Row="true">
@@ -97,7 +97,7 @@
                             <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ParameterIdentifier</MudTd>
                             <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
                                 <MudStack Row Spacing="1">
-                                     @context.ValueType
+                                    @context.ValueType
                                     @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
                                     {
 
@@ -163,7 +163,7 @@
                         <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.ParameterIdentifier</MudTd>
                         <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">
                             <MudStack Row Spacing="1">
-                                 @context.ValueType
+                                @context.ValueType
                                 @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
                                 {
 
@@ -250,7 +250,11 @@
                     <MudText Typo="Typo.subtitle1" Color="Color.Error">@_queryTestResult</MudText>
                 </MudPaper>
             }
-            <div style="@(!hasgrid || _error ? "height:60px;overflow:auto" : "height:100%;overflow:auto")">
+            @if(!string.IsNullOrEmpty(_tableHeader))
+            {
+                <MudText Typo="Typo.body1" Class="pa-2"><b>@_tableHeader</b></MudText>
+            }
+            <div style="@(!hasgrid || _error ? "height:65px;overflow:auto" : "height:100%;overflow:auto")">
                 <MudTable ServerData="ServerReload" Hover="true" Dense="true" FixedHeader="true" Height="calc(100% - 52px);" HorizontalScrollbar="true" @ref="_table" @bind-RowsPerPage="@_rowPerPage" Bordered="true" Style="display:contents" FixedFooter="true" Virtualize="NbrColumns > 25">
                     <HeaderContent>
                         @if (_values?.Any() == true)
@@ -323,21 +327,21 @@
 
 <style>
     .stack-main {
-        width: 100%;
-        height: @Height;
-        min-height: 310px;
-        min-width: 300px;
-        max-height: 90vh;
-        max-width: 100%;
-        /* resize: both;
-                        overflow: hidden; */
+    width: 100%;
+    height: @Height;
+    min-height: 310px;
+    min-width: 300px;
+    max-height: 90vh;
+    max-width: 100%;
+    /* resize: both;
+    overflow: hidden; */
     }
 
     .mud-badge {
-        font-size: 10px;
-        height: 11px;
-        min-width: 11px;
-        padding: 1px 4px;
+    font-size: 10px;
+    height: 11px;
+    min-width: 11px;
+    padding: 1px 4px;
     }
 </style>
 
@@ -399,6 +403,7 @@
     private string? QueryRun;
     private string _querySelectedCode = string.Empty;
     private CancellationTokenSource? _cts;
+    private CancellationTokenSource? _ctsTables;
     private bool _isDarkMode;
     private AceEditorOptions _opt = new();
     private TypeDb _typeDbTask;
@@ -665,6 +670,12 @@
             await _cts.CancelAsync();
     }
 
+    private async Task CancelCurrentTaskTable()
+    {
+        if (_ctsTables is not null)
+            await _ctsTables.CancelAsync();
+    }
+
     private async Task CancelQuery()
     {
         await CancelCurrentTask();
@@ -680,6 +691,7 @@
     private async Task DisplayTableValues(string tableName)
     {
         _loading = true;
+        await CancelCurrentTask();
         QueryRun = $"select * from {tableName}";
         hasgrid = true;
         _tableHeader = tableName;
@@ -717,9 +729,9 @@
     {
         _loadingTables = true;
         ItemsBaseStored.Clear();
-        await CancelCurrentTask();
-        _cts = new CancellationTokenSource();
-        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _cts.Token);
+        await CancelCurrentTaskTable();
+        _ctsTables = new CancellationTokenSource();
+        var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetTablesList?DataProviderId={DataProviderId}", _ctsTables.Token);
         if (data != null)
         {
             data.Values.ForEach(a => ItemsBaseStored.Add(new ListTablesViews { TablesColsInfo = a, hasDescription = data.HasDescription }));
@@ -735,9 +747,9 @@
         table.hasChildren = !table.hasChildren;
         if (table.hasChildren)
         {
-            await CancelCurrentTask();
-            _cts = new CancellationTokenSource();
-            var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={table.TablesColsInfo.Name}", _cts.Token);
+            await CancelCurrentTaskTable();
+            _ctsTables = new CancellationTokenSource();
+            var data = await Http.GetFromJsonAsync<DbTablesColList>($"{ApiControllers.RemoteDbApi}GetColumnList?DataProviderId={DataProviderId}&table={table.TablesColsInfo.Name}", _ctsTables.Token);
             if (data != null)
             {
                 table.ColNames = data.Values;
