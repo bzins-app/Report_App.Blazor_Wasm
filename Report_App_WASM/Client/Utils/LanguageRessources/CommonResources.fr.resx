@@ -2644,8 +2644,8 @@
   <data name="Source" xml:space="preserve">
     <value>Source</value>
   </data>
-  <data name="Data providers" xml:space="preserve">
-    <value>Fournisseurs de données</value>
+  <data name="Data link" xml:space="preserve">
+    <value>Liaison de données</value>
   </data>
   <data name="Uploads logs" xml:space="preserve">
     <value>Journaux des chargements</value>
