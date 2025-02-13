@@ -56,6 +56,7 @@
     [Parameter] public DateTime? From { get; set; }
     [Parameter] public DateTime? To { get; set; }
     [Parameter] public int? PageSize { get; set; }
+    [Parameter] public bool? OnlyUpload { get; set; }
     new PaginationState _pagination = new() { ItemsPerPage = 20 };
     string customFilters = string.Empty;
 
@@ -148,6 +149,18 @@
             else
             {
                 customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
+            }
+        }
+        if (OnlyUpload.HasValue)
+        {
+
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and FileGenerationType ne {FileGenerationType.LocalCopy.GetHashCode()}";
+            }
+            else
+            {
+                customFilters = $"FileGenerationType ne {FileGenerationType.LocalCopy.GetHashCode()}";
             }
         }
         if (From.HasValue)
