@@ -305,20 +305,35 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     private async Task DeleteDemoSFTPDirectory()
     {
         var data = await _context.FileStorageLocation.Where(a=>a.UseFileStorageConfiguration)
-            .Select(a => new { SftpConfId = a.FileStorageConfiguration.FileStorageConfigurationId, Path = a.FilePath })
+            .Select(a => new { SftpConfId = a.FileStorageConfiguration.FileStorageConfigurationId, Path = a.FilePath})
             .Distinct()
             .ToListAsync();
 
         if (data.Any())
         {
-            using var sftp = new SftpService(_context);
             foreach (var v in data)
             {
-                var deleteTasks = await  sftp.DeleteDirectoryFilesAsync(v.SftpConfId, v.Path);
-                if (deleteTasks.Success == false)
+                var _typeConfig= await _context.FileStorageConfiguration
+                    .Where(a => a.FileStorageConfigurationId == v.SftpConfId)
+                    .Select(a => a.ConfigurationType)
+                    .FirstOrDefaultAsync();
+                if (_typeConfig == FileStorageConfigurationType.SFTP)
                 {
-                    Console.WriteLine($@"An error occurred: {deleteTasks.Message}");
+                    var deleteTasks = await _sftp.DeleteDirectoryFilesAsync(v.SftpConfId, v.Path);
+                    if (deleteTasks.Success == false)
+                    {
+                        Console.WriteLine($@"An error occurred: {deleteTasks.Message}");
+                    }
                 }
+                else if (_typeConfig == FileStorageConfigurationType.FTPs||_typeConfig== FileStorageConfigurationType.FTP)
+                {
+                    var deleteTasks = await _ftp.DeleteDirectoryFilesAsync(v.SftpConfId, v.Path);
+                    if (deleteTasks.Success == false)
+                    {
+                        Console.WriteLine($@"An error occurred: {deleteTasks.Message}");
+                    }
+                }
+
             }
         }
     }
