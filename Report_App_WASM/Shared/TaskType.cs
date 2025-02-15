@@ -26,7 +26,7 @@ public enum FileGenerationType
     DirectToFolder = 20,
     Ftp = 30,
     Sftp = 40,
-    Ftps = 30,
+    Ftps = 50,
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
