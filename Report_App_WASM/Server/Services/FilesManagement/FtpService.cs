@@ -1,4 +1,5 @@
 ﻿using FluentFTP;
+using Renci.SshNet;
 using System;
 
 namespace Report_App_WASM.Server.Services.FilesManagement;
@@ -112,6 +113,37 @@ public class FtpService : IDisposable
         {
             await client.DeleteFile(remoteFilePath);
         });
+    }
+
+    public async Task<SubmitResult> DeleteDirectoryFilesAsync(long sftpconfigurationId, string remoteFilePath)
+    {
+        using var client = await GetClientAsync(sftpconfigurationId);
+        try
+        {
+
+           await client.Connect();
+            if ( !await client.DirectoryExists(remoteFilePath))
+                return new SubmitResult { Success = true, Message = "Ok" };
+
+            foreach (var file in await client.GetListing(remoteFilePath))
+            {
+                if (file.Name.Equals(".") || file.Name.Equals(".."))
+                    continue;
+
+                await client.DeleteFile(file.FullName);
+            }
+        }
+        catch (Exception exception)
+        {
+             _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+            return new SubmitResult { Success = false, Message = exception.Message };
+        }
+        finally
+        {
+            await client.Disconnect();
+        }
+
+        return new SubmitResult { Success = true, Message = "Ok" };
     }
 
     public async Task<SubmitResult> TestDirectoryAsync(int sftpconfigurationId, string? remoteFilePath, bool tryCreateFolder, CancellationToken _cts)
