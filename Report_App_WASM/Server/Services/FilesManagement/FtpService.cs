@@ -1,4 +1,5 @@
 ﻿using FluentFTP;
+using System;
 
 namespace Report_App_WASM.Server.Services.FilesManagement;
 
@@ -33,7 +34,7 @@ public class FtpService : IDisposable
 
         try
         {
-            await client.AutoConnect();
+            await client.Connect();
             return await client.GetListing(remoteDirectory);
         }
         catch (Exception)
@@ -54,8 +55,8 @@ public class FtpService : IDisposable
 
         try
         {
-            await client.AutoConnect();
-            if (tryCreateFolder && !await client.DirectoryExists(remoteDirectory))
+            await client.Connect();
+            if (tryCreateFolder&& !string.IsNullOrEmpty(remoteDirectory) && !await client.DirectoryExists(remoteDirectory))
                 await client.CreateDirectory(remoteDirectory);
             var destinationPath = Path.Combine(remoteDirectory, fileName);
             await using FileStream fs = new(localFilePath, FileMode.Open);
@@ -97,7 +98,7 @@ public class FtpService : IDisposable
 
         try
         {
-            await client.AutoConnect();
+            await client.Connect();
             await client.DownloadFile(remoteFilePath, localFilePath);
             //  _logger.LogInformation($"Finished downloading file [{localFilePath}] from [{remoteFilePath}]");
         }
@@ -120,7 +121,7 @@ public class FtpService : IDisposable
 
         try
         {
-            await client.AutoConnect();
+            await client.Connect();
             await client.DeleteFile(remoteFilePath);
             // _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
@@ -145,7 +146,7 @@ public class FtpService : IDisposable
         bool checkAcces;
         try
         {
-            await client.AutoConnect(_cts);
+            await client.Connect(_cts);
             checkAcces = await client.DirectoryExists(remoteFilePath, _cts);
             if (!checkAcces && tryCreateFolder)
             {
