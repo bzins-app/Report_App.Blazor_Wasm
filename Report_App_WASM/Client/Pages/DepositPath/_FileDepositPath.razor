@@ -45,7 +45,7 @@
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FilePath)" Title="@Localizer.Get("File path")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TryToCreateFolder)" Title="@(Localizer.Get("Try to create folder"))" Sortable="true"/>
                     <Blazor.SimpleGrid.TemplateColumn Title="@(Localizer.Get("File upload configuration"))">
-                        <MudText>@(!context.UseFileStorageConfiguration? null : _listConfigs.Where(a=>a.Id==context.FileStorageLocationId).Select(a=>a.Name).FirstOrDefault())</MudText>
+                        <MudText>@(_listConfigs.FirstOrDefault(a => a.Id == context.FileStorageConfigurationId)?.Name ?? string.Empty)</MudText>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
