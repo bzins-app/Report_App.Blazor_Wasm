@@ -1,4 +1,5 @@
 ﻿using Report_App_WASM.Server.Utils.BackgroundWorker;
+using static MudBlazor.CategoryTypes;
 
 namespace Report_App_WASM.Server.Controllers;
 
@@ -124,7 +125,46 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     [HttpPost]
     public async Task<IActionResult> ActivatePerTask(ApiCrudPayload<ApiBackgroundWorkerPayload> value)
     {
+        var _task= await _context.ScheduledTask.Include(a=>a.TaskQueries).FirstOrDefaultAsync(a => a.ScheduledTaskId == value.EntityValue.Value);
+        if(_task == null)
+        {
+            return Ok(new SubmitResult { Success = false, Message = "Task not found" });
+        }
+        if (value.EntityValue.Activate)
+        {
+
+            if(!_task.TaskQueries.Any())
+            {
+                return Ok(new SubmitResult { Success = false, Message = "cannot be enabled because no queries have been set" });
+            }
+
+            var _dataProviderStatus = (await _context.DataProvider.FirstOrDefaultAsync(a => a.DataProviderId == _task.IdDataProvider)).IsEnabled;
+            if (!_dataProviderStatus)
+            {
+                return Ok(new SubmitResult { Success = false, Message = "cannot be enabled because the related data link is not enabled" });
+            }
+            if (string.IsNullOrEmpty(_task.CronParameters) || _task.CronParameters == "[]")
+            {
+                return Ok(new SubmitResult { Success = false, Message = "cannot be enabled because the scheduler value is not defined" });
+            }
+
+            if (_task.Type == TaskType.Alert)
+            {
+                var _emailsCheck = (await _context.ScheduledTaskDistributionList
+                    .FirstOrDefaultAsync(a => a.ScheduledTask.ScheduledTaskId == _task.ScheduledTaskId)).Recipients;
+                if (string.IsNullOrEmpty(_emailsCheck) || _emailsCheck == "[]")
+                {
+                    return Ok(new SubmitResult
+                        { Success = false, Message = "cannot be enabled because the email list is not defined" });
+                }
+            }
+
+        }
+
         await _backgroundWorkers.SwitchBackgroundTaskAsync(value.EntityValue!.Value, value.EntityValue.Activate);
+        _task.IsEnabled = value.EntityValue.Activate;
+        _context.Entry(_task).State = EntityState.Modified;
+        await SaveDbAsync(value.UserName);
         return Ok(new SubmitResult { Success = true });
     }
 
@@ -141,4 +181,6 @@ public class BackgroundWorkerController : ControllerBase, IDisposable
     {
         await _context.SaveChangesAsync(userId);
     }
+
+
 }
