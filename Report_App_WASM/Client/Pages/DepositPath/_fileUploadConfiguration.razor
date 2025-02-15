@@ -42,10 +42,10 @@
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationType)" Title="@Localizer.Get("Type")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationType)" Title="@Localizer.Get("Type")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Host)" Title="@Localizer.Get("Host")" Sortable="true"/>
-                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Port")" >
-                        <MudText>@(context.ConfigurationType==FileStorageConfigurationType.SFTP? context.Port.ToString():"Auto detect")</MudText>
+                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Port")">
+                        <MudText>@(context.ConfigurationType == FileStorageConfigurationType.SFTP ? context.Port.ToString() : "Auto detect")</MudText>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>

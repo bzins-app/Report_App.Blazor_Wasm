@@ -6,24 +6,23 @@
 
 <PageTitle>@Localizer.Get("DB explorer") @ProviderName</PageTitle>
 
-<_queryEditor DataProviderId="@DataProviderId" Options="@_opts"  Height="90vh"/>
+<_queryEditor DataProviderId="@DataProviderId" Options="@_opts" Height="90vh"/>
 
 
 @code {
 
     [Parameter] public string ProviderName { get; set; } = null!;
     [Parameter] public long DataProviderId { get; set; }
-    private string? Query { get; set; } 
     private _queryEditor.QueryEditorOptions _opts = new();
 
     protected override async Task OnParametersSetAsync()
     {
-
         var user = await AuthenticationStateProvider.GetUserInfo();
         if (user != null && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains(ProviderName) && !user.ExposedClaims!.Select(a => a.Value).ToList().Contains("Admin"))
         {
             NavigationManager.NavigateTo("/403");
         }
+
         _opts.EditorTitle = Localizer.Get("DB explorer") + ": " + ProviderName;
         _opts.EnableTablesViewsPanel = true;
         _opts.DefaultPanel = _queryEditor.EditorPanel.TablesViews;

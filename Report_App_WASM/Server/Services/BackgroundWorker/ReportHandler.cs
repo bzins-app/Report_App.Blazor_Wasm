@@ -12,9 +12,11 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
     {
         private readonly FtpService _ftp;
         private readonly SftpService _sftp;
+
         public ReportHandler(ApplicationDbContext context, IEmailSender emailSender,
             IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
-            IWebHostEnvironment hostingEnvironment, FtpService ftp, SftpService sftp) : base(context, emailSender, dbReader, fileDeposit, mapper,
+            IWebHostEnvironment hostingEnvironment, FtpService ftp, SftpService sftp) : base(context, emailSender,
+            dbReader, fileDeposit, mapper,
             hostingEnvironment)
         {
             _context = context;
@@ -64,7 +66,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 await GenerateFile();
                 foreach (var f in _fileResults)
                 {
-                    await WriteFileAsync(f, f.FileName, _jobParameters.GenerateFiles, f.FileName);
+                    await WriteFileAsync(f, f.FileName, _jobParameters.GenerateFiles);
                 }
 
                 await GenerateEmail();
@@ -111,19 +113,18 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                             });
                         else
                             await _context.AddAsync(new TaskStepLog
-                            { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
+                                { TaskLogId = _taskId, Step = "Email not sent", Info = result.Message, Error = true });
                     }
             }
         }
 
 
         private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName,
-            bool useDepositConfiguration,
-            string? subName = null)
+            bool useDepositConfiguration)
         {
             var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
             if (!localFileResult.Success)
-                await _emailSender.GenerateErrorEmailAsync(localFileResult.Message, "Local file writing: ");
+                await _emailSender.GenerateErrorEmailAsync(localFileResult.Message!, "Local file writing: ");
 
             ReportGenerationLog filecreationLocal = new()
             {
@@ -251,7 +252,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
                 if (!resultDeposit.Success)
                 {
-                    await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message, "File deposit: ");
+                    await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message!, "File deposit: ");
                     await _context.AddAsync(new TaskStepLog
                     {
                         TaskLogId = _taskId,
@@ -333,7 +334,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                         }
 
                         excelMultipleTabs.Add(new ExcelCreationDatatable
-                        { TabName = tabName, ExcelTemplate = template, Data = d.Value });
+                            { TabName = tabName, ExcelTemplate = template, Data = d.Value });
                         continue;
                     }
                 }
@@ -359,7 +360,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
                 _fileResults.Add(fileCreated);
                 await _context.AddAsync(new TaskStepLog
-                { TaskLogId = _taskId, Step = "File created", Info = fName });
+                    { TaskLogId = _taskId, Step = "File created", Info = fName });
             }
 
             if (excelMultipleTabs.Any())
@@ -399,7 +400,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 _fileResults.Add(fileCreated);
                 excelMultipleTabs.Clear();
                 await _context.AddAsync(new TaskStepLog
-                { TaskLogId = _taskId, Step = "File created", Info = fName });
+                    { TaskLogId = _taskId, Step = "File created", Info = fName });
             }
 
             _fetchedData.Clear();

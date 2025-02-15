@@ -90,8 +90,7 @@
             if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
             else url += "&$filter=" + customFilters;
         }
-        else
-        if (string.IsNullOrEmpty(odataQuery))
+        else if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
@@ -133,6 +132,7 @@
         {
             url += odataQuery;
         }
+
         await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
@@ -142,7 +142,6 @@
         customFilters = string.Empty;
         if (Error.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and Error eq {Error.Value.ToString().ToLower()}";
@@ -152,9 +151,9 @@
                 customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
             }
         }
+
         if (OnlyUpload.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and FileGenerationType ne {FileGenerationType.LocalCopy.GetHashCode()}";
@@ -164,9 +163,9 @@
                 customFilters = $"FileGenerationType ne {FileGenerationType.LocalCopy.GetHashCode()}";
             }
         }
+
         if (From.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and CreatedAt ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
@@ -176,6 +175,7 @@
                 customFilters = $"CreatedAt ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
             }
         }
+
         if (To.HasValue)
         {
             if (!string.IsNullOrEmpty(customFilters))

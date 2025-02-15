@@ -9,16 +9,16 @@
         <MudTable Items="_parameters.OrderBy(a => a.DisplaySequence)" Hover="true" Dense HorizontalScrollbar Height="30vh">
             <RowTemplate>
                 <MudTd DataLabel="@Localizer.Get("Delete")" Style="width:10px">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Class="pa-2" />
+                    <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Class="pa-2"/>
                 </MudTd>
                 <MudTd Style="min-width:200px">
-                    <MudTextField @bind-Value="@context.DisplayName" @bind-Value:after="UpdateParameters" T="string" Label="@Localizer.Get("Display name")" Margin="Margin.Dense" />
+                    <MudTextField @bind-Value="@context.DisplayName" @bind-Value:after="UpdateParameters" T="string" Label="@Localizer.Get("Display name")" Margin="Margin.Dense"/>
                 </MudTd>
                 <MudTd Style="width:200px;min-width:200px">
-                    <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@(context.DisplaySequence)" @bind-Value:after="UpdateParameters" Margin="Margin.Dense" />
+                    <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@(context.DisplaySequence)" @bind-Value:after="UpdateParameters" Margin="Margin.Dense"/>
                 </MudTd>
                 <MudTd Style="min-width:200px">
-                    <MudTextField @bind-Value="@context.ParameterIdentifier" @bind-Value:after="UpdateParameters" T="string" Label="@Localizer.Get("Parameter identifier")" Margin="Margin.Dense" />
+                    <MudTextField @bind-Value="@context.ParameterIdentifier" @bind-Value:after="UpdateParameters" T="string" Label="@Localizer.Get("Parameter identifier")" Margin="Margin.Dense"/>
                 </MudTd>
                 <MudTd Style="min-width:200px">
                     <MudField Label="@Localizer.Get("Data type")" Margin="Margin.Dense"> @Localizer.Get(context.ValueType.ToString())</MudField>
@@ -43,22 +43,21 @@
                                 <MudField Style="min-width:200px" Margin="Margin.Dense" Label="@Localizer.Get("Calculated date")">@(context.ValueType == QueryCommandParameterValueType.Date ? context.DateOption.GetCalculateDateTime().Date.ToString("d") : context.DateOption.GetCalculateDateTime())</MudField>
                             }
                         </MudStack>
-
                     }
                     @if (context.ValueType == QueryCommandParameterValueType.String)
                     {
-                        <MudTextField InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@context.Value" @bind-Value:after="UpdateParameters" Text="@context.Value" />
+                        <MudTextField InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@context.Value" @bind-Value:after="UpdateParameters" Text="@context.Value"/>
                     }
                     @if (context.ValueType == QueryCommandParameterValueType.Number)
                     {
-                        <MudTextField InputType="InputType.Number" Label="@Localizer.Get("Enter value")" @bind-Value="@(context.Value)" @bind-Value:after="UpdateParameters" Text="@context.Value" />
+                        <MudTextField InputType="InputType.Number" Label="@Localizer.Get("Enter value")" @bind-Value="@(context.Value)" @bind-Value:after="UpdateParameters" Text="@context.Value"/>
                     }
                 </MudTd>
                 <MudTd>
-                    <MudSwitch @bind-Value="@context.Required" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Required")" Color="Color.Primary" />
+                    <MudSwitch @bind-Value="@context.Required" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
                 </MudTd>
                 <MudTd>
-                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Hide")" Color="Color.Primary" />
+                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Hide")" Color="Color.Primary"/>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -88,6 +87,7 @@
         {
             _firstRender = false;
         }
+
         base.OnAfterRender(firstRender);
     }
 

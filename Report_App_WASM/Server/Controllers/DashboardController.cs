@@ -36,16 +36,17 @@ public class DashboardController : ControllerBase, IDisposable
         var reportsTodayList = await reportsToday.ToListAsync();
         var activeTaskList = await activeTask.ToListAsync();
 
-        var _emailsToday= _context.EmailLog.Where(a => a.EndDateTime.Date == today);
-        var _filesDroppedToday = _context.ReportGenerationLog.Where(a => a.CreatedAt.Date == today&&a.FileGenerationType!=FileGenerationType.LocalCopy); 
+        var _emailsToday = _context.EmailLog.Where(a => a.EndDateTime.Date == today);
+        var _filesDroppedToday = _context.ReportGenerationLog.Where(a =>
+            a.CreatedAt.Date == today && a.FileGenerationType != FileGenerationType.LocalCopy);
 
         var metrics = new AppMetrics
         {
             TasksExcecutedToday = tasksTodayList.Count,
             TasksInError = tasksTodayList.Count(a => a.Error && !a.Result!.Contains("attempt")),
-            EmailsSentToday = await _emailsToday.Where(a=>a.Error==false).CountAsync(),
-            EmailsInError =  await _emailsToday.Where(a=>a.Error).CountAsync(),
-            FileUploadsToday = await _filesDroppedToday.Where(a=>a.Error==false).CountAsync(),
+            EmailsSentToday = await _emailsToday.Where(a => a.Error == false).CountAsync(),
+            EmailsInError = await _emailsToday.Where(a => a.Error).CountAsync(),
+            FileUploadsToday = await _filesDroppedToday.Where(a => a.Error == false).CountAsync(),
             FileUploadsInError = await _filesDroppedToday.Where(a => a.Error).CountAsync(),
             SizeFilesStoredLocally = reportsTodayList.Sum(a => a.FileSizeInMb),
             NbrOfFilesStored = reportsTodayList.Count,
@@ -63,9 +64,11 @@ public class DashboardController : ControllerBase, IDisposable
                 ((a.ScheduledTask.Type == TaskType.Report && servicesStatus.ReportService) ||
                  (a.ScheduledTask.Type == TaskType.Alert && servicesStatus.AlertService) ||
                  (a.ScheduledTask.Type == TaskType.DataTransfer && servicesStatus.DataTransferService))),
-            ActiveSourceDataProvider = await _context.DataProvider.CountAsync(a => a.IsEnabled && a.ProviderType==ProviderType.SourceDatabase),
-            ActiveDestinationDataProvider = await _context.DataProvider.CountAsync(a=> a.ProviderType == ProviderType.TargetDatabase)
-
+            ActiveSourceDataProvider =
+                await _context.DataProvider.CountAsync(
+                    a => a.IsEnabled && a.ProviderType == ProviderType.SourceDatabase),
+            ActiveDestinationDataProvider =
+                await _context.DataProvider.CountAsync(a => a.ProviderType == ProviderType.TargetDatabase)
         };
 
         return metrics;

@@ -3,24 +3,24 @@
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@(Action switch { CrudAction.Update => Icons.Material.Filled.Edit, CrudAction.Create => Icons.Material.Filled.Create, _ => Icons.Material.Filled.DeleteForever })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
-                {
-                    CrudAction.Update => "Edit",
-                    CrudAction.Create => "Add",
-                    _ => "Delete"
-                })
+            {
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+            })
         </MudText>
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudTextField @bind-Value="Item.FilePath" Label="@Localizer.Get("File path")"  RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item.FilePath" Label="@Localizer.Get("File path")" RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             <MudSwitch T="bool" @bind-Value="Item.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
             @if (_listConfigs.Any())
             {
-                <MudSwitch @bind-Value="Item.UseFileStorageConfiguration" Label="@Localizer.Get("Use a connection protocol")" Color="Color.Primary" Disabled="Action == CrudAction.Delete" />
+                <MudSwitch @bind-Value="Item.UseFileStorageConfiguration" Label="@Localizer.Get("Use a connection protocol")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
                 <MudSelect T="long" Label="@Localizer.Get("Choose a configuration")" @bind-Value="Item.FileStorageConfigurationId"
-                Disabled="!Item.UseFileStorageConfiguration"
-                Required>
+                           Disabled="!Item.UseFileStorageConfiguration"
+                           Required>
                     @foreach (var value in _listConfigs)
                     {
                         <MudSelectItem Value="@value.Id">@value.Name</MudSelectItem>
@@ -48,6 +48,7 @@
                     <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
                 </MudButton>
             }
+
             <MudText>@Localizer.Get("Test Feedback:") @_directoryTestResult</MudText>
         }
     </DialogContent>
@@ -110,7 +111,7 @@
         _testingConfig = true;
         _cts = new CancellationTokenSource();
         var payload = new DepositPathTest { UseSftpProtocol = Item.UseFileStorageConfiguration, SftpConfigurationId = (int)Item.FileStorageConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
-        var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi,_cts.Token);
+        var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi, _cts.Token);
         if (result.Success)
         {
             _directoryTestResult = "OK!";
@@ -119,6 +120,7 @@
         {
             _directoryTestResult = result.Message;
         }
+
         _testingConfig = false;
     }
 

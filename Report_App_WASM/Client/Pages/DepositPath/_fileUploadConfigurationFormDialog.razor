@@ -13,7 +13,7 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudSelect Label="@Localizer.Get("Type of protocol")" @bind-Value="@Item.ConfigurationType" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Protocol selection")" Disabled="Action == CrudAction.Delete" >
+            <MudSelect Label="@Localizer.Get("Type of protocol")" @bind-Value="@Item!.ConfigurationType" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Protocol selection")" Disabled="Action == CrudAction.Delete">
                 @foreach (FileStorageConfigurationType item in Enum.GetValues(typeof(FileStorageConfigurationType)))
                 {
                     <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -48,7 +48,7 @@
 
     private MudForm _form = null!;
     private string? _deletionValidation;
- 
+
     private void Cancel()
     {
         MudDialog?.Cancel();

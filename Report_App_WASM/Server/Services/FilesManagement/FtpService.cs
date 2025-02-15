@@ -1,6 +1,4 @@
 ﻿using FluentFTP;
-using Renci.SshNet;
-using System;
 
 namespace Report_App_WASM.Server.Services.FilesManagement;
 
@@ -43,7 +41,8 @@ public class FtpService : IDisposable
         return client;
     }
 
-    private async Task<SubmitResult> ExecuteFtpOperationAsync(long sftpconfigurationId, Func<AsyncFtpClient, Task> operation)
+    private async Task<SubmitResult> ExecuteFtpOperationAsync(long sftpconfigurationId,
+        Func<AsyncFtpClient, Task> operation)
     {
         using var client = await GetClientAsync(sftpconfigurationId);
 
@@ -64,7 +63,8 @@ public class FtpService : IDisposable
         }
     }
 
-    public async Task<IEnumerable<FtpListItem>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
+    public async Task<IEnumerable<FtpListItem>?> ListAllFilesAsync(int sftpconfigurationId,
+        string remoteDirectory = ".")
     {
         using var client = await GetClientAsync(sftpconfigurationId);
 
@@ -84,11 +84,13 @@ public class FtpService : IDisposable
         }
     }
 
-    public async Task<SubmitResult> UploadFileAsync(long sftpconfigurationId, string localFilePath, string remoteDirectory, string fileName, bool tryCreateFolder = false)
+    public async Task<SubmitResult> UploadFileAsync(long sftpconfigurationId, string localFilePath,
+        string remoteDirectory, string fileName, bool tryCreateFolder = false)
     {
         return await ExecuteFtpOperationAsync(sftpconfigurationId, async client =>
         {
-            if (tryCreateFolder && !string.IsNullOrEmpty(remoteDirectory) && !await client.DirectoryExists(remoteDirectory))
+            if (tryCreateFolder && !string.IsNullOrEmpty(remoteDirectory) &&
+                !await client.DirectoryExists(remoteDirectory))
             {
                 await client.CreateDirectory(remoteDirectory);
             }
@@ -99,20 +101,17 @@ public class FtpService : IDisposable
         });
     }
 
-    public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath, string localFilePath)
+    public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath,
+        string localFilePath)
     {
-        return await ExecuteFtpOperationAsync(sftpconfigurationId, async client =>
-        {
-            await client.DownloadFile(remoteFilePath, localFilePath);
-        });
+        return await ExecuteFtpOperationAsync(sftpconfigurationId,
+            async client => { await client.DownloadFile(remoteFilePath, localFilePath); });
     }
 
     public async Task<SubmitResult> DeleteFileAsync(int sftpconfigurationId, string remoteFilePath)
     {
-        return await ExecuteFtpOperationAsync(sftpconfigurationId, async client =>
-        {
-            await client.DeleteFile(remoteFilePath);
-        });
+        return await ExecuteFtpOperationAsync(sftpconfigurationId,
+            async client => { await client.DeleteFile(remoteFilePath); });
     }
 
     public async Task<SubmitResult> DeleteDirectoryFilesAsync(long sftpconfigurationId, string remoteFilePath)
