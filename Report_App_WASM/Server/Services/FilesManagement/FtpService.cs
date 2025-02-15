@@ -80,7 +80,7 @@ public class FtpService : IDisposable
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
 
-        var client = new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
+        var client =string.IsNullOrEmpty(config.UserName)?new AsyncFtpClient(config.Host): new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
         if (config.ConfigurationType == FileStorageConfigurationType.FTPs)
         {
             client.Config.EncryptionMode = FtpEncryptionMode.Auto;
@@ -138,19 +138,19 @@ public class FtpService : IDisposable
     }
 
     public async Task<SubmitResult> TestDirectoryAsync(int sftpconfigurationId, string? remoteFilePath,
-        bool tryCreateFolder = false)
+        bool tryCreateFolder , CancellationToken _cts)
     {
         using var client = await getClient( sftpconfigurationId);
 
         bool checkAcces;
         try
         {
-            await client.AutoConnect();
-            checkAcces = await client.DirectoryExists(remoteFilePath);
+            await client.AutoConnect(_cts);
+            checkAcces = await client.DirectoryExists(remoteFilePath, _cts);
             if (!checkAcces && tryCreateFolder)
             {
-                await client.CreateDirectory(remoteFilePath);
-                checkAcces = await client.DirectoryExists(remoteFilePath);
+                await client.CreateDirectory(remoteFilePath, _cts);
+                checkAcces = await client.DirectoryExists(remoteFilePath, _cts);
             }
             //   _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
@@ -161,7 +161,7 @@ public class FtpService : IDisposable
         }
         finally
         {
-            await client.Disconnect();
+            await client.Disconnect(_cts);
         }
 
         return new SubmitResult
