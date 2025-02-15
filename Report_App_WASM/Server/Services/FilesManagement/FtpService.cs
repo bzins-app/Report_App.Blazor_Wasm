@@ -8,12 +8,11 @@ public class FtpService : IDisposable
     private readonly ILogger<FtpService> _logger;
     private readonly ApplicationDbContext _context;
 
-    public FtpService( ILogger<FtpService> logger,  ApplicationDbContext context)
-    { 
+    public FtpService(ILogger<FtpService> logger, ApplicationDbContext context)
+    {
         _logger = logger;
         _context = context;
     }
-
 
     public void Dispose()
     {
@@ -22,65 +21,18 @@ public class FtpService : IDisposable
 
     private async Task<FileStorageConfiguration?> GetSftpConfigurationAsync(long sftpconfigurationId)
     {
-        return await _context.FileStorageConfiguration.Where(a => a.FileStorageConfigurationId == sftpconfigurationId)
+        return await _context.FileStorageConfiguration
             .AsNoTracking()
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(a => a.FileStorageConfigurationId == sftpconfigurationId);
     }
 
-    public async Task<IEnumerable<FtpListItem>?> ListAllFilesAsync(int sftpconfigurationId,
-        string remoteDirectory = ".")
-    {
-        using var client = await getClient( sftpconfigurationId);
-
-        try
-        {
-            await client.Connect();
-            return await client.GetListing(remoteDirectory);
-        }
-        catch (Exception exception)
-        {
-             _logger.LogError(exception, $"Failed in listing files under [{remoteDirectory}]");
-            return null;
-        }
-        finally
-        {
-            await client.Disconnect();
-        }
-    }
-
-    public async Task<SubmitResult> UploadFileAsync(long sftpconfigurationId, string localFilePath,
-        string remoteDirectory, string fileName, bool tryCreateFolder = false)
-    {
-        using var client = await getClient( sftpconfigurationId);
-
-        try
-        {
-            await client.Connect();
-            if (tryCreateFolder&& !string.IsNullOrEmpty(remoteDirectory) && !await client.DirectoryExists(remoteDirectory))
-                await client.CreateDirectory(remoteDirectory);
-            var destinationPath = Path.Combine(remoteDirectory, fileName);
-            await using FileStream fs = new(localFilePath, FileMode.Open);
-            await client.UploadStream(fs, destinationPath);
-        }
-        catch (Exception exception)
-        {
-             _logger.LogError(exception, $"Failed in uploading file [{localFilePath}] to [{remoteDirectory}]");
-            return new SubmitResult { Success = false, Message = exception.Message };
-        }
-        finally
-        {
-            await client.Disconnect();
-        }
-
-        return new SubmitResult { Success = true, Message = "Ok" };
-    }
-
-
-    private async Task<AsyncFtpClient> getClient(long sftpconfigurationId)
+    private async Task<AsyncFtpClient> GetClientAsync(long sftpconfigurationId)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
+        var client = string.IsNullOrEmpty(config.UserName)
+            ? new AsyncFtpClient(config.Host)
+            : new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
 
-        var client =string.IsNullOrEmpty(config.UserName)?new AsyncFtpClient(config.Host): new AsyncFtpClient(config.Host, config.UserName, EncryptDecrypt.DecryptString(config.Password));
         if (config.ConfigurationType == FileStorageConfigurationType.FTPs)
         {
             client.Config.EncryptionMode = FtpEncryptionMode.Auto;
@@ -90,69 +42,96 @@ public class FtpService : IDisposable
         return client;
     }
 
-    public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath,
-        string localFilePath)
+    private async Task<SubmitResult> ExecuteFtpOperationAsync(long sftpconfigurationId, Func<AsyncFtpClient, Task> operation)
     {
-        using var client = await getClient( sftpconfigurationId);
+        using var client = await GetClientAsync(sftpconfigurationId);
 
         try
         {
             await client.Connect();
-            await client.DownloadFile(remoteFilePath, localFilePath);
+            await operation(client);
+            return new SubmitResult { Success = true, Message = "Ok" };
         }
         catch (Exception exception)
         {
-             _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
+            _logger.LogError(exception, "FTP operation failed");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
         {
             await client.Disconnect();
         }
+    }
 
-        return new SubmitResult { Success = true, Message = "Ok" };
+    public async Task<IEnumerable<FtpListItem>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
+    {
+        using var client = await GetClientAsync(sftpconfigurationId);
+
+        try
+        {
+            await client.Connect();
+            return await client.GetListing(remoteDirectory);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, $"Failed in listing files under [{remoteDirectory}]");
+            return null;
+        }
+        finally
+        {
+            await client.Disconnect();
+        }
+    }
+
+    public async Task<SubmitResult> UploadFileAsync(long sftpconfigurationId, string localFilePath, string remoteDirectory, string fileName, bool tryCreateFolder = false)
+    {
+        return await ExecuteFtpOperationAsync(sftpconfigurationId, async client =>
+        {
+            if (tryCreateFolder && !string.IsNullOrEmpty(remoteDirectory) && !await client.DirectoryExists(remoteDirectory))
+            {
+                await client.CreateDirectory(remoteDirectory);
+            }
+
+            var destinationPath = Path.Combine(remoteDirectory, fileName);
+            await using FileStream fs = new(localFilePath, FileMode.Open);
+            await client.UploadStream(fs, destinationPath);
+        });
+    }
+
+    public async Task<SubmitResult> DownloadFileAsync(int sftpconfigurationId, string remoteFilePath, string localFilePath)
+    {
+        return await ExecuteFtpOperationAsync(sftpconfigurationId, async client =>
+        {
+            await client.DownloadFile(remoteFilePath, localFilePath);
+        });
     }
 
     public async Task<SubmitResult> DeleteFileAsync(int sftpconfigurationId, string remoteFilePath)
     {
-        using var client = await getClient( sftpconfigurationId);
-
-        try
+        return await ExecuteFtpOperationAsync(sftpconfigurationId, async client =>
         {
-            await client.Connect();
             await client.DeleteFile(remoteFilePath);
-        }
-        catch (Exception exception)
-        {
-             _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
-            return new SubmitResult { Success = false, Message = exception.Message };
-        }
-        finally
-        {
-            await client.Disconnect();
-        }
-
-        return new SubmitResult { Success = true, Message = "Ok" };
+        });
     }
 
-    public async Task<SubmitResult> TestDirectoryAsync(int sftpconfigurationId, string? remoteFilePath,
-        bool tryCreateFolder , CancellationToken _cts)
+    public async Task<SubmitResult> TestDirectoryAsync(int sftpconfigurationId, string? remoteFilePath, bool tryCreateFolder, CancellationToken _cts)
     {
-        using var client = await getClient( sftpconfigurationId);
-        bool checkAcces;
+        using var client = await GetClientAsync(sftpconfigurationId);
+        bool checkAccess;
+
         try
         {
             await client.Connect(_cts);
-            checkAcces = await client.DirectoryExists(remoteFilePath, _cts);
-            if (!checkAcces && tryCreateFolder)
+            checkAccess = await client.DirectoryExists(remoteFilePath, _cts);
+            if (!checkAccess && tryCreateFolder)
             {
                 await client.CreateDirectory(remoteFilePath, _cts);
-                checkAcces = await client.DirectoryExists(remoteFilePath, _cts);
+                checkAccess = await client.DirectoryExists(remoteFilePath, _cts);
             }
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+            _logger.LogError(exception, $"Failed in testing directory [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -161,6 +140,9 @@ public class FtpService : IDisposable
         }
 
         return new SubmitResult
-        { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" };
+        {
+            Success = checkAccess,
+            Message = checkAccess ? "Ok" : "Cannot reach the path"
+        };
     }
 }

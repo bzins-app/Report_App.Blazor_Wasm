@@ -8,7 +8,7 @@ public class SftpService : IDisposable
     private readonly ILogger<SftpService> _logger;
     private readonly ApplicationDbContext _context;
 
-    public SftpService( ILogger<SftpService> logger,ApplicationDbContext context)
+    public SftpService(ILogger<SftpService> logger, ApplicationDbContext context)
     {
         _context = context;
         _logger = logger;
@@ -21,26 +21,30 @@ public class SftpService : IDisposable
 
     private async Task<FileStorageConfiguration> GetSftpConfigurationAsync(long sftpconfigurationId)
     {
-        return (await _context.FileStorageConfiguration.Where(a => a.FileStorageConfigurationId == sftpconfigurationId)
+        return (await _context.FileStorageConfiguration
+            .Where(a => a.FileStorageConfigurationId == sftpconfigurationId)
             .AsNoTracking()
             .FirstOrDefaultAsync())!;
+    }
+
+    private SftpClient CreateSftpClient(FileStorageConfiguration config)
+    {
+        return new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
+            config.UserName ?? string.Empty, EncryptDecrypt.DecryptString(config.Password));
     }
 
     public async Task<IEnumerable<ISftpFile>?> ListAllFilesAsync(int sftpconfigurationId, string remoteDirectory = ".")
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
-            config.UserName ?? string.Empty,
-            EncryptDecrypt.DecryptString(config.Password));
+        using var client = CreateSftpClient(config);
         try
         {
             client.Connect();
             return client.ListDirectory(remoteDirectory);
         }
         catch (Exception exception)
-        { 
-            _logger.LogError(exception.Message, $"Failed in listing files under [{remoteDirectory}]");
-            _logger.LogError(exception.InnerException.Message);
+        {
+            _logger.LogError(exception, $"Failed in listing files under [{remoteDirectory}]");
             return null;
         }
         finally
@@ -53,9 +57,7 @@ public class SftpService : IDisposable
         string remoteDirectory, string fileName, bool tryCreateFolder = false)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
-            config.UserName ?? string.Empty,
-            EncryptDecrypt.DecryptString(config.Password));
+        using var client = CreateSftpClient(config);
         try
         {
             client.Connect();
@@ -68,7 +70,6 @@ public class SftpService : IDisposable
         catch (Exception exception)
         {
             _logger.LogError(exception, $"Failed in uploading file [{localFilePath}] to [{remoteDirectory}]");
-            _logger.LogError(exception.InnerException.Message);
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -83,9 +84,7 @@ public class SftpService : IDisposable
         string localFilePath)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
-            config.UserName ?? string.Empty,
-            EncryptDecrypt.DecryptString(config.Password));
+        using var client = CreateSftpClient(config);
         try
         {
             client.Connect();
@@ -94,8 +93,7 @@ public class SftpService : IDisposable
         }
         catch (Exception exception)
         {
-             _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
-             _logger.LogError(exception.InnerException.Message);
+            _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -109,9 +107,7 @@ public class SftpService : IDisposable
     public async Task<SubmitResult> DeleteFileAsync(int sftpconfigurationId, string remoteFilePath)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
-            config.UserName ?? string.Empty,
-            EncryptDecrypt.DecryptString(config.Password));
+        using var client = CreateSftpClient(config);
         try
         {
             client.Connect();
@@ -119,8 +115,7 @@ public class SftpService : IDisposable
         }
         catch (Exception exception)
         {
-             _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
-             _logger.LogError(exception.InnerException.Message);
+            _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -135,24 +130,21 @@ public class SftpService : IDisposable
         bool tryCreateFolder = false)
     {
         var config = await GetSftpConfigurationAsync(sftpconfigurationId);
-        using var client = new SftpClient(config.Host ?? string.Empty, config.Port == 0 ? 22 : config.Port,
-            config.UserName ?? string.Empty,
-            EncryptDecrypt.DecryptString(config.Password));
-        bool checkAcces;
+        using var client = CreateSftpClient(config);
+        bool checkAccess;
         try
         {
             client.Connect();
-            checkAcces = client.Exists(remoteFilePath);
-            if (!checkAcces && tryCreateFolder)
+            checkAccess = client.Exists(remoteFilePath);
+            if (!checkAccess && tryCreateFolder)
             {
                 client.CreateDirectory(remoteFilePath);
-                checkAcces = client.Exists(remoteFilePath);
+                checkAccess = client.Exists(remoteFilePath);
             }
         }
         catch (Exception exception)
         {
-             _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
-             _logger.LogError(exception.InnerException.Message);
+            _logger.LogError(exception, $"Failed in testing directory [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -161,6 +153,9 @@ public class SftpService : IDisposable
         }
 
         return new SubmitResult
-            { Success = checkAcces, Message = checkAcces == false ? "Cannot reach the path" : "Ok" };
+        {
+            Success = checkAccess,
+            Message = checkAccess == false ? "Cannot reach the path" : "Ok"
+        };
     }
 }
