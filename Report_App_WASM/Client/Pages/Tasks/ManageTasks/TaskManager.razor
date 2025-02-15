@@ -82,7 +82,7 @@
                     @if (TypeTask == TaskType.Report.ToString())
                     {
                         <Blazor.SimpleGrid.TemplateColumn Title="@(Localizer.Get("File upload configuration"))">
-                            <MudText>@(context.FileStorageLocationId==0 ? null : _depositPathSelect.Where(a => a.Id == context.FileStorageLocationId).Select(a => a.Name).FirstOrDefault())</MudText>
+                                    <MudText>@(_depositPathSelect.FirstOrDefault(a => a.Id == context.FileStorageLocationId)?.Name ?? string.Empty)</MudText>
                         </Blazor.SimpleGrid.TemplateColumn>
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context"/>
