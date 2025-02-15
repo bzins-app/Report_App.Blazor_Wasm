@@ -5,12 +5,12 @@ namespace Report_App_WASM.Server.Services.FilesManagement;
 
 public class FtpService : IDisposable
 {
-    // private readonly ILogger<FtpService> _logger;
+    private readonly ILogger<FtpService> _logger;
     private readonly ApplicationDbContext _context;
 
-    public FtpService( /*ILogger<FtpService> logger, */ ApplicationDbContext context)
-    {
-        //  _logger = logger;
+    public FtpService( ILogger<FtpService> logger,  ApplicationDbContext context)
+    { 
+        _logger = logger;
         _context = context;
     }
 
@@ -37,9 +37,9 @@ public class FtpService : IDisposable
             await client.Connect();
             return await client.GetListing(remoteDirectory);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            // _logger.LogError(exception, $"Failed in listing files under [{remoteDirectory}]");
+             _logger.LogError(exception, $"Failed in listing files under [{remoteDirectory}]");
             return null;
         }
         finally
@@ -61,11 +61,10 @@ public class FtpService : IDisposable
             var destinationPath = Path.Combine(remoteDirectory, fileName);
             await using FileStream fs = new(localFilePath, FileMode.Open);
             await client.UploadStream(fs, destinationPath);
-            // _logger.LogInformation($"Finished uploading file [{localFilePath}] to [{remoteDirectory}]");
         }
         catch (Exception exception)
         {
-            // _logger.LogError(exception, $"Failed in uploading file [{localFilePath}] to [{remoteDirectory}]");
+             _logger.LogError(exception, $"Failed in uploading file [{localFilePath}] to [{remoteDirectory}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -100,11 +99,10 @@ public class FtpService : IDisposable
         {
             await client.Connect();
             await client.DownloadFile(remoteFilePath, localFilePath);
-            //  _logger.LogInformation($"Finished downloading file [{localFilePath}] from [{remoteFilePath}]");
         }
         catch (Exception exception)
         {
-            // _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
+             _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -123,11 +121,10 @@ public class FtpService : IDisposable
         {
             await client.Connect();
             await client.DeleteFile(remoteFilePath);
-            // _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
         catch (Exception exception)
         {
-            //  _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+             _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -142,7 +139,6 @@ public class FtpService : IDisposable
         bool tryCreateFolder , CancellationToken _cts)
     {
         using var client = await getClient( sftpconfigurationId);
-
         bool checkAcces;
         try
         {
@@ -153,11 +149,10 @@ public class FtpService : IDisposable
                 await client.CreateDirectory(remoteFilePath, _cts);
                 checkAcces = await client.DirectoryExists(remoteFilePath, _cts);
             }
-            //   _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
         catch (Exception exception)
         {
-            //  _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+            _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally

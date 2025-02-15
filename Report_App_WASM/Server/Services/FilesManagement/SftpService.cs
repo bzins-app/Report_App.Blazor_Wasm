@@ -5,13 +5,13 @@ namespace Report_App_WASM.Server.Services.FilesManagement;
 
 public class SftpService : IDisposable
 {
-    // private readonly ILogger<FtpService> _logger;
+    private readonly ILogger<SftpService> _logger;
     private readonly ApplicationDbContext _context;
 
-    public SftpService( /*ILogger<FtpService> logger, */ ApplicationDbContext context)
+    public SftpService( ILogger<SftpService> logger,ApplicationDbContext context)
     {
-        //  _logger = logger;
         _context = context;
+        _logger = logger;
     }
 
     public void Dispose()
@@ -37,9 +37,10 @@ public class SftpService : IDisposable
             client.Connect();
             return client.ListDirectory(remoteDirectory);
         }
-        catch (Exception)
-        {
-            //  _logger.LogError(exception, $"Failed in listing files under [{remoteDirectory}]");
+        catch (Exception exception)
+        { 
+            _logger.LogError(exception.Message, $"Failed in listing files under [{remoteDirectory}]");
+            _logger.LogError(exception.InnerException.Message);
             return null;
         }
         finally
@@ -63,11 +64,11 @@ public class SftpService : IDisposable
             await using FileStream fs = new(localFilePath, FileMode.Open);
             client.BufferSize = 4 * 1024;
             client.UploadFile(fs, destinationPath);
-            // _logger.LogInformation($"Finished uploading file [{localFilePath}] to [{remoteDirectory}]");
         }
         catch (Exception exception)
         {
-            // _logger.LogError(exception, $"Failed in uploading file [{localFilePath}] to [{remoteDirectory}]");
+            _logger.LogError(exception, $"Failed in uploading file [{localFilePath}] to [{remoteDirectory}]");
+            _logger.LogError(exception.InnerException.Message);
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -90,11 +91,11 @@ public class SftpService : IDisposable
             client.Connect();
             await using var s = File.Create(localFilePath);
             client.DownloadFile(remoteFilePath, s);
-            //  _logger.LogInformation($"Finished downloading file [{localFilePath}] from [{remoteFilePath}]");
         }
         catch (Exception exception)
         {
-            //  _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
+             _logger.LogError(exception, $"Failed in downloading file [{localFilePath}] from [{remoteFilePath}]");
+             _logger.LogError(exception.InnerException.Message);
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -115,11 +116,11 @@ public class SftpService : IDisposable
         {
             client.Connect();
             client.DeleteFile(remoteFilePath);
-            //   _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
         catch (Exception exception)
         {
-            //  _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+             _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+             _logger.LogError(exception.InnerException.Message);
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally
@@ -147,11 +148,11 @@ public class SftpService : IDisposable
                 client.CreateDirectory(remoteFilePath);
                 checkAcces = client.Exists(remoteFilePath);
             }
-            //   _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
         catch (Exception exception)
         {
-            //  _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+             _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+             _logger.LogError(exception.InnerException.Message);
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally

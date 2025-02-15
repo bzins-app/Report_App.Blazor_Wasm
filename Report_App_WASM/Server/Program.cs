@@ -48,6 +48,8 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IRemoteDatabaseActionsHandler, RemoteDatabaseActionsHandler>();
 builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
 builder.Services.AddTransient<LocalFilesService>();
+builder.Services.AddTransient<SftpService>();
+builder.Services.AddTransient<FtpService>();
 builder.Services.AddTransient<InitializeDatabase>();
 
 builder.Services.Configure<IdentityOptions>(options =>
