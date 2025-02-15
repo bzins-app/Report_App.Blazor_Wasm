@@ -24,7 +24,7 @@ public class DepositPathController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value)
+    public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value,  CancellationToken ct)
     {
         if (value.EntityValue == null)
         {
@@ -42,7 +42,7 @@ public class DepositPathController : ControllerBase, IDisposable
             {
                 using var deposit = new FtpService(_context);
                 var result = await deposit.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
-                    value.EntityValue.FilePath, value.EntityValue.TryToCreateFolder);
+                    value.EntityValue.FilePath, value.EntityValue.TryToCreateFolder,ct);
                 return Ok(result);
             }
             else
