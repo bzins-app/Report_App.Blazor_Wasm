@@ -412,7 +412,7 @@
 
     private async Task DisplayEmailsErrorLogs()
     {
-        var _pageSize = _metrics.TasksInError <= 5 ? 5 : _metrics.TasksInError <= 10 ? 10 : 20;
+        var _pageSize = _metrics.EmailsInError <= 5 ? 5 : _metrics.EmailsInError <= 10 ? 10 : 20;
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
         var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from, ["DisplayEmails"]=false};
@@ -429,7 +429,7 @@
 
     private async Task DisplayUploadErrorLogs()
     {
-        var _pageSize = _metrics.TasksInError <= 5 ? 5 : _metrics.TasksInError <= 10 ? 10 : 20;
+        var _pageSize = _metrics.FileUploadsInError <= 5 ? 5 : _metrics.FileUploadsInError <= 10 ? 10 : 20;
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
         var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from};
