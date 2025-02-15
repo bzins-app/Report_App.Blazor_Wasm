@@ -4,7 +4,7 @@
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@Localizer.Get("Sftp configuration")</PageTitle>
+<PageTitle>@Localizer.Get("File upload configuration")</PageTitle>
 
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
@@ -15,7 +15,7 @@
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Sftp configuration")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("File upload configuration")</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -42,8 +42,11 @@
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationType)" Title="@Localizer.Get("Type")" Sortable="true" />
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Host)" Title="@Localizer.Get("Host")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Port)" Title="@Localizer.Get("Port")" Sortable="true"/>
+                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Port")" >
+                        <MudText>@(context.ConfigurationType==FileStorageConfigurationType.SFTP? context.Port.ToString():"Auto detect")</MudText>
+                    </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -98,7 +101,7 @@
         };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_fileUploadConfigurationFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
@@ -130,7 +133,7 @@
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_fileUploadConfigurationFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
@@ -155,7 +158,7 @@
         var value = new FileStorageConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_fileUploadConfigurationFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))

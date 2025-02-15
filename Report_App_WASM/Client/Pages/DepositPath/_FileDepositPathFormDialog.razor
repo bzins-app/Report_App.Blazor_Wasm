@@ -60,9 +60,7 @@
 @code {
 
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
-
     [Parameter] public FileStorageLocationDto Item { get; set; } = new();
-
     [Parameter] public CrudAction Action { get; set; }
 
     private List<SelectItem> _listConfigs = new();

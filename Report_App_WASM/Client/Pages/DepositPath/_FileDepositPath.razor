@@ -43,9 +43,10 @@
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FilePath)" Title="@Localizer.Get("File path")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TryToCreateFolder)" Title="@(Localizer.Get("Try to create folder") + "?")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.UseFileStorageConfiguration)" Title="@(Localizer.Get("Use a connection protocol") + "?")" Sortable="true" />
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.IsReachable)" Title="@(Localizer.Get("Is reachable") + "?")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.TryToCreateFolder)" Title="@(Localizer.Get("Try to create folder"))" Sortable="true"/>
+                    <Blazor.SimpleGrid.TemplateColumn Title="@(Localizer.Get("File upload configuration"))">
+                        <MudText>@(!context.UseFileStorageConfiguration? null : _listConfigs.Where(a=>a.Id==context.FileStorageLocationId).Select(a=>a.Name).FirstOrDefault())</MudText>
+                    </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -59,6 +60,13 @@
 
 @code
 {
+    private List<SelectItem> _listConfigs = new();
+    protected override async Task OnInitializedAsync()
+    {
+        var controllerActionListConfigs = "SftpInfo";
+        _listConfigs = await DataService.GetValues<SelectItem>(controllerActionListConfigs, ApiControllers.ApplicationParametersApi);
+    }
+
     protected override async Task<ApiResponse<FileStorageLocationDto>?> GetRemoteData(GridItemsProviderRequest<FileStorageLocationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
