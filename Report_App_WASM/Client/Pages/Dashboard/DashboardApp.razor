@@ -14,9 +14,9 @@
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
 <MudStack Row="true">
-    <MudSpacer />
+    <MudSpacer/>
     <MudText Style="align-content:center">@Localizer.Get("Latest update") @DateTime.Now</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")" />
+    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")"/>
 </MudStack>
 
 <MudGrid Spacing="2">
@@ -41,15 +41,15 @@
                     @if (_metrics.TasksInError > 0)
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5"  OnClick="DisplayTasksErrorLogs">@_metrics.TasksInError.ToString("N0")</MudLink>
-                            <MudText Typo="Typo.subtitle2"  Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("Error") : Localizer.Get("Errors"))</MudText>
+                            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large"/>
+                            <MudLink Typo="Typo.h5" OnClick="DisplayTasksErrorLogs">@_metrics.TasksInError.ToString("N0")</MudLink>
+                            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("Error") : Localizer.Get("Errors"))</MudText>
                         </MudStack>
                     }
                     else
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large" />
+                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large"/>
                             <MudText Typo="Typo.h5">@_metrics.TasksInError.ToString("N0")</MudText>
                             <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
@@ -78,15 +78,15 @@
                     @if (_metrics.EmailsInError > 0)
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
-                            <MudLink Typo="Typo.h5"  OnClick="DisplayEmailsErrorLogs">@_metrics.EmailsInError.ToString("N0")</MudLink>
-                            <MudText Typo="Typo.subtitle2"  Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large"/>
+                            <MudLink Typo="Typo.h5" OnClick="DisplayEmailsErrorLogs">@_metrics.EmailsInError.ToString("N0")</MudLink>
+                            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
                     }
                     else
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large" />
+                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large"/>
                             <MudText Typo="Typo.h5">@_metrics.EmailsInError.ToString("N0")</MudText>
                             <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
@@ -115,15 +115,15 @@
                     @if (_metrics.FileUploadsInError > 0)
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large" />
+                            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large"/>
                             <MudLink Typo="Typo.h5" OnClick="DisplayUploadErrorLogs">@_metrics.FileUploadsInError.ToString("N0")</MudLink>
-                            <MudText Typo="Typo.subtitle2"  Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
                     }
                     else
                     {
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large" />
+                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large"/>
                             <MudText Typo="Typo.h5">@_metrics.FileUploadsInError.ToString("N0")</MudText>
                             <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
                         </MudStack>
@@ -178,7 +178,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.DatasetLinked" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
                 <MudStack Spacing="1">
                     <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data link")</MudText>
-                    <MudStack Row Spacing="3" >
+                    <MudStack Row Spacing="3">
                         <MudStack Spacing="1" AlignItems="AlignItems.Center">
                             <MudText Typo="Typo.h5">@_metrics.ActiveSourceDataProvider.ToString("N0")</MudText>
                             <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Source")</MudText>
@@ -198,11 +198,11 @@
                 <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
                     @if (_isLoading)
                     {
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                     }
                     else
                     {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart" />
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart"/>
                     }
                 </MudPaper>
             </MudItem>
@@ -210,17 +210,17 @@
                 <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
                     @if (_isLoading)
                     {
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
                     }
                     else
                     {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart" />
+                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart"/>
                     }
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" sm="12" md="12" lg="12">
                 <MudPaper Elevation="2" Class="pa-2" Style="height: 220px;">
-                    <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" @ref="_dbFetch" />
+                    <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" @ref="_dbFetch"/>
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -229,18 +229,18 @@
         <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
             @if (_isLoading)
             {
-                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
             }
             else
             {
-                <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs" />
+                <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs"/>
             }
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="12" lg="6" xl="6">
         <MudItem xs="12" sm="12" lg="12" xl="12">
             <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage" />
+                <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage"/>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="12" lg="12" xl="12">
@@ -256,12 +256,12 @@
     </MudItem>
     <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs" />
+            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs"/>
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs" />
+            <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs"/>
         </MudPaper>
     </MudItem>
 </MudGrid>
@@ -415,7 +415,7 @@
         var _pageSize = _metrics.EmailsInError <= 5 ? 5 : _metrics.EmailsInError <= 10 ? 10 : 20;
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
-        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from, ["DisplayEmails"]=false};
+        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from, ["DisplayEmails"] = false };
         await DialogService.ShowAsync<_EmailSender>(Localizer.Get("Error logs"), parameters, options);
     }
 
@@ -432,7 +432,7 @@
         var _pageSize = _metrics.FileUploadsInError <= 5 ? 5 : _metrics.FileUploadsInError <= 10 ? 10 : 20;
         var _from = DateTime.Now.Date.ToUniversalTime();
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
-        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from};
+        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from };
         await DialogService.ShowAsync<_FileCreation>(Localizer.Get("Error logs"), parameters, options);
     }
 
@@ -443,4 +443,5 @@
         var parameters = new DialogParameters { ["From"] = _from, ["OnlyUpload"] = true };
         await DialogService.ShowAsync<_FileCreation>(Localizer.Get("Uploads logs"), parameters, options);
     }
+
 }

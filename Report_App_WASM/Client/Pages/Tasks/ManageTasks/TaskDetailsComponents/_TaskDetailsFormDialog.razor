@@ -7,17 +7,17 @@
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@(Action switch { CrudAction.Update => Icons.Material.Filled.Edit, CrudAction.Create => Icons.Material.Filled.Create, _ => Icons.Material.Filled.DeleteForever })" Class="mr-3 mb-n1"/>
             @Localizer.Get(Action switch
-                {
-                    CrudAction.Update => "Edit",
-                    CrudAction.Create => "Add",
-                    _ => "Delete"
-                })
+            {
+                CrudAction.Update => "Edit",
+                CrudAction.Create => "Add",
+                _ => "Delete"
+            })
         </MudText>
     </TitleContent>
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudGrid Spacing="2">
-                <MudItem sm="12" md="4" lg="3" xl="2" >
+                <MudItem sm="12" md="4" lg="3" xl="2">
                     <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" Required/>
                     <MudNumericField @bind-Value="Item.ExecutionOrder" Label="@Localizer.Get("Query sequence")"/>
                     @if (_taskType == TaskType.Report.ToString())
@@ -56,7 +56,7 @@
                         {
                             <MudTextField @bind-Value="_param.FileName" Label="@Localizer.Get("File name")"/>
                             <MudSelect T="string" Label="@Localizer.Get("Encoding type")" @bind-Value="@_param.EncodingType"
-                            Required>
+                                       Required>
                                 @foreach (EncodingType item in Enum.GetValues(typeof(EncodingType)))
                                 {
                                     <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
@@ -79,8 +79,8 @@
                         @if (_param.DataTransferUsePk)
                         {
                             <MudSelect T="string" Label="@Localizer.Get("Command behaviour")"
-                            @bind-Value="_param.DataTransferCommandBehaviour"
-                            Required>
+                                       @bind-Value="_param.DataTransferCommandBehaviour"
+                                       Required>
                                 @foreach (DataTransferAdvancedBehaviour item in Enum.GetValues(typeof(DataTransferAdvancedBehaviour)))
                                 {
                                     <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
@@ -88,7 +88,7 @@
                             </MudSelect>
                             <MudTextField T="string" Label="@Localizer.Get("Enter the primary key column")" @bind-Value="@_pKName"/>
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
-                            Class="ml-auto mt-3 mb-3" OnClick="@(Add)">
+                                       Class="ml-auto mt-3 mb-3" OnClick="@(Add)">
                                 @Localizer.Get("Add the primary key")
                             </MudButton>
                             <MudTable Items="@_param.DataTransferPk" Hover="true" Dense="true">
@@ -104,15 +104,15 @@
                                 </RowTemplate>
                             </MudTable>
                             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small"
-                            Class="ml-auto mt-3 mb-3" OnClick="@(DeleteTableConfirmation)">
+                                       Class="ml-auto mt-3 mb-3" OnClick="@(DeleteTableConfirmation)">
                                 @Localizer.Get("Delete the target table")
                             </MudButton>
                         }
                         else
                         {
                             <MudSelect T="string" Label="@Localizer.Get("Command behaviour")"
-                            @bind-Value="_param.DataTransferCommandBehaviour"
-                            Required>
+                                       @bind-Value="_param.DataTransferCommandBehaviour"
+                                       Required>
                                 @foreach (DataTransferBasicBehaviour item in Enum.GetValues(typeof(DataTransferBasicBehaviour)))
                                 {
                                     <MudSelectItem Value="@item.ToString()">@Localizer.Get(item.ToString())</MudSelectItem>
@@ -123,7 +123,7 @@
                 </MudItem>
                 <MudItem sm="12" md="8" lg="9" xl="10">
                     <MudPaper Outlined="true" Height="80vh">
-                        <_queryEditor DataProviderId="@Header.IdDataProvider" Options="@_opts" @bind-QueryText="@Item.Query" @bind-QueryParameters="_queryParameters" GlobalQueryParameters="_globalQueryParameters" Elevation="5" />
+                        <_queryEditor DataProviderId="@Header.IdDataProvider" Options="@_opts" @bind-QueryText="@Item.Query" @bind-QueryParameters="_queryParameters" GlobalQueryParameters="_globalQueryParameters" Elevation="5"/>
                     </MudPaper>
                 </MudItem>
             </MudGrid>
@@ -163,7 +163,7 @@
     private List<QueryCommandParameter> _queryParameters = new();
     private List<QueryCommandParameter> _globalQueryParameters = new();
     private _queryEditor.QueryEditorOptions _opts = new();
-  
+
     private string? _pKName;
 
     JsonSerializerOptions _jsonOpt = new()
@@ -186,8 +186,8 @@
             _paramHeader = JsonSerializer.Deserialize<ScheduledTaskParameters>(Header.TaskParameters, _jsonOpt) ?? new ScheduledTaskParameters();
         }
 
-        if ((Header.UseGlobalQueryParameters && Header.GlobalQueryParameters != "[]") ||
-            !string.IsNullOrEmpty(Header.GlobalQueryParameters))
+        if (Header != null && ((Header.UseGlobalQueryParameters && Header.GlobalQueryParameters != "[]") ||
+                               !string.IsNullOrEmpty(Header.GlobalQueryParameters)))
         {
             _globalQueryParameters = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Header.GlobalQueryParameters) ?? new();
         }
@@ -199,7 +199,7 @@
 
         _opts.EnableQueryParametersPanel = true;
         _opts.EditorTitle = Localizer.Get("Query editor");
-        if(_globalQueryParameters.Any()||_queryParameters.Any())
+        if (_globalQueryParameters.Any() || _queryParameters.Any())
         {
             _opts.DefaultPanel = _queryEditor.EditorPanel.QueryParameters;
         }
@@ -241,7 +241,7 @@
         {
             if (a != null) a.ParameterIdentifier = a.ParameterIdentifier.RemoveSpecialCharacters();
         });
-        Item!.QueryParameters = JsonSerializer.Serialize(_queryParameters);
+        Item.QueryParameters = JsonSerializer.Serialize(_queryParameters);
     }
 
 

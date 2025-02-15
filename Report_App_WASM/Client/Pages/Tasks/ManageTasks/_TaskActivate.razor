@@ -15,7 +15,7 @@
         if (!result.Success)
         {
             Item.IsEnabled = !value;
-            Snackbar.Add(Localizer.Get(Item.TaskName +" "+ "An error has occurred"), Severity.Error);
+            Snackbar.Add(Localizer.Get(Item.TaskName + " " + "An error has occurred"), Severity.Error);
             if (result.Message != null) Snackbar.Add(Item.TaskName + " " + result.Message, Severity.Error);
             return;
         }

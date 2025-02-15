@@ -38,8 +38,8 @@
                                 @if (_activities.Any())
                                 {
                                     <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
-                                    SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 250px"
-                                    Required>
+                                               SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 250px"
+                                               Required>
                                         @foreach (var value in _activities)
                                         {
                                             <MudSelectItem Value="@value.DataProviderId">@value.ProviderName</MudSelectItem>
@@ -87,14 +87,16 @@
                 </MudGrid>
             </MudForm>
             <MudStack Row>
-                <MudSpacer />
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="RenderQuery" Size="Size.Small"><MudText>@Localizer.Get("Simulate rendering")</MudText></MudButton>
+                <MudSpacer/>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="RenderQuery" Size="Size.Small">
+                    <MudText>@Localizer.Get("Simulate rendering")</MudText>
+                </MudButton>
             </MudStack>
         }
         <MudPaper Outlined="true" Height="70vh">
             @if (Item != null)
             {
-                <_queryEditor DataProviderId="@Item.IdDataProvider" Options="@_opts" @bind-QueryText="@Item.Query" @bind-QueryParameters="param" Elevation="5" />
+                <_queryEditor DataProviderId="@Item.IdDataProvider" Options="@_opts" @bind-QueryText="@Item.Query" @bind-QueryParameters="param" Elevation="5"/>
             }
         </MudPaper>
     </MudCardContent>
@@ -137,7 +139,7 @@
         _changesToSave = false;
         param.Clear();
 
-        if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
         {
             var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
             foreach (var value in desParam!)
@@ -162,7 +164,7 @@
             }
         }
 
-        if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
+        if (Item.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
@@ -175,7 +177,6 @@
         var uriTags = $"{ApiControllers.CrudDataApi}GetTagsQueries";
         _AvailableTags = (await Http.GetFromJsonAsync<List<string>>(uriTags))!;
     }
-
 
 
     private async Task Back()
@@ -209,6 +210,7 @@
                     Snackbar.Add(Localizer.Get("Please check the form"), Severity.Error);
                     return;
                 }
+
                 if (Item != null)
                 {
                     Item.Parameters = JsonSerializer.Serialize(parameters);
@@ -227,7 +229,6 @@
                     }
                 }
             }
-
         }
         catch (Exception e)
         {
@@ -238,7 +239,7 @@
     private void OnSelectedItemChangedHandler(IEnumerable<long> actId)
     {
         var _DataProviderId = actId.FirstOrDefault();
-        Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
+        Item.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
         Item.IdDataProvider = Item.DataProvider.DataProviderId;
         Item.ProviderName = Item.DataProvider.ProviderName;
     }

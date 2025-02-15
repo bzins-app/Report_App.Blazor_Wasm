@@ -77,13 +77,13 @@
                         }
                         <MudItem>
                             <MudIconButton Variant="Variant.Outlined"
-                            OnClick="@(SaveConfiguration)"
-                            Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                                           OnClick="@(SaveConfiguration)"
+                                           Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
                         </MudItem>
                         <MudItem>
                             <MudMenu Variant="Variant.Outlined"
-                            Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" @ref="_menu"
-                            Dense="true">
+                                     Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" @ref="_menu"
+                                     Dense="true">
                                 <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
                                     @foreach (var config in _userConfigs)
                                     {
@@ -110,8 +110,8 @@
                         </MudItem>
                         <MudItem>
                             <MudIconButton Variant="Variant.Outlined"
-                            OnClick="@(ExtractElements)"
-                            Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                                           OnClick="@(ExtractElements)"
+                                           Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
                         </MudItem>
                     </MudGrid>
                 </div>
@@ -196,7 +196,7 @@
     string? _sortingDirection;
     private int NbrColumns;
     private int _rowsPerPage = 100;
-    string _queryToRun;
+    string _queryToRun = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -205,7 +205,7 @@
 
         QueryId = Item.Id;
 
-        if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
         {
             var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
             foreach (var value in desParam!)
@@ -230,7 +230,7 @@
             }
         }
 
-        if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
+        if (Item.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
@@ -393,7 +393,7 @@
 
     private async Task RunQuery()
     {
-        _queryToRun = Item.Query;
+        if (Item.Query != null) _queryToRun = Item.Query;
         _hasTotal = false;
         if (param.Count > 0)
         {

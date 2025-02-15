@@ -8,17 +8,17 @@
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(OnRefresh)"
-                Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
+                               Size="Size.Small"
+                               OnClick="@(OnRefresh)"
+                               Icon="@Icons.Material.Filled.Refresh" title="@Localizer.Get("Refresh")" Disabled="@_rendering"/>
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(RemoveFilters)"
-                Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
+                               Size="Size.Small"
+                               OnClick="@(RemoveFilters)"
+                               Icon="@Icons.Material.Filled.FilterAltOff" title="@Localizer.Get("Remove filters")" Disabled="@_rendering"/>
                 <MudIconButton Variant="Variant.Outlined"
-                Size="Size.Small"
-                OnClick="@(ExtractElements)"
-                Icon="@Icons.Material.Filled.Download" title="@Localizer.Get("Download")" Disabled="@_rendering"/>
+                               Size="Size.Small"
+                               OnClick="@(ExtractElements)"
+                               Icon="@Icons.Material.Filled.Download" title="@Localizer.Get("Download")" Disabled="@_rendering"/>
             </MudStack>
         </MudCardHeader>
         <MudCardContent>
@@ -88,8 +88,7 @@
             if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
             else url += "&$filter=" + customFilters;
         }
-        else
-        if (string.IsNullOrEmpty(odataQuery))
+        else if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
@@ -97,6 +96,7 @@
         {
             url += odataQuery;
         }
+
         try
         {
             return await DataService.GetODataValues<TaskLogDto>(url, req.CancellationToken);
@@ -130,6 +130,7 @@
         {
             url += odataQuery;
         }
+
         url += odataQuery;
         await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
@@ -148,7 +149,6 @@
         customFilters = string.Empty;
         if (Error.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and Error eq {Error.Value.ToString().ToLower()}";
@@ -158,9 +158,9 @@
                 customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
             }
         }
+
         if (ScheduledTaskId.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and ScheduledTaskId eq {ScheduledTaskId.Value}";
@@ -170,9 +170,9 @@
                 customFilters = $"ScheduledTaskId eq {ScheduledTaskId.Value}";
             }
         }
+
         if (From.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
@@ -182,6 +182,7 @@
                 customFilters = $"StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
             }
         }
+
         if (To.HasValue)
         {
             if (!string.IsNullOrEmpty(customFilters))

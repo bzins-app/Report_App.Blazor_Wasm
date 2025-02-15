@@ -24,7 +24,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     public BackgroundWorkers(
         ApplicationDbContext context, IEmailSender emailSender, IRemoteDatabaseActionsHandler dbReader,
         LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment,
-        IServiceScopeFactory scopeFactory , FtpService ftp, SftpService sftp)
+        IServiceScopeFactory scopeFactory, FtpService ftp, SftpService sftp)
     {
         _context = context;
         _emailSender = emailSender;
@@ -253,7 +253,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             else if (parameters.TaskType == TaskType.Report)
             {
                 using var handler = new ReportHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
-                    _hostingEnvironment,_ftp, _sftp);
+                    _hostingEnvironment, _ftp, _sftp);
                 await handler.HandleReportTask(parameters);
             }
         }

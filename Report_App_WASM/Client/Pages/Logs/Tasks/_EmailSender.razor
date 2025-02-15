@@ -29,7 +29,7 @@
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EmailTitle)" Title="@Localizer.Get("Email title")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.NbrOfRecipients)" Title="@Localizer.Get("Nbr of recipients")" Sortable="true" />
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.NbrOfRecipients)" Title="@Localizer.Get("Nbr of recipients")" Sortable="true"/>
                     @if (DisplayEmails)
                     {
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RecipientList)" Title="@Localizer.Get("List of recipient")" Sortable="true"/>
@@ -87,8 +87,7 @@
             if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
             else url += "&$filter=" + customFilters;
         }
-        else
-        if (string.IsNullOrEmpty(odataQuery))
+        else if (string.IsNullOrEmpty(odataQuery))
         {
             url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
@@ -130,6 +129,7 @@
         {
             url += odataQuery;
         }
+
         url += odataQuery;
         await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
@@ -141,7 +141,6 @@
         customFilters = string.Empty;
         if (Error.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and Error eq {Error.Value.ToString().ToLower()}";
@@ -151,9 +150,9 @@
                 customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
             }
         }
+
         if (From.HasValue)
         {
-
             if (!string.IsNullOrEmpty(customFilters))
             {
                 customFilters += $" and StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
@@ -163,6 +162,7 @@
                 customFilters = $"StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
             }
         }
+
         if (To.HasValue)
         {
             if (!string.IsNullOrEmpty(customFilters))
