@@ -2663,7 +2663,7 @@
     <value>Configuration du téléchargement de fichiers</value>
   </data>
   <data name="cannot be enabled because the related data link is not enabled" xml:space="preserve">
-    <value>ne peut pas être activé car l'activité n'est pas activée</value>
+    <value>ne peut pas être démarré  car la connexion n'est pas activée</value>
   </data>
   <data name="cannot be enabled because the email list is not defined" xml:space="preserve">
     <value>ne peut être activée car aucun destinaire n'a été défini</value>
@@ -2672,12 +2672,12 @@
     <value>ne peut être activée car aucune requête n'a été définie</value>
   </data>
   <data name="Running" xml:space="preserve">
-    <value>En cours d'exécution</value>
+    <value>Activé</value>
   </data>
   <data name="Stopped" xml:space="preserve">
     <value>Stoppé</value>
   </data>
   <data name="Direct to folder" xml:space="preserve">
-    <value>Directement vers un dossier</value>
+    <value>Dossier local</value>
   </data>
 </root>
