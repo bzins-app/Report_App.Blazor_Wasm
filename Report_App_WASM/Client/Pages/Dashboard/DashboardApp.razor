@@ -301,7 +301,7 @@
                             <td>@x.Service</td>
                             <td>
                                 <MudStack Spacing="1" Row>
-                                    <MudText>@(x.Status ? "Running" : "Stopped")</MudText>
+                                    <MudText>@(x.Status ? Localizer.Get("Running"):Localizer.Get("Stopped"))</MudText>
                                     @if (x.Status)
                                     {
                                         <MudIcon Icon="@Icons.Material.Outlined.Settings" Size="Size.Small" Style="animation: rotation 5s infinite linear;margin-left: 5px;" />
