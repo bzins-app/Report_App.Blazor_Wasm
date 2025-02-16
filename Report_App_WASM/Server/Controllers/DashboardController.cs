@@ -93,6 +93,23 @@ public class DashboardController : ControllerBase, IDisposable
             }).ToListAsync();
     }
 
+    [HttpGet("UploadHistoric")]
+    public async Task<List<HistoricalProtocolFileGeneration>> GetUploadHistoricAsync()
+    {
+        var dateThreshold = DateTime.Today.AddDays(-10);
+        return await _context.ReportGenerationLog.AsNoTracking()
+            .Where(a => a.CreatedAt.Date > dateThreshold )
+            .GroupBy(a => new { a.CreatedAt.Date })
+            .Select(a => new HistoricalProtocolFileGeneration
+            {
+                Date = a.Key.Date,
+                NbrOfFTP = a.Sum(a=>a.FileGenerationType==FileGenerationType.Ftp?1:0),
+                NbrOfFTPs = a.Sum(a=>a.FileGenerationType==FileGenerationType.Ftps?1:0),
+                NbrOfsftp = a.Sum(a=>a.FileGenerationType==FileGenerationType.Sftp?1:0),
+                NbrOfDirectToFolder = a.Sum(a=>a.FileGenerationType==FileGenerationType.DirectToFolder?1:0)
+            }).ToListAsync();
+    }
+
     [HttpGet("SystemLogs")]
     public async Task<List<TaksSystemValues>> GetSystemLogsAsync()
     {
