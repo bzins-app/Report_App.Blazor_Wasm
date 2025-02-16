@@ -39,6 +39,7 @@
             }
             @if (UseAllParameters)
             {
+                <MudNumericField @bind-Value="_param.DisplaySequence" Label="@Localizer.Get("Display sequence")" />
                 <MudSwitch T="bool" @bind-Value="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
                 <MudSwitch T="bool" @bind-Value="_param.HideParameter" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
             }

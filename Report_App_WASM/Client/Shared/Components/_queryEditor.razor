@@ -153,8 +153,8 @@
                 <RowTemplate>
                     <MudTd>
                         <MudStack Row Spacing="1">
-                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Size="Size.Small"/>
                             <MudIconButton Icon="@Icons.Material.Outlined.Edit" Color="Color.Default" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" Size="Size.Small"/>
+                            <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Size="Size.Small"/>
                         </MudStack>
                     </MudTd>
                     <MudTd Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DisplayName</MudTd>
@@ -886,7 +886,7 @@
 
     private async Task OpenEditDialog(QueryCommandParameter element)
     {
-        var CopyElement = new QueryCommandParameter { DisplayName = element.DisplayName, ParameterIdentifier = element.ParameterIdentifier, Value = element.Value, ValueType = element.ValueType, DateOption = element.DateOption, Required = element.Required };
+        var CopyElement = new QueryCommandParameter { DisplayName = element.DisplayName, ParameterIdentifier = element.ParameterIdentifier, Value = element.Value, ValueType = element.ValueType, DateOption = element.DateOption, Required = element.Required, HideParameter = element.HideParameter, DisplaySequence = element.DisplaySequence};
         var parameters = new DialogParameters<_QueryParametersFormDialog> { { x => x._param, CopyElement }, { a => a.UseAllParameters, Options.DisplayAllParametersForQueryParmaters } };
         var dialog = await DialogService.ShowAsync<_QueryParametersFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
@@ -901,6 +901,8 @@
                 element.ValueType = CopyElement.ValueType;
                 element.DisplayName = CopyElement.DisplayName;
                 element.Required = CopyElement.Required;
+                element.HideParameter = CopyElement.HideParameter;
+                element.DisplaySequence = CopyElement.DisplaySequence;
                 await QueryParametersChanged.InvokeAsync(QueryParameters);
             }
         }
