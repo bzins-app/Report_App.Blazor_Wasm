@@ -270,7 +270,7 @@
                     @foreach (var x in _uploadHostoricList.OrderByDescending(a => a.Date))
                     {
                         <tr>
-                            <td>@x.Date</td>
+                            <td>@x.Date.ToShortDateString()</td>
                             <td>@x.NbrOfFTP</td>
                             <td>@x.NbrOfFTPs</td>
                             <td>@x.NbrOfsftp</td>
