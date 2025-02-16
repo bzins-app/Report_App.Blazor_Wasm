@@ -2679,4 +2679,7 @@
   <data name="Direct to folder" xml:space="preserve">
     <value>Direct naar map</value>
   </data>
+  <data name="Use a connection protocol" xml:space="preserve">
+    <value>Een verbindingsprotocol gebruiken</value>
+  </data>
 </root>
