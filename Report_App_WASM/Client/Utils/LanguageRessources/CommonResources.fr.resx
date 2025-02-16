@@ -2660,7 +2660,7 @@
     <value>Choisir une configuration</value>
   </data>
   <data name="File upload configuration" xml:space="preserve">
-    <value>Configuration du téléchargement de fichiers</value>
+    <value>Connexions aux serveurs d'échanges de fichiers</value>
   </data>
   <data name="cannot be enabled because the related data link is not enabled" xml:space="preserve">
     <value>ne peut pas être démarré  car la connexion n'est pas activée</value>
@@ -2679,5 +2679,8 @@
   </data>
   <data name="Direct to folder" xml:space="preserve">
     <value>Dossier local</value>
+  </data>
+  <data name="Use a connection protocol" xml:space="preserve">
+    <value>Utiliser un protocole de connexion</value>
   </data>
 </root>

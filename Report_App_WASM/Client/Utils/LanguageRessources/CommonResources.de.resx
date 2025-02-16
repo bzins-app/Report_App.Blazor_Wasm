@@ -2679,4 +2679,7 @@
   <data name="Direct to folder" xml:space="preserve">
     <value>Direkt zum Ordner</value>
   </data>
+  <data name="Use a connection protocol" xml:space="preserve">
+    <value>Ein Verbindungsprotokoll verwenden</value>
+  </data>
 </root>
