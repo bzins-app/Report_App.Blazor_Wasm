@@ -273,7 +273,7 @@
   <data name="Already uploaded?" xml:space="preserve">
     <value>Al geupload?</value>
   </data>
-  <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
+  <data name="An activity is basically a connection to a  specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
     <value>Een activiteit is in principe een verbinding met een specifieke database server en schema. Je kunt er een depotpad, een naam en een logo aan koppelen. Wanneer je een activiteit aanmaakt, wordt op de achtergrond een rol met dezelfde naam aangemaakt</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
@@ -2654,5 +2654,29 @@
   </data>
   <data name="Nbr of recipients" xml:space="preserve">
     <value>Aantal ontvangers</value>
+  </data>
+  <data name="Choose a configuration" xml:space="preserve">
+    <value>Kies een configuratie</value>
+  </data>
+  <data name="File upload configuration" xml:space="preserve">
+    <value>Configuratie uploaden bestand</value>
+  </data>
+  <data name="cannot be enabled because the related data link is not enabled" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat de gerelateerde gegevenskoppeling niet is ingeschakeld</value>
+  </data>
+  <data name="cannot be enabled because the email list is not defined" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat de e-maillijst niet is gedefinieerd</value>
+  </data>
+  <data name="cannot be enabled because no queries have been set" xml:space="preserve">
+    <value>kan niet worden ingeschakeld omdat er geen query's zijn ingesteld</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Loopt</value>
+  </data>
+  <data name="Stopped" xml:space="preserve">
+    <value>Gestopt</value>
+  </data>
+  <data name="Direct to folder" xml:space="preserve">
+    <value>Direct naar map</value>
   </data>
 </root>

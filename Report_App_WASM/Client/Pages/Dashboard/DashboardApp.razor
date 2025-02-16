@@ -255,8 +255,30 @@
         </MudItem>
     </MudItem>
     <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
-        <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs" />
+        <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
+            <MudSimpleTable Style="overflow: auto;width:100%" Dense="true" Elevation="0">
+                <thead>
+                    <tr>
+                        <th>@Localizer.Get("Date")</th>
+                        <th>FTP</th>
+                        <th>FTPs</th>
+                        <th>sFTP</th>
+                        <th>@Localizer.Get("Direct to folder")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var x in _uploadHostoricList.OrderByDescending(a => a.Date))
+                    {
+                        <tr>
+                            <td>@x.Date</td>
+                            <td>@x.NbrOfFTP</td>
+                            <td>@x.NbrOfFTPs</td>
+                            <td>@x.NbrOfsftp</td>
+                            <td>@x.NbrOfDirectToFolder</td>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
@@ -298,30 +320,8 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
-        <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
-            <MudSimpleTable Style="overflow: auto;width:100%" Dense="true" Elevation="0">
-                <thead>
-                    <tr>
-                        <th>@Localizer.Get("Date")</th>
-                        <th>FTP</th>
-                        <th>FTPs</th>
-                        <th>sFTP</th>
-                        <th>@Localizer.Get("Direct to folder")</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var x in _uploadHostoricList.OrderByDescending(a=>a.Date))
-                    {
-                        <tr>
-                            <td>@x.Date</td>
-                            <td>@x.NbrOfFTP</td>
-                            <td>@x.NbrOfFTPs</td>
-                            <td>@x.NbrOfsftp</td>
-                            <td>@x.NbrOfDirectToFolder</td>
-                        </tr>
-                    }
-                </tbody>
-            </MudSimpleTable>
+        <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
+            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs" />
         </MudPaper>
     </MudItem>
 </MudGrid>
