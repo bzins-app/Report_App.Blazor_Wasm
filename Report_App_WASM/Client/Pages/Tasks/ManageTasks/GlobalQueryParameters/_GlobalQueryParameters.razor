@@ -6,58 +6,58 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="text-transform: none" Size="Size.Small" OnClick="OpenCreateDialog">@Localizer.Get("Add a parameter")</MudButton>
     </MudCardContent>
     <MudCardContent Style="overflow:auto;height:100%">
-        <MudTable Items="_parameters.OrderBy(a => a.DisplaySequence)" Hover="true" Dense HorizontalScrollbar Height="30vh">
+        <MudTable Items="_parameters.OrderBy(a => a.DisplaySequence)" Hover="true" Dense HorizontalScrollbar Height="30vh" FixedHeader="true">
+            <HeaderContent>
+                <MudTh Style="text-wrap-mode: nowrap;"></MudTh>
+                <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Display name")</MudTh>
+                <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Display sequence")</MudTh>
+                <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Identifier")</MudTh>
+                <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Data type") @Localizer.Get("Value")</MudTh>
+                <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Required")</MudTh>
+                <MudTh Style="text-wrap-mode: nowrap;">@Localizer.Get("Hide")</MudTh>
+            </HeaderContent>
+
             <RowTemplate>
-                <MudTd DataLabel="@Localizer.Get("Delete")" Style="width:10px">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")" Class="pa-2"/>
-                </MudTd>
-                <MudTd Style="min-width:200px">
-                    <MudTextField @bind-Value="@context.DisplayName" @bind-Value:after="UpdateParameters" T="string" Label="@Localizer.Get("Display name")" Margin="Margin.Dense"/>
-                </MudTd>
-                <MudTd Style="width:200px;min-width:200px">
-                    <MudNumericField Label="@Localizer.Get("Display sequence")" @bind-Value="@(context.DisplaySequence)" @bind-Value:after="UpdateParameters" Margin="Margin.Dense"/>
-                </MudTd>
-                <MudTd Style="min-width:200px">
-                    <MudTextField @bind-Value="@context.ParameterIdentifier" @bind-Value:after="UpdateParameters" T="string" Label="@Localizer.Get("Parameter identifier")" Margin="Margin.Dense"/>
-                </MudTd>
-                <MudTd Style="min-width:200px">
-                    <MudField Label="@Localizer.Get("Data type")" Margin="Margin.Dense"> @Localizer.Get(context.ValueType.ToString())</MudField>
-                </MudTd>
                 <MudTd>
-                    @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
-                    {
-                        <MudStack Row>
-                            <MudSelect @bind-Value="context.DateOption" Label="@Localizer.Get("Select a date calculation")" @bind-Value:after="UpdateParameters" Dense Margin="Margin.Dense">
-                                @foreach (CalulatedDateOption item in Enum.GetValues(typeof(CalulatedDateOption)))
+                    <MudStack Row Spacing="1">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Edit" Color="Color.Default" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
+                        <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")"/>
+                    </MudStack>
+                </MudTd>
+                <MudTd>@context.DisplayName</MudTd>
+                <MudTd>@context.DisplaySequence</MudTd>
+                <MudTd >@context.ParameterIdentifier</MudTd>
+                <MudTd>
+                    <MudStack Row Spacing="1">
+                        @context.ValueType
+                        @if (context.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
+                        {
+                            @*  <MudText Style="text-wrap-mode: nowrap;font-size:.75rem">@context.DateOption</MudText> *@
+                            <MudText >
+                                @if (context.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
                                 {
-                                    <MudSelectItem Value="@item">@Localizer.Get(item.ToString())</MudSelectItem>
+                                    var valueDateTime = DateTime.Now;
+                                    @(context.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date.ToString("d") : valueDateTime)
                                 }
-                            </MudSelect>
-                            @if (context.DateOption is CalulatedDateOption.Now or CalulatedDateOption.LastRun)
-                            {
-                                var valueDateTime = context.DateOption == CalulatedDateOption.Now ? DateTime.Now : Item!.LastRunDateTime ?? DateTime.Now;
-                                <MudField Style="min-width:200px" Margin="Margin.Dense" Label="@Localizer.Get("Calculated date")">@(context.ValueType == QueryCommandParameterValueType.Date ? valueDateTime.Date.ToString("d") : valueDateTime)</MudField>
-                            }
-                            else
-                            {
-                                <MudField Style="min-width:200px" Margin="Margin.Dense" Label="@Localizer.Get("Calculated date")">@(context.ValueType == QueryCommandParameterValueType.Date ? context.DateOption.GetCalculateDateTime().Date.ToString("d") : context.DateOption.GetCalculateDateTime())</MudField>
-                            }
-                        </MudStack>
-                    }
-                    @if (context.ValueType == QueryCommandParameterValueType.String)
-                    {
-                        <MudTextField InputType="InputType.Text" Label="@Localizer.Get("Enter value")" @bind-Value="@context.Value" @bind-Value:after="UpdateParameters" Text="@context.Value"/>
-                    }
-                    @if (context.ValueType == QueryCommandParameterValueType.Number)
-                    {
-                        <MudTextField InputType="InputType.Number" Label="@Localizer.Get("Enter value")" @bind-Value="@(context.Value)" @bind-Value:after="UpdateParameters" Text="@context.Value"/>
-                    }
+                                else
+                                {
+                                    @(context.ValueType == QueryCommandParameterValueType.Date ? context.DateOption.GetCalculateDateTime().Date.ToString("d") : context.DateOption.GetCalculateDateTime())
+                                }
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudText >
+                                @context.Value
+                            </MudText>
+                        }
+                    </MudStack>
                 </MudTd>
                 <MudTd>
-                    <MudSwitch @bind-Value="@context.Required" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
+                    <MudSwitch @bind-Value="@context.Required" @bind-Value:after="UpdateParameters"  Color="Color.Primary" />
                 </MudTd>
                 <MudTd>
-                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Label="@Localizer.Get("Hide")" Color="Color.Primary"/>
+                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Color="Color.Primary" />
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -130,4 +130,27 @@
         }
     }
 
+    private async Task OpenEditDialog(QueryCommandParameter element)
+    {
+        var CopyElement = new QueryCommandParameter { DisplayName = element.DisplayName, ParameterIdentifier = element.ParameterIdentifier, Value = element.Value, ValueType = element.ValueType, DateOption = element.DateOption, Required = element.Required , HideParameter = element.HideParameter, DisplaySequence = element.DisplaySequence};
+        var parameters = new DialogParameters<_QueryParametersFormDialog> { { x => x._param, CopyElement }, { a => a.UseAllParameters,true } };
+        var dialog = await DialogService.ShowAsync<_QueryParametersFormDialog>("Edit", parameters);
+        var feedback = await dialog.Result;
+
+        if (!(feedback is { Canceled: true }))
+        {
+            if (feedback != null)
+            {
+                element.ParameterIdentifier = CopyElement.ParameterIdentifier;
+                element.DateOption = CopyElement.DateOption;
+                element.Value = CopyElement.Value;
+                element.ValueType = CopyElement.ValueType;
+                element.DisplayName = CopyElement.DisplayName;
+                element.Required = CopyElement.Required;
+                element.HideParameter = CopyElement.HideParameter;
+                element.DisplaySequence = CopyElement.DisplaySequence;
+                await UpdateParameters();
+            }
+        }
+    }
 }
