@@ -10,9 +10,13 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 {
     public class ReportHandler : ScheduledTaskHandler
     {
+        private readonly FtpService _ftp;
+        private readonly SftpService _sftp;
+
         public ReportHandler(ApplicationDbContext context, IEmailSender emailSender,
             IRemoteDatabaseActionsHandler dbReader, LocalFilesService fileDeposit, IMapper mapper,
-            IWebHostEnvironment hostingEnvironment) : base(context, emailSender, dbReader, fileDeposit, mapper,
+            IWebHostEnvironment hostingEnvironment, FtpService ftp, SftpService sftp) : base(context, emailSender,
+            dbReader, fileDeposit, mapper,
             hostingEnvironment)
         {
             _context = context;
@@ -21,6 +25,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
             _fileDeposit = fileDeposit;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
+            _ftp = ftp;
+            _sftp = sftp;
         }
 
 
@@ -48,8 +54,8 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var _resultInfo = "Ok";
                 if (_header.SendByEmail && _header.DistributionLists.Select(a => a.Recipients).FirstOrDefault() != "[]")
                     _emails = JsonSerializer.Deserialize<List<EmailRecipient>>(_header.DistributionLists
-                        .Select(a => a.Recipients).FirstOrDefault()!);
-                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails;
+                        .Select(a => a.Recipients).FirstOrDefault()!)!;
+                if (_jobParameters.ManualRun) _emails = _jobParameters.CustomEmails!;
 
                 foreach (var detail in _header.TaskQueries.OrderBy(a => a.ExecutionOrder))
                 {
@@ -60,7 +66,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 await GenerateFile();
                 foreach (var f in _fileResults)
                 {
-                    await WriteFileAsync(f, f.FileName, _jobParameters.GenerateFiles, f.FileName);
+                    await WriteFileAsync(f, f.FileName, _jobParameters.GenerateFiles);
                 }
 
                 await GenerateEmail();
@@ -87,7 +93,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 var emailPrefix = await _context.SystemParameters.Select(a => a.EmailPrefix).FirstOrDefaultAsync();
                 var subject = emailPrefix + " - " + _header.ProviderName + ": " + _header.TaskName;
 
-                List<Attachment> listAttach = new();
+                List<Attachment>? listAttach = new();
                 listAttach.AddRange(_fileResults.Select(a =>
                     new Attachment(new MemoryStream(a.Content), a.FileName, a.ContentType)).ToList());
 
@@ -114,12 +120,11 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
 
         private async ValueTask WriteFileAsync(MemoryFileContainer fileResult, string fName,
-            bool useDepositConfiguration,
-            string? subName = null)
+            bool useDepositConfiguration)
         {
             var localFileResult = await _fileDeposit.SaveFileForBackupAsync(fileResult, fName);
             if (!localFileResult.Success)
-                await _emailSender.GenerateErrorEmailAsync(localFileResult.Message, "Local file writing: ");
+                await _emailSender.GenerateErrorEmailAsync(localFileResult.Message!, "Local file writing: ");
 
             ReportGenerationLog filecreationLocal = new()
             {
@@ -177,12 +182,13 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                 {
                     var storagePath = Path.Combine(_hostingEnvironment.WebRootPath, "docsstorage");
                     var localfilePath = Path.Combine(storagePath, fName);
-                    if (config.FileStorageConfiguration.ConfigurationType==FileStorageConfigurationType.FTP)
+                    if (config.FileStorageConfiguration.ConfigurationType == FileStorageConfigurationType.FTP)
                     {
                         filecreationRemote.FileGenerationType = FileGenerationType.Ftp;
                         completePath = "FTP Host:" + config.FileStorageConfiguration.Host + " Path:" + config.FilePath;
-                        using var ftp = new FtpService(_context);
-                        resultDeposit = await ftp.UploadFileAsync(config.FileStorageConfiguration.FileStorageConfigurationId,
+                        using var ftp = _ftp;
+                        resultDeposit = await ftp.UploadFileAsync(
+                            config.FileStorageConfiguration.FileStorageConfigurationId,
                             localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                         await _context.AddAsync(new TaskStepLog
                         {
@@ -193,12 +199,30 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
                             RelatedLogId = filecreationRemote.Id
                         });
                     }
+                    else if (config.FileStorageConfiguration.ConfigurationType == FileStorageConfigurationType.FTPs)
+                    {
+                        filecreationRemote.FileGenerationType = FileGenerationType.Ftps;
+                        completePath = "FTPs Host:" + config.FileStorageConfiguration.Host + " Path:" + config.FilePath;
+                        using var ftp = _ftp;
+                        resultDeposit = await ftp.UploadFileAsync(
+                            config.FileStorageConfiguration.FileStorageConfigurationId,
+                            localfilePath, config.FilePath, fName, config.TryToCreateFolder);
+                        await _context.AddAsync(new TaskStepLog
+                        {
+                            TaskLogId = _taskId,
+                            Step = "File FTPs drop",
+                            Info = config.FilePath,
+                            RelatedLogType = LogType.ReportGenerationLog,
+                            RelatedLogId = filecreationRemote.Id
+                        });
+                    }
                     else
                     {
                         filecreationRemote.FileGenerationType = FileGenerationType.Sftp;
                         completePath = "Sftp Host:" + config.FileStorageConfiguration.Host + " Path:" + config.FilePath;
-                        using var sftp = new SftpService(_context);
-                        resultDeposit = await sftp.UploadFileAsync(config.FileStorageConfiguration.FileStorageConfigurationId,
+                        using var sftp = _sftp;
+                        resultDeposit = await sftp.UploadFileAsync(
+                            config.FileStorageConfiguration.FileStorageConfigurationId,
                             localfilePath, config.FilePath, fName, config.TryToCreateFolder);
                         await _context.AddAsync(new TaskStepLog
                         {
@@ -228,7 +252,7 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
                 if (!resultDeposit.Success)
                 {
-                    await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message, "File deposit: ");
+                    await _emailSender.GenerateErrorEmailAsync(resultDeposit.Message!, "File deposit: ");
                     await _context.AddAsync(new TaskStepLog
                     {
                         TaskLogId = _taskId,
@@ -341,9 +365,9 @@ namespace Report_App_WASM.Server.Services.BackgroundWorker
 
             if (excelMultipleTabs.Any())
             {
-                fName = string.IsNullOrEmpty(headerParam?.ExcelFileName)
+                fName = string.IsNullOrEmpty(headerParam?.SpecificFileNaming)
                     ? $"{_header.ProviderName.RemoveSpecialExceptSpaceCharacters()}-{_header.TaskName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}"
-                    : $"{headerParam.ExcelFileName.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
+                    : $"{headerParam.SpecificFileNaming.RemoveSpecialExceptSpaceCharacters()}_{DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"}";
 
                 MemoryFileContainer fileCreated;
                 if (!headerParam!.UseAnExcelTemplate)

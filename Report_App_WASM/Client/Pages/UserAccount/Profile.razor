@@ -111,8 +111,8 @@
 </ErrorBoundary>
 
 @code {
-    private MudForm _form = default!;
-    private MudForm _passwordform = default!;
+    private MudForm _form = null!;
+    private MudForm _passwordform = null!;
 
     private UserProfile Model { get; } = new();
     private readonly UserProfileEditValidator _userValidator = new();

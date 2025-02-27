@@ -46,7 +46,7 @@
     private List<CronParameters>? _crons = new();
     SimpleGrid<CronEditView>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 10 };
-    SimpleGridFieldsContent? _translations = default!;
+    SimpleGridFieldsContent? _translations = null!;
     private List<CronEditView> _elements = new();
     DialogOptions _dialogOptions = new() { CloseOnEscapeKey = false, BackdropClick = false, MaxWidth = MaxWidth.Large, FullWidth = true };
     private bool _disable;
@@ -94,7 +94,9 @@
             if (_crons != null)
             {
                 var toUpdate = _crons.FirstOrDefault(a => a?.CronValue == dataBefore);
-                if (toUpdate != null) toUpdate.CronValue = feedback.Data.ToString();
+                if (toUpdate != null)
+                    if (feedback?.Data != null)
+                        toUpdate.CronValue = feedback.Data.ToString();
             }
 
             ChangePending = true;
@@ -136,7 +138,7 @@
 
         if (!(feedback is { Canceled: true }))
         {
-            _crons?.Add(new CronParameters { CronValue = feedback.Data.ToString() });
+            if (feedback != null) _crons?.Add(new CronParameters { CronValue = feedback.Data?.ToString() });
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             SetItemCronValues();

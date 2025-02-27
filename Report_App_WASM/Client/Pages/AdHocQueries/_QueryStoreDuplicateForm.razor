@@ -11,7 +11,7 @@
     <DialogContent>
         @if (_activities.Any())
         {
-            <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="_selectedDataProviderId" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")">
+            <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="_selectedDataProviderId" Dense="true" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")">
                 @foreach (var item in _activities)
                 {
                     <MudSelectItem Value="@item.DataProviderId">@item.ProviderName</MudSelectItem>

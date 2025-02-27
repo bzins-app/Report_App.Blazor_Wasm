@@ -13,155 +13,165 @@
     <MudText Typo="Typo.subtitle1" Color="Color.Error"> @_errorMessage</MudText>
 }
 
-<MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
-    @if (param.Count > 0)
-    {
-        <MudForm @ref="_validateParam">
-            <MudText>@Localizer.Get("Filters")</MudText>
-            <MudGrid Spacing="1">
-                @foreach (var t in param.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
-                {
-                    <MudItem>
-                        @if (t.ValueType == QueryCommandParameterValueType.Date)
-                        {
-                            <MudTextField Clearable="true" InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
-                        }
-                        @if (t.ValueType == QueryCommandParameterValueType.DateTime)
-                        {
-                            <MudTextField Clearable="true" InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
-                        }
-                        @if (t.ValueType == QueryCommandParameterValueType.Number)
-                        {
-                            <MudTextField Clearable="true" InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
-                        }
-                        @if (t.ValueType == QueryCommandParameterValueType.String)
-                        {
-                            <MudTextField Clearable="true" InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
-                        }
-                    </MudItem>
-                }
-            </MudGrid>
-        </MudForm>
-    }
-    <div class="d-flex align-center justify-space-between">
-        <div>
-            <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="ConfirmText" Variant="Variant.Filled" Color="Color.Primary">
-                <LoadingContent>
-                    <MudText>@Localizer.Get("Processing")</MudText>
-                </LoadingContent>
-                <ChildContent>
-                    <MudText>@Localizer.Get("Run the query")</MudText>
-                </ChildContent>
-            </MudLoadingButton>
-            @if (_loading)
+<div style="height:80vh">
+    <MudStack Style="overflow-x:auto;height:100%;padding:2px">
+
+        <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
+
+            @if (param.Count > 0)
             {
-                <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
-                    <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
-                </MudButton>
+                <MudForm @ref="_validateParam">
+                    <MudText>@Localizer.Get("Filters")</MudText>
+                    <MudGrid Spacing="1">
+                        @foreach (var t in param.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
+                        {
+                            <MudItem>
+                                @if (t.ValueType == QueryCommandParameterValueType.Date)
+                                {
+                                    <MudTextField Clearable="true" Typo="Typo.body2" InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                }
+                                @if (t.ValueType == QueryCommandParameterValueType.DateTime)
+                                {
+                                    <MudTextField Clearable="true" Typo="Typo.body2" InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                }
+                                @if (t.ValueType == QueryCommandParameterValueType.Number)
+                                {
+                                    <MudTextField Clearable="true" Typo="Typo.body2" InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                }
+                                @if (t.ValueType == QueryCommandParameterValueType.String)
+                                {
+                                    <MudTextField Clearable="true" Typo="Typo.body2" InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                }
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudForm>
             }
-        </div>
-        <div>
-            <MudGrid>
-                @if (parameters.UsePivotTable)
-                {
-                    <MudItem>
-                        <MudSelect Label="@Localizer.Get("Type report")" AnchorOrigin="Origin.BottomCenter" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
-                            <MudSelectItem Value="@("Grid")"/>
-                            <MudSelectItem Value="@("pivot")"/>
-                        </MudSelect>
-                    </MudItem>
-                }
-                <MudItem>
-                    <MudIconButton Variant="Variant.Outlined"
-                                   OnClick="@(SaveConfiguration)"
-                                   Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
-                </MudItem>
-                <MudItem>
-                    <MudMenu Variant="Variant.Outlined"
-                             Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" AnchorOrigin="Origin.BottomCenter" @ref="_menu"
-                             Dense="true">
-                        <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
-                            @foreach (var config in _userConfigs)
-                            {
-                                <MudListItem Text="@config.SaveName" Dense="true">
-                                    <NestedList>
-                                        <MudListItem OnClick="() => LoadPivotConfig(config.SavedValues!)">
-                                            @Localizer.Get("Load")
-                                        </MudListItem>
-                                        <MudListItem OnClick="() => DeleteConfig(config.Id)">
-                                            @Localizer.Get("Delete")
-                                        </MudListItem>
-                                        <AuthorizeView Roles="Admin, Supervisor">
-                                            <Authorized>
-                                                <MudListItem OnClick="() => SetAsDefaultPivotTableConfig(config.SavedValues!)">
-                                                    @Localizer.Get("Set as default")
+            <div class="d-flex align-center justify-space-between">
+                <div>
+                    <MudLoadingButton @bind-Loading="_loading" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Primary" OnClick="RunQuery" Variant="Variant.Filled" Color="Color.Primary">
+                        <LoadingContent>
+                            <MudText>@Localizer.Get("Processing")</MudText>
+                        </LoadingContent>
+                        <ChildContent>
+                            <MudText>@Localizer.Get("Run the query")</MudText>
+                        </ChildContent>
+                    </MudLoadingButton>
+                    @if (_loading)
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelQuery">
+                            <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
+                        </MudButton>
+                    }
+                </div>
+                <div>
+                    <MudGrid>
+                        @if (parameters.UsePivotTable)
+                        {
+                            <MudItem>
+                                <MudSelect Label="@Localizer.Get("Type report")" Value="@_typeReport" ValueChanged="(string Value) => OnchangeReportType(Value)" Style="max-width: 200px">
+                                    <MudSelectItem Value="@("Grid")"/>
+                                    <MudSelectItem Value="@("pivot")"/>
+                                </MudSelect>
+                            </MudItem>
+                        }
+                        <MudItem>
+                            <MudIconButton Variant="Variant.Outlined"
+                                           OnClick="@(SaveConfiguration)"
+                                           Icon="@Icons.Material.Filled.Save" title="@Localizer.Get("Save")" Disabled="!_pivotTable"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudMenu Variant="Variant.Outlined"
+                                     Icon="@Icons.Material.Filled.Settings" title="@Localizer.Get("Parameters")" Disabled="!_pivotTable" @ref="_menu"
+                                     Dense="true">
+                                <MudList T="string" Dense="true" Style="padding-bottom: unset !important; padding-top: unset !important; width: 160px;">
+                                    @foreach (var config in _userConfigs)
+                                    {
+                                        <MudListItem Text="@config.SaveName" Dense="true">
+                                            <NestedList>
+                                                <MudListItem OnClick="() => LoadPivotConfig(config.SavedValues!)">
+                                                    @Localizer.Get("Load")
                                                 </MudListItem>
-                                            </Authorized>
-                                        </AuthorizeView>
-                                    </NestedList>
-                                </MudListItem>
+                                                <MudListItem OnClick="() => DeleteConfig(config.Id)">
+                                                    @Localizer.Get("Delete")
+                                                </MudListItem>
+                                                <AuthorizeView Roles="Admin, Supervisor">
+                                                    <Authorized>
+                                                        <MudListItem OnClick="() => SetAsDefaultPivotTableConfig(config.SavedValues!)">
+                                                            @Localizer.Get("Set as default")
+                                                        </MudListItem>
+                                                    </Authorized>
+                                                </AuthorizeView>
+                                            </NestedList>
+                                        </MudListItem>
+                                    }
+                                </MudList>
+                            </MudMenu>
+                        </MudItem>
+                        <MudItem>
+                            <MudIconButton Variant="Variant.Outlined"
+                                           OnClick="@(ExtractElements)"
+                                           Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
+                        </MudItem>
+                    </MudGrid>
+                </div>
+            </div>
+        </MudPaper>
+        @if (_extracting)
+        {
+            <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
+        }
+        @if (!_pivotTable)
+        {
+            <div style="height: 100%; overflow: auto;">
+                <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="calc(100% - 52px);" Style="display:contents" FixedFooter="true" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" @bind-RowsPerPage="@_rowsPerPage" Virtualize="NbrColumns > 25" Bordered="true">
+                    <HeaderContent>
+                        @if (_values?.Any() == true)
+                        {
+                            @foreach (var key in _values?.FirstOrDefault()?.Keys!)
+                            {
+                                <MudTh>
+                                    <MudTableSortLabel SortLabel="@key" SortDirectionChanged="value => Callback(value, key)" T="string">
+                                        <b>@key</b>
+                                    </MudTableSortLabel>
+                                </MudTh>
                             }
-                        </MudList>
-                    </MudMenu>
-                </MudItem>
-                <MudItem>
-                    <MudIconButton Variant="Variant.Outlined"
-                                   OnClick="@(ExtractElements)"
-                                   Icon="@Icons.Custom.FileFormats.FileExcel" title="@Localizer.Get("Download")" Disabled="@_extracting"/>
-                </MudItem>
-            </MudGrid>
-        </div>
-    </div>
-</MudPaper>
-@if (_extracting)
-{
-    <MudProgressLinear Color="Color.Info" Indeterminate="@_extracting"/>
-}
-@if (!_pivotTable)
-{
-    <MudTable ServerData="ServerReload" Hover="true" Dense="true" Height="62vh" FixedHeader="true" Striped="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true">
-        <HeaderContent>
-            @if (_values?.Any() == true)
-            {
-                @foreach (var key in _values?.FirstOrDefault()?.Keys!)
-                {
-                    <MudTh>
-                        <MudTableSortLabel SortLabel="@key" SortDirectionChanged="(value) => Callback(value, key)" T="string">@key</MudTableSortLabel>
-                    </MudTh>
-                }
-            }
-        </HeaderContent>
-        <RowTemplate>
-            @if (_values?.Any() == true)
-            {
-                @foreach (var t in context)
-                {
-                    @if (t.ToString() == "{}")
-                    {
-                        <MudTd></MudTd>
-                    }
-                    else
-                    {
-                        <MudTd Style="text-wrap-mode: nowrap;">@t</MudTd>
-                    }
-                }
-            }
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
-        </PagerContent>
-    </MudTable>
-}
-else
-{
-    <PivotTable @ref="_pvt" Value="_values" Style="height: 65vh; width: 100%;" Culture="@CultureInfo.CurrentCulture.Name"/>
-}
+                        }
+                    </HeaderContent>
+                    <RowTemplate>
+                        @if (_values?.Any() == true)
+                        {
+                            @foreach (var t in context)
+                            {
+                                @if (t.ToString() == "{}")
+                                {
+                                    <MudTd></MudTd>
+                                }
+                                else
+                                {
+                                    <MudTd Style="text-wrap-mode: nowrap;">@t</MudTd>
+                                }
+                            }
+                        }
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
+                    </PagerContent>
+                </MudTable>
+            </div>
+        }
+        else
+        {
+            <PivotTable @ref="_pvt" Value="_values" Style="height: 99%; width: 99%;" Culture="@CultureInfo.CurrentCulture.Name"/>
+        }
+    </MudStack>
+</div>
 
 @code {
 
-    [Parameter] public long QueryId { get; set; }
+    [Parameter] public required StoredQueryDto Item { get; set; }
 
-    private StoredQueryDto? Item;
+    private long QueryId;
     private List<QueryCommandParameter> param = new();
     private MudForm? _validateParam;
     bool _formParamValidated = true;
@@ -184,16 +194,18 @@ else
     MudMenu _menu = null!;
     string? _sorting;
     string? _sortingDirection;
+    private int NbrColumns;
+    private int _rowsPerPage = 100;
+    string _queryToRun = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         var user = await AuthenticationStateProvider.GetUserInfo();
         _userName = user?.UserName;
 
-        var uriAction = $"GetQueryStore?queryId={QueryId}";
-        Item = await DataService.GetUniqueValue(Item, uriAction);
+        QueryId = Item.Id;
 
-        if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
         {
             var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
             foreach (var value in desParam!)
@@ -218,7 +230,7 @@ else
             }
         }
 
-        if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
+        if (Item.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
@@ -293,7 +305,7 @@ else
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (string.IsNullOrEmpty(Item.Query))
+        else if (string.IsNullOrEmpty(_queryToRun))
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -310,7 +322,7 @@ else
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = _queryToRun, Test = true, PaginatedResult = true, StartRecord = 0, MaxSize = parameters.PivotTableMaxRowsFetched, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, PivotTable = true, QueryId = QueryId, ProviderName = Item.ProviderName, PivotTableNbrColumns = parameters.PivotTableNbrOfColumnsMax, QueryName = Item.QueryName };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -379,8 +391,9 @@ else
         await _pvt?.LoadConfig(config)!;
     }
 
-    private async Task ConfirmText()
+    private async Task RunQuery()
     {
+        if (Item.Query != null) _queryToRun = Item.Query;
         _hasTotal = false;
         if (param.Count > 0)
         {
@@ -416,7 +429,7 @@ else
         {
             _values = new List<Dictionary<string, object>>();
         }
-        else if (string.IsNullOrEmpty(Item.Query))
+        else if (string.IsNullOrEmpty(_queryToRun))
         {
             _values = new List<Dictionary<string, object>>();
         }
@@ -433,7 +446,7 @@ else
                 using var _httpClientLong = new HttpClient();
                 _httpClientLong.Timeout = TimeSpan.FromMinutes(10);
                 _httpClientLong.BaseAddress = Http.BaseAddress;
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = Item.Query, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
+                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = _queryToRun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
                 var remoteDataPayload = new RemoteDataPayload { Values = run, ProviderName = Item.ProviderName, QueryId = QueryId, QueryName = Item.QueryName, CalculateTotalElements = getTotalElements, ColumSorting = _sorting, SortingDirection = _sortingDirection };
                 var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
                 var response = await _httpClientLong.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
@@ -442,6 +455,7 @@ else
                     var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>();
                     if (result!.Success)
                     {
+                        _loading = false;
                         _values = result.Value;
                         _errorMessage = string.Empty;
                         if (!_hasTotal && parameters.CalculateTotalItems)
@@ -449,6 +463,8 @@ else
                             _total = result.TotalElements;
                             _hasTotal = true;
                         }
+
+                        NbrColumns = result.Value!.FirstOrDefault()!.Keys.Count;
                     }
                     else
                     {

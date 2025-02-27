@@ -78,7 +78,7 @@ public static class EncryptDecrypt
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error has been raised during conversion: {ex}");
+            Console.WriteLine($@"An error has been raised during conversion: {ex}");
             return cipherText;
         }
     }

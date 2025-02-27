@@ -273,7 +273,7 @@
   <data name="Already uploaded?" xml:space="preserve">
     <value>Bereits hochgeladen?</value>
   </data>
-  <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
+  <data name="An activity is basically a connection to a  specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
     <value>Eine Aktivität ist im Grunde eine Verbindung zu einem bestimmten Datenbankserver und -schema. Sie können ihr einen Ablagepfad, einen Namen und ein Logo zuordnen. Wenn Sie eine Aktivität erstellen, wird im Hintergrund eine Rolle mit demselben Namen angelegt</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
@@ -1687,7 +1687,7 @@
     <value>Anfrage</value>
   </data>
   <data name="Query editor" xml:space="preserve">
-    <value>Abfrage-Editor</value>
+    <value>Abfrageeditor</value>
   </data>
   <data name="Query execution logs" xml:space="preserve">
     <value>Protokolle der Abfrageausführung</value>
@@ -1738,7 +1738,7 @@
     <value>Registrierte Anmeldungen</value>
   </data>
   <data name="Reload" xml:space="preserve">
-    <value>Neu laden</value>
+    <value>Aktualisieren</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>entfernen</value>
@@ -2594,5 +2594,92 @@
   </data>
   <data name="Use pivot table as default view?" xml:space="preserve">
     <value>Pivot-Tabelle als Standardansicht verwenden?</value>
+  </data>
+  <data name="Time zone" xml:space="preserve">
+    <value>Zeitzone</value>
+  </data>
+  <data name="Please select a time zone" xml:space="preserve">
+    <value>Zeitzone auswählen</value>
+  </data>
+  <data name="Tables view" xml:space="preserve">
+    <value>Tabellenansicht</value>
+  </data>
+  <data name="Lastest execution" xml:space="preserve">
+    <value>Letzte Ausführung</value>
+  </data>
+  <data name="Parameters for this query scope" xml:space="preserve">
+    <value>Abfrageparameter</value>
+  </data>
+  <data name="Identifier" xml:space="preserve">
+    <value>Kennung</value>
+  </data>
+  <data name="Hide" xml:space="preserve">
+    <value>Ausblenden</value>
+  </data>
+  <data name="Error logs" xml:space="preserve">
+    <value>Fehlerprotokolle</value>
+  </data>
+  <data name="Protocol selection" xml:space="preserve">
+    <value>Protokollauswahl</value>
+  </data>
+  <data name="Type of protocol" xml:space="preserve">
+    <value>Protokolltyp</value>
+  </data>
+  <data name="Tables explorer" xml:space="preserve">
+    <value>Tabellen-Explorer</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="errors" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="File upload" xml:space="preserve">
+    <value>Datei hochladen</value>
+  </data>
+  <data name="Destination" xml:space="preserve">
+    <value>Ziel</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Quelle</value>
+  </data>
+  <data name="Data link" xml:space="preserve">
+    <value>Datenverbindung</value>
+  </data>
+  <data name="Uploads logs" xml:space="preserve">
+    <value>Protokolle der Uploads</value>
+  </data>
+  <data name="Emails logs" xml:space="preserve">
+    <value>E-Mail-Protokolle</value>
+  </data>
+  <data name="Nbr of recipients" xml:space="preserve">
+    <value>Anzahl der Empfänger</value>
+  </data>
+  <data name="Choose a configuration" xml:space="preserve">
+    <value>Wählen Sie eine Konfiguration</value>
+  </data>
+  <data name="File upload configuration" xml:space="preserve">
+    <value>Datei-Upload-Konfiguration</value>
+  </data>
+  <data name="cannot be enabled because the related data link is not enabled" xml:space="preserve">
+    <value>kann nicht aktiviert werden weil die Verknüpfung der Bezugsdaten nicht aktiviert ist</value>
+  </data>
+  <data name="cannot be enabled because the email list is not defined" xml:space="preserve">
+    <value>kann nicht aktiviert werden weil die E-Mail-Liste nicht definiert ist</value>
+  </data>
+  <data name="cannot be enabled because no queries have been set" xml:space="preserve">
+    <value>kann nicht aktiviert werden weil keine Abfragen festgelegt wurden</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Läuft</value>
+  </data>
+  <data name="Stopped" xml:space="preserve">
+    <value>Gestoppt</value>
+  </data>
+  <data name="Direct to folder" xml:space="preserve">
+    <value>Direkt zum Ordner</value>
+  </data>
+  <data name="Use a connection protocol" xml:space="preserve">
+    <value>Ein Verbindungsprotokoll verwenden</value>
   </data>
 </root>

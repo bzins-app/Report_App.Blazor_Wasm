@@ -3,10 +3,8 @@
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
-@using Blazor.AceEditorJs
 @using MudBlazor.Utilities
 @using Report_App_WASM.Shared.Extensions
-@using Report_App_WASM.Shared.RemoteQueryParameters
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
@@ -29,18 +27,18 @@
     <MudCardContent>
         @if (Item != null)
         {
-            <MudForm FieldChanged="FormChanged">
+            <MudForm FieldChanged="FormChanged" @ref="@_form">
                 <MudGrid>
                     <MudItem sm="12" lg="6">
-                        <MudGrid>
+                        <MudGrid Spacing="1">
                             <MudItem>
-                                <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width: 200px"/>
+                                <MudTextField @bind-Value="Item.QueryName" Label="@Localizer.Get("Query name")" InputType="InputType.Text" Style="min-width: 300px"/>
                             </MudItem>
                             <MudItem>
                                 @if (_activities.Any())
                                 {
                                     <MudSelect T="long" Label="@Localizer.Get("Activity name")" @bind-value="Item.IdDataProvider"
-                                               AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 200px"
+                                               SelectedValuesChanged="OnSelectedItemChangedHandler!" Style="min-width: 250px"
                                                Required>
                                         @foreach (var value in _activities)
                                         {
@@ -49,7 +47,7 @@
                                     </MudSelect>
                                 }
                             </MudItem>
-                            <MudItem>
+                            <MudItem >
                                 <MudSwitch @bind-Value="parameters.CalculateTotalItems" Label="@Localizer.Get("Calculate the total nbr of results?")" Color="Color.Primary"/>
                             </MudItem>
                             <MudItem>
@@ -58,10 +56,10 @@
                             <MudItem>
                                 <MudSwitch @bind-Value="parameters.PivotTableAsDefaultView" Label="@Localizer.Get("Use pivot table as default view?")" Color="Color.Primary" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
-                            <MudItem>
+                            <MudItem Style="min-width: 300px">
                                 <MudNumericField @bind-Value="parameters.PivotTableNbrOfColumnsMax" Label="@Localizer.Get("Pivot Table: nbr max of columns")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
-                            <MudItem>
+                            <MudItem Style="min-width: 300px">
                                 <MudNumericField @bind-Value="parameters.PivotTableMaxRowsFetched" Label="@Localizer.Get("Pivot Table: nbr max of rows")" Margin="Margin.Dense" Disabled="!parameters.UsePivotTable"/>
                             </MudItem>
                         </MudGrid>
@@ -88,100 +86,19 @@
                     </MudItem>
                 </MudGrid>
             </MudForm>
+            <MudStack Row>
+                <MudSpacer/>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="RenderQuery" Size="Size.Small">
+                    <MudText>@Localizer.Get("Simulate rendering")</MudText>
+                </MudButton>
+            </MudStack>
         }
-        <MudGrid>
-            <MudItem sm="12" md="12" lg="12" xl="6">
-                @if (!string.IsNullOrEmpty(_queryTestResult))
-                {
-                    <MudText Typo="Typo.subtitle1" Color="Color.Error">@Localizer.Get("An error has occurred"): @_queryTestResult</MudText>
-                }
-                @if (Item != null)
-                {
-                    <MudPaper Elevation="25">
-                        <MudToolBar Dense="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Disabled="_loading" aria-label="@Localizer.Get("Test query")" OnClick="RunSql"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Stop" Color="Color.Error" Disabled="!_loading" aria-label="@Localizer.Get("Cancel")" OnClick="CancelQuery"/>
-                        </MudToolBar>
-                    </MudPaper>
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="false"/>
-                    @if (_opt != null)
-                    {
-                        <Blazor.AceEditorJs.AceJsEditor Style="height: 55vh" @bind-Value="@Item.Query" @bind-SelectedValue="@_querySelectedCode" Options="@_opt"/>
-                    }
-                }
-            </MudItem>
-            <MudItem sm="12" md="12" lg="12" xl="6">
-                <MudTabs Elevation="25" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3" @ref="tabs">
-                    <MudTabPanel Text="@Localizer.Get("Query output")">
-                        @if (param.Count > 0)
-                        {
-                            <MudPaper Class="pa-2" Outlined="true" Style="padding-bottom: 5px">
-                                <MudForm @ref="_validateParam">
-                                    <MudGrid Spacing="1">
-                                        @foreach (var t in param.Where(a => !a.HideParameter).OrderBy(a => a.DisplaySequence))
-                                        {
-                                            <MudItem>
-                                                @if (t.ValueType == QueryCommandParameterValueType.Date)
-                                                {
-                                                    <MudTextField Clearable="true" InputType="InputType.Date" Required="@t.Required" Format="yyyy-MM-dd" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
-                                                }
-                                                @if (t.ValueType == QueryCommandParameterValueType.DateTime)
-                                                {
-                                                    <MudTextField Clearable="true" InputType="InputType.DateTimeLocal" Required="@t.Required" Format="s" @bind-Value="t.Value" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px"/>
-                                                }
-                                                @if (t.ValueType == QueryCommandParameterValueType.Number)
-                                                {
-                                                    <MudTextField Clearable="true" InputType="InputType.Number" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
-                                                }
-                                                @if (t.ValueType == QueryCommandParameterValueType.String)
-                                                {
-                                                    <MudTextField Clearable="true" InputType="InputType.Text" @bind-Value="t.Value" Required="@t.Required" Label="@(string.IsNullOrEmpty(t.DisplayName) ? t.ParameterIdentifier : t.DisplayName)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
-                                                }
-                                            </MudItem>
-                                        }
-                                    </MudGrid>
-                                    <div style="padding-top: 5px">
-                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmText" Class="px-10">@Localizer.Get("Validate")</MudButton>
-                                    </div>
-                                </MudForm>
-                            </MudPaper>
-                        }
-                        <MudTable ServerData="ServerReload" Hover="true" Dense="true" Striped="true" Height="60vh" FixedHeader="true" HorizontalScrollbar="true" @ref="_table" RowsPerPage="20" Virtualize="true" Elevation="25">
-                            <HeaderContent>
-                                @if (_values?.Any() == true)
-                                {
-                                    var keys = _values.FirstOrDefault()?.Keys;
-                                    if (keys != null)
-                                    {
-                                        @foreach (var key in keys)
-                                        {
-                                            <MudTh>@key</MudTh>
-                                        }
-                                    }
-                                }
-                            </HeaderContent>
-                            <RowTemplate>
-                                @if (_values?.Any() == true)
-                                {
-                                    @foreach (var t in context)
-                                    {
-                                        <MudTd Style="text-wrap-mode: nowrap;">@(t.ToString() == "{}" ? string.Empty : t)</MudTd>
-                                    }
-                                }
-                            </RowTemplate>
-                            <PagerContent>
-                                <MudTablePager PageSizeOptions="_pageSizeOptions" RowsPerPageString="@Localizer.Get("Rows per page")" InfoFormat="@string.Format("{0}first_item{1}-{0}last_item{1} {2} {0}all_items{1}", "{", "}", Localizer.Get("of"))"/>
-                            </PagerContent>
-                        </MudTable>
-                    </MudTabPanel>
-                    <MudTabPanel Text="@Localizer.Get("Query parameters")" Disabled="_typeDbTask == TypeDb.OlebDb">
-                        <CascadingValue Value="_changesToSave">
-                            <_AdHocQueryParameters Style="height: 65vh" Item="Item" @ref="_refQuery" ValueChanged="ParametersChange"/>
-                        </CascadingValue>
-                    </MudTabPanel>
-                </MudTabs>
-            </MudItem>
-        </MudGrid>
+        <MudPaper Outlined="true" Height="70vh">
+            @if (Item != null)
+            {
+                <_queryEditor DataProviderId="@Item.IdDataProvider" Options="@_opts" @bind-QueryText="@Item.Query" @bind-QueryParameters="param" Elevation="5"/>
+            }
+        </MudPaper>
     </MudCardContent>
 </MudCard>
 
@@ -189,69 +106,40 @@
 
     [Parameter] public long QueryId { get; set; }
 
-    private StoredQueryDto? Item;
-    private TypeDb _typeDbTask;
-    private List<Dictionary<string, object>>? _values = new();
-    private string _queryTestResult = string.Empty;
-    private string _querySelectedCode = string.Empty;
-    private bool _isDarkMode;
-    private AceEditorOptions? _opt;
-    private _AdHocQueryParameters? _refQuery;
-    private CancellationTokenSource? _cts;
-    private bool _loading;
-    MudTable<Dictionary<string, object>.ValueCollection>? _table = new();
-    int[] _pageSizeOptions = { 10, 20, 50, 100 };
+    private StoredQueryDto Item = null!;
     private bool _changesToSave;
     private List<SelectItemDataproviderInfo> _activities = new();
     private List<QueryCommandParameter> param = new();
-    private MudForm? _validateParam = new();
-    bool _formParamValidated = true;
+    private MudForm? _form;
     AdHocQueriesParameters parameters = new();
     List<string> _tags = new();
     private bool _openPopOver;
     string _tagValue = string.Empty;
     List<string> _AvailableTags = new();
-    MudTabs tabs = null!;
+
+    private _queryEditor.QueryEditorOptions _opts = new();
 
     protected override async Task OnInitializedAsync()
     {
         await UpdateValues();
-        StateHasChanged();
     }
 
     private async Task UpdateValues()
     {
         var uriAction = $"GetQueryStore?queryId={QueryId}";
         Item = await DataService.GetUniqueValue(Item, uriAction);
-        if (Item != null)
-        {
-            var uri = $"GetActivityDbConnection?DataProviderId={Item.IdDataProvider}";
-            var response = await DataService.GetValues<DatabaseConnectionDto>(uri);
-            if (response.Any())
-            {
-                _typeDbTask = response.Select(a => a.TypeDb).First();
-            }
-        }
 
-        _isDarkMode = UserAppTheme.DarkTheme;
-        _opt = new AceEditorOptions
-        {
-            IsReadOnly = false,
-            Language = _typeDbTask switch
-            {
-                TypeDb.MySql => AceLanguage.mysql,
-                TypeDb.MariaDb => AceLanguage.mysql,
-                TypeDb.SqlServer => AceLanguage.sqlserver,
-                TypeDb.PostgreSql => AceLanguage.pgsql,
-                _ => AceLanguage.sql
-            },
-            Theme = _isDarkMode ? AceTheme.tomorrow_night : AceTheme.sqlserver
-        };
+        _opts.EnableQueryParametersPanel = true;
+        _opts.EnableTablesViewsPanel = true;
+        _opts.DisplayAllParametersForQueryParmaters = true;
+        _opts.EditorTitle = Localizer.Get("Query editor");
+        _opts.DefaultPanel = _queryEditor.EditorPanel.QueryParameters;
+
         _activities = await DataService.GetValues<SelectItemDataproviderInfo>("ActivitiesInfo", ApiControllers.ApplicationParametersApi);
         _changesToSave = false;
         param.Clear();
 
-        if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
+        if (Item.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
         {
             var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
             foreach (var value in desParam!)
@@ -276,7 +164,7 @@
             }
         }
 
-        if (Item!.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
+        if (Item.Parameters != "[]" && !string.IsNullOrEmpty(Item.Parameters))
         {
             parameters = JsonSerializer.Deserialize<AdHocQueriesParameters>(Item.Parameters)!;
         }
@@ -290,135 +178,6 @@
         _AvailableTags = (await Http.GetFromJsonAsync<List<string>>(uriTags))!;
     }
 
-    private async Task RunSql()
-    {
-        _queryTestResult = string.Empty;
-        StateHasChanged();
-        tabs.ActivatePanel(0);
-        if (string.IsNullOrEmpty(Item?.Query))
-        {
-            _queryTestResult = "query is not set";
-        }
-        else
-        {
-            param.Clear();
-            _refQuery?.UpdateParameters();
-
-            if (Item!.QueryParameters != "[]" && !string.IsNullOrEmpty(Item.QueryParameters))
-            {
-                var desParam = JsonSerializer.Deserialize<List<QueryCommandParameter>>(Item.QueryParameters);
-                foreach (var value in desParam!.Where(value => param.All(a => a.ParameterIdentifier != value.ParameterIdentifier)))
-                {
-                    param?.Add(value);
-                }
-
-                foreach (var t in param!.Where(t => t.ValueType == QueryCommandParameterValueType.Date || t.ValueType == QueryCommandParameterValueType.DateTime))
-                {
-                    if (t.ValueType == QueryCommandParameterValueType.Date)
-                    {
-                        t.Value = t.DateOption.GetCalculateDateTime().Date.ToString("yyyy-MM-dd");
-                    }
-
-                    if (t.ValueType == QueryCommandParameterValueType.DateTime)
-                    {
-                        t.Value = t.DateOption.GetCalculateDateTime().ToString("s");
-                    }
-                }
-            }
-
-            if (_table != null)
-            {
-                _table.CurrentPage = 0;
-                if (param!.Count > 0)
-                {
-                    await ConfirmText();
-                }
-                else
-                {
-                    await _table.ReloadServerData();
-                }
-            }
-        }
-    }
-
-    private async Task ConfirmText()
-    {
-        if (_validateParam != null)
-        {
-            await _validateParam.Validate();
-            _formParamValidated = _validateParam.IsValid;
-        }
-
-        await _table?.ReloadServerData()!;
-    }
-
-    private async Task<TableData<Dictionary<string, object>.ValueCollection>> ServerReload(TableState state, CancellationToken token)
-    {
-        _loading = true;
-        var currentPage = state.Page;
-        var pageSize = state.PageSize;
-        if (Item == null)
-        {
-            _values = new List<Dictionary<string, object>>();
-        }
-        else if (string.IsNullOrEmpty(Item.Query))
-        {
-            _values = new List<Dictionary<string, object>>();
-        }
-        else if (!_formParamValidated && param.Count > 0)
-        {
-            _values = new List<Dictionary<string, object>>();
-        }
-        else
-        {
-            try
-            {
-                _cts = new CancellationTokenSource();
-
-                var _queryTorun = string.Empty;
-                _queryTorun = !string.IsNullOrWhiteSpace(_querySelectedCode) && !string.IsNullOrEmpty(_querySelectedCode) ? _querySelectedCode : Item.Query;
-
-                var run = new RemoteDbCommandParameters { DataProviderId = Item.IdDataProvider, QueryToRun = _queryTorun, Test = true, PaginatedResult = true, StartRecord = currentPage * pageSize, MaxSize = pageSize + 1, LastRunDateTime = DateTime.Now, QueryCommandParameters = param };
-                var remoteDataPayload = new RemoteDataPayload { Values = run, LogPayload = false };
-                var uri = $"{ApiControllers.RemoteDbApi}RemoteDbGetValues";
-                var response = await Http.PostAsJsonAsync(uri, remoteDataPayload, _cts.Token);
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<SubmitResultRemoteData>(cancellationToken: token);
-                    if (result!.Success)
-                    {
-                        _values = result.Value;
-                        _queryTestResult = null!;
-                        _changesToSave = true;
-                    }
-                    else
-                    {
-                        _queryTestResult = result.Message!;
-                        _values = new List<Dictionary<string, object>>();
-                    }
-                }
-                else
-                {
-                    _values = new List<Dictionary<string, object>>();
-                    if (true) _queryTestResult = response.Content.ToString()!;
-                }
-            }
-            catch (Exception ex)
-            {
-                _values = new List<Dictionary<string, object>>();
-                _queryTestResult = ex.Message;
-            }
-        }
-
-        _loading = false;
-        _formParamValidated = false;
-        return new TableData<Dictionary<string, object>.ValueCollection> { TotalItems = _values!.Count < pageSize + 1 ? _values.Count + currentPage * pageSize : currentPage * pageSize + pageSize + 1, Items = _values?.Select(a => a.Values).ToList() };
-    }
-
-    void CancelQuery()
-    {
-        _cts?.Cancel();
-    }
 
     private async Task Back()
     {
@@ -443,20 +202,31 @@
     {
         try
         {
-            if (Item != null)
+            if (_form != null)
             {
-                Item.Parameters = JsonSerializer.Serialize(parameters);
-                Item.Tags = JsonSerializer.Serialize(_tags);
-                Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
-                var result = await DataService.PostValues(Item, "QueryStoreUpdate");
-                if (result.Success)
+                _form?.Validate();
+                if (!_form!.IsValid)
                 {
-                    _changesToSave = false;
-                    Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
+                    Snackbar.Add(Localizer.Get("Please check the form"), Severity.Error);
+                    return;
                 }
-                else
+
+                if (Item != null)
                 {
-                    Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                    Item.Parameters = JsonSerializer.Serialize(parameters);
+                    Item.Tags = JsonSerializer.Serialize(_tags);
+                    Item.QueryParameters = JsonSerializer.Serialize(param);
+                    Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
+                    var result = await DataService.PostValues(Item, "QueryStoreUpdate");
+                    if (result.Success)
+                    {
+                        _changesToSave = false;
+                        Snackbar.Add(Localizer.Get("Object updated"), Severity.Success);
+                    }
+                    else
+                    {
+                        Snackbar.Add(Localizer.Get("An error has occurred"), Severity.Error);
+                    }
                 }
             }
         }
@@ -469,7 +239,7 @@
     private void OnSelectedItemChangedHandler(IEnumerable<long> actId)
     {
         var _DataProviderId = actId.FirstOrDefault();
-        Item!.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
+        Item.DataProvider = new DataProviderDto { DataProviderId = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.DataProviderId).FirstOrDefault(), ProviderName = _activities.Where(a => a.DataProviderId == _DataProviderId).Select(a => a.ProviderName).FirstOrDefault() };
         Item.IdDataProvider = Item.DataProvider.DataProviderId;
         Item.ProviderName = Item.DataProvider.ProviderName;
     }
@@ -478,6 +248,7 @@
     {
         _changesToSave = true;
     }
+
 
     private void ParametersChange()
     {
@@ -516,10 +287,23 @@
 
     private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
     {
-        await Task.Delay(1);
+        await Task.Delay(1, token);
         if (string.IsNullOrEmpty(value))
             return _AvailableTags;
         return _AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+
+    private async Task RenderQuery()
+    {
+        DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true };
+        Item.Parameters = JsonSerializer.Serialize(parameters);
+        Item.Tags = JsonSerializer.Serialize(_tags);
+        Item.QueryParameters = JsonSerializer.Serialize(param);
+        Item.ProviderName = _activities.Where(a => a.DataProviderId == Item.IdDataProvider).Select(a => a.ProviderName).FirstOrDefault();
+        var _dparameters = new DialogParameters { ["Item"] = Item };
+
+        await DialogService.ShowAsync<_ExcecuteQuery>(Item.QueryName, _dparameters, _maxWidth);
     }
 
 }

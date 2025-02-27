@@ -13,9 +13,14 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudSwitch @bind-Value="_isFtp" Label="@Localizer.Get("FTP?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete" />
+            <MudSelect Label="@Localizer.Get("Type of protocol")" @bind-Value="@Item!.ConfigurationType" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Protocol selection")" Disabled="Action == CrudAction.Delete">
+                @foreach (FileStorageConfigurationType item in Enum.GetValues(typeof(FileStorageConfigurationType)))
+                {
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                }
+            </MudSelect>
             <MudTextField @bind-Value="Item!.Host" Label="@Localizer.Get("Host")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            @if (Item is { ConfigurationType: FileStorageConfigurationType.FTP })
+            @if (Item is { ConfigurationType: FileStorageConfigurationType.SFTP })
             {
                 <MudNumericField @bind-Value="Item.Port" Label="@Localizer.Get("Sftp port")" Disabled="Action == CrudAction.Delete"/>
             }
@@ -41,21 +46,14 @@
 
     [Parameter] public CrudAction Action { get; set; }
 
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string? _deletionValidation;
-    private bool _isFtp;
 
     private void Cancel()
     {
         MudDialog?.Cancel();
     }
-    protected override void OnInitialized()
-    {
-        if (Item is { ConfigurationType: FileStorageConfigurationType.FTP })
-        {
-            _isFtp = true;
-        }
-    }
+
 
     private async Task Validate()
     {
@@ -71,14 +69,7 @@
             await _form.Validate();
             if (_form.IsValid)
             {
-                if (_isFtp)
-                {
-                    Item!.ConfigurationType = FileStorageConfigurationType.FTP;
-                }
-                else
-                {
-                    Item!.ConfigurationType = FileStorageConfigurationType.SFTP;
-                }
+                Item.Port = Item.ConfigurationType == FileStorageConfigurationType.SFTP ? Item.Port : 0;
                 MudDialog?.Close(DialogResult.Ok(Item));
             }
         }

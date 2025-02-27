@@ -169,7 +169,7 @@ public class DataCrudController : ControllerBase, IDisposable
         if (targetInfo != null) return targetInfo;
 
         var connections = new List<DatabaseConnection>
-            { new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer } };
+            { new() { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer } };
 
         targetInfo = new DataProvider
         {
@@ -394,9 +394,12 @@ public class DataCrudController : ControllerBase, IDisposable
                 }
             }
 
-            if (values.EntityValue.DatabaseConnection != null)
+            if (values.EntityValue.DatabaseConnection is not null)
             {
-                await UpdateEntity(values.EntityValue.DatabaseConnection, values.UserName!);
+                foreach (var i in values.EntityValue.DatabaseConnection)
+                {
+                    await UpdateEntity(i, values.UserName!);
+                }
             }
 
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
@@ -496,7 +499,7 @@ public class DataCrudController : ControllerBase, IDisposable
         {
             var dbItem = await _context.ScheduledTask.Include(a => a.DataProvider).Include(a => a.TaskQueries)
                 .Include(scheduledTask => scheduledTask.DistributionLists)
-                .Include(a => a.ScheduledTaskId).Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
+                .Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
                 .AsNoTracking().FirstOrDefaultAsync();
 
             if (dbItem == null) return NotFound(new SubmitResult { Success = false, Message = "Item not found" });
@@ -515,14 +518,11 @@ public class DataCrudController : ControllerBase, IDisposable
             _context.Update(dbItem);
             await SaveDbAsync(values.UserName);
             _context.Entry(dbItem).State = EntityState.Detached;
-            _context.Entry(values.EntityValue).State = EntityState.Deleted;
-
-
             return Ok(new SubmitResult { Success = true });
         }
         catch (Exception ex)
         {
-            return Ok(new SubmitResult { Success = true, Message = ex.Message });
+            return Ok(new SubmitResult { Success = false, Message = ex.Message });
         }
     }
 
@@ -577,7 +577,8 @@ public class DataCrudController : ControllerBase, IDisposable
         var val = new FileStorageLocation();
         if (values.EntityValue.FileStorageConfigurationId > 0)
             val.FileStorageConfiguration = await _context.FileStorageConfiguration
-                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId).FirstOrDefaultAsync();
+                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId)
+                .FirstOrDefaultAsync();
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
@@ -604,7 +605,8 @@ public class DataCrudController : ControllerBase, IDisposable
             .FirstOrDefaultAsync();
         if (values.EntityValue.FileStorageConfigurationId > 0)
             val.FileStorageConfiguration = await _context.FileStorageConfiguration
-                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId).FirstOrDefaultAsync();
+                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId)
+                .FirstOrDefaultAsync();
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
