@@ -37,7 +37,7 @@
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.7.0" />
     <PackageReference Include="SSH.NET" Version="2024.2.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.0" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.2" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.2" />
     <PackageReference Include="System.Text.Json" Version="9.0.2" />
