@@ -55,7 +55,7 @@
     @* Main *@
     @if (_openTables && Options.EnableTablesViewsPanel && _typeDbTask != TypeDb.OlebDb)
     {
-        <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 50%, 600px);overflow:auto;resize:horizontal;">
+        <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 50%, 600px);overflow-x:auto;resize:horizontal;">
             <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
                 <MudText>@Localizer.Get("Tables explorer")</MudText>
                 <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Inherit" OnClick="ToogleTablesView"/>
@@ -64,8 +64,10 @@
                 <MudTextField Placeholder="Search" T="string" ValueChanged="@(s => SearchTables(s))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" @ref="_searchField" Clearable="true"></MudTextField>
                 <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" Disabled="@(_loading)" OnClick="@(async () => await ReloadValues())" Style="@(_loadingTables ? "animation: rotation 8s infinite linear" : "")" title="@Localizer.Get("Reload")"/>
             </MudStack>
-            @RenderTableOrView("Table", table, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "Table"))
-            @RenderTableOrView("View", view, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "View"))
+                <MudStack  Class="stack-adorner" Style="overflow-x: auto;width:100%;height:90%" Spacing="0">
+                @RenderTableOrView("Table", table, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "Table"))
+                @RenderTableOrView("View", view, ItemsBase.Where(a => a.TablesColsInfo.TypeValue == "View"))
+            </MudStack>
         </MudPaper>
     }
     @if (_openQueryParameters && Options.EnableQueryParametersPanel && _typeDbTask != TypeDb.OlebDb)
@@ -799,7 +801,8 @@
         </MudPaper>
         @if (dbView.Open)
         {
-            <MudTable Items="@(items)" Dense="true" Class="mud-background-gray stack-adorner" Hover="true" HorizontalScrollbar="true" Height="@(type == "Table" && view.Open ? "35vh" : type == "View" && table.Open ? "35vh" : "70vh")" Elevation="25" Virtualize="@(items.Count() > 150)" Style="width:100%;" @ref="_tableRef">
+            <div style="height:90%;overflow:auto">
+            <MudTable Items="@(items)" Dense="true" Class="mud-background-gray stack-adorner" Hover="true" FixedHeader="true" HorizontalScrollbar="true" Height="100%" Elevation="25" Virtualize="@(items.Count() > 150)" Style="width:100%;display:contents" @ref="_tableRef">
                 <HeaderContent>
                     @if (_loadingTables)
                     {
@@ -861,6 +864,7 @@
                     }
                 </ChildRowContent>
             </MudTable>
+            </div>
         }
     };
 
