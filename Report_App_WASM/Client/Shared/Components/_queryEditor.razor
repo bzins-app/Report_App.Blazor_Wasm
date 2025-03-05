@@ -55,7 +55,7 @@
     @* Main *@
     @if (_openTables && Options.EnableTablesViewsPanel && _typeDbTask != TypeDb.OlebDb)
     {
-        <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 50%, 600px);overflow-x:auto;resize:horizontal;">
+        <MudPaper Class="mud-background-gray pa-3" Outlined="true" Height="100%" Style="width:clamp(100px, 50%, 600px);overflow-x:auto;overflow-y:clip;resize:horizontal;">
             <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-3">
                 <MudText>@Localizer.Get("Tables explorer")</MudText>
                 <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Inherit" OnClick="ToogleTablesView"/>
