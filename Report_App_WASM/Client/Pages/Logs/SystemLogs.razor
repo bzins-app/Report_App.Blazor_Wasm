@@ -1,6 +1,6 @@
 ﻿@page "/SystemLogs"
 @inherits BaseGridComponent<SystemLogDto>
-@attribute [Authorize(Roles = "Admin, Supervisor")]
+@attribute [Authorize(Roles = "Admin, Supervisor, Demo")]
 
 <PageTitle>@Localizer.Get("System logs")</PageTitle>
 

@@ -146,11 +146,10 @@ public class SftpService : IDisposable
 
                     client.DeleteFile(file.FullName);
             }
-            //   _logger.LogInformation($"File [{remoteFilePath}] deleted.");
         }
         catch (Exception exception)
         {
-            //  _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
+            _logger.LogError(exception, $"Failed in deleting file [{remoteFilePath}]");
             return new SubmitResult { Success = false, Message = exception.Message };
         }
         finally

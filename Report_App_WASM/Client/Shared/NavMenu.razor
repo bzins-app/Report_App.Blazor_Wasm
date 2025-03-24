@@ -28,12 +28,12 @@
                 <MudNavGroup Title="@t.ProviderName" Style="@(IsDarkMode ? _upperStyleDark : _upperStyleLight)">
                     @if (_appConst.ActivateTaskSchedulerModule)
                     {
-                        @if (!context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
+                        @if (!context.User.IsInRole("Supervisor") || !context.User.IsInRole("Demo") || context.User.IsInRole("Admin"))
                         {
                             <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href="@("TasksView/" + t.ProviderName + "/" + t.DataProviderId)">@Localizer.Get("Base view")</MudNavLink>
                         }
 
-                        @if (context.User.IsInRole("Supervisor"))
+                        @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Demo"))
                         {
                             <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"TasksPerActivity/Report/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Manage reports")</MudNavLink>
                             <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)"Href="@("RetrieveFiles/" + t.ProviderName + "/" + t.DataProviderId)">@Localizer.Get("Retrieve files")</MudNavLink>
@@ -46,7 +46,7 @@
                     @if (_appConst.ActivateAdHocQueriesModule)
                     {
                         <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"QueryStore/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Queries store")</MudNavLink>
-                        @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin"))
+                        @if (context.User.IsInRole("Supervisor") || context.User.IsInRole("Admin") || context.User.IsInRole("Demo"))
                         {
                             <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"ManageQueries/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Manage queries")</MudNavLink>
                             <MudDivider DividerType="DividerType.Inset"/>

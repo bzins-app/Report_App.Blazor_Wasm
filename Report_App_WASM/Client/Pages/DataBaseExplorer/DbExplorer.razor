@@ -1,6 +1,7 @@
 ﻿@page "/DbExplorer/{DataProviderId:long}/{ProviderName}"
 @inject IdentityAuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
+
 @attribute [Authorize(Roles = "Admin, Supervisor,Demo")]
 
 <PageTitle>@Localizer.Get("DB explorer") @ProviderName</PageTitle>
