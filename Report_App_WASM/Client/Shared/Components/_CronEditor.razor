@@ -110,11 +110,11 @@
     List<SelectItem> listMonthSelect = new();
     List<SelectItem> listDayOfWeekSelect = new();
 
-    IReadOnlyCollection<SelectItem> selectedMinutes = default!;
-    IReadOnlyCollection<SelectItem> selectedHours = default!;
-    IReadOnlyCollection<SelectItem> selectedDayOfMonth = default!;
-    IReadOnlyCollection<SelectItem> selectedMonth = default!;
-    IReadOnlyCollection<SelectItem> selectedDayOfWeek = default!;
+    IReadOnlyCollection<SelectItem> selectedMinutes = null!;
+    IReadOnlyCollection<SelectItem> selectedHours = null!;
+    IReadOnlyCollection<SelectItem> selectedDayOfMonth = null!;
+    IReadOnlyCollection<SelectItem> selectedMonth = null!;
+    IReadOnlyCollection<SelectItem> selectedDayOfWeek = null!;
 
     private List<string> TransfromToArray(string val)
     {

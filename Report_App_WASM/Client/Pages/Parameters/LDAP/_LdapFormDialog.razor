@@ -36,7 +36,7 @@
 
     [Parameter] public CrudAction Action { get; set; }
 
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string? _deletionValidation;
 
     private void Cancel()

@@ -1,6 +1,7 @@
 ﻿@page "/TaskManager/{TypeTask}"
 @page "/TasksPerActivity/{TypeTask}/{DataProviderId:long}/{ProviderName}"
 @inject NavigationManager UriHelper
+@using Report_App_WASM.Client.Pages.Logs.Tasks
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -80,12 +81,17 @@
                     }
                     @if (TypeTask == TaskType.Report.ToString())
                     {
-                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.FileStorageLocationId)" Title="@Localizer.Get("File deposit path")" Sortable="true"/>
+                        <Blazor.SimpleGrid.TemplateColumn Title="@(Localizer.Get("File upload configuration"))">
+                            <MudText>@(_depositPathSelect.FirstOrDefault(a => a.Id == context.FileStorageLocationId)?.Name ?? string.Empty)</MudText>
+                        </Blazor.SimpleGrid.TemplateColumn>
                         <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Create file manually")">
                             <_TaskDropFileForm Item="context"/>
                         </Blazor.SimpleGrid.TemplateColumn>
                         <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ReportsRetentionInDays)" Title="@Localizer.Get("Archiving duration in days")" Sortable="true"/>
                     }
+                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Logs")">
+                        <MudIconButton Style="padding: 0px !important" Icon="@Icons.Material.Outlined.Article" OnClick="() => DisplayLogs(context)" title="@Localizer.Get("Logs")"/>
+                    </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -99,8 +105,8 @@
 
 @code
 {
-    [Parameter] public string TypeTask { get; set; } = default!;
-    [Parameter] public string ProviderName { get; set; } = default!;
+    [Parameter] public string TypeTask { get; set; } = null!;
+    [Parameter] public string ProviderName { get; set; } = null!;
     [Parameter] public long? DataProviderId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? Page { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? PageSize { get; set; }
@@ -117,9 +123,17 @@
     bool _empty;
     string _oldActivity = string.Empty;
     string _oldTypeTask = string.Empty;
+    private List<SelectItem> _depositPathSelect = new();
 
     protected override async Task OnParametersSetAsync()
     {
+        if (!_depositPathSelect.Any() && TypeTask == TaskType.Report.ToString())
+        {
+            var controllerActionDepositPath = "DepositPathInfo";
+            _depositPathSelect = await DataService.GetValues<SelectItem>(controllerActionDepositPath, ApiControllers.ApplicationParametersApi);
+        }
+
+
         _pageTitle = TypeTask switch
         {
             nameof(TaskType.Report) => Localizer.Get("Manage reports"),
@@ -330,5 +344,12 @@
                 _errorMessage = result.Message;
             }
         }
+    }
+
+    private async Task DisplayLogs(ScheduledTaskDto _scheduledTask)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+        var parameters = new DialogParameters { ["ScheduledTaskId"] = _scheduledTask.ScheduledTaskId };
+        await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Logs") + ": " + _scheduledTask.TaskName, parameters, options);
     }
 }

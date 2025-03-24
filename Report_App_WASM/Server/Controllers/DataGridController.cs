@@ -73,10 +73,12 @@ public class DataGridController : ODataController, IDisposable
 
     [EnableQuery]
     [HttpGet("odata/ExtractQueryExecutionLogs")]
-    public async Task<IActionResult> ExtractQueryExecutionLogs(ODataQueryOptions<QueryExecutionLog> queryOptions)
+    public async Task<IActionResult> ExtractQueryExecutionLogs(ODataQueryOptions<QueryExecutionLogDto> queryOptions)
     {
-        var logs = await queryOptions.ApplyTo(_context.QueryExecutionLog.OrderByDescending(a => a.Id).AsNoTracking())
-            .Cast<QueryExecutionLog>().ToListAsync();
+        var logs = await queryOptions.ApplyTo(_context.QueryExecutionLog
+                .ProjectTo<QueryExecutionLogDto>(_mapper.ConfigurationProvider).OrderByDescending(a => a.Id)
+                .AsNoTracking())
+            .Cast<QueryExecutionLogDto>().ToListAsync();
         return GetExtractFile(logs, "QueryExecutionLogs", "QueryExecutionLogs");
     }
 
@@ -211,7 +213,9 @@ public class DataGridController : ODataController, IDisposable
                 FileStorageLocationId = a.FileStorageLocationId,
                 FilePath = a.FilePath,
                 ModificationUser = a.ModificationUser,
-                FileStorageConfigurationId = a.FileStorageConfiguration == null ? 0 : a.FileStorageConfiguration.FileStorageConfigurationId,
+                FileStorageConfigurationId = a.FileStorageConfiguration == null
+                    ? 0
+                    : a.FileStorageConfiguration.FileStorageConfigurationId,
                 TryToCreateFolder = a.TryToCreateFolder,
                 UseFileStorageConfiguration = a.UseFileStorageConfiguration,
                 IsReachable = a.IsReachable

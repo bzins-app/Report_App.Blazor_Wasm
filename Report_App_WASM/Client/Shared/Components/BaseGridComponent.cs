@@ -5,12 +5,12 @@ public abstract class BaseGridComponent<T> : ComponentBase, IAsyncDisposable whe
     protected GridItemsProvider<T>? _itemsProvider;
     protected PaginationState _pagination = new() { ItemsPerPage = 10 };
     protected SimpleGridFieldsContent? _translations;
-    protected SimpleGrid<T> _grid = default!;
+    protected SimpleGrid<T> _grid = null!;
     protected string? _errorMessage;
     protected bool _rendering;
 
-    [Inject] protected DataInteractionService DataService { get; set; } = default!;
-    [Inject] protected ApplicationService AppService { get; set; } = default!;
+    [Inject] protected DataInteractionService DataService { get; set; } = null!;
+    [Inject] protected ApplicationService AppService { get; set; } = null!;
 
     protected override void OnInitialized()
     {

@@ -51,7 +51,6 @@
                             <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"ManageQueries/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Manage queries")</MudNavLink>
                             <MudDivider DividerType="DividerType.Inset"/>
                             <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"DbExplorer/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("DB explorer")</MudNavLink>
-                            <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"QueryEditor/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("QueryEditor")</MudNavLink>
                         }
                     }
                 </MudNavGroup>

@@ -11,6 +11,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthenticationStateDeserialization();
 builder.Services.AddScoped<IdentityAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(
     s => s.GetRequiredService<IdentityAuthenticationStateProvider>());

@@ -15,7 +15,7 @@
         <MudStack Spacing="1" Style="max-height: 80vh; overflow-x: hidden; overflow-y: auto; width: 100%">
             <MudForm Model="@Item" @ref="@_form">
                 <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete"/>
-                <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="true">
+                <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="DbCon.TypeDb" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="true">
                     @if (DbCon.TypeDb == 0)
                     {
                         <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
@@ -42,7 +42,7 @@
                             </MudStack>
                             <MudStack Row="true">
                                 <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" Margin="Margin.Dense"/>
-                                <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                                <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" Margin="Margin.Dense">
                                     @foreach (ApplicationIntent item in Enum.GetValues(typeof(ApplicationIntent)))
                                     {
                                         <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -116,14 +116,14 @@
     [Parameter] public DataProviderDto? Item { get; set; }
 
     [Parameter] public CrudAction Action { get; set; }
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string _deletionValidation = null!;
     private DatabaseConnectionDto DbCon { get; set; } = new() { TypeDb = TypeDb.SqlServer };
     private string _connectionTestResult = null!;
     private List<SelectItemDataproviderInfo> _activities = new();
     private ApplicationConstantsValues? _appConst;
     private bool _loading;
-    SqlServerParameters sqlServerParameters = new SqlServerParameters();
+    SqlServerParameters sqlServerParameters = new();
 
 
     private void Cancel()

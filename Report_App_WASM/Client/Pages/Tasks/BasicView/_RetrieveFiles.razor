@@ -62,9 +62,9 @@
     PaginationState _pagination = new() { ItemsPerPage = 10 };
     SimpleGridFieldsContent? _translations;
     private bool _processing = false;
-    SimpleGrid<ReportGenerationLogDto> _grid = default!;
+    SimpleGrid<ReportGenerationLogDto> _grid = null!;
     private bool _rendering;
-    private string _errorMessage = default!;
+    private string _errorMessage = null!;
 
     protected override async Task OnParametersSetAsync()
     {

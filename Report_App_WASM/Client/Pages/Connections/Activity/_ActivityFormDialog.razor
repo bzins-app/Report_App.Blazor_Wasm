@@ -20,7 +20,7 @@
 <MudForm Model="@Item" @ref="@_form">
     <MudTextField @bind-Value="Item!.ProviderName" Label="@Localizer.Get("Activity name")" Required RequiredError="@Localizer.Get("Required")" Validation="CheckProviderName()" Disabled="Action == CrudAction.Delete"/>
     <MudStack Row="true">
-        <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
+        <MudSelect Label="@Localizer.Get("Type of Database")" @bind-Value="@DbCon.TypeDb" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a Db type")" Disabled="Action == CrudAction.Delete">
             @if (DbCon.TypeDb == 0)
             {
                 <MudSelectItem Value="DbCon.TypeDb">@Localizer.Get("Please select a Db type")</MudSelectItem>
@@ -31,7 +31,7 @@
             }
         </MudSelect>
 
-        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item.TimeZone" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
+        <MudSelect Label="@Localizer.Get("Time zone")" T="string" @bind-Value="@Item!.TimeZone" Margin="Margin.Dense" Required RequiredError="@Localizer.Get("Please select a time zone")" Disabled="Action == CrudAction.Delete">
 
             @foreach (var z in TimeZoneInfo.GetSystemTimeZones())
             {
@@ -84,7 +84,7 @@
                 </MudStack>
                 <MudStack Row="true">
                     <MudTextField @bind-Value="sqlServerParameters.Database" Label="Database" Margin="Margin.Dense"/>
-                    <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                    <MudSelect Label="@Localizer.Get("Application intent read only?")" @bind-Value="@sqlServerParameters.ApplicationIntent" Margin="Margin.Dense">
                         @foreach (ApplicationIntent item in Enum.GetValues(typeof(ApplicationIntent)))
                         {
                             <MudSelectItem Value="@item">@item</MudSelectItem>
@@ -230,7 +230,7 @@
             </div>
             <MudGrid>
                 <MudItem>
-                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo" Accept=".jpg, .jpeg, .png, .gif">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadLogo!" Accept=".jpg, .jpeg, .png, .gif">
                         <ActivatorContent>
                             <MudFab HtmlTag="label" Class="pa-4"
                                     Color="Color.Secondary"
@@ -256,7 +256,7 @@
             @if (!_loadingDescription)
             {
                 <MudItem>
-                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions" Accept=".csv, text/csv">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadDescriptions!" Accept=".csv, text/csv">
                         <ActivatorContent>
                             <MudFab HtmlTag="label"
                                     Color="Color.Secondary"
@@ -309,7 +309,7 @@
                     <MudSwitch @bind-Value="DbCon.UseTableMetaDataFromAnotherProvider" Label="@(Localizer.Get("Use the same tables descriptions than") + ":")" Color="Color.Primary"/>
                 </MudItem>
                 <MudItem md="6">
-                    <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdTableMetaData" Dense="true" AnchorOrigin="Origin.BottomCenter" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseTableMetaDataFromAnotherProvider">
+                    <MudSelect Label="@Localizer.Get("Activity name")" @bind-Value="@DbCon.IdTableMetaData" Dense="true" Required RequiredError="@Localizer.Get("Required")" HelperText="@Localizer.Get("Activity name")" Disabled="!DbCon.UseTableMetaDataFromAnotherProvider">
                         @if (DbCon.IdTableMetaData == 0)
                         {
                             <MudSelectItem Value="DbCon.IdTableMetaData">@Localizer.Get("Activity name")</MudSelectItem>
@@ -339,14 +339,11 @@
 @code {
 
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
-
     [Parameter] public DataProviderDto? Item { get; set; }
-
     [Parameter] public CrudAction Action { get; set; }
 
     private MudForm _form = null!;
     private string _deletionValidation = null!;
-
     private DatabaseConnectionDto DbCon { get; set; } = new();
 
     // private DatabaseParameters DbParameters { get; set; }
@@ -358,12 +355,12 @@
     private bool _extractDescriptions;
 
 
-    SqlServerParameters sqlServerParameters = new SqlServerParameters();
-    OracleParameters OParameters = new OracleParameters();
-    PostgreSqlParameters PostgreParameters = new PostgreSqlParameters();
-    MySqlParameters MyParameters = new MySqlParameters();
-    MariaDbParameters MariaParameters = new MariaDbParameters();
-    OleDbParameters oleDParameters = new OleDbParameters();
+    SqlServerParameters sqlServerParameters = new();
+    OracleParameters OParameters = new();
+    PostgreSqlParameters PostgreParameters = new();
+    MySqlParameters MyParameters = new();
+    MariaDbParameters MariaParameters = new();
+    OleDbParameters oleDParameters = new();
 
     private void Cancel()
     {
@@ -515,7 +512,7 @@
         return true;
     }
 
-    private async Task OnUploadLogo(IBrowserFile? file)
+    private async Task OnUploadLogo(IBrowserFile file)
     {
         var result = await DataService.PostFile(file);
         if (result.Success)

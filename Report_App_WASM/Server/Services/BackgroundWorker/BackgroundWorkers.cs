@@ -16,6 +16,8 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     private readonly IRemoteDatabaseActionsHandler _dbReader;
     private readonly IEmailSender _emailSender;
     private readonly LocalFilesService _fileDeposit;
+    private readonly FtpService _ftp;
+    private readonly SftpService _sftp;
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
@@ -23,7 +25,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
     public BackgroundWorkers(
         ApplicationDbContext context, IEmailSender emailSender, IRemoteDatabaseActionsHandler dbReader,
         LocalFilesService fileDeposit, IMapper mapper, IWebHostEnvironment hostingEnvironment,
-        IServiceScopeFactory scopeFactory)
+        IServiceScopeFactory scopeFactory, FtpService ftp, SftpService sftp)
     {
         _context = context;
         _emailSender = emailSender;
@@ -32,14 +34,16 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
         _mapper = mapper;
         _hostingEnvironment = hostingEnvironment;
         _scopeFactory = scopeFactory;
+        _ftp = ftp;
+        _sftp = sftp;
     }
 
 
-    public void SendEmail(List<EmailRecipient>? email, string? subject, string message,
+    public void SendEmail(List<EmailRecipient> email, string subject, string message,
         List<Attachment>? attachment = null)
 
     {
-        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment));
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, subject, message, attachment ?? null));
     }
 
     public void DeleteFile(string filePath)
@@ -250,7 +254,7 @@ public class BackgroundWorkers : IBackgroundWorkers, IDisposable
             else if (parameters.TaskType == TaskType.Report)
             {
                 using var handler = new ReportHandler(db, _emailSender, _dbReader, _fileDeposit, _mapper,
-                    _hostingEnvironment);
+                    _hostingEnvironment, _ftp, _sftp);
                 await handler.HandleReportTask(parameters);
             }
         }

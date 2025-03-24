@@ -10,12 +10,16 @@ public class DepositPathController : ControllerBase, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly LocalFilesService _fileService;
+    private readonly SftpService _sftp;
+    private readonly FtpService _ftp;
 
     public DepositPathController(ILogger<DepositPathController> logger, LocalFilesService fileService,
-        ApplicationDbContext context)
+        ApplicationDbContext context, SftpService sftp, FtpService ftp)
     {
         _fileService = fileService;
         _context = context;
+        _sftp = sftp;
+        _ftp = ftp;
     }
 
     public void Dispose()
@@ -24,7 +28,7 @@ public class DepositPathController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value)
+    public async Task<IActionResult> TestDepositPathAsync(ApiCrudPayload<DepositPathTest> value, CancellationToken ct)
     {
         if (value.EntityValue == null)
         {
@@ -35,19 +39,21 @@ public class DepositPathController : ControllerBase, IDisposable
         {
             var useFtpProtocol = await _context.FileStorageConfiguration
                 .Where(a => a.FileStorageConfigurationId == value.EntityValue.SftpConfigurationId)
-                .Select(a => a.ConfigurationType==FileStorageConfigurationType.FTP)
+                .Select(a =>
+                    a.ConfigurationType == FileStorageConfigurationType.FTP ||
+                    a.ConfigurationType == FileStorageConfigurationType.FTPs)
                 .FirstOrDefaultAsync();
 
             if (useFtpProtocol)
             {
-                using var deposit = new FtpService(_context);
+                using var deposit = _ftp;
                 var result = await deposit.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
-                    value.EntityValue.FilePath, value.EntityValue.TryToCreateFolder);
+                    value.EntityValue.FilePath, value.EntityValue.TryToCreateFolder, ct);
                 return Ok(result);
             }
             else
             {
-                using var deposit = new SftpService(_context);
+                using var deposit = _sftp;
                 var result = await deposit.TestDirectoryAsync(value.EntityValue.SftpConfigurationId,
                     value.EntityValue.FilePath!, value.EntityValue.TryToCreateFolder);
                 return Ok(result);

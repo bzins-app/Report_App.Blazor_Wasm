@@ -13,7 +13,7 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item!.TaskName" Label="@(Item?.TypeName == TaskType.Report.ToString() ? Localizer.Get("Report title") : Item?.TypeName == TaskType.DataTransfer.ToString() ? Localizer.Get("Job title") : Localizer.Get("Alert title"))" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ProviderName" AnchorOrigin="Origin.BottomCenter"
+            <MudSelect T="string" Label="@Localizer.Get("Activity name")" @bind-Value="@Item!.ProviderName"
                        Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
                 @foreach (var value in _activities)
                 {
@@ -22,7 +22,7 @@
             </MudSelect>
             @if (Item?.TypeName == TaskType.Report.ToString())
             {
-                <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile" AnchorOrigin="Origin.BottomCenter"
+                <MudSelect Label="@Localizer.Get("Type of file")" @bind-Value="@Item.TypeFile"
                            Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete">
                     @if (Item.TypeFile == 0)
                     {
@@ -54,7 +54,7 @@
 
     [Parameter] public CrudAction Action { get; set; }
 
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string? _deletionValidation;
     private List<SelectItemDataproviderInfo> _activities = new();
 

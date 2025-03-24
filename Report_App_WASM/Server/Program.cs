@@ -48,6 +48,8 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IRemoteDatabaseActionsHandler, RemoteDatabaseActionsHandler>();
 builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
 builder.Services.AddTransient<LocalFilesService>();
+builder.Services.AddTransient<SftpService>();
+builder.Services.AddTransient<FtpService>();
 builder.Services.AddTransient<InitializeDatabase>();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -83,7 +85,7 @@ builder.Services.AddControllersWithViews().AddJsonOptions(x =>
     options => options.AddRouteComponents(
         "odata", OdataModels.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents().AddAuthenticationStateSerialization();;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -121,7 +123,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var retryCount = 0;
     const int maxRetries = 5;
-    while (retryCount < maxRetries)
+    while (true)
     {
         try
         {
@@ -183,7 +185,7 @@ app.UseBlazorFrameworkFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();
+app.MapStaticAssets();
 
 app.UseHangfireDashboard("/Hangfire", new DashboardOptions
 {

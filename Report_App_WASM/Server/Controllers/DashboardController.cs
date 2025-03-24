@@ -36,26 +36,39 @@ public class DashboardController : ControllerBase, IDisposable
         var reportsTodayList = await reportsToday.ToListAsync();
         var activeTaskList = await activeTask.ToListAsync();
 
+        var _emailsToday = _context.EmailLog.Where(a => a.EndDateTime.Date == today);
+        var _filesDroppedToday = _context.ReportGenerationLog.Where(a =>
+            a.CreatedAt.Date == today && a.FileGenerationType != FileGenerationType.LocalCopy);
+
         var metrics = new AppMetrics
         {
-            NbrOfTasksExcecutedToday = tasksTodayList.Count,
-            NbrTasksInError = tasksTodayList.Count(a => a.Error && !a.Result!.Contains("attempt")),
+            TasksExcecutedToday = tasksTodayList.Count,
+            TasksInError = tasksTodayList.Count(a => a.Error && !a.Result!.Contains("attempt")),
+            EmailsSentToday = await _emailsToday.Where(a => a.Error == false).CountAsync(),
+            EmailsInError = await _emailsToday.Where(a => a.Error).CountAsync(),
+            FileUploadsToday = await _filesDroppedToday.Where(a => a.Error == false).CountAsync(),
+            FileUploadsInError = await _filesDroppedToday.Where(a => a.Error).CountAsync(),
             SizeFilesStoredLocally = reportsTodayList.Sum(a => a.FileSizeInMb),
             NbrOfFilesStored = reportsTodayList.Count,
-            NbrOfActiveReports = servicesStatus.ReportService
+            ActiveReports = servicesStatus.ReportService
                 ? activeTaskList.Count(a => a.Type == TaskType.Report)
                 : 0,
-            NbrOfActiveAlerts = servicesStatus.AlertService
+            ActiveAlerts = servicesStatus.AlertService
                 ? activeTaskList.Count(a => a.Type == TaskType.Alert)
                 : 0,
-            NbrOfActiveDataTransfer = servicesStatus.DataTransferService
+            ActiveDataTransfer = servicesStatus.DataTransferService
                 ? activeTaskList.Count(a => a.Type == TaskType.DataTransfer)
                 : 0,
-            NbrOfActiveQueries = await _context.ScheduledTaskQuery.CountAsync(a =>
+            ActiveQueries = await _context.ScheduledTaskQuery.CountAsync(a =>
                 a.ScheduledTask!.IsEnabled && a.ScheduledTask.DataProvider.IsEnabled &&
                 ((a.ScheduledTask.Type == TaskType.Report && servicesStatus.ReportService) ||
                  (a.ScheduledTask.Type == TaskType.Alert && servicesStatus.AlertService) ||
-                 (a.ScheduledTask.Type == TaskType.DataTransfer && servicesStatus.DataTransferService)))
+                 (a.ScheduledTask.Type == TaskType.DataTransfer && servicesStatus.DataTransferService))),
+            ActiveSourceDataProvider =
+                await _context.DataProvider.CountAsync(
+                    a => a.IsEnabled && a.ProviderType == ProviderType.SourceDatabase),
+            ActiveDestinationDataProvider =
+                await _context.DataProvider.CountAsync(a => a.ProviderType == ProviderType.TargetDatabase)
         };
 
         return metrics;
@@ -77,6 +90,23 @@ public class DashboardController : ControllerBase, IDisposable
                 TotalDuration = a.Sum(a => a.DurationInSeconds),
                 NbrTasks = a.Count(),
                 NbrErrors = a.Sum(a => a.Error ? 1 : 0)
+            }).ToListAsync();
+    }
+
+    [HttpGet("UploadHistoric")]
+    public async Task<List<HistoricalProtocolFileGeneration>> GetUploadHistoricAsync()
+    {
+        var dateThreshold = DateTime.Today.AddDays(-10);
+        return await _context.ReportGenerationLog.AsNoTracking()
+            .Where(a => a.CreatedAt.Date > dateThreshold )
+            .GroupBy(a => new { a.CreatedAt.Date })
+            .Select(a => new HistoricalProtocolFileGeneration
+            {
+                Date = a.Key.Date,
+                NbrOfFTP = a.Sum(a=>a.FileGenerationType==FileGenerationType.Ftp?1:0),
+                NbrOfFTPs = a.Sum(a=>a.FileGenerationType==FileGenerationType.Ftps?1:0),
+                NbrOfsftp = a.Sum(a=>a.FileGenerationType==FileGenerationType.Sftp?1:0),
+                NbrOfDirectToFolder = a.Sum(a=>a.FileGenerationType==FileGenerationType.DirectToFolder?1:0)
             }).ToListAsync();
     }
 
