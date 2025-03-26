@@ -19,7 +19,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["Report_App_WASM/Server/Report_App_WASM.Server.csproj", "Report_App_WASM/Server/"]
 COPY ["Report_App_WASM/Client/Report_App_WASM.Client.csproj", "Report_App_WASM/Client/"]
