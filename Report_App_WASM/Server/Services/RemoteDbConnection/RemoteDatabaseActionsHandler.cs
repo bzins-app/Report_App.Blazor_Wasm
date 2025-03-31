@@ -103,6 +103,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
     {
         DataTable values;
         var attempts = 0;
+        TaskRetryPattern retryP = new();
         if (run.Test) attempts = 3;
         do
         {
@@ -179,13 +180,8 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
                 if (cts.IsCancellationRequested)
                     throw;
 
-                var delay = attempts switch
-                {
-                    1 => 10 * 1000,
-                    2 => 60 * 1000,
-                    3 => 10 * 60 * 1000,
-                    _ => 10 * 1000
-                };
+                var delay = retryP.Pattern.FirstOrDefault(opt => opt.RetryAttempt == attempts)?.DelayBetweenRetriesInSeconds * 1000 ?? 10000;
+
                 if (!run.Test)
                 {
                     _logTaskStep.Info +=

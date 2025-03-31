@@ -1,6 +1,6 @@
 ﻿namespace Report_App_WASM.Shared.DatabasesConnectionParameters
 {
-    public class DatabaseTaskRetryPattern
+    public class TaskRetryPattern
     {
         public List<RetryOptions> Pattern { get; set; } =
         [
