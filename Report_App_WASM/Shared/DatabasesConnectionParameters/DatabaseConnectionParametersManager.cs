@@ -8,7 +8,7 @@ namespace Report_App_WASM.Shared.DatabasesConnectionParameters
         public JsonElement Parameters { get; set; }
     }
 
-    public class DatabaseConnectionParametersManager
+    public static class DatabaseConnectionParametersManager
     {
         public static string SerializeToJson(JsonElement parameters, TypeDb type)
         {
