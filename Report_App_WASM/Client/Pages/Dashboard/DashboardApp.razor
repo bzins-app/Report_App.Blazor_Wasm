@@ -16,7 +16,7 @@
 <MudStack Row="true">
     <MudSpacer />
     <MudText Style="align-content:center">@Localizer.Get("Latest update") @DateTime.Now</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")" />
+    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear; animation-timing-function: steps(40, end);" title="@Localizer.Get("Update")" />
 </MudStack>
 
 <MudGrid Spacing="2">
@@ -304,7 +304,7 @@
                                     <MudText>@(x.Status ? Localizer.Get("Running"):Localizer.Get("Stopped"))</MudText>
                                     @if (x.Status)
                                     {
-                                        <MudIcon Icon="@Icons.Material.Outlined.Settings" Size="Size.Small" Style="animation: rotation 5s infinite linear;margin-left: 5px;" />
+                                        <MudIcon Icon="@Icons.Material.Outlined.Settings" Size="Size.Small" Style="animation: rotation 5s infinite linear;margin-left: 5px; animation-timing-function: steps(25, end);" />
                                     }
                                     else
                                     {
