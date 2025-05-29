@@ -2682,4 +2682,16 @@
   <data name="Use a connection protocol" xml:space="preserve">
     <value>Use a connection protocol</value>
   </data>
+  <data name="Task retry pattern: Defines how many times and at what intervals a database operation should be retried after a failure" xml:space="preserve">
+    <value>Task retry pattern: Defines how many times and at what intervals a database operation should be retried after a failure</value>
+  </data>
+  <data name="Retry attempt" xml:space="preserve">
+    <value>Retry attempt</value>
+  </data>
+  <data name="Delay (seconds)" xml:space="preserve">
+    <value>Delay (seconds)</value>
+  </data>
+  <data name="Restore default values" xml:space="preserve">
+    <value>Restore default values</value>
+  </data>
 </root>

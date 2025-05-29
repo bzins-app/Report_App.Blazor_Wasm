@@ -1,5 +1,6 @@
 ﻿using Report_App_WASM.Server.Utils.RemoteDb;
 using Report_App_WASM.Shared.DatabasesConnectionParameters;
+using System.Text.Json;
 
 namespace Report_App_WASM.Server.Services.RemoteDb;
 
@@ -114,6 +115,14 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
                 DatabaseConnectionParametersManager.DeserializeFromJson(_dbInfo.DbConnectionParameters, "", "");
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
             var _logTaskStep = new TaskStepLog { TaskLogId = taskId, Step = "Fetch data", Info = run.QueryInfo };
+
+            if (!string.IsNullOrWhiteSpace(_dbInfo.RetryPatternParameters) && _dbInfo.RetryPatternParameters.Trim() != "[]")
+            {
+                var deserialized = JsonSerializer.Deserialize<TaskRetryPattern>(_dbInfo.RetryPatternParameters);
+                if (deserialized is not null)
+                    retryP = deserialized;
+            }
+
             try
             {
                 attempts++;

@@ -1,0 +1,30 @@
+﻿@using Report_App_WASM.Shared.DatabasesConnectionParameters
+
+<MudText>@Localizer.Get("Task retry pattern: Defines how many times and at what intervals a database operation should be retried after a failure")</MudText>
+<MudTable Items="Pattern.Pattern" Dense="true">
+    <HeaderContent>
+        <MudTh>@Localizer.Get("Retry attempt")</MudTh>
+        <MudTh>@Localizer.Get("Delay (seconds)")</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            @context.RetryAttempt
+        </MudTd>
+        <MudTd>
+            <MudNumericField @bind-Value="context.DelayBetweenRetriesInSeconds" Min="0" Immediate="true"/>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+<MudButton Variant="Variant.Text" Size="Size.Small" OnClick="RestoreDefaultValue"><MudText>@Localizer.Get("Restore default values")</MudText></MudButton>
+
+
+@code {
+    [Parameter]
+    public TaskRetryPattern Pattern { get; set; } = new();
+
+    private void RestoreDefaultValue()
+    {
+        Pattern = new();
+    }
+
+}
