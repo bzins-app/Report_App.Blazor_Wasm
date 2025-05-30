@@ -51,7 +51,7 @@
     IEnumerable<ScheduledTaskQueryDto>? _elements = new List<ScheduledTaskQueryDto>();
     SimpleGrid<ScheduledTaskQueryDto>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 5 };
-    SimpleGridFieldsContent? _translations = null!;
+    SimpleGridFieldsContent? _translations;
     DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true };
     private bool _disable;
 
