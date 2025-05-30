@@ -20,7 +20,7 @@
             <RowTemplate>
                 <MudTd>
                     <MudStack Row Spacing="1">
-                        <MudIconButton Icon="@Icons.Material.Outlined.Edit" Color="Color.Default" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")" />
+                        <MudIconButton Icon="@Icons.Material.Outlined.Edit" Color="Color.Default" OnClick="() => OpenEditDialog(context)" title="@Localizer.Get("Edit")"/>
                         <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Default" OnClick="() => Delete(context)" title="@Localizer.Get("Delete")"/>
                     </MudStack>
                 </MudTd>
@@ -54,10 +54,10 @@
                     </MudStack>
                 </MudTd>
                 <MudTd>
-                    <MudSwitch @bind-Value="@context.Required" @bind-Value:after="UpdateParameters"  Color="Color.Primary" />
+                    <MudSwitch @bind-Value="@context.Required" @bind-Value:after="UpdateParameters" Color="Color.Primary"/>
                 </MudTd>
                 <MudTd>
-                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Color="Color.Primary" />
+                    <MudSwitch @bind-Value="@context.HideParameter" @bind-Value:after="UpdateParameters" Color="Color.Primary"/>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -132,8 +132,8 @@
 
     private async Task OpenEditDialog(QueryCommandParameter element)
     {
-        var CopyElement = new QueryCommandParameter { DisplayName = element.DisplayName, ParameterIdentifier = element.ParameterIdentifier, Value = element.Value, ValueType = element.ValueType, DateOption = element.DateOption, Required = element.Required , HideParameter = element.HideParameter, DisplaySequence = element.DisplaySequence};
-        var parameters = new DialogParameters<_QueryParametersFormDialog> { { x => x._param, CopyElement }, { a => a.UseAllParameters,true } };
+        var CopyElement = new QueryCommandParameter { DisplayName = element.DisplayName, ParameterIdentifier = element.ParameterIdentifier, Value = element.Value, ValueType = element.ValueType, DateOption = element.DateOption, Required = element.Required, HideParameter = element.HideParameter, DisplaySequence = element.DisplaySequence };
+        var parameters = new DialogParameters<_QueryParametersFormDialog> { { x => x._param, CopyElement }, { a => a.UseAllParameters, true } };
         var dialog = await DialogService.ShowAsync<_QueryParametersFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
@@ -153,4 +153,5 @@
             }
         }
     }
+
 }

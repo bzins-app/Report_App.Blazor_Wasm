@@ -15,12 +15,13 @@
         </MudTd>
     </RowTemplate>
 </MudTable>
-<MudButton Variant="Variant.Text" Size="Size.Small" OnClick="RestoreDefaultValue"><MudText>@Localizer.Get("Restore default values")</MudText></MudButton>
+<MudButton Variant="Variant.Text" Size="Size.Small" OnClick="RestoreDefaultValue">
+    <MudText>@Localizer.Get("Restore default values")</MudText>
+</MudButton>
 
 
 @code {
-    [Parameter]
-    public TaskRetryPattern Pattern { get; set; } = new();
+    [Parameter] public TaskRetryPattern Pattern { get; set; } = new();
 
     private void RestoreDefaultValue()
     {

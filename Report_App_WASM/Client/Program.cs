@@ -12,8 +12,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<IdentityAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(
-    s => s.GetRequiredService<IdentityAuthenticationStateProvider>());
+builder.Services.AddScoped<AuthenticationStateProvider>(s =>
+    s.GetRequiredService<IdentityAuthenticationStateProvider>());
 builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<DataInteractionService>();

@@ -1,5 +1,4 @@
-﻿@inject HttpClient Http
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
 
 <MudSwitch Style="justify-content: center" Value="@Item.IsEnabled" Color="Color.Primary" ThumbIcon="@(Item.IsEnabled ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(Item.IsEnabled ? Color.Success : Color.Error)" ValueChanged="(bool value) => ChangeStatusAsync(value)"/>
 
