@@ -28,7 +28,7 @@ else
 }
 
 @code {
-    [Parameter] public string? Height { get; set; } = null;
+    [Parameter] public string? Height { get; set; }
 
     private List<DbLinesQuery>? _logs;
     private ApexChartOptions<DbLinesQuery> _options = new();

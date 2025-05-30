@@ -221,6 +221,9 @@
             }
         </MudPaper>
         <MudPaper Class="pa-2" Outlined="true">
+            <_TaskRetryPatternEditor Pattern="_retryPattern"/>
+        </MudPaper>
+        <MudPaper Class="pa-2" Outlined="true">
             <div>
                 <MudText Class="pa-4">@Localizer.Get("Logo")</MudText>
                 @if (!string.IsNullOrEmpty(Item?.ProviderIcon))
@@ -353,6 +356,7 @@
     private bool _loading;
     private bool _loadingDescription;
     private bool _extractDescriptions;
+    private TaskRetryPattern _retryPattern = new();
 
 
     SqlServerParameters sqlServerParameters = new();
@@ -423,6 +427,8 @@
                 DbCon.ConnectionLogin = sqlServerParameters.UserId;
                 break;
         }
+
+        DbCon.RetryPatternParameters = JsonSerializer.Serialize(_retryPattern, new JsonSerializerOptions { WriteIndented = true });
     }
 
     protected override async Task OnInitializedAsync()
@@ -433,6 +439,7 @@
         {
             DbCon = Item.DatabaseConnection.FirstOrDefault()!;
             DeserializeDbConnectionParameters();
+            DeserializeTryPattern();
         }
         else
         {
@@ -470,6 +477,16 @@
             case TypeDb.SqlServer:
                 sqlServerParameters = (SqlServerParameters)DatabaseConnectionParametersManager.DeserializeFromJson(DbCon.DbConnectionParameters, _login, _password);
                 break;
+        }
+    }
+
+    private void DeserializeTryPattern()
+    {
+        if (!string.IsNullOrWhiteSpace(DbCon.RetryPatternParameters) && DbCon.RetryPatternParameters.Trim() != "[]")
+        {
+            var deserialized = JsonSerializer.Deserialize<TaskRetryPattern>(DbCon.RetryPatternParameters);
+            if (deserialized is not null)
+                _retryPattern = deserialized;
         }
     }
 
