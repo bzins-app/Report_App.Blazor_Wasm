@@ -116,12 +116,25 @@ public class PostgreSqlRemoteDb : IRemoteDb
                                 ? parameter.DateOption.GetCalculateDateTime().Date
                                 : parameter.DateOption.GetCalculateDateTime();
 
-                        NpgsqlParameter para = new(parameter.ParameterIdentifier,
-                            NpgsqlDbType.Date)
+                        if (parameter.ValueType is QueryCommandParameterValueType.Date)
                         {
-                            Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
-                        };
-                        cmd.Parameters.Add(para);
+                            NpgsqlParameter para = new(parameter.ParameterIdentifier,
+                                NpgsqlDbType.Date)
+                            {
+                                Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
+                            };
+                            cmd.Parameters.Add(para);
+                        }
+                        else
+                        {
+                            NpgsqlParameter para = new(parameter.ParameterIdentifier,
+                                NpgsqlDbType.Timestamp)
+                            {
+                                Value = run.Test ? timevalue : TimeZoneInfo.ConvertTime(timevalue, _timeZone)
+                            };
+                            cmd.Parameters.Add(para);
+                        }
+
                     }
                     else
                     {
