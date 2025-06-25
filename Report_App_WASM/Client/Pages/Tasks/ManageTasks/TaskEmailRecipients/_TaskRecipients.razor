@@ -16,21 +16,21 @@
         </MudForm>
     </ToolBarContent>
     <HeaderContent>
+        <MudTh></MudTh>
         <MudTh>@Localizer.Get("Email")</MudTh>
         <MudTh>@Localizer.Get("Cc")</MudTh>
         <MudTh>@Localizer.Get("Blind copy")</MudTh>
-        <MudTh>@Localizer.Get("Action")</MudTh>
     </HeaderContent>
     <RowTemplate>
+        <MudTd Style="width:10px">
+            <MudIconButton Icon="@Icons.Material.Outlined.Delete" aria-label="delete" OnClick="() => DeleteRecipient(context)" title="@Localizer.Get("Delete")" Class="pa-2"/>
+        </MudTd>
         <MudTd DataLabel="@Localizer.Get("Email")">@context.Email</MudTd>
         <MudTd DataLabel="@Localizer.Get("Cc")">
             <MudSwitch Value="@context.Cc" ValueChanged="(bool value) => ChangeCcValue(context, value)" Color="Color.Primary"/>
         </MudTd>
         <MudTd DataLabel="@Localizer.Get("Blind copy")">
             <MudSwitch Value="@context.Bcc" ValueChanged="(bool value) => ChangeBccValue(context, value)" Color="Color.Primary"/>
-        </MudTd>
-        <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteRecipient(context)"></MudIconButton>
         </MudTd>
     </RowTemplate>
 </MudTable>
@@ -47,7 +47,7 @@
     private List<EmailRecipient> _emails = new();
     private List<EmailRecipient> _emailItems = new();
     private ScheduledTaskDistributionListDto _recipients = new();
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string _email = "";
     private List<string> _activityEmails = new();
 
@@ -132,7 +132,7 @@
     }
 
     private string? _htmlText;
-    private bool _displayTagMessage = false;
+    private bool _displayTagMessage;
 
     private async Task OpenTextEditorComponent()
     {

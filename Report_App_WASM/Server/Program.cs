@@ -58,6 +58,8 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IRemoteDatabaseActionsHandler, RemoteDatabaseActionsHandler>();
 builder.Services.AddTransient<IBackgroundWorkers, BackgroundWorkers>();
 builder.Services.AddTransient<LocalFilesService>();
+builder.Services.AddTransient<SftpService>();
+builder.Services.AddTransient<FtpService>();
 builder.Services.AddTransient<InitializeDatabase>();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -131,7 +133,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var retryCount = 0;
     const int maxRetries = 5;
-    while (retryCount < maxRetries)
+    while (true)
     {
         try
         {

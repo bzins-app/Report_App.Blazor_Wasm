@@ -1,10 +1,10 @@
-﻿@implements IAsyncDisposable
+﻿@inherits BaseGridComponent<TaskLogDto>
 @inject IDialogService DialogService
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Background tasks")</MudText>
+            <MudText Typo="Typo.h6">@Title</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -50,39 +50,47 @@
 
 @code
 {
-    GridItemsProvider<TaskLogDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 20 };
-    SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<TaskLogDto> _grid = default!;
-    private bool _rendering;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool? Error { get; set; }
+    [Parameter] public long? ScheduledTaskId { get; set; }
+    [Parameter] public DateTime? From { get; set; }
+    [Parameter] public DateTime? To { get; set; }
+    [Parameter] public int? PageSize { get; set; }
 
+    new PaginationState _pagination = new() { ItemsPerPage = 20 };
+    string customFilters = string.Empty;
 
     protected override void OnInitialized()
     {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<TaskLogDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-
-        _translations = AppService.GetGridTranslations();
+        base.OnInitialized();
+        _pagination.ItemsPerPage = PageSize ?? 20;
     }
 
-    private async Task<ApiResponse<TaskLogDto>?> GetRemoteData(GridItemsProviderRequest<TaskLogDto> req)
+    protected override async Task<ApiResponse<TaskLogDto>?> GetRemoteData(GridItemsProviderRequest<TaskLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/TaskLogs?";
-        if (string.IsNullOrEmpty(odataQuery))
+
+
+        var odataSort = _grid?.GetODataSortValues();
+        var odataPagination = _grid?.GetODataPaginationValues();
+        var odataFilters = _grid?.GetODataFilterValues();
+
+        SetCustomFilters();
+
+        if (!string.IsNullOrEmpty(customFilters))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true";
+            if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
+            if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
+            if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
+            else url += "&$filter=" + customFilters;
+        }
+        else if (string.IsNullOrEmpty(odataQuery))
+        {
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -100,41 +108,91 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
 
     private async Task ExtractElements()
     {
         _rendering = true;
+        SetCustomFilters();
         string fname = "TaskLogs";
         var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var odataSort = _grid?.GetODataSortValues();
+        var odataPagination = _grid?.GetODataPaginationValues();
+        var odataFilters = _grid?.GetODataFilterValues();
         var url = "odata/ExtractTaskLogs?";
+        if (!string.IsNullOrEmpty(customFilters))
+        {
+            if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
+            if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
+            if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
+            else url += "&$filter=" + customFilters;
+        }
+        else
+        {
+            url += odataQuery;
+        }
+
         url += odataQuery;
         await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 
-    private async Task RemoveFilters()
-    {
-        _rendering = true;
-        await _grid.RemoveFilters();
-        _rendering = false;
-    }
 
-    private void OpenDetails(long taksId)
+    private async Task OpenDetails(long taksId)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters { ["taskId"] = taksId };
-        DialogService.Show<_TaskDetails>(Localizer.Get("Job details"), parameters, options);
+        await DialogService.ShowAsync<_TaskDetails>(Localizer.Get("Job details"), parameters, options);
     }
 
-    public async ValueTask DisposeAsync()
+    private void SetCustomFilters()
     {
-        await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
+        customFilters = string.Empty;
+        if (Error.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and Error eq {Error.Value.ToString().ToLower()}";
+            }
+            else
+            {
+                customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
+            }
+        }
+
+        if (ScheduledTaskId.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and ScheduledTaskId eq {ScheduledTaskId.Value}";
+            }
+            else
+            {
+                customFilters = $"ScheduledTaskId eq {ScheduledTaskId.Value}";
+            }
+        }
+
+        if (From.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+            else
+            {
+                customFilters = $"StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+        }
+
+        if (To.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+            else
+            {
+                customFilters = $"EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+        }
     }
 }

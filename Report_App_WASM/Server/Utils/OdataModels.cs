@@ -19,7 +19,7 @@ public static class OdataModels
 
         builder.EntitySet<LdapConfiguration>("Ldap");
         builder.EntitySet<SmtpConfiguration>("Smtp");
-        builder.EntitySet<SftpConfiguration>("Sftp");
+        builder.EntitySet<FileStorageConfiguration>("Sftp");
         builder.EntitySet<FileStorageLocationDto>("DepositPath");
         builder.EntitySet<DataProvider>("Activities");
         builder.EntitySet<DataProvider>("DataTransfers");

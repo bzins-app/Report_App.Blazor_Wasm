@@ -93,11 +93,11 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpGet]
-    public async Task<SftpConfiguration?> GetStfpConfigurationAsync(int sftpConfigurationId)
+    public async Task<FileStorageConfiguration?> GetStfpConfigurationAsync(int sftpConfigurationId)
     {
-        return await _context.SftpConfiguration
+        return await _context.FileStorageConfiguration
             .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.SftpConfigurationId == sftpConfigurationId);
+            .FirstOrDefaultAsync(a => a.FileStorageConfigurationId == sftpConfigurationId);
     }
 
     [HttpGet]
@@ -169,7 +169,7 @@ public class DataCrudController : ControllerBase, IDisposable
         if (targetInfo != null) return targetInfo;
 
         var connections = new List<DatabaseConnection>
-            { new DatabaseConnection { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer } };
+            { new() { DataProvider = targetInfo, TypeDb = TypeDb.SqlServer } };
 
         targetInfo = new DataProvider
         {
@@ -394,9 +394,12 @@ public class DataCrudController : ControllerBase, IDisposable
                 }
             }
 
-            if (values.EntityValue.DatabaseConnection != null)
+            if (values.EntityValue.DatabaseConnection is not null)
             {
-                await UpdateEntity(values.EntityValue.DatabaseConnection, values.UserName!);
+                foreach (var i in values.EntityValue.DatabaseConnection)
+                {
+                    await UpdateEntity(i, values.UserName!);
+                }
             }
 
             return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
@@ -496,7 +499,7 @@ public class DataCrudController : ControllerBase, IDisposable
         {
             var dbItem = await _context.ScheduledTask.Include(a => a.DataProvider).Include(a => a.TaskQueries)
                 .Include(scheduledTask => scheduledTask.DistributionLists)
-                .Include(a => a.ScheduledTaskId).Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
+                .Where(a => a.ScheduledTaskId == values.EntityValue.ScheduledTaskId)
                 .AsNoTracking().FirstOrDefaultAsync();
 
             if (dbItem == null) return NotFound(new SubmitResult { Success = false, Message = "Item not found" });
@@ -515,14 +518,11 @@ public class DataCrudController : ControllerBase, IDisposable
             _context.Update(dbItem);
             await SaveDbAsync(values.UserName);
             _context.Entry(dbItem).State = EntityState.Detached;
-            _context.Entry(values.EntityValue).State = EntityState.Deleted;
-
-
             return Ok(new SubmitResult { Success = true });
         }
         catch (Exception ex)
         {
-            return Ok(new SubmitResult { Success = true, Message = ex.Message });
+            return Ok(new SubmitResult { Success = false, Message = ex.Message });
         }
     }
 
@@ -554,19 +554,19 @@ public class DataCrudController : ControllerBase, IDisposable
     }
 
     [HttpPost]
-    public async Task<IActionResult> SftpInsert(ApiCrudPayload<SftpConfiguration> values)
+    public async Task<IActionResult> SftpInsert(ApiCrudPayload<FileStorageConfiguration> values)
     {
         return Ok(await InsertEntity(values.EntityValue, values.UserName!));
     }
 
     [HttpPost]
-    public async Task<IActionResult> SftpDelete(ApiCrudPayload<SftpConfiguration> values)
+    public async Task<IActionResult> SftpDelete(ApiCrudPayload<FileStorageConfiguration> values)
     {
         return Ok(await DeleteEntity(values.EntityValue, values.UserName!));
     }
 
     [HttpPost]
-    public async Task<IActionResult> SftpUpdate(ApiCrudPayload<SftpConfiguration> values)
+    public async Task<IActionResult> SftpUpdate(ApiCrudPayload<FileStorageConfiguration> values)
     {
         return Ok(await UpdateEntity(values.EntityValue, values.UserName!));
     }
@@ -575,14 +575,15 @@ public class DataCrudController : ControllerBase, IDisposable
     public async Task<IActionResult> DepositPathInsert(ApiCrudPayload<FileStorageLocationDto> values)
     {
         var val = new FileStorageLocation();
-        if (values.EntityValue.SftpConfigurationId > 0)
-            val.SftpConfiguration = await _context.SftpConfiguration
-                .Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
+        if (values.EntityValue.FileStorageConfigurationId > 0)
+            val.FileStorageConfiguration = await _context.FileStorageConfiguration
+                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId)
+                .FirstOrDefaultAsync();
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
         val.TryToCreateFolder = values.EntityValue.TryToCreateFolder;
-        val.UseSftpProtocol = values.EntityValue.UseSftpProtocol;
+        val.UseFileStorageConfiguration = values.EntityValue.UseFileStorageConfiguration;
 
         return Ok(await InsertEntity(val, values.UserName!));
     }
@@ -602,14 +603,15 @@ public class DataCrudController : ControllerBase, IDisposable
         var val = await _context.FileStorageLocation
             .Where(a => a.FileStorageLocationId == values.EntityValue.FileStorageLocationId)
             .FirstOrDefaultAsync();
-        if (values.EntityValue.SftpConfigurationId > 0)
-            val.SftpConfiguration = await _context.SftpConfiguration
-                .Where(a => a.SftpConfigurationId == values.EntityValue.SftpConfigurationId).FirstOrDefaultAsync();
+        if (values.EntityValue.FileStorageConfigurationId > 0)
+            val.FileStorageConfiguration = await _context.FileStorageConfiguration
+                .Where(a => a.FileStorageConfigurationId == values.EntityValue.FileStorageConfigurationId)
+                .FirstOrDefaultAsync();
 
         val.ConfigurationName = values.EntityValue.ConfigurationName;
         val.FilePath = values.EntityValue.FilePath;
         val.TryToCreateFolder = values.EntityValue.TryToCreateFolder;
-        val.UseSftpProtocol = values.EntityValue.UseSftpProtocol;
+        val.UseFileStorageConfiguration = values.EntityValue.UseFileStorageConfiguration;
 
         return Ok(await UpdateEntity(val, values.UserName!));
     }

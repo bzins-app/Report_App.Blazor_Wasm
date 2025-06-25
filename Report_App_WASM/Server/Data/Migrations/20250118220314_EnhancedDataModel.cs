@@ -35,7 +35,7 @@ namespace ReportAppWASM.Server.Migrations
                 name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                 table: "AspNetUserTokens");
 
-           
+
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_AspNetUserTokens",
@@ -171,23 +171,6 @@ namespace ReportAppWASM.Server.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "MiscValue",
                 table: "SmtpConfiguration",
-                type: "nvarchar(250)",
-                maxLength: 250,
-                nullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "ConfigurationName",
-                table: "SftpConfiguration",
-                type: "nvarchar(250)",
-                maxLength: 250,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(60)",
-                oldMaxLength: 60);
-
-            migrationBuilder.AddColumn<string>(
-                name: "MiscValue",
-                table: "SftpConfiguration",
                 type: "nvarchar(250)",
                 maxLength: 250,
                 nullable: true);
@@ -411,17 +394,18 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FileStorageLocation",
+                name: "FileStorageConfiguration",
                 columns: table => new
                 {
-                    FileStorageLocationId = table.Column<long>(type: "bigint", nullable: false)
+                    FileStorageConfigurationId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ConfigurationType = table.Column<int>(type: "int", nullable: false),
                     ConfigurationName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    IsReachable = table.Column<bool>(type: "bit", nullable: false),
-                    TryToCreateFolder = table.Column<bool>(type: "bit", nullable: false),
-                    UseSftpProtocol = table.Column<bool>(type: "bit", nullable: false),
-                    SftpConfigurationId = table.Column<int>(type: "int", nullable: true),
+                    Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Port = table.Column<int>(type: "int", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConfigurationParameter = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -430,12 +414,7 @@ namespace ReportAppWASM.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FileStorageLocation", x => x.FileStorageLocationId);
-                    table.ForeignKey(
-                        name: "FK_FileStorageLocation_SftpConfiguration_SftpConfigurationId",
-                        column: x => x.SftpConfigurationId,
-                        principalTable: "SftpConfiguration",
-                        principalColumn: "SftpConfigurationId");
+                    table.PrimaryKey("PK_FileStorageConfiguration", x => x.FileStorageConfigurationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -772,6 +751,34 @@ namespace ReportAppWASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FileStorageLocation",
+                columns: table => new
+                {
+                    FileStorageLocationId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ConfigurationName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    IsReachable = table.Column<bool>(type: "bit", nullable: false),
+                    TryToCreateFolder = table.Column<bool>(type: "bit", nullable: false),
+                    UseFileStorageConfiguration = table.Column<bool>(type: "bit", nullable: false),
+                    FileStorageConfigurationId = table.Column<long>(type: "bigint", nullable: true),
+                    MiscValue = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileStorageLocation", x => x.FileStorageLocationId);
+                    table.ForeignKey(
+                        name: "FK_FileStorageLocation_FileStorageConfiguration_FileStorageConfigurationId",
+                        column: x => x.FileStorageConfigurationId,
+                        principalTable: "FileStorageConfiguration",
+                        principalColumn: "FileStorageConfigurationId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TableMetadata",
                 columns: table => new
                 {
@@ -858,8 +865,7 @@ namespace ReportAppWASM.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-
-                                    migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+                                                            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_NAME = N'set' and TABLE_SCHEMA=N'HangFire')
 BEGIN
 delete from [HangFire].[Set];
@@ -1070,13 +1076,42 @@ SELECT [UserId]
       ,[ModificationUser]
   FROM [dbo].[UserSavedConfiguration]
 ");
+
+
+            migrationBuilder.Sql(@"INSERT INTO [dbo].[FileStorageConfiguration]
+           ([ConfigurationName]
+            ,ConfigurationType
+           ,[Host]
+           ,[Port]
+           ,[UserName]
+           ,[Password]
+           ,[ConfigurationParameter]
+           ,[MiscValue]
+           ,[CreateDateTime]
+           ,[CreateUser]
+           ,[ModDateTime]
+           ,[ModificationUser])
+SELECT [ConfigurationName]
+        , case when UseFtpProtocol=1 then 20 else 80 end
+      ,[Host]
+      ,[Port]
+      ,[UserName]
+      ,[Password]
+      ,'[]'
+	  ,[SftpConfigurationId]
+      ,[CreateDateTime]
+      ,[CreateUser]
+      ,[ModDateTime]
+      ,[ModificationUser]
+  FROM [dbo].[SftpConfiguration]");
+
             migrationBuilder.Sql(@"INSERT INTO [dbo].[FileStorageLocation]
            ([ConfigurationName]
            ,[FilePath]
            ,[IsReachable]
            ,[TryToCreateFolder]
-           ,[UseSftpProtocol]
-           ,[SftpConfigurationId]
+           ,[UseFileStorageConfiguration]
+           ,[FileStorageConfigurationId]
            ,[MiscValue]
            ,[CreateDateTime]
            ,[CreateUser]
@@ -1087,7 +1122,7 @@ SELECT [ConfigurationName]
       ,[IsReachable]
       ,[TryToCreateFolder]
       ,[UseSftpProtocol]
-      ,[SftpConfigurationId]
+      ,coalesce((select FileStorageConfigurationId  from FileStorageConfiguration where MiscValue=[SftpConfigurationId]),null)
 	  ,[FileDepositPathConfigurationId]
       ,[CreateDateTime]
       ,[CreateUser]
@@ -1492,6 +1527,7 @@ join [dbo].[DataProvider] dpv on dpv.MiscValue=rlr.[ActivityId]
 left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
 
 
+
             migrationBuilder.CreateIndex(
                 name: "IX_AdHocQueryExecutionLog_DataProviderId_QueryId_JobDescription",
                 table: "AdHocQueryExecutionLog",
@@ -1528,9 +1564,9 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                 columns: new[] { "Error", "Result" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FileStorageLocation_SftpConfigurationId",
+                name: "IX_FileStorageLocation_FileStorageConfigurationId",
                 table: "FileStorageLocation",
-                column: "SftpConfigurationId");
+                column: "FileStorageConfigurationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReportGenerationLog_CreatedAt",
@@ -1747,6 +1783,9 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                 name: "ActivityDbConnection");
 
             migrationBuilder.DropTable(
+                name: "SftpConfiguration");
+
+            migrationBuilder.DropTable(
                 name: "TaskHeader");
 
             migrationBuilder.DropTable(
@@ -1838,6 +1877,9 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                 name: "UserPreferences");
 
             migrationBuilder.DropTable(
+                name: "FileStorageConfiguration");
+
+            migrationBuilder.DropTable(
                 name: "ScheduledTask");
 
             migrationBuilder.DropTable(
@@ -1884,10 +1926,6 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
             migrationBuilder.DropColumn(
                 name: "MiscValue",
                 table: "SmtpConfiguration");
-
-            migrationBuilder.DropColumn(
-                name: "MiscValue",
-                table: "SftpConfiguration");
 
             migrationBuilder.DropColumn(
                 name: "MiscValue",
@@ -1982,16 +2020,6 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
             migrationBuilder.AlterColumn<string>(
                 name: "ConfigurationName",
                 table: "SmtpConfiguration",
-                type: "nvarchar(60)",
-                maxLength: 60,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(250)",
-                oldMaxLength: 250);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "ConfigurationName",
-                table: "SftpConfiguration",
                 type: "nvarchar(60)",
                 maxLength: 60,
                 nullable: false,
@@ -2352,33 +2380,6 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                 });
 
             migrationBuilder.CreateTable(
-                name: "FileDepositPathConfiguration",
-                columns: table => new
-                {
-                    FileDepositPathConfigurationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SftpConfigurationId = table.Column<int>(type: "int", nullable: true),
-                    ConfigurationName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsReachable = table.Column<bool>(type: "bit", nullable: false),
-                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    TryToCreateFolder = table.Column<bool>(type: "bit", nullable: false),
-                    UseSftpProtocol = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FileDepositPathConfiguration", x => x.FileDepositPathConfigurationId);
-                    table.ForeignKey(
-                        name: "FK_FileDepositPathConfiguration_SftpConfiguration_SftpConfigurationId",
-                        column: x => x.SftpConfigurationId,
-                        principalTable: "SftpConfiguration",
-                        principalColumn: "SftpConfigurationId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ServicesStatus",
                 columns: table => new
                 {
@@ -2397,6 +2398,28 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ServicesStatus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SftpConfiguration",
+                columns: table => new
+                {
+                    SftpConfigurationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ConfigurationName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Port = table.Column<int>(type: "int", nullable: false),
+                    UseFtpProtocol = table.Column<bool>(type: "bit", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SftpConfiguration", x => x.SftpConfigurationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -2536,6 +2559,33 @@ left join [dbo].[ScheduledTask] th on th.MiscValue=rlr.[TaskHeaderId]");
                         principalTable: "Activity",
                         principalColumn: "ActivityId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileDepositPathConfiguration",
+                columns: table => new
+                {
+                    FileDepositPathConfigurationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SftpConfigurationId = table.Column<int>(type: "int", nullable: true),
+                    ConfigurationName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    CreateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsReachable = table.Column<bool>(type: "bit", nullable: false),
+                    ModDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    TryToCreateFolder = table.Column<bool>(type: "bit", nullable: false),
+                    UseSftpProtocol = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileDepositPathConfiguration", x => x.FileDepositPathConfigurationId);
+                    table.ForeignKey(
+                        name: "FK_FileDepositPathConfiguration_SftpConfiguration_SftpConfigurationId",
+                        column: x => x.SftpConfigurationId,
+                        principalTable: "SftpConfiguration",
+                        principalColumn: "SftpConfigurationId");
                 });
 
             migrationBuilder.CreateTable(

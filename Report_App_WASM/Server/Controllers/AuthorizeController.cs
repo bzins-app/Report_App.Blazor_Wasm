@@ -171,7 +171,7 @@ public class AuthorizeController : ControllerBase
 
             var emailRecipients = new List<EmailRecipient>
             {
-                new EmailRecipient
+                new()
                 {
                     Email = item.EntityValue.UserMail ?? throw new InvalidOperationException("User Email must be set")
                 }

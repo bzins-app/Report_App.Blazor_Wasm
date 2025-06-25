@@ -1,9 +1,9 @@
-﻿@implements IAsyncDisposable
+﻿@inherits BaseGridComponent<EmailLogDto>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Email sender")</MudText>
+            <MudText Typo="Typo.h6">@Title</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -29,7 +29,11 @@
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.DurationInSeconds)" Title="@Localizer.Get("Duration in seconds")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.EmailTitle)" Title="@Localizer.Get("Email title")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Error)" Title="@Localizer.Get("Error?")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RecipientList)" Title="@Localizer.Get("List of recipient")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.NbrOfRecipients)" Title="@Localizer.Get("Nbr of recipients")" Sortable="true"/>
+                    @if (DisplayEmails)
+                    {
+                        <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.RecipientList)" Title="@Localizer.Get("List of recipient")" Sortable="true"/>
+                    }
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Result)" Title="@Localizer.Get("Result")" Sortable="true"/>
                 </SimpleGrid>
             </div>
@@ -45,38 +49,47 @@
 
 @code
 {
-    GridItemsProvider<EmailLogDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 20 };
-    SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<EmailLogDto> _grid = default!;
-    private bool _rendering;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool? Error { get; set; }
+    [Parameter] public DateTime? From { get; set; }
+    [Parameter] public DateTime? To { get; set; }
+    [Parameter] public int? PageSize { get; set; }
+    [Parameter] public bool DisplayEmails { get; set; } = true;
+    new PaginationState _pagination = new() { ItemsPerPage = 20 };
+    string customFilters = string.Empty;
 
 
     protected override void OnInitialized()
     {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<EmailLogDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-        _translations = AppService.GetGridTranslations();
+        base.OnInitialized();
+        _pagination.ItemsPerPage = PageSize ?? 20;
     }
 
-    private async Task<ApiResponse<EmailLogDto>?> GetRemoteData(GridItemsProviderRequest<EmailLogDto> req)
+
+    protected override async Task<ApiResponse<EmailLogDto>?> GetRemoteData(GridItemsProviderRequest<EmailLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/EmailLogs?";
-        if (string.IsNullOrEmpty(odataQuery))
+
+        var odataSort = _grid?.GetODataSortValues();
+        var odataPagination = _grid?.GetODataPaginationValues();
+        var odataFilters = _grid?.GetODataFilterValues();
+
+        SetCustomFilters();
+
+        if (!string.IsNullOrEmpty(customFilters))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true";
+            if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
+            if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
+            if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
+            else url += "&$filter=" + customFilters;
+        }
+        else if (string.IsNullOrEmpty(odataQuery))
+        {
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -94,34 +107,72 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
-
     private async Task ExtractElements()
     {
         _rendering = true;
-        string fname = "EmailLogs";
+        SetCustomFilters();
         var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var odataSort = _grid?.GetODataSortValues();
+        var odataPagination = _grid?.GetODataPaginationValues();
+        var odataFilters = _grid?.GetODataFilterValues();
+
+        string fname = "EmailLogs";
         var url = "odata/ExtractEmailLogs?";
+        if (!string.IsNullOrEmpty(customFilters))
+        {
+            if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
+            if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
+            if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
+            else url += "&$filter=" + customFilters;
+        }
+        else
+        {
+            url += odataQuery;
+        }
+
         url += odataQuery;
         await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 
-    private async Task RemoveFilters()
-    {
-        _rendering = true;
-        await _grid.RemoveFilters();
-        _rendering = false;
-    }
 
-    public async ValueTask DisposeAsync()
+    private void SetCustomFilters()
     {
-        await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
+        customFilters = string.Empty;
+        if (Error.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and Error eq {Error.Value.ToString().ToLower()}";
+            }
+            else
+            {
+                customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
+            }
+        }
+
+        if (From.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+            else
+            {
+                customFilters = $"StartDateTime ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+        }
+
+        if (To.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+            else
+            {
+                customFilters = $"EndDateTime le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+        }
     }
 }

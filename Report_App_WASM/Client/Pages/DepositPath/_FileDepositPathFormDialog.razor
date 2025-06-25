@@ -13,13 +13,13 @@
     <DialogContent>
         <MudForm Model="@Item" @ref="@_form">
             <MudTextField @bind-Value="Item.ConfigurationName" Label="@Localizer.Get("Configuration name")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
-            <MudTextField @bind-Value="Item.FilePath" Label="@Localizer.Get("File path")" Required RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
+            <MudTextField @bind-Value="Item.FilePath" Label="@Localizer.Get("File path")" RequiredError="@Localizer.Get("Required")" Disabled="Action == CrudAction.Delete"/>
             <MudSwitch T="bool" @bind-Value="Item.TryToCreateFolder" Label="@Localizer.Get("Try to create the target folder if not exists?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
             @if (_listConfigs.Any())
             {
-                <MudSwitch @bind-Value="Item.UseSftpProtocol" Label="@Localizer.Get("Use Sftp protocol?")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
-                <MudSelect T="long" Label="@Localizer.Get("Choose an Sftp configuration")" @bind-Value="Item.SftpConfigurationId"
-                           AnchorOrigin="Origin.BottomCenter" Disabled="!Item.UseSftpProtocol"
+                <MudSwitch @bind-Value="Item.UseFileStorageConfiguration" Label="@Localizer.Get("Use a connection protocol")" Color="Color.Primary" Disabled="Action == CrudAction.Delete"/>
+                <MudSelect T="long" Label="@Localizer.Get("Choose a configuration")" @bind-Value="Item.FileStorageConfigurationId"
+                           Disabled="!Item.UseFileStorageConfiguration"
                            Required>
                     @foreach (var value in _listConfigs)
                     {
@@ -34,7 +34,21 @@
         }
         else
         {
-            <MudButton OnClick="TestConfiguration" Variant="Variant.Filled" Color="Color.Info" Style="text-transform: none" Size="Size.Small">@Localizer.Get("Test path configuration")</MudButton>
+            <MudLoadingButton @bind-Loading="_testingConfig" LoadingAdornment="Adornment.Start" LoadingCircularColor="Color.Info" Size="Size.Small" OnClick="TestConfiguration" Variant="Variant.Filled" Color="Color.Primary">
+                <LoadingContent>
+                    <MudText>@Localizer.Get("Processing")</MudText>
+                </LoadingContent>
+                <ChildContent>
+                    <MudText>@Localizer.Get("Test path configuration")</MudText>
+                </ChildContent>
+            </MudLoadingButton>
+            @if (_testingConfig)
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" OnClick="CancelCheckConfiguration">
+                    <MudText Class="ms-2">@Localizer.Get("Cancel")</MudText>
+                </MudButton>
+            }
+
             <MudText>@Localizer.Get("Test Feedback:") @_directoryTestResult</MudText>
         }
     </DialogContent>
@@ -47,16 +61,15 @@
 @code {
 
     [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
-
     [Parameter] public FileStorageLocationDto Item { get; set; } = new();
-
     [Parameter] public CrudAction Action { get; set; }
 
     private List<SelectItem> _listConfigs = new();
-    private MudForm _form = default!;
+    private MudForm _form = null!;
     private string _deletionValidation = null!;
     private string? _directoryTestResult;
-
+    private bool _testingConfig;
+    private CancellationTokenSource? _cts;
 
     private void Cancel()
     {
@@ -88,10 +101,17 @@
         }
     }
 
+    void CancelCheckConfiguration()
+    {
+        _cts?.Cancel();
+    }
+
     private async Task TestConfiguration()
     {
-        var payload = new DepositPathTest { UseSftpProtocol = Item.UseSftpProtocol, SftpConfigurationId = (int)Item.SftpConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
-        var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi);
+        _testingConfig = true;
+        _cts = new CancellationTokenSource();
+        var payload = new DepositPathTest { UseSftpProtocol = Item.UseFileStorageConfiguration, SftpConfigurationId = (int)Item.FileStorageConfigurationId, FilePath = Item.FilePath, TryToCreateFolder = Item.TryToCreateFolder };
+        var result = await DataService.PostValues(payload, "TestDepositPath", ApiControllers.DepositPathApi, _cts.Token);
         if (result.Success)
         {
             _directoryTestResult = "OK!";
@@ -100,6 +120,8 @@
         {
             _directoryTestResult = result.Message;
         }
+
+        _testingConfig = false;
     }
 
 }

@@ -1,5 +1,5 @@
 ﻿@page "/QueryExecutionLogs"
-@implements IAsyncDisposable
+@inherits BaseGridComponent<QueryExecutionLogDto>
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
 <PageTitle>@Localizer.Get("Query execution logs")</PageTitle>
@@ -52,21 +52,7 @@
         </MudCardContent>
         <MudCard Elevation="6">
             <MudCardContent>
-                <div style="overflow: auto">
-                    <h4>
-                        @Localizer.Get("Query")
-                    </h4>
-                    @if (_queryValue == null)
-                    {
-                        <p class="muted">
-                            @Localizer.Get("Select a log to display the message")
-                        </p>
-                    }
-                    else
-                    {
-                        <MudTextField ReadOnly="true" T="string" Text="@_queryValue" Lines="10"/>
-                    }
-                </div>
+                <MudTextField Label="@Localizer.Get("Query")" ReadOnly="true" T="string" AutoGrow MaxLines="15" Typo="Typo.caption" Lines="2" Text="@(string.IsNullOrEmpty(_queryValue) ? Localizer.Get("Select a log to display the message") : _queryValue)"/>
             </MudCardContent>
         </MudCard>
     </MudCard>
@@ -75,30 +61,9 @@
 
 @code
 {
-    GridItemsProvider<QueryExecutionLogDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 10 };
-    SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<QueryExecutionLogDto>? _grid;
     private string? _queryValue = string.Empty;
-    private bool _rendering;
 
-    protected override void OnInitialized()
-    {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<QueryExecutionLogDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-        _translations = AppService.GetGridTranslations();
-    }
-
-    private async Task<ApiResponse<QueryExecutionLogDto>?> GetRemoteData(GridItemsProviderRequest<QueryExecutionLogDto> req)
+    protected override async Task<ApiResponse<QueryExecutionLogDto>?> GetRemoteData(GridItemsProviderRequest<QueryExecutionLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -106,7 +71,7 @@
         var url = "odata/QueryExecutionLogs?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -124,13 +89,6 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        if (_grid != null) await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
-
     private async Task ExtractElements()
     {
         _rendering = true;
@@ -142,21 +100,8 @@
         _rendering = false;
     }
 
-    private async Task RemoveFilters()
-    {
-        _rendering = true;
-        if (_grid != null) await _grid.RemoveFilters();
-        _rendering = false;
-    }
-
     void RowClicked(SimpleGridRowClickEventArgs<QueryExecutionLogDto> args)
     {
         _queryValue = args.Item.Query;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_grid != null) await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
     }
 }

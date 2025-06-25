@@ -1,4 +1,4 @@
-﻿@implements IAsyncDisposable
+﻿@inherits BaseGridComponent<SmtpConfigurationDto>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
@@ -64,30 +64,7 @@
 
 @code
 {
-    GridItemsProvider<SmtpConfigurationDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 10 };
-    SimpleGridFieldsContent? _translations;
-    SimpleGrid<SmtpConfigurationDto> _grid = default!;
-    private string? _errorMessage;
-    private bool _rendering;
-
-    protected override void OnInitialized()
-    {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<SmtpConfigurationDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-        _translations = AppService.GetGridTranslations();
-    }
-
-    private async Task<ApiResponse<SmtpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SmtpConfigurationDto> req)
+    protected override async Task<ApiResponse<SmtpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SmtpConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -95,7 +72,7 @@
         var url = "odata/Smtp?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -111,26 +88,6 @@
             // Unfortunately this HTTP API returns a 404 if there were no results, so we have to handle that separately
             return null;
         }
-    }
-
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
-
-    private async Task RemoveFilters()
-    {
-        _rendering = true;
-        await _grid.RemoveFilters();
-        _rendering = false;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
     }
 
     private async Task OpenEditDialog(SmtpConfigurationDto value)

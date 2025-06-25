@@ -7,7 +7,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         // Add as many of these lines as you need to map your objects
-        CreateMap<SftpConfiguration, SftpConfigurationDto>().ReverseMap();
+        CreateMap<FileStorageConfiguration, FileStorageConfigurationDto>().ReverseMap();
         CreateMap<SystemParameters, SystemParametersDto>().ReverseMap();
         CreateMap<DataProvider, DataProviderDto>().ReverseMap();
         CreateMap<DatabaseConnection, DatabaseConnectionDto>().ReverseMap();

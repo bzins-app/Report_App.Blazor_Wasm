@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
 <MudNavMenu Color="Color.Info" Bordered="true" Margin="Margin.Normal">
@@ -50,7 +49,7 @@
                         {
                             <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"ManageQueries/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("Manage queries")</MudNavLink>
                             <MudDivider DividerType="DividerType.Inset"/>
-                            <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"DbExplorer2/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("DB explorer")</MudNavLink>
+                            <MudNavLink Style="@(IsDarkMode ? _subStyleDark : _subStyleLight)" Href=@($"DbExplorer/{t.DataProviderId}/{t.ProviderName}")>@Localizer.Get("DB explorer")</MudNavLink>
                         }
                     }
                 </MudNavGroup>

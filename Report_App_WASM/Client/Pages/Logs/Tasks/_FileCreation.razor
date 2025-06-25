@@ -1,9 +1,9 @@
-﻿@implements IAsyncDisposable
+﻿@inherits BaseGridComponent<ReportGenerationLogDto>
 
 <ErrorBoundary>
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("File creation")</MudText>
+            <MudText Typo="Typo.h6">@Title</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -51,38 +51,47 @@
 
 @code
 {
-    GridItemsProvider<ReportGenerationLogDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 20 };
-    SimpleGridFieldsContent? _translations = new();
-    SimpleGrid<ReportGenerationLogDto>? _grid;
-    private bool _rendering;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool? Error { get; set; }
+    [Parameter] public DateTime? From { get; set; }
+    [Parameter] public DateTime? To { get; set; }
+    [Parameter] public int? PageSize { get; set; }
+    [Parameter] public bool? OnlyUpload { get; set; }
+    new PaginationState _pagination = new() { ItemsPerPage = 20 };
+    string customFilters = string.Empty;
 
 
     protected override void OnInitialized()
     {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<ReportGenerationLogDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-        _translations = AppService.GetGridTranslations();
+        base.OnInitialized();
+        _pagination.ItemsPerPage = PageSize ?? 20;
     }
 
-    private async Task<ApiResponse<ReportGenerationLogDto>?> GetRemoteData(GridItemsProviderRequest<ReportGenerationLogDto> req)
+    protected override async Task<ApiResponse<ReportGenerationLogDto>?> GetRemoteData(GridItemsProviderRequest<ReportGenerationLogDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
         var odataQuery = _grid?.GetODataQuery();
         var url = "odata/ReportResultLogs?";
-        if (string.IsNullOrEmpty(odataQuery))
+
+
+        var odataSort = _grid?.GetODataSortValues();
+        var odataPagination = _grid?.GetODataPaginationValues();
+        var odataFilters = _grid?.GetODataFilterValues();
+
+        SetCustomFilters();
+
+        if (!string.IsNullOrEmpty(customFilters))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true";
+            if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
+            if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
+            if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
+            else url += "&$filter=" + customFilters;
+        }
+        else if (string.IsNullOrEmpty(odataQuery))
+        {
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -100,34 +109,82 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        if (_grid != null) await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
-
     private async Task ExtractElements()
     {
         _rendering = true;
-        string fname = "ReportGenerationLogs";
+        SetCustomFilters();
         var odataQuery = _grid?.GetODataQueryWihtoutPagination();
+        var odataSort = _grid?.GetODataSortValues();
+        var odataPagination = _grid?.GetODataPaginationValues();
+        var odataFilters = _grid?.GetODataFilterValues();
+
+        string fname = "ReportGenerationLogs";
         var url = "odata/ExtractReportGenerationLogs";
-        url += odataQuery;
+        if (!string.IsNullOrEmpty(customFilters))
+        {
+            if (!string.IsNullOrEmpty(odataPagination)) url += "&" + odataPagination;
+            if (!string.IsNullOrEmpty(odataSort)) url += "&" + odataSort;
+            if (!string.IsNullOrEmpty(odataFilters)) url += "&" + odataFilters + " and " + customFilters;
+            else url += "&$filter=" + customFilters;
+        }
+        else
+        {
+            url += odataQuery;
+        }
+
         await DataService.ExtractGridLogs(url, fname);
         _rendering = false;
     }
 
-    private async Task RemoveFilters()
+    private void SetCustomFilters()
     {
-        _rendering = true;
-        if (_grid != null) await _grid.RemoveFilters();
-        _rendering = false;
-    }
+        customFilters = string.Empty;
+        if (Error.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and Error eq {Error.Value.ToString().ToLower()}";
+            }
+            else
+            {
+                customFilters = $"Error eq {Error.Value.ToString().ToLower()}";
+            }
+        }
 
-    public async ValueTask DisposeAsync()
-    {
-        if (_grid != null) await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
+        if (OnlyUpload.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and FileGenerationType ne {FileGenerationType.LocalCopy.GetHashCode()}";
+            }
+            else
+            {
+                customFilters = $"FileGenerationType ne {FileGenerationType.LocalCopy.GetHashCode()}";
+            }
+        }
+
+        if (From.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and CreatedAt ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+            else
+            {
+                customFilters = $"CreatedAt ge {From.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+        }
+
+        if (To.HasValue)
+        {
+            if (!string.IsNullOrEmpty(customFilters))
+            {
+                customFilters += $" and CreatedAt le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+            else
+            {
+                customFilters = $"CreatedAt le {To.Value:yyyy-MM-ddTHH:mm:ss.fffZ}";
+            }
+        }
     }
 }

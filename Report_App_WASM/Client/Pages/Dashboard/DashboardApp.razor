@@ -3,153 +3,327 @@
 @using System.Timers
 @using ApexCharts
 @using Report_App_WASM.Client.Pages.Dashboard.Components
+@using Report_App_WASM.Client.Pages.Logs.Tasks
 @using Report_App_WASM.Shared.Dashboard
 @using Color = MudBlazor.Color
 @using Size = MudBlazor.Size
 @implements IAsyncDisposable
 @inject IApexChartService ApexChartService
+@inject IDialogService DialogService
 @attribute [Authorize]
 
 <PageTitle>@Localizer.Get("Application Dashboard")</PageTitle>
 <MudStack Row="true">
     <MudSpacer/>
     <MudText Style="align-content:center">@Localizer.Get("Latest update") @DateTime.Now</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear" title="@Localizer.Get("Update")"/>
+    <MudIconButton Icon="@Icons.Material.Filled.Cached" Size="Size.Small" Color="Color.Primary" OnClick="@(async () => await RefreshData())" Style="animation: rotation 8s infinite linear; animation-timing-function: steps(40, end);" title="@Localizer.Get("Update")"/>
 </MudStack>
 
 <MudGrid Spacing="2">
-    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+<MudItem xs="12" sm="6" md="6" lg="4" xl="4" xxl="2">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
             <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-            <div>
+            <MudStack Spacing="1">
+
                 <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of tasks")</MudText>
-                <MudText Typo="Typo.h5">@_metrics.NbrOfTasksExcecutedToday.ToString("N0")</MudText>
+                @if (_metrics.TasksExcecutedToday > 0)
+                {
+                    <MudLink Typo="Typo.h5" OnClick="DisplayTasksOfTheDayLogs">@_metrics.TasksExcecutedToday.ToString("N0")</MudLink>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h5">@_metrics.TasksExcecutedToday.ToString("N0")</MudText>
+                }
                 <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-            <MudIcon Icon="@Icons.Material.Filled.Wysiwyg" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-            <div>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Reports")</MudText>
-                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveReports.ToString("N0")</MudText>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-            <MudIcon Icon="@Icons.Material.Filled.Report" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-            <div>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Alerts")</MudText>
-                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveAlerts.ToString("N0")</MudText>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-            <MudIcon Icon="@Icons.Material.Filled.Inbox" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-            <div>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data transfer")</MudText>
-                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveDataTransfer.ToString("N0")</MudText>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-            <MudIcon Icon="@Icons.Material.Filled.QueryStats" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-            <div>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of queries")</MudText>
-                <MudText Typo="Typo.h5">@_metrics.NbrOfActiveQueries.ToString("N0")</MudText>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4" lg="4" xl="2">
-        <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
-            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
-            <div>
-                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Tasks in error")</MudText>
-                <MudText Typo="Typo.h5" Color="Color.Error">@_metrics.NbrTasksInError.ToString("N0")</MudText>
+            </MudStack>
+            <MudStack Spacing="1">
+                @if (_metrics.TasksInError > 0)
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large"/>
+                        <MudLink Typo="Typo.h5" OnClick="DisplayTasksErrorLogs">@_metrics.TasksInError.ToString("N0")</MudLink>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("Error") : Localizer.Get("Errors"))</MudText>
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large"/>
+                        <MudText Typo="Typo.h5">@_metrics.TasksInError.ToString("N0")</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.TasksInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="6" md="6" lg="4" xl="4" xxl="2">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.AlternateEmail" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Emails")</MudText>
+                @if (_metrics.EmailsSentToday > 0)
+                {
+                    <MudLink Typo="Typo.h5" OnClick="DisplayEmailsOfTheDayLogs">@_metrics.EmailsSentToday.ToString("N0")</MudLink>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h5">@_metrics.EmailsSentToday.ToString("N0")</MudText>
+                }
                 <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="12" md="12" lg="12" xl="6">
-        <MudGrid Spacing="2">
-            <MudItem xs="12" sm="12" md="6" lg="6">
-                <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
-                    @if (_isLoading)
-                    {
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
-                    }
-                    else
-                    {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart"/>
-                    }
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="12" md="6" lg="6">
-                <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
-                    @if (_isLoading)
-                    {
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
-                    }
-                    else
-                    {
-                        <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart"/>
-                    }
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="12" md="12" lg="12">
-                <MudPaper Elevation="2" Class="pa-2" Style="height: 220px;">
-                    <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" @ref="_dbFetch"/>
-                </MudPaper>
-            </MudItem>
-        </MudGrid>
-    </MudItem>
-    <MudItem xs="12" sm="12" md="12" lg="6">
-        <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
-            @if (_isLoading)
-            {
-                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
-            }
-            else
-            {
-                <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs"/>
-            }
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="12" md="12" lg="6" xl="6">
-        <MudItem xs="12" sm="12" lg="12" xl="12">
-            <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-                <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage"/>
+            </MudStack>
+            <MudStack Spacing="1">
+                @if (_metrics.EmailsInError > 0)
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large"/>
+                        <MudLink Typo="Typo.h5" OnClick="DisplayEmailsErrorLogs">@_metrics.EmailsInError.ToString("N0")</MudLink>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large"/>
+                        <MudText Typo="Typo.h5">@_metrics.EmailsInError.ToString("N0")</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.EmailsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="6" md="6" lg="4" xl="4" xxl="2">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("File upload")</MudText>
+                @if (_metrics.FileUploadsToday > 0)
+                {
+                    <MudLink Typo="Typo.h5" OnClick="DisplayUploadsOfTheDayLogs">@_metrics.FileUploadsToday.ToString("N0")</MudLink>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h5">@_metrics.TasksExcecutedToday.ToString("N0")</MudText>
+                }
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Today")</MudText>
+            </MudStack>
+            <MudStack Spacing="1">
+                @if (_metrics.FileUploadsInError > 0)
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Color="Color.Error" Size="Size.Large"/>
+                        <MudLink Typo="Typo.h5" OnClick="DisplayUploadErrorLogs">@_metrics.FileUploadsInError.ToString("N0")</MudLink>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large"/>
+                        <MudText Typo="Typo.h5">@_metrics.FileUploadsInError.ToString("N0")</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1"> @(_metrics.FileUploadsInError <= 1 ? Localizer.Get("error") : Localizer.Get("errors"))</MudText>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="3" md="3" lg="2" xl="2" xxl="1">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudIcon Icon="@Icons.Material.Filled.Wysiwyg" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+        <div>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Reports")</MudText>
+            <MudText Typo="Typo.h5">@_metrics.ActiveReports.ToString("N0")</MudText>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+        </div>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="3" md="3" lg="2" xl="2" xxl="1">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudIcon Icon="@Icons.Material.Filled.Report" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+        <div>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Alerts")</MudText>
+            <MudText Typo="Typo.h5">@_metrics.ActiveAlerts.ToString("N0")</MudText>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+        </div>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="3" md="3" lg="2" xl="2" xxl="1">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudIcon Icon="@Icons.Material.Filled.Inbox" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+        <div>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data transfer")</MudText>
+            <MudText Typo="Typo.h5">@_metrics.ActiveDataTransfer.ToString("N0")</MudText>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+        </div>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="3" md="3" lg="2" xl="2" xxl="1">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudIcon Icon="@Icons.Material.Filled.QueryStats" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+        <div>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Queries")</MudText>
+            <MudText Typo="Typo.h5">@_metrics.ActiveQueries.ToString("N0")</MudText>
+            <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Active")</MudText>
+        </div>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="6" md="6" lg="4" xl="4" xxl="2">
+    <MudPaper Elevation="2" Class="d-flex flex-row align-center pa-2" Style="height: 100px;">
+        <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.DatasetLinked" Class="mx-4" Style="height: 50px; width: 50px;"></MudIcon>
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Data link")</MudText>
+                <MudStack Row Spacing="3">
+                    <MudStack Spacing="1" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h5">@_metrics.ActiveSourceDataProvider.ToString("N0")</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Source")</MudText>
+                    </MudStack>
+                    <MudStack Spacing="1" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h5">@_metrics.ActiveDestinationDataProvider.ToString("N0")</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Destination")</MudText>
+                    </MudStack>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="12" md="12" lg="12" xl="6">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" sm="12" md="6" lg="6">
+            <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
+                @if (_isLoading)
+                {
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+                }
+                else
+                {
+                    <Report_App_WASM.Client.Pages.Dashboard.Components._TasksLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksLogsChart"/>
+                }
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" sm="12" lg="12" xl="12">
-            <MudPaper Elevation="2" Class="pa-2">
-                <div>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
-                    <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored.ToString("N0")</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
-                    <MudText Typo="Typo.h6">@_metrics.SizeFilesStoredLocally.ToString("N2") MB</MudText>
-                </div>
+        <MudItem xs="12" sm="12" md="6" lg="6">
+            <MudPaper Elevation="2" Class="pa-2" Style="height: 240px">
+                @if (_isLoading)
+                {
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+                }
+                else
+                {
+                    <Report_App_WASM.Client.Pages.Dashboard.Components._TasksTypeLogsChart Height="100%" _taskLogs="_taskLogs" @ref="_tasksTypeLogsChart"/>
+                }
             </MudPaper>
         </MudItem>
-    </MudItem>
-    <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
+        <MudItem xs="12" sm="12" md="12" lg="12">
+            <MudPaper Elevation="2" Class="pa-2" Style="height: 220px;">
+                <Report_App_WASM.Client.Pages.Dashboard.Components._DblinesFetchedChart Height="100%" @ref="_dbFetch"/>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudItem>
+<MudItem xs="12" sm="12" md="12" lg="6">
+    <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
+        @if (_isLoading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+        }
+        else
+        {
+            <Report_App_WASM.Client.Pages.Dashboard.Components._ActivitiesSparklines _taskLogs="_taskLogs"/>
+        }
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="12" md="12" lg="6" xl="6">
+    <MudItem xs="12" sm="12" lg="12" xl="12">
         <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs"/>
+            <Report_App_WASM.Client.Pages.Dashboard.Components._StorageChart Height="100%" @ref="_storage"/>
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" sm="12" md="6" lg="6" xl="3">
-        <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
-            <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs"/>
+    <MudItem xs="12" sm="12" lg="12" xl="12">
+        <MudPaper Elevation="2" Class="pa-2">
+            <div>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Nbr of files stored locally")</MudText>
+                <MudText Typo="Typo.h6">@_metrics.NbrOfFilesStored.ToString("N0")</MudText>
+                <MudText Typo="Typo.subtitle2" Class="mud-text-secondary mb-n1">@Localizer.Get("Size of files stored locally")</MudText>
+                <MudText Typo="Typo.h6">@_metrics.SizeFilesStoredLocally.ToString("N2") MB</MudText>
+            </div>
         </MudPaper>
     </MudItem>
+</MudItem>
+<MudItem xs="12" sm="12" md="6" lg="6" xl="3">
+    <MudPaper Elevation="2" Class="pa-2" Style="height: 100%; max-height: 468px; min-height: 200px;">
+        <MudSimpleTable Style="overflow: auto;width:100%" Dense="true" Elevation="0">
+            <thead>
+            <tr>
+                <th>@Localizer.Get("Date")</th>
+                <th>FTP</th>
+                <th>FTPs</th>
+                <th>sFTP</th>
+                <th>@Localizer.Get("Direct to folder")</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var x in _uploadHostoricList.OrderByDescending(a => a.Date))
+            {
+                <tr>
+                    <td>@x.Date.ToShortDateString()</td>
+                    <td>@x.NbrOfFTP</td>
+                    <td>@x.NbrOfFTPs</td>
+                    <td>@x.NbrOfsftp</td>
+                    <td>@x.NbrOfDirectToFolder</td>
+                </tr>
+            }
+            </tbody>
+        </MudSimpleTable>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="12" md="6" lg="6" xl="3">
+    <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
+        <Report_App_WASM.Client.Pages.Dashboard.Components._EmailLogsChart Height="100%" @ref="_emailLogs"/>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="12" md="6" lg="6" xl="3">
+    <MudPaper Elevation="2" Class="pa-2 align-center d-flex " Style="height: 250px;">
+        <MudSimpleTable Style="overflow: auto;width:100%" Dense="true" Elevation="0">
+            <thead>
+            <tr>
+                <th>@Localizer.Get("Services status")</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var x in _services)
+            {
+                <tr>
+                    <td>@x.Service</td>
+                    <td>
+                        <MudStack Spacing="1" Row>
+                            <MudText>@(x.Status ? Localizer.Get("Running") : Localizer.Get("Stopped"))</MudText>
+                            @if (x.Status)
+                            {
+                                <MudIcon Icon="@Icons.Material.Outlined.Settings" Size="Size.Small" Style="animation: rotation 5s infinite linear;margin-left: 5px; animation-timing-function: steps(25, end);"/>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.StopCircle" Color="Color.Error" Size="Size.Small" Style="margin-left: 5px;"/>
+                            }
+
+                        </MudStack>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </MudSimpleTable>
+    </MudPaper>
+</MudItem>
+<MudItem xs="12" sm="12" md="6" lg="6" xl="3">
+    <MudPaper Elevation="2" Class="pa-2" Style="height: 250px;">
+        <Report_App_WASM.Client.Pages.Dashboard.Components._SystemLogsChart Height="100%" @ref="_systemLogs"/>
+    </MudPaper>
+</MudItem>
 </MudGrid>
 
 @code {
@@ -164,10 +338,22 @@
     private _TasksTypeLogsChart _tasksTypeLogsChart = null!;
     private Timer? _timer;
     private bool _isPageVisible = true;
+    private bool _disposed;
+    private SystemServicesStatusDto _servicesStatus = new();
+    private List<HistoricalProtocolFileGeneration> _uploadHostoricList = new();
 
     [Inject] IJSRuntime JSRuntime { get; set; } = null!;
     private DotNetObjectReference<DashboardApp>? _dotNetRef;
     private string? _visibilityChangeHandlerId;
+
+    private class ServiceStatusDashboard
+    {
+        public string Service { get; set; } = string.Empty;
+        public bool Status { get; set; }
+    }
+
+    List<ServiceStatusDashboard> _services = new();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -175,6 +361,13 @@
         await ApexChartService.InitalizeChartAsync();
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
+        _uploadHostoricList = await DataService.GetValues<HistoricalProtocolFileGeneration>("UploadHistoric", ApiControllers.DashboardApi);
+        _servicesStatus = await DataService.GetUniqueValue(_servicesStatus, "GetServiceStatus");
+        _services.Add(new ServiceStatusDashboard { Service = Localizer.Get("Report service"), Status = _servicesStatus.ReportService });
+        _services.Add(new ServiceStatusDashboard { Service = Localizer.Get("Alert service"), Status = _servicesStatus.AlertService });
+        _services.Add(new ServiceStatusDashboard { Service = Localizer.Get("Data transfer service"), Status = _servicesStatus.DataTransferService });
+        _services.Add(new ServiceStatusDashboard { Service = Localizer.Get("Cleaner service"), Status = _servicesStatus.CleanerService });
+        _services.Add(new ServiceStatusDashboard { Service = Localizer.Get("Email service"), Status = _servicesStatus.EmailService });
         _isLoading = false;
 
         _timer = new Timer(1000 * 60 * 2);
@@ -189,6 +382,8 @@
 
     private async Task RefreshData()
     {
+        if (_disposed)
+            return;
         _metrics = await DataService.GetUniqueValue(_metrics, "Metrics", ApiControllers.DashboardApi);
         _taskLogs = await DataService.GetValues<TaksLogsValues>("TasksLogs", ApiControllers.DashboardApi);
 
@@ -251,7 +446,20 @@
 
     public async ValueTask DisposeAsync()
     {
-        if (_timer != null)
+        if (_disposed)
+        {
+            if (_timer is not null)
+            {
+                _timer.Stop();
+                _timer.Dispose();
+            }
+
+            return;
+        }
+
+        _disposed = true;
+
+        if (_timer is not null)
         {
             _timer.Stop();
             _timer.Dispose();
@@ -261,6 +469,57 @@
         _dotNetRef?.Dispose();
 
         GC.SuppressFinalize(this);
+    }
+
+    private async Task DisplayTasksErrorLogs()
+    {
+        var _pageSize = _metrics.TasksInError <= 5 ? 5 : _metrics.TasksInError <= 10 ? 10 : 20;
+        var _from = DateTime.Now.Date.ToUniversalTime();
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from };
+        await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Error logs"), parameters, options);
+    }
+
+    private async Task DisplayTasksOfTheDayLogs()
+    {
+        var _from = DateTime.Now.Date.ToUniversalTime();
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+        var parameters = new DialogParameters { ["From"] = _from };
+        await DialogService.ShowAsync<_BackgroundTasks>(Localizer.Get("Tasks logs"), parameters, options);
+    }
+
+    private async Task DisplayEmailsErrorLogs()
+    {
+        var _pageSize = _metrics.EmailsInError <= 5 ? 5 : _metrics.EmailsInError <= 10 ? 10 : 20;
+        var _from = DateTime.Now.Date.ToUniversalTime();
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from, ["DisplayEmails"] = false };
+        await DialogService.ShowAsync<_EmailSender>(Localizer.Get("Error logs"), parameters, options);
+    }
+
+    private async Task DisplayEmailsOfTheDayLogs()
+    {
+        var _from = DateTime.Now.Date.ToUniversalTime();
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+        var parameters = new DialogParameters { ["From"] = _from, ["DisplayEmails"] = false };
+        await DialogService.ShowAsync<_EmailSender>(Localizer.Get("Emails logs"), parameters, options);
+    }
+
+    private async Task DisplayUploadErrorLogs()
+    {
+        var _pageSize = _metrics.FileUploadsInError <= 5 ? 5 : _metrics.FileUploadsInError <= 10 ? 10 : 20;
+        var _from = DateTime.Now.Date.ToUniversalTime();
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+        var parameters = new DialogParameters { ["Error"] = true, ["PageSize"] = _pageSize, ["From"] = _from };
+        await DialogService.ShowAsync<_FileCreation>(Localizer.Get("Error logs"), parameters, options);
+    }
+
+    private async Task DisplayUploadsOfTheDayLogs()
+    {
+        var _from = DateTime.Now.Date.ToUniversalTime();
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+        var parameters = new DialogParameters { ["From"] = _from, ["OnlyUpload"] = true };
+        await DialogService.ShowAsync<_FileCreation>(Localizer.Get("Uploads logs"), parameters, options);
     }
 
 }

@@ -1,5 +1,6 @@
 ﻿using Report_App_WASM.Server.Utils.RemoteDb;
 using Report_App_WASM.Shared.DatabasesConnectionParameters;
+using System.Text.Json;
 
 namespace Report_App_WASM.Server.Services.RemoteDb;
 
@@ -103,6 +104,7 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
     {
         DataTable values;
         var attempts = 0;
+        TaskRetryPattern retryP = new();
         if (run.Test) attempts = 3;
         do
         {
@@ -113,6 +115,14 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
                 DatabaseConnectionParametersManager.DeserializeFromJson(_dbInfo.DbConnectionParameters, "", "");
             var remote = GetRemoteDbType(_dbInfo.TypeDb);
             var _logTaskStep = new TaskStepLog { TaskLogId = taskId, Step = "Fetch data", Info = run.QueryInfo };
+
+            if (!string.IsNullOrWhiteSpace(_dbInfo.RetryPatternParameters) && _dbInfo.RetryPatternParameters.Trim() != "[]")
+            {
+                var deserialized = JsonSerializer.Deserialize<TaskRetryPattern>(_dbInfo.RetryPatternParameters);
+                if (deserialized is not null)
+                    retryP = deserialized;
+            }
+
             try
             {
                 attempts++;
@@ -179,13 +189,8 @@ public class RemoteDatabaseActionsHandler : IRemoteDatabaseActionsHandler, IDisp
                 if (cts.IsCancellationRequested)
                     throw;
 
-                var delay = attempts switch
-                {
-                    1 => 10 * 1000,
-                    2 => 60 * 1000,
-                    3 => 10 * 60 * 1000,
-                    _ => 10 * 1000
-                };
+                var delay = retryP.Pattern.FirstOrDefault(opt => opt.RetryAttempt == attempts)?.DelayBetweenRetriesInSeconds * 1000 ?? 10000;
+
                 if (!run.Test)
                 {
                     _logTaskStep.Info +=

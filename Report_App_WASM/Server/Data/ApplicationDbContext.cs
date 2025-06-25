@@ -29,7 +29,7 @@ public class ApplicationDbContext : AuditableIdentityContext
     public virtual DbSet<SmtpConfiguration> SmtpConfiguration { get; set; } = null!;
     public virtual DbSet<LdapConfiguration> LdapConfiguration { get; set; } = null!;
     public virtual DbSet<FileStorageLocation> FileStorageLocation { get; set; } = null!;
-    public virtual DbSet<SftpConfiguration> SftpConfiguration { get; set; } = null!;
+    public virtual DbSet<FileStorageConfiguration> FileStorageConfiguration { get; set; } = null!;
     public virtual DbSet<StoredQuery> StoredQuery { get; set; } = null!;
     public virtual DbSet<TableMetadata> TableMetadata { get; set; } = null!;
     public virtual DbSet<UserPreferences> UserPreferences { get; set; } = null!;

@@ -1,10 +1,9 @@
-﻿@implements IAsyncDisposable
-@inject HttpClient Http
+﻿@inherits BaseGridComponent<FileStorageConfigurationDto>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin, Supervisor")]
 
-<PageTitle>@Localizer.Get("Sftp configuration")</PageTitle>
+<PageTitle>@Localizer.Get("File upload configuration")</PageTitle>
 
 <ErrorBoundary>
     @if (!string.IsNullOrEmpty(_errorMessage))
@@ -15,7 +14,7 @@
     }
     <MudCard Elevation="6">
         <MudCardHeader>
-            <MudText Typo="Typo.h6">@Localizer.Get("Sftp configuration")</MudText>
+            <MudText Typo="Typo.h6">@Localizer.Get("File upload configuration")</MudText>
             <MudSpacer/>
             <MudStack Row="true">
                 <MudIconButton Variant="Variant.Outlined"
@@ -42,8 +41,11 @@
                         </MudStack>
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationName)" Title="@Localizer.Get("Configuration name")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Host)" Title="@Localizer.Get("Sftp host")" Sortable="true"/>
-                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Port)" Title="@Localizer.Get("Sftp port")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ConfigurationType)" Title="@Localizer.Get("Type")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.Host)" Title="@Localizer.Get("Host")" Sortable="true"/>
+                    <Blazor.SimpleGrid.TemplateColumn Title="@Localizer.Get("Port")">
+                        <MudText>@(context.ConfigurationType == FileStorageConfigurationType.SFTP ? context.Port.ToString() : "Auto detect")</MudText>
+                    </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ModDateTime)" Title="@Localizer.Get("Updated at")" Sortable="true"/>
@@ -57,30 +59,7 @@
 
 @code
 {
-    GridItemsProvider<SftpConfigurationDto>? _itemsProvider;
-    PaginationState _pagination = new() { ItemsPerPage = 10 };
-    SimpleGridFieldsContent? _translations = default!;
-    SimpleGrid<SftpConfigurationDto> _grid = default!;
-    private string? _errorMessage = default!;
-    private bool _rendering = false;
-
-    protected override void OnInitialized()
-    {
-        _itemsProvider = async req =>
-        {
-            var response = await GetRemoteData(req);
-            _rendering = false;
-            if (response is null)
-            {
-                return GridItemsProviderResult.From(Array.Empty<SftpConfigurationDto>(), 0);
-            }
-
-            return GridItemsProviderResult.From(response.Value!, response.Count);
-        };
-        _translations = AppService.GetGridTranslations();
-    }
-
-    private async Task<ApiResponse<SftpConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<SftpConfigurationDto> req)
+    protected override async Task<ApiResponse<FileStorageConfigurationDto>?> GetRemoteData(GridItemsProviderRequest<FileStorageConfigurationDto> req)
     {
         // Convert the current data request and filter criteria into an HTTP request to the remote endpoint
         // You can have as many filter criteria as you want as long as you can express this to the underlying data provider
@@ -88,7 +67,7 @@
         var url = "odata/Sftp?";
         if (string.IsNullOrEmpty(odataQuery))
         {
-            url += "$count=true&$top=10";
+            url += $"$count=true&$top={_pagination.ItemsPerPage}";
         }
         else
         {
@@ -97,7 +76,7 @@
 
         try
         {
-            return await DataService.GetODataValues<SftpConfigurationDto>(url, req.CancellationToken);
+            return await DataService.GetODataValues<FileStorageConfigurationDto>(url, req.CancellationToken);
         }
         catch
         {
@@ -106,42 +85,22 @@
         }
     }
 
-    private async Task OnRefresh()
-    {
-        _rendering = true;
-        await _grid.RefreshDataAsync();
-        _rendering = false;
-    }
 
-
-    private async Task RemoveFilters()
+    private async Task OpenEditDialog(FileStorageConfigurationDto value)
     {
-        _rendering = true;
-        await _grid.RemoveFilters();
-        _rendering = false;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await _grid.DisposeAsync();
-        GC.SuppressFinalize(this);
-    }
-
-    private async Task OpenEditDialog(SftpConfigurationDto value)
-    {
-        var item = new SftpConfigurationDto
+        var item = new FileStorageConfigurationDto
         {
             ConfigurationName = value.ConfigurationName,
             Host = value.Host,
             Port = value.Port,
             UserName = value.UserName,
             Password = value.Password,
-            UseFtpProtocol = value.UseFtpProtocol,
-            SftpConfigurationId = value.SftpConfigurationId
+            ConfigurationType = value.ConfigurationType,
+            FileStorageConfigurationId = value.FileStorageConfigurationId
         };
         var parameters = new DialogParameters { ["Item"] = item, ["Action"] = CrudAction.Update };
 
-        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Edit", parameters);
+        var dialog = await DialogService.ShowAsync<_fileUploadConfigurationFormDialog>("Edit", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
@@ -152,8 +111,8 @@
             value.Port = item.Port;
             value.UserName = item.UserName;
             value.Password = item.Password;
-            value.UseFtpProtocol = item.UseFtpProtocol;
-            value.SftpConfigurationId = item.SftpConfigurationId;
+            value.ConfigurationType = item.ConfigurationType;
+            value.FileStorageConfigurationId = item.FileStorageConfigurationId;
 
             var result = await DataService.PostValues(value, "SftpUpdate");
             if (result.Success)
@@ -169,11 +128,11 @@
         }
     }
 
-    private async Task OpenDeleteDialog(SftpConfigurationDto value)
+    private async Task OpenDeleteDialog(FileStorageConfigurationDto value)
     {
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Delete };
 
-        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Delete", parameters);
+        var dialog = await DialogService.ShowAsync<_fileUploadConfigurationFormDialog>("Delete", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))
@@ -195,10 +154,10 @@
 
     private async Task OpenCreateDialog()
     {
-        var value = new SftpConfigurationDto();
+        var value = new FileStorageConfigurationDto();
         var parameters = new DialogParameters { ["Item"] = value, ["Action"] = CrudAction.Create };
 
-        var dialog = await DialogService.ShowAsync<_SftpFormDialog>("Create", parameters);
+        var dialog = await DialogService.ShowAsync<_fileUploadConfigurationFormDialog>("Create", parameters);
         var feedback = await dialog.Result;
 
         if (!(feedback is { Canceled: true }))

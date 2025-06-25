@@ -1,10 +1,10 @@
 ﻿namespace Report_App_WASM.Server.Models;
 
-public class SftpConfiguration : BaseTraceability
+public class FileStorageConfiguration : BaseTraceability
 {
     private string? _password;
-    public int SftpConfigurationId { get; set; }
-    public bool UseFtpProtocol { get; set; }
+    public long FileStorageConfigurationId { get; set; }
+    public FileStorageConfigurationType ConfigurationType { get; set; }
     [Required] [MaxLength(250)] public string? ConfigurationName { get; set; }
     public string? Host { get; set; }
     public int Port { get; set; } = 22;
@@ -22,5 +22,7 @@ public class SftpConfiguration : BaseTraceability
         }
     }
 
-    public virtual ICollection<FileStorageLocation>? FileDepositPathConfigurations { get; set; }
+    public string? ConfigurationParameter { get; set; } = "[]";
+
+    public virtual ICollection<FileStorageLocation>? FileStorageLocations { get; set; }
 }

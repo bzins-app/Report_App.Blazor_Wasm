@@ -28,6 +28,7 @@
                     </Blazor.SimpleGrid.TemplateColumn>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ScheduledTaskQueryId)" Title="ScheduledTaskQueryId" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.QueryName)" Title="@Localizer.Get("Query name")" Sortable="true"/>
+                    <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.LastRunDateTime)" Title="@Localizer.Get("Lastest execution")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.ExecutionOrder)" Title="@Localizer.Get("Query sequence")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateDateTime)" Title="@Localizer.Get("Created at")" Sortable="true"/>
                     <Blazor.SimpleGrid.PropertyColumn Property="@(p => p.CreateUser)" Title="@Localizer.Get("Created by")" Sortable="true"/>
@@ -43,18 +44,15 @@
 @code {
 
     [Parameter] public ScheduledTaskDto? Item { get; set; }
-
     [Parameter] public List<ScheduledTaskQueryDto>? ItemToDelete { get; set; }
-
     [Parameter] public bool ChangePending { get; set; }
-
     [Parameter] public EventCallback<bool> ChangePendingChanged { get; set; }
 
     IEnumerable<ScheduledTaskQueryDto>? _elements = new List<ScheduledTaskQueryDto>();
     SimpleGrid<ScheduledTaskQueryDto>? _grid;
     PaginationState _pagination = new() { ItemsPerPage = 5 };
-    SimpleGridFieldsContent? _translations = default!;
-    DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraLarge, FullWidth = true };
+    SimpleGridFieldsContent? _translations;
+    DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true };
     private bool _disable;
 
     protected override void OnParametersSet()
@@ -134,7 +132,7 @@
 
         if (!(feedback is { Canceled: true }))
         {
-            Item.TaskQueries.Add((ScheduledTaskQueryDto)feedback.Data);
+            Item.TaskQueries.Add(((ScheduledTaskQueryDto)feedback?.Data!));
             ChangePending = true;
             await ChangePendingChanged.InvokeAsync(ChangePending);
             UpdateElements();

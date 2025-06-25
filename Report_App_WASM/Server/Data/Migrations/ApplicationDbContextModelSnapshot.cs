@@ -17,7 +17,7 @@ namespace ReportAppWASM.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -563,6 +563,60 @@ namespace ReportAppWASM.Server.Migrations
                     b.ToTable("EmailLog");
                 });
 
+            modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageConfiguration", b =>
+                {
+                    b.Property<long>("FileStorageConfigurationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("FileStorageConfigurationId"));
+
+                    b.Property<string>("ConfigurationName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("ConfigurationParameter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ConfigurationType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Host")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiscValue")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificationUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Port")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FileStorageConfigurationId");
+
+                    b.ToTable("FileStorageConfiguration");
+                });
+
             modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageLocation", b =>
                 {
                     b.Property<long>("FileStorageLocationId")
@@ -588,6 +642,9 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
+                    b.Property<long?>("FileStorageConfigurationId")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsReachable")
                         .HasColumnType("bit");
 
@@ -602,18 +659,15 @@ namespace ReportAppWASM.Server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("SftpConfigurationId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("TryToCreateFolder")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("UseSftpProtocol")
+                    b.Property<bool>("UseFileStorageConfiguration")
                         .HasColumnType("bit");
 
                     b.HasKey("FileStorageLocationId");
 
-                    b.HasIndex("SftpConfigurationId");
+                    b.HasIndex("FileStorageConfigurationId");
 
                     b.ToTable("FileStorageLocation");
                 });
@@ -1045,57 +1099,6 @@ namespace ReportAppWASM.Server.Migrations
                     b.HasIndex("ScheduledTaskId");
 
                     b.ToTable("ScheduledTaskQuery");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.SftpConfiguration", b =>
-                {
-                    b.Property<int>("SftpConfigurationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SftpConfigurationId"));
-
-                    b.Property<string>("ConfigurationName")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Host")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MiscValue")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("ModDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModificationUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Port")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("UseFtpProtocol")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SftpConfigurationId");
-
-                    b.ToTable("SftpConfiguration");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.SmtpConfiguration", b =>
@@ -1735,11 +1738,11 @@ namespace ReportAppWASM.Server.Migrations
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageLocation", b =>
                 {
-                    b.HasOne("Report_App_WASM.Server.Models.SftpConfiguration", "SftpConfiguration")
-                        .WithMany("FileDepositPathConfigurations")
-                        .HasForeignKey("SftpConfigurationId");
+                    b.HasOne("Report_App_WASM.Server.Models.FileStorageConfiguration", "FileStorageConfiguration")
+                        .WithMany("FileStorageLocations")
+                        .HasForeignKey("FileStorageConfigurationId");
 
-                    b.Navigation("SftpConfiguration");
+                    b.Navigation("FileStorageConfiguration");
                 });
 
             modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTask", b =>
@@ -1811,16 +1814,16 @@ namespace ReportAppWASM.Server.Migrations
                     b.Navigation("TableMetadata");
                 });
 
+            modelBuilder.Entity("Report_App_WASM.Server.Models.FileStorageConfiguration", b =>
+                {
+                    b.Navigation("FileStorageLocations");
+                });
+
             modelBuilder.Entity("Report_App_WASM.Server.Models.ScheduledTask", b =>
                 {
                     b.Navigation("DistributionLists");
 
                     b.Navigation("TaskQueries");
-                });
-
-            modelBuilder.Entity("Report_App_WASM.Server.Models.SftpConfiguration", b =>
-                {
-                    b.Navigation("FileDepositPathConfigurations");
                 });
 #pragma warning restore 612, 618
         }

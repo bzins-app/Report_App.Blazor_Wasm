@@ -273,8 +273,8 @@
   <data name="Already uploaded?" xml:space="preserve">
     <value>Already uploaded?</value>
   </data>
-  <data name="An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
-    <value>An activity is basically a conenction to specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background</value>
+  <data name="An activity is basically a connection to a  specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background" xml:space="preserve">
+    <value>An activity is basically a connection to a  specific database server and schema. You can attached to it, a deposit path, a name and a logo. when you create an activity, a role with the same name is created in background</value>
   </data>
   <data name="An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined" xml:space="preserve">
     <value>An alert is a process that send an email if one or several queries return a non null result against the database settings configured at the activity level. An alert must be scheduled and email recipients have to be defined</value>
@@ -2594,5 +2594,104 @@
   </data>
   <data name="Use pivot table as default view?" xml:space="preserve">
     <value>Use pivot table as default view?</value>
+  </data>
+  <data name="Time zone" xml:space="preserve">
+    <value>Time zone</value>
+  </data>
+  <data name="Please select a time zone" xml:space="preserve">
+    <value>Please select a time zone</value>
+  </data>
+  <data name="Tables view" xml:space="preserve">
+    <value>Tables view</value>
+  </data>
+  <data name="Lastest execution" xml:space="preserve">
+    <value>Lastest execution</value>
+  </data>
+  <data name="Parameters for this query scope" xml:space="preserve">
+    <value>Parameters for this query scope</value>
+  </data>
+  <data name="Identifier" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="Hide" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="Error logs" xml:space="preserve">
+    <value>Error logs</value>
+  </data>
+  <data name="Protocol selection" xml:space="preserve">
+    <value>Protocol selection</value>
+  </data>
+  <data name="Type of protocol" xml:space="preserve">
+    <value>Type of protocol</value>
+  </data>
+  <data name="Tables explorer" xml:space="preserve">
+    <value>Tables explorer</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>error</value>
+  </data>
+  <data name="errors" xml:space="preserve">
+    <value>errors</value>
+  </data>
+  <data name="File upload" xml:space="preserve">
+    <value>File upload</value>
+  </data>
+  <data name="Destination" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="Data link" xml:space="preserve">
+    <value>Data link</value>
+  </data>
+  <data name="Uploads logs" xml:space="preserve">
+    <value>Uploads logs</value>
+  </data>
+  <data name="Emails logs" xml:space="preserve">
+    <value>Emails logs</value>
+  </data>
+  <data name="Nbr of recipients" xml:space="preserve">
+    <value>Nbr of recipients</value>
+  </data>
+  <data name="Choose a configuration" xml:space="preserve">
+    <value>Choose a configuration</value>
+  </data>
+  <data name="File upload configuration" xml:space="preserve">
+    <value>File upload configuration</value>
+  </data>
+  <data name="cannot be enabled because the related data link is not enabled" xml:space="preserve">
+    <value>cannot be enabled because the related data link is not enabled</value>
+  </data>
+  <data name="cannot be enabled because the email list is not defined" xml:space="preserve">
+    <value>cannot be enabled because the email list is not defined</value>
+  </data>
+  <data name="cannot be enabled because no queries have been set" xml:space="preserve">
+    <value>cannot be enabled because no queries have been set</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="Stopped" xml:space="preserve">
+    <value>Stopped</value>
+  </data>
+  <data name="Direct to folder" xml:space="preserve">
+    <value>Direct to folder</value>
+  </data>
+  <data name="Use a connection protocol" xml:space="preserve">
+    <value>Use a connection protocol</value>
+  </data>
+  <data name="Task retry pattern: Defines how many times and at what intervals a database operation should be retried after a failure" xml:space="preserve">
+    <value>Task retry pattern: Defines how many times and at what intervals a database operation should be retried after a failure</value>
+  </data>
+  <data name="Retry attempt" xml:space="preserve">
+    <value>Retry attempt</value>
+  </data>
+  <data name="Delay (seconds)" xml:space="preserve">
+    <value>Delay (seconds)</value>
+  </data>
+  <data name="Restore default values" xml:space="preserve">
+    <value>Restore default values</value>
   </data>
 </root>
