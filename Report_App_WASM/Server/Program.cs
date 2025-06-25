@@ -21,7 +21,6 @@ builder.WebHost.ConfigureKestrel(options =>
     });
 });
 
-
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddEntityFramework<ApplicationDbContext, SystemLog>();
 
