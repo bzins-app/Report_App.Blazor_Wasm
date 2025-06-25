@@ -18,7 +18,8 @@ services:
     image: ${DOCKER_REGISTRY-}reportapp_wasm
     ports:
       - '7080:80'
-      - '7443:433'
+      - '7043:443/tcp'
+      - '7043:443/udp'
     build:
       context: .
       dockerfile: Report_App_WASM\Server\Dockerfile
@@ -27,6 +28,7 @@ services:
       - 'ConnectionStrings__DefaultConnection=Server=db;Database=report_app;User Id=sa;Password=Ultra)SecurePAs$worD!;MultipleActiveResultSets=true;TrustServerCertificate=True'
       - 'BaseUserDefaultOptions:Email=admin@report.app'
       - 'BaseUserDefaultOptions:Password=$tR0ng)cR3d?'
+      - ASPNETCORE_HTTP3=1
     volumes:
       - reportapp_docsstorage:/app/wwwroot/docsstorage
       - reportapp_upload:/app/wwwroot/upload
