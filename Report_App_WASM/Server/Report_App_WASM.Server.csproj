@@ -12,10 +12,10 @@
 
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="14.0.0">
+    <PackageReference Include="AutoMapper" Version="15.0.1">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="8.0.0">
+    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="9.0.1">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="Azure.Identity" Version="1.14.2" />
