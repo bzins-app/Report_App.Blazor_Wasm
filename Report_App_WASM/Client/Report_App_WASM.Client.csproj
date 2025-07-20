@@ -13,13 +13,13 @@
     <PackageReference Include="Blazor.PivotTable" Version="1.0.8" />
     <PackageReference Include="Blazor.SimpleGrid" Version="8.0.1" />
     <PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
-    <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.2.3" />
+    <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.2.4" />
     <PackageReference Include="CronExpressionDescriptor" Version="2.44.0" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.18" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.18" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.7" />
-    <PackageReference Include="MudBlazor" Version="8.9.0">
+    <PackageReference Include="MudBlazor" Version="8.10.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
   </ItemGroup>

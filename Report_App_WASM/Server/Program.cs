@@ -121,8 +121,9 @@ builder.Services.AddHangfireServer(options =>
 });
 builder.Services.AddDirectoryBrowser();
 
-var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
-builder.Services.AddSingleton(mapperConfig.CreateMapper());
+var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
+var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); }, loggerFactory);
+builder.Services.AddSingleton(mapperConfig.CreateMapper());;
 
 var app = builder.Build();
 var env = app.Environment;
