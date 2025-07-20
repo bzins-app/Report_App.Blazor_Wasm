@@ -41,6 +41,8 @@ RUN apt-get update && apt-get install -y openssl
 RUN mkdir -p /https
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /https/aspnet-dev.key -out /https/aspnet-dev.crt -subj "/CN=localhost"
 RUN openssl pkcs12 -export -out /https/aspnet-dev.pfx -inkey /https/aspnet-dev.key -in /https/aspnet-dev.crt -passout pass:devpassword
+RUN chmod 644 /https/aspnet-dev.pfx
+RUN ls -l /https
 
 ENV ASPNETCORE_Kestrel__Certificates__Default__Password="devpassword"
 ENV ASPNETCORE_Kestrel__Certificates__Default__Path="/https/aspnet-dev.pfx"
