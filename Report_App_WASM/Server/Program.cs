@@ -12,6 +12,16 @@ using Report_App_WASM.Server.Utils.SettingsConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(443, listenOptions =>
+    {
+        listenOptions.UseHttps();
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2AndHttp3;
+    });
+});
+
+
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddEntityFramework<ApplicationDbContext, SystemLog>();
 
@@ -112,8 +122,9 @@ builder.Services.AddHangfireServer(options =>
 });
 builder.Services.AddDirectoryBrowser();
 
-var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
-builder.Services.AddSingleton(mapperConfig.CreateMapper());
+var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
+var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); }, loggerFactory);
+builder.Services.AddSingleton(mapperConfig.CreateMapper());;
 
 var app = builder.Build();
 var env = app.Environment;
