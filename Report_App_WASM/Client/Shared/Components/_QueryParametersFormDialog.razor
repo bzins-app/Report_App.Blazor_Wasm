@@ -18,7 +18,7 @@
             </MudSelect>
             @if (_param.ValueType is QueryCommandParameterValueType.Date or QueryCommandParameterValueType.DateTime)
             {
-                <MudSelect @bind-Value="_param.DateOption" Label="@Localizer.Get("Select a date calculation")" Required>
+                <MudSelect @bind-Value="_param.DateOption" Label="@Localizer.Get("Select a date calculation")" Required="_param.Required">
                     @foreach (CalulatedDateOption item in Enum.GetValues<CalulatedDateOption>())
                     {
                         <MudSelectItem Value="@item">@Localizer.Get(item.ToString())</MudSelectItem>
@@ -30,18 +30,18 @@
             {
                 @if (_param.ValueType == QueryCommandParameterValueType.String)
                 {
-                    <MudTextField @bind-Value="_param.Value" Label="@Localizer.Get("Enter value")" Variant="Variant.Text" Required></MudTextField>
+                    <MudTextField @bind-Value="_param.Value" Label="@Localizer.Get("Enter value")" Variant="Variant.Text" Required="_param.Required" ></MudTextField>
                 }
                 else
                 {
-                    <MudTextField @bind-Value="_param.Value" Label="@Localizer.Get("Enter value")" InputType="InputType.Number" Required></MudTextField>
+                    <MudTextField @bind-Value="_param.Value" Label="@Localizer.Get("Enter value")" InputType="InputType.Number" Required="_param.Required"></MudTextField>
                 }
             }
             @if (UseAllParameters)
             {
                 <MudNumericField @bind-Value="_param.DisplaySequence" Label="@Localizer.Get("Display sequence")"/>
                 <MudSwitch T="bool" @bind-Value="_param.Required" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
-                <MudSwitch T="bool" @bind-Value="_param.HideParameter" Label="@Localizer.Get("Required")" Color="Color.Primary"/>
+                <MudSwitch T="bool" @bind-Value="_param.HideParameter" Label="@Localizer.Get("Hide")" Color="Color.Primary"/>
             }
 
         </MudForm>
