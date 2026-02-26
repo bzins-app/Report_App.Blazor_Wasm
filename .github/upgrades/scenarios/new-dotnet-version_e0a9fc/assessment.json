@@ -1,0 +1,2868 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-02-26T08:52:08.4077954Z",
+  "analysisEndTime": "2026-02-26T08:52:17.4464867Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 3,
+      "issues": 9,
+      "incidents": 104,
+      "effort": 104
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 8,
+        "Optional": 1,
+        "Potential": 95,
+        "Information": 0
+      },
+      "category": {
+        "Project": 3,
+        "NuGet": 18,
+        "Api": 83
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+      "startingProject": true,
+      "issues": 4,
+      "storyPoints": 36,
+      "properties": {
+        "appName": "Report_App_WASM.Client",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 146,
+        "numberOfCodeFiles": 20,
+        "linesTotal": 28972,
+        "linesOfCode": 967,
+        "totalApiScanned": 69408,
+        "minLinesOfCodeToChange": 32,
+        "maxLinesOfCodeToChange": 32
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "13c6ab12-1d33-4c92-bb94-b813663818e3",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3",
+              "protected": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+            "snippet": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3",
+            "label": "Microsoft.AspNetCore.Components.WebAssembly 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Components.WebAssembly",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "862ae321-54e7-4fd8-b4bb-bb5af2c804a5",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3",
+              "protected": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+            "snippet": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3",
+            "label": "Microsoft.AspNetCore.Components.WebAssembly.Authentication 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Components.WebAssembly.Authentication",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "8be4de9d-efab-4b6a-a8b6-10bbd05ef459",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3",
+              "protected": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+            "snippet": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3",
+            "protectedSnippet": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3",
+            "label": "Microsoft.Extensions.Localization 9.0.9",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Localization",
+              "PackageVersion": "9.0.9",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "493fe93b-5b09-40af-9d99-ee624c03efa0",
+          "ruleId": "Project.0002",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "06bc3b33-9ae4-42f4-9aee-fd994a4de0b0",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var result = await response.Content.ReadFromJsonAsync\u003CSubmitResultRemoteData\u003E();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Shared/Components/_queryEditor_razor.g.cs",
+            "snippet": "var result = await response.Content.ReadFromJsonAsync\u003CSubmitResultRemoteData\u003E();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 5638,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "498697e8-30ff-4298-a02c-5075d8d0d83b",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var downloadresult = await _blazorDownloadFileService.DownloadFile(\u0022Db descriptions \u0022 \u002B DateTime.Now.ToString(\u0022yyyyMMdd_HH_mm_ss\u0022) \u002B \u0022.xlsx\u0022, await response.Content.ReadAsByteArrayAsync(), \u0022application/octet-stream\u0022);",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/Connections/Activity/_ActivityFormDialog_razor.g.cs",
+            "snippet": "var downloadresult = await _blazorDownloadFileService.DownloadFile(\u0022Db descriptions \u0022 \u002B DateTime.Now.ToString(\u0022yyyyMMdd_HH_mm_ss\u0022) \u002B \u0022.xlsx\u0022, await response.Content.ReadAsByteArrayAsync(), \u0022application/octet-stream\u0022);",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 4997,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "61405064-e3d7-41d3-8d41-bce9bf24cd39",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_errorMessage = response.Content.ToString();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "_errorMessage = response.Content.ToString();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2359,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "6fec54cf-32ab-4e80-80f7-0835703386fb",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var result = await response.Content.ReadFromJsonAsync\u003CSubmitResultRemoteData\u003E();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "var result = await response.Content.ReadFromJsonAsync\u003CSubmitResultRemoteData\u003E();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2334,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "999b54e3-415d-441f-a7d1-39fa3c480a41",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2327,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "8017ff50-2dfd-4d39-8566-94afdff469bf",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2327,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "8b654a7a-ca4c-40f9-b501-49553a7b611e",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "_httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2326,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "eca6b10e-75cf-4289-835c-9efb8bd2cdcc",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "response.Content.ToString();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "response.Content.ToString();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2238,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "03934cec-faec-4dc0-a973-6eeb3918d568",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var result = await response.Content.ReadFromJsonAsync\u003CSubmitResultRemoteData\u003E();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "var result = await response.Content.ReadFromJsonAsync\u003CSubmitResultRemoteData\u003E();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2210,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "8eb48576-6903-4be9-a4c1-4e083e4af69c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2203,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "9d8316a9-516b-4b5c-9e60-5c4a02854b71",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "_httpClientLong.BaseAddress = Http.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2203,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "7f193f45-1525-4800-873b-b81eb0084eac",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\obj\\Debug\\net8.0\\Microsoft.CodeAnalysis.Razor.Compiler\\Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator\\Pages/AdHocQueries/_ExcecuteQuery_razor.g.cs",
+            "snippet": "_httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 2202,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "89321cc3-d90b-4113-84e1-4474bf68fd74",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "throw new Exception(await result.Content.ReadAsStringAsync());",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\Implementations\\AuthorizeApi.cs",
+            "snippet": "throw new Exception(await result.Content.ReadAsStringAsync());",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "dee019b1-b224-48bd-bc21-e91bc6f6aa73",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return response.IsSuccessStatusCode\r\n            ? (await response.Content.ReadFromJsonAsync\u003CApiResponse\u003CT\u003E\u003E(cancellationToken: ct))!\r\n            : null!;",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "return response.IsSuccessStatusCode\r\n            ? (await response.Content.ReadFromJsonAsync\u003CApiResponse\u003CT\u003E\u003E(cancellationToken: ct))!\r\n            : null!;",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 190,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "81b5ba4a-dd4a-4a41-8500-2c3718f69f60",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return (await response.Content.ReadFromJsonAsync\u003CSubmitResult\u003E())!;",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "return (await response.Content.ReadFromJsonAsync\u003CSubmitResult\u003E())!;",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 176,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1471650d-a113-42fd-b6d6-3bcdabb437ef",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return response.IsSuccessStatusCode ? (await response.Content.ReadFromJsonAsync\u003CT\u003E())! : value;",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "return response.IsSuccessStatusCode ? (await response.Content.ReadFromJsonAsync\u003CT\u003E())! : value;",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 156,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "591829c3-1f20-4342-aa40-a042a767c374",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return response.IsSuccessStatusCode\r\n                ? (await response.Content.ReadFromJsonAsync\u003CList\u003CT\u003E\u003E())!\r\n                : new List\u003CT\u003E();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "return response.IsSuccessStatusCode\r\n                ? (await response.Content.ReadFromJsonAsync\u003CList\u003CT\u003E\u003E())!\r\n                : new List\u003CT\u003E();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 136,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "7bb4d4bf-e29f-4f3b-8ad3-4a6c219519b3",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 119,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "a4482e5f-1bd5-4bab-8ece-41fbc2401146",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 119,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "4a1e952d-7084-4344-adf1-96270149c890",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 118,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "4c91aa90-a25d-47a1-846b-45f3d2078e90",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 106,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "dd7e550b-15c4-4203-b032-9f6b6af5431c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 106,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "ad447633-6000-4024-9614-b29db76dc59d",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 105,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "c58e6ae6-76c3-4fe2-93fd-0b7c79893d79",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var downloadResult = await _blazorDownloadFileService.DownloadFile(fileName,\r\n                await response.Content.ReadAsByteArrayAsync(), \u0022application/octet-stream\u0022);",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "var downloadResult = await _blazorDownloadFileService.DownloadFile(fileName,\r\n                await response.Content.ReadAsByteArrayAsync(), \u0022application/octet-stream\u0022);",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 96,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "865be46d-57fd-4e5f-a6d0-f0579ac29f05",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 87,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "7a3dbb59-1acb-4114-b2f6-cf29e93c6907",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.BaseAddress = _httpClient.BaseAddress;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 87,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "55a96f9a-d24c-46f5-b52d-ddb55007df6e",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "httpClientLong.Timeout = TimeSpan.FromMinutes(10);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 86,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "1457d515-7c2c-46d9-87d1-4f9768fc7c00",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return (await response.Content.ReadFromJsonAsync\u003CSubmitResult\u003E(cancellationToken: ct))!;",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "return (await response.Content.ReadFromJsonAsync\u003CSubmitResult\u003E(cancellationToken: ct))!;",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 51,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "c703aa28-75bd-4ed0-91a6-c3ab63e0e2e1",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "throw new Exception(await response.Content.ReadAsStringAsync(ct));",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Services\\DataInteractionService.cs",
+            "snippet": "throw new Exception(await response.Content.ReadAsStringAsync(ct));",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 44,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "41369c86-7c6c-46f0-910d-3f4b4fd28e23",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddScoped(_ =\u003E new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Program.cs",
+            "snippet": "builder.Services.AddScoped(_ =\u003E new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 17,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "85253032-a4df-4e30-bb21-0560e5301fc8",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddScoped(_ =\u003E new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Program.cs",
+            "snippet": "builder.Services.AddScoped(_ =\u003E new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 17,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "e1196280-fe0a-45a7-8ace-a470f7b25222",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Report_App_WASM\\Client\\Report_App_WASM.Client.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddScoped(_ =\u003E new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Client\\Program.cs",
+            "snippet": "builder.Services.AddScoped(_ =\u003E new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 17,
+            "column": 0
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+      "startingProject": true,
+      "issues": 8,
+      "storyPoints": 67,
+      "properties": {
+        "appName": "Report_App_WASM.Server",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 97,
+        "numberOfCodeFiles": 94,
+        "linesTotal": 20657,
+        "linesOfCode": 20581,
+        "totalApiScanned": 30620,
+        "minLinesOfCodeToChange": 51,
+        "maxLinesOfCodeToChange": 51
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "6722d0cb-00ab-41df-acfd-3429acefa52c",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3",
+              "protected": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Components.WebAssembly, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly, and replace with new package Microsoft.AspNetCore.Components.WebAssembly 10.0.3",
+            "label": "Microsoft.AspNetCore.Components.WebAssembly 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Components.WebAssembly",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "bcc17fc2-7d0f-4070-9e39-53a39b0e94bc",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3",
+              "protected": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Components.WebAssembly.Authentication, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Authentication, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.0.3",
+            "label": "Microsoft.AspNetCore.Components.WebAssembly.Authentication 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Components.WebAssembly.Authentication",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "29778be8-9aa0-4cba-bc4b-110d3154275b",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Components.WebAssembly.Server, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Server, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Server 10.0.3",
+              "protected": "Microsoft.AspNetCore.Components.WebAssembly.Server, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Server, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Server 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.AspNetCore.Components.WebAssembly.Server, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Server, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Server 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Components.WebAssembly.Server, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Components.WebAssembly.Server, and replace with new package Microsoft.AspNetCore.Components.WebAssembly.Server 10.0.3",
+            "label": "Microsoft.AspNetCore.Components.WebAssembly.Server 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Components.WebAssembly.Server",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "86096881-c147-4765-b5f4-66ffdd933c1b",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3",
+              "protected": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3",
+            "protectedSnippet": "Microsoft.Extensions.Localization, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.Extensions.Localization, and replace with new package Microsoft.Extensions.Localization 10.0.3",
+            "label": "Microsoft.Extensions.Localization 9.0.9",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Localization",
+              "PackageVersion": "9.0.9",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "025067b7-fca4-4fe9-8c3a-be59a43df32a",
+          "ruleId": "NuGet.0003",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.NETCore.Platforms, 7.0.4\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "Microsoft.NETCore.Platforms, 7.0.4\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.NETCore.Platforms, 7.0.4\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "Microsoft.NETCore.Platforms, 7.0.4\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "Microsoft.NETCore.Platforms 7.0.4",
+            "properties": {
+              "PackageId": "Microsoft.NETCore.Platforms",
+              "PackageVersion": "7.0.4",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "ad1e6b51-0360-4834-99ae-857be23646f5",
+          "ruleId": "NuGet.0001",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.22.1\n\nRecommendation:\n\nNo supported version found",
+              "protected": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.22.1\n\nRecommendation:\n\nNo supported version found"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.22.1\n\nRecommendation:\n\nNo supported version found",
+            "protectedSnippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.22.1\n\nRecommendation:\n\nNo supported version found",
+            "label": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets 1.22.1",
+            "properties": {
+              "PackageId": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets",
+              "PackageVersion": "1.22.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "3078b229-0991-4274-b5eb-67f45d61567c",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Data.OleDb, 9.0.9\n\nRecommendation:\n\nRemove System.Data.OleDb, and replace with new package System.Data.OleDb 10.0.3",
+              "protected": "System.Data.OleDb, 9.0.9\n\nRecommendation:\n\nRemove System.Data.OleDb, and replace with new package System.Data.OleDb 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "System.Data.OleDb, 9.0.9\n\nRecommendation:\n\nRemove System.Data.OleDb, and replace with new package System.Data.OleDb 10.0.3",
+            "protectedSnippet": "System.Data.OleDb, 9.0.9\n\nRecommendation:\n\nRemove System.Data.OleDb, and replace with new package System.Data.OleDb 10.0.3",
+            "label": "System.Data.OleDb 9.0.9",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageVersion": "9.0.9",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "ccb5b8a3-97e0-415a-b598-975cdf76aa87",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.DirectoryServices.AccountManagement, 9.0.9\n\nRecommendation:\n\nRemove System.DirectoryServices.AccountManagement, and replace with new package System.DirectoryServices.AccountManagement 10.0.3",
+              "protected": "System.DirectoryServices.AccountManagement, 9.0.9\n\nRecommendation:\n\nRemove System.DirectoryServices.AccountManagement, and replace with new package System.DirectoryServices.AccountManagement 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "System.DirectoryServices.AccountManagement, 9.0.9\n\nRecommendation:\n\nRemove System.DirectoryServices.AccountManagement, and replace with new package System.DirectoryServices.AccountManagement 10.0.3",
+            "protectedSnippet": "System.DirectoryServices.AccountManagement, 9.0.9\n\nRecommendation:\n\nRemove System.DirectoryServices.AccountManagement, and replace with new package System.DirectoryServices.AccountManagement 10.0.3",
+            "label": "System.DirectoryServices.AccountManagement 9.0.9",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageVersion": "9.0.9",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "79695b29-3175-421c-ad7e-de5f95e74cf9",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Text.Json, 9.0.9\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.3",
+              "protected": "System.Text.Json, 9.0.9\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "System.Text.Json, 9.0.9\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.3",
+            "protectedSnippet": "System.Text.Json, 9.0.9\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.3",
+            "label": "System.Text.Json 9.0.9",
+            "properties": {
+              "PackageId": "System.Text.Json",
+              "PackageVersion": "9.0.9",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "280e7e52-3d0c-4ba2-a136-1ef6c09073be",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 10.0.3",
+              "protected": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 10.0.3",
+            "label": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "54c509af-4138-4621-8b8d-a8acdf82b460",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.3",
+              "protected": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.3",
+            "label": "Microsoft.AspNetCore.Identity.EntityFrameworkCore 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "87d59018-7fa3-4cb0-990d-a46de1f2e098",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Identity.UI, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.UI, and replace with new package Microsoft.AspNetCore.Identity.UI 10.0.3",
+              "protected": "Microsoft.AspNetCore.Identity.UI, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.UI, and replace with new package Microsoft.AspNetCore.Identity.UI 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.AspNetCore.Identity.UI, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.UI, and replace with new package Microsoft.AspNetCore.Identity.UI 10.0.3",
+            "protectedSnippet": "Microsoft.AspNetCore.Identity.UI, 8.0.20\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.UI, and replace with new package Microsoft.AspNetCore.Identity.UI 10.0.3",
+            "label": "Microsoft.AspNetCore.Identity.UI 8.0.20",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.UI",
+              "PackageVersion": "8.0.20",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "73c22983-2fb4-4824-a676-fdbf4482d0d0",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.3",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.3",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.3",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 9.0.9",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "9.0.9",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "273f2949-f389-4ba9-a0b6-654658c5c498",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Tools, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.3",
+              "protected": "Microsoft.EntityFrameworkCore.Tools, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.3"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Tools, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.3",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Tools, 9.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.3",
+            "label": "Microsoft.EntityFrameworkCore.Tools 9.0.9",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Tools",
+              "PackageVersion": "9.0.9",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "5c790c9b-a2c2-4889-ab20-5ca60469fa87",
+          "ruleId": "NuGet.0005",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Azure.Identity, 1.16.0\n\nRecommendation:\n\nThis version takes a dependency on a deprecated version of MSAL .NET (Microsoft.Identity.Client).\nRemove Azure.Identity, and replace with new package Azure.Identity, 1.17.1",
+              "protected": "Azure.Identity, 1.16.0\n\nRecommendation:\n\nThis version takes a dependency on a deprecated version of MSAL .NET (Microsoft.Identity.Client).\nRemove Azure.Identity, and replace with new package Azure.Identity, 1.17.1"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Azure.Identity, 1.16.0\n\nRecommendation:\n\nThis version takes a dependency on a deprecated version of MSAL .NET (Microsoft.Identity.Client).\nRemove Azure.Identity, and replace with new package Azure.Identity, 1.17.1",
+            "protectedSnippet": "Azure.Identity, 1.16.0\n\nRecommendation:\n\nThis version takes a dependency on a deprecated version of MSAL .NET (Microsoft.Identity.Client).\nRemove Azure.Identity, and replace with new package Azure.Identity, 1.17.1",
+            "label": "Azure.Identity 1.16.0",
+            "properties": {
+              "PackageId": "Azure.Identity",
+              "PackageVersion": "1.16.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "c6aca1fc-565d-484d-bd93-6868eef20951",
+          "ruleId": "Project.0002",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "3bb29c98-c2f3-4356-9309-4ef252e77f67",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "BackgroundJob.Schedule(\r\n            () =\u003E File.Delete(filePath), TimeSpan.FromMinutes(5));",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Services\\BackgroundWorker\\BackgroundWorkers.cs",
+            "snippet": "BackgroundJob.Schedule(\r\n            () =\u003E File.Delete(filePath), TimeSpan.FromMinutes(5));",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 49,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "f094fefa-b85f-4fb1-ab95-cfbde0a14bc7",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userNew = new ApplicationUser\r\n            {\r\n                UserName = parameters.UserName,\r\n                Email = userAd.EmailAddress,\r\n                CreateUser = \u0022AD screen\u0022,\r\n                ModDateTime = DateTime.Now,\r\n                ModificationUser = \u0022Register screen\u0022,\r\n                Culture = CultureInfo.CurrentCulture.Name,\r\n                EmailConfirmed = true\r\n            };",
+              "protected": "P:System.DirectoryServices.AccountManagement.UserPrincipal.EmailAddress"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userNew = new ApplicationUser\r\n            {\r\n                UserName = parameters.UserName,\r\n                Email = userAd.EmailAddress,\r\n                CreateUser = \u0022AD screen\u0022,\r\n                ModDateTime = DateTime.Now,\r\n                ModificationUser = \u0022Register screen\u0022,\r\n                Culture = CultureInfo.CurrentCulture.Name,\r\n                EmailConfirmed = true\r\n            };",
+            "protectedSnippet": "P:System.DirectoryServices.AccountManagement.UserPrincipal.EmailAddress",
+            "label": "P:System.DirectoryServices.AccountManagement.UserPrincipal.EmailAddress",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 77,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0f26e00b-4738-4dfe-aa15-895faf24f4e7",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);",
+              "protected": "P:System.DirectoryServices.AccountManagement.UserPrincipal.EmailAddress"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userMail = await _userManager.FindByEmailAsync(userAd!.EmailAddress);",
+            "protectedSnippet": "P:System.DirectoryServices.AccountManagement.UserPrincipal.EmailAddress",
+            "label": "P:System.DirectoryServices.AccountManagement.UserPrincipal.EmailAddress",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 60,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "138e2e97-df79-48c5-98a3-8a9eb1e73b2f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+              "protected": "T:System.DirectoryServices.AccountManagement.IdentityType"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+            "protectedSnippet": "T:System.DirectoryServices.AccountManagement.IdentityType",
+            "label": "T:System.DirectoryServices.AccountManagement.IdentityType",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "fda78b27-1866-472f-9466-322685dd81e4",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+              "protected": "T:System.DirectoryServices.AccountManagement.IdentityType"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+            "protectedSnippet": "T:System.DirectoryServices.AccountManagement.IdentityType",
+            "label": "T:System.DirectoryServices.AccountManagement.IdentityType",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1088d611-b14a-41f3-86f3-85dba5131036",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+              "protected": "F:System.DirectoryServices.AccountManagement.IdentityType.SamAccountName"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+            "protectedSnippet": "F:System.DirectoryServices.AccountManagement.IdentityType.SamAccountName",
+            "label": "F:System.DirectoryServices.AccountManagement.IdentityType.SamAccountName",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5763f0f4-e37b-4294-8d1c-15edbac2c883",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+              "protected": "T:System.DirectoryServices.AccountManagement.UserPrincipal"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+            "protectedSnippet": "T:System.DirectoryServices.AccountManagement.UserPrincipal",
+            "label": "T:System.DirectoryServices.AccountManagement.UserPrincipal",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5371b389-bd0d-4353-9ef7-b28ad832958e",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+              "protected": "T:System.DirectoryServices.AccountManagement.UserPrincipal"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+            "protectedSnippet": "T:System.DirectoryServices.AccountManagement.UserPrincipal",
+            "label": "T:System.DirectoryServices.AccountManagement.UserPrincipal",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d771d816-2a00-4108-af81-649275aa2ab6",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+              "protected": "M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "var userAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, parameters.UserName!);",
+            "protectedSnippet": "M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)",
+            "label": "M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "edb734dd-62ab-480c-a420-60f83b8e3487",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+              "protected": "T:System.DirectoryServices.AccountManagement.ContextType"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+            "protectedSnippet": "T:System.DirectoryServices.AccountManagement.ContextType",
+            "label": "T:System.DirectoryServices.AccountManagement.ContextType",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "17b636ed-9c93-47d2-8317-12ef97433540",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+              "protected": "T:System.DirectoryServices.AccountManagement.ContextType"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+            "protectedSnippet": "T:System.DirectoryServices.AccountManagement.ContextType",
+            "label": "T:System.DirectoryServices.AccountManagement.ContextType",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "3acae60c-b412-4f7d-aba1-2ad2f33fe342",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+              "protected": "F:System.DirectoryServices.AccountManagement.ContextType.Domain"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+            "protectedSnippet": "F:System.DirectoryServices.AccountManagement.ContextType.Domain",
+            "label": "F:System.DirectoryServices.AccountManagement.ContextType.Domain",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "7bd448c5-2500-44d1-b9a9-3a1dd6b8b338",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+              "protected": "T:System.DirectoryServices.AccountManagement.PrincipalContext"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+            "protectedSnippet": "T:System.DirectoryServices.AccountManagement.PrincipalContext",
+            "label": "T:System.DirectoryServices.AccountManagement.PrincipalContext",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "e57375da-98d4-4c4e-857c-0f194733a08d",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.DirectoryServices.AccountManagement, 8.0.0. Add package reference to System.DirectoryServices.AccountManagement, 8.0.0",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+              "protected": "M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.String)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Controllers\\AuthorizeController.cs",
+            "snippet": "using var context =\r\n                new PrincipalContext(ContextType.Domain, domain, parameters.UserName, parameters.Password);",
+            "protectedSnippet": "M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.String)",
+            "label": "M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.String)",
+            "properties": {
+              "PackageId": "System.DirectoryServices.AccountManagement",
+              "PackageNewVersion": "8.0.0"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "9cc767f8-a744-494a-81b6-0d3892ba0249",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbDataAdapter.SelectCommand = cmd;",
+              "protected": "T:System.Data.OleDb.OleDbCommand"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbDataAdapter.SelectCommand = cmd;",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbCommand",
+            "label": "T:System.Data.OleDb.OleDbCommand",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 71,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "b747bed0-7754-49b3-9f4b-7cc38a05beab",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbDataAdapter.SelectCommand = cmd;",
+              "protected": "P:System.Data.OleDb.OleDbDataAdapter.SelectCommand"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbDataAdapter.SelectCommand = cmd;",
+            "protectedSnippet": "P:System.Data.OleDb.OleDbDataAdapter.SelectCommand",
+            "label": "P:System.Data.OleDb.OleDbDataAdapter.SelectCommand",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 71,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "fee923c0-588d-4095-9d14-b08826dc1976",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "cmd.CommandText =\r\n                    run.QueryToRun \u002B\r\n                    Environment\r\n                        .NewLine;",
+              "protected": "P:System.Data.OleDb.OleDbCommand.CommandText"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "cmd.CommandText =\r\n                    run.QueryToRun \u002B\r\n                    Environment\r\n                        .NewLine;",
+            "protectedSnippet": "P:System.Data.OleDb.OleDbCommand.CommandText",
+            "label": "P:System.Data.OleDb.OleDbCommand.CommandText",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 67,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "2fffaeb9-21ba-4337-b9a8-ae06377dd0ee",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbDataAdapter.SelectCommand = cmd;",
+              "protected": "T:System.Data.OleDb.OleDbCommand"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbDataAdapter.SelectCommand = cmd;",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbCommand",
+            "label": "T:System.Data.OleDb.OleDbCommand",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 64,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "c0479923-c09a-434e-a737-cb9ccabca4c9",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbDataAdapter.SelectCommand = cmd;",
+              "protected": "P:System.Data.OleDb.OleDbDataAdapter.SelectCommand"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbDataAdapter.SelectCommand = cmd;",
+            "protectedSnippet": "P:System.Data.OleDb.OleDbDataAdapter.SelectCommand",
+            "label": "P:System.Data.OleDb.OleDbDataAdapter.SelectCommand",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 64,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "376f48d1-6f90-4b24-b4ec-f2f066076138",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await using var ctr = cts.Register(() =\u003E cmd.Cancel());",
+              "protected": "M:System.Data.OleDb.OleDbCommand.Cancel"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "await using var ctr = cts.Register(() =\u003E cmd.Cancel());",
+            "protectedSnippet": "M:System.Data.OleDb.OleDbCommand.Cancel",
+            "label": "M:System.Data.OleDb.OleDbCommand.Cancel",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 63,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4b26589a-63bb-42fd-be78-b32fb845b3b2",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "cmd.Connection = DbConnection;",
+              "protected": "T:System.Data.OleDb.OleDbConnection"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "cmd.Connection = DbConnection;",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbConnection",
+            "label": "T:System.Data.OleDb.OleDbConnection",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 61,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "3b45407a-1900-4168-b95b-2b63e5f1d5fb",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "cmd.Connection = DbConnection;",
+              "protected": "P:System.Data.OleDb.OleDbCommand.Connection"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "cmd.Connection = DbConnection;",
+            "protectedSnippet": "P:System.Data.OleDb.OleDbCommand.Connection",
+            "label": "P:System.Data.OleDb.OleDbCommand.Connection",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 61,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a98d75d7-5b2c-44ac-87f2-fc7b42c171e2",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+              "protected": "P:System.Data.OleDb.OleDbCommand.CommandType"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+            "protectedSnippet": "P:System.Data.OleDb.OleDbCommand.CommandType",
+            "label": "P:System.Data.OleDb.OleDbCommand.CommandType",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "424f584f-5c36-4732-8d67-b8314b37953f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+              "protected": "P:System.Data.OleDb.OleDbCommand.CommandTimeout"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+            "protectedSnippet": "P:System.Data.OleDb.OleDbCommand.CommandTimeout",
+            "label": "P:System.Data.OleDb.OleDbCommand.CommandTimeout",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d3965a91-55ed-4565-94fe-4ec5dbb7da58",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+              "protected": "T:System.Data.OleDb.OleDbCommand"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbCommand",
+            "label": "T:System.Data.OleDb.OleDbCommand",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "6a7cfa9e-48e4-45e8-862f-48c8733f0424",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+              "protected": "M:System.Data.OleDb.OleDbCommand.#ctor"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var cmd = new OleDbCommand\r\n                { CommandTimeout = connectionInfo.CommandTimeOut, CommandType = CommandType.Text };",
+            "protectedSnippet": "M:System.Data.OleDb.OleDbCommand.#ctor",
+            "label": "M:System.Data.OleDb.OleDbCommand.#ctor",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 57,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b76efe21-b5d6-4caf-baaf-d9a9efce4bbc",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var DbDataAdapter = new OleDbDataAdapter();",
+              "protected": "T:System.Data.OleDb.OleDbDataAdapter"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var DbDataAdapter = new OleDbDataAdapter();",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbDataAdapter",
+            "label": "T:System.Data.OleDb.OleDbDataAdapter",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 56,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d2fc7993-7e2d-4fa6-9758-4f6180f3556c",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var DbDataAdapter = new OleDbDataAdapter();",
+              "protected": "M:System.Data.OleDb.OleDbDataAdapter.#ctor"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var DbDataAdapter = new OleDbDataAdapter();",
+            "protectedSnippet": "M:System.Data.OleDb.OleDbDataAdapter.#ctor",
+            "label": "M:System.Data.OleDb.OleDbDataAdapter.#ctor",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 56,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "9c29413a-cc76-45bb-87d0-747f177712ed",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);",
+              "protected": "T:System.Data.OleDb.OleDbConnection"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbConnection",
+            "label": "T:System.Data.OleDb.OleDbConnection",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 55,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "e61d7564-75cd-4880-8e3d-aecccfb1b201",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);",
+              "protected": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "var DbConnection = new OleDbConnection(connectionInfo.ConnnectionString);",
+            "protectedSnippet": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)",
+            "label": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 55,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5b26f8be-5584-4a66-a81b-f8886d335017",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbConnection conn = new OleDbConnection(ConnnectionString);",
+              "protected": "T:System.Data.OleDb.OleDbConnection"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbConnection conn = new OleDbConnection(ConnnectionString);",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbConnection",
+            "label": "T:System.Data.OleDb.OleDbConnection",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 42,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "322e2d90-c6ab-46e2-a07c-3c1d157f6263",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbConnection conn = new OleDbConnection(ConnnectionString);",
+              "protected": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbConnection conn = new OleDbConnection(ConnnectionString);",
+            "protectedSnippet": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)",
+            "label": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 42,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "273ac5e0-aeb7-49f2-b122-3d3fb9112628",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbConnection conn = new OleDbConnection(param.ConnnectionString);",
+              "protected": "T:System.Data.OleDb.OleDbConnection"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbConnection conn = new OleDbConnection(param.ConnnectionString);",
+            "protectedSnippet": "T:System.Data.OleDb.OleDbConnection",
+            "label": "T:System.Data.OleDb.OleDbConnection",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 35,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "bafa5d91-19b5-490f-97d9-6d019238c405",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Data.OleDb, 9.0.0-preview.6.24302.3. Add package reference to System.Data.OleDb, 9.0.0-preview.6.24302.3",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DbConnection conn = new OleDbConnection(param.ConnnectionString);",
+              "protected": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Utils\\RemoteDb\\OlebDbDbRemoteDb.cs",
+            "snippet": "DbConnection conn = new OleDbConnection(param.ConnnectionString);",
+            "protectedSnippet": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)",
+            "label": "M:System.Data.OleDb.OleDbConnection.#ctor(System.String)",
+            "properties": {
+              "PackageId": "System.Data.OleDb",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 35,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "536f8191-9913-4454-96c5-f96a9e81a7e3",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: Exception diagnostics are suppressed when IExceptionHandler.TryHandleAsync returns true ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseExceptionHandler(\u0022/Error\u0022);",
+              "protected": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "app.UseExceptionHandler(\u0022/Error\u0022);",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "label": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/10/exception-handler-diagnostics-suppressed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 180,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "890e3398-5cdf-4a24-bce7-86887e4bf1d5",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseMigrationsEndPoint();",
+              "protected": "T:Microsoft.AspNetCore.Builder.MigrationsEndPointExtensions"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "app.UseMigrationsEndPoint();",
+            "protectedSnippet": "T:Microsoft.AspNetCore.Builder.MigrationsEndPointExtensions",
+            "label": "T:Microsoft.AspNetCore.Builder.MigrationsEndPointExtensions",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 175,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "7fb864ed-9036-450c-987e-d6c4bb1e14ae",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseMigrationsEndPoint();",
+              "protected": "M:Microsoft.AspNetCore.Builder.MigrationsEndPointExtensions.UseMigrationsEndPoint(Microsoft.AspNetCore.Builder.IApplicationBuilder)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "app.UseMigrationsEndPoint();",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.MigrationsEndPointExtensions.UseMigrationsEndPoint(Microsoft.AspNetCore.Builder.IApplicationBuilder)",
+            "label": "M:Microsoft.AspNetCore.Builder.MigrationsEndPointExtensions.UseMigrationsEndPoint(Microsoft.AspNetCore.Builder.IApplicationBuilder)",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 175,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "146d9ecc-7635-4258-936d-b79f2bc6dfcd",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await Task.Delay(TimeSpan.FromSeconds(10));",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "await Task.Delay(TimeSpan.FromSeconds(10));",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 168,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "8d6c7383-a84e-4512-8bd9-f306ec4ccfeb",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHangfire(configuration =\u003E configuration\r\n    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)\r\n    .UseSimpleAssemblyNameTypeSerializer()\r\n    .UseRecommendedSerializerSettings()\r\n    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions\r\n    {\r\n        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),\r\n        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),\r\n        QueuePollInterval = TimeSpan.Zero,\r\n        UseRecommendedIsolationLevel = true,\r\n        DisableGlobalLocks = true\r\n    }));",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddHangfire(configuration =\u003E configuration\r\n    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)\r\n    .UseSimpleAssemblyNameTypeSerializer()\r\n    .UseRecommendedSerializerSettings()\r\n    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions\r\n    {\r\n        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),\r\n        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),\r\n        QueuePollInterval = TimeSpan.Zero,\r\n        UseRecommendedIsolationLevel = true,\r\n        DisableGlobalLocks = true\r\n    }));",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 106,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "cd5d1b0f-f3f1-4612-981d-5d8225975f1b",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHangfire(configuration =\u003E configuration\r\n    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)\r\n    .UseSimpleAssemblyNameTypeSerializer()\r\n    .UseRecommendedSerializerSettings()\r\n    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions\r\n    {\r\n        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),\r\n        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),\r\n        QueuePollInterval = TimeSpan.Zero,\r\n        UseRecommendedIsolationLevel = true,\r\n        DisableGlobalLocks = true\r\n    }));",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddHangfire(configuration =\u003E configuration\r\n    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)\r\n    .UseSimpleAssemblyNameTypeSerializer()\r\n    .UseRecommendedSerializerSettings()\r\n    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions\r\n    {\r\n        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),\r\n        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),\r\n        QueuePollInterval = TimeSpan.Zero,\r\n        UseRecommendedIsolationLevel = true,\r\n        DisableGlobalLocks = true\r\n    }));",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 106,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "5ea541f6-339c-4ffd-9da7-d69a65a6d227",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.Lockout.DefaultLockoutTimeSpan =\r\n        TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "options.Lockout.DefaultLockoutTimeSpan =\r\n        TimeSpan.FromMinutes(identityDefaultOptions.LockoutDefaultLockoutTimeSpanInMinutes);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 73,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "88a74735-d349-4853-96f9-0376e87383f5",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.Configure\u003CIdentityDefaultOptions\u003E(builder.Configuration.GetSection(\u0022IdentityDefaultOptions\u0022));",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.Configure\u003CIdentityDefaultOptions\u003E(builder.Configuration.GetSection(\u0022IdentityDefaultOptions\u0022));",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)",
+            "label": "M:Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 53,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "dcc47d50-dcf0-4dd3-aee3-6c0f89328fe9",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var identityDefaultOptions = builder.Configuration.GetSection(\u0022IdentityDefaultOptions\u0022).Get\u003CIdentityDefaultOptions\u003E();",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.Get\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "var identityDefaultOptions = builder.Configuration.GetSection(\u0022IdentityDefaultOptions\u0022).Get\u003CIdentityDefaultOptions\u003E();",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.Get\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.Get\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 52,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "433c1c56-5357-467e-b535-9bca980bf249",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.Configure\u003CBaseUser\u003E(builder.Configuration.GetSection(\u0022BaseUserDefaultOptions\u0022));",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.Configure\u003CBaseUser\u003E(builder.Configuration.GetSection(\u0022BaseUserDefaultOptions\u0022));",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)",
+            "label": "M:Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 51,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "7cd60b0e-0145-436d-9b6b-da5f7a074fc6",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Identity.UI, 8.0.6. Add package reference to Microsoft.AspNetCore.Identity.UI, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.IdentityServiceCollectionUIExtensions"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.IdentityServiceCollectionUIExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.IdentityServiceCollectionUIExtensions",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.UI",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 46,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "78564b6d-bd38-44aa-885d-697ea638aab4",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Identity.UI, 8.0.6. Add package reference to Microsoft.AspNetCore.Identity.UI, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.IdentityServiceCollectionUIExtensions.AddDefaultIdentity\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.AspNetCore.Identity.IdentityOptions})"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.IdentityServiceCollectionUIExtensions.AddDefaultIdentity\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.AspNetCore.Identity.IdentityOptions})",
+            "label": "M:Microsoft.Extensions.DependencyInjection.IdentityServiceCollectionUIExtensions.AddDefaultIdentity\u0060\u00601(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.AspNetCore.Identity.IdentityOptions})",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.UI",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 46,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "2026599e-a8fd-4c07-9a63-ea2f45494f45",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 46,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "edf2182e-3372-407a-b9d5-13654c0fca14",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions.AddEntityFrameworkStores\u0060\u00601(Microsoft.AspNetCore.Identity.IdentityBuilder)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddDefaultIdentity\u003CApplicationUser\u003E(options =\u003E options.SignIn.RequireConfirmedAccount = true)\r\n    .AddRoles\u003CIdentityRole\u003CGuid\u003E\u003E()\r\n    .AddEntityFrameworkStores\u003CApplicationDbContext\u003E()\r\n    .AddDefaultTokenProviders();",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions.AddEntityFrameworkStores\u0060\u00601(Microsoft.AspNetCore.Identity.IdentityBuilder)",
+            "label": "M:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions.AddEntityFrameworkStores\u0060\u00601(Microsoft.AspNetCore.Identity.IdentityBuilder)",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 46,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "c5c8b25a-a79a-4bd5-8d9e-6ee4c4f73bd3",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddDatabaseDeveloperPageExceptionFilter();",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.DatabaseDeveloperPageExceptionFilterServiceExtensions"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddDatabaseDeveloperPageExceptionFilter();",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.DatabaseDeveloperPageExceptionFilterServiceExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.DatabaseDeveloperPageExceptionFilterServiceExtensions",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 43,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "febdbafa-3943-43c1-b1fe-2d331e62e0d3",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 8.0.6",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddDatabaseDeveloperPageExceptionFilter();",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.DatabaseDeveloperPageExceptionFilterServiceExtensions.AddDatabaseDeveloperPageExceptionFilter(Microsoft.Extensions.DependencyInjection.IServiceCollection)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "builder.Services.AddDatabaseDeveloperPageExceptionFilter();",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.DatabaseDeveloperPageExceptionFilterServiceExtensions.AddDatabaseDeveloperPageExceptionFilter(Microsoft.Extensions.DependencyInjection.IServiceCollection)",
+            "label": "M:Microsoft.Extensions.DependencyInjection.DatabaseDeveloperPageExceptionFilterServiceExtensions.AddDatabaseDeveloperPageExceptionFilter(Microsoft.Extensions.DependencyInjection.IServiceCollection)",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 43,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "18ca1d49-637b-4519-8603-1bf23b50f61d",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "Report_App_WASM\\Server\\Report_App_WASM.Server.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "sqlOptions.EnableRetryOnFailure(\r\n                maxRetryCount: 5,\r\n                maxRetryDelay: TimeSpan.FromSeconds(60),\r\n                errorNumbersToAdd: null);",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Double)"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Server\\Program.cs",
+            "snippet": "sqlOptions.EnableRetryOnFailure(\r\n                maxRetryCount: 5,\r\n                maxRetryDelay: TimeSpan.FromSeconds(60),\r\n                errorNumbersToAdd: null);",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 35,
+            "column": 12
+          }
+        }
+      ],
+      "features": [
+        {
+          "featureId": "DirectoryServices",
+          "incidents": [
+            "e57375da-98d4-4c4e-857c-0f194733a08d",
+            "7bd448c5-2500-44d1-b9a9-3a1dd6b8b338",
+            "3acae60c-b412-4f7d-aba1-2ad2f33fe342",
+            "17b636ed-9c93-47d2-8317-12ef97433540",
+            "edb734dd-62ab-480c-a420-60f83b8e3487",
+            "d771d816-2a00-4108-af81-649275aa2ab6",
+            "5371b389-bd0d-4353-9ef7-b28ad832958e",
+            "5763f0f4-e37b-4294-8d1c-15edbac2c883",
+            "1088d611-b14a-41f3-86f3-85dba5131036",
+            "fda78b27-1866-472f-9466-322685dd81e4",
+            "138e2e97-df79-48c5-98a3-8a9eb1e73b2f",
+            "0f26e00b-4738-4dfe-aa15-895faf24f4e7",
+            "f094fefa-b85f-4fb1-ab95-cfbde0a14bc7"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Report_App_WASM\\Shared\\Report_App_WASM.Shared.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 1,
+      "properties": {
+        "appName": "Report_App_WASM.Shared",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 98,
+        "numberOfCodeFiles": 98,
+        "linesTotal": 1866,
+        "linesOfCode": 1866,
+        "totalApiScanned": 3497,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "3f70628a-cffb-4b02-9828-f488e27b37fe",
+          "ruleId": "Project.0002",
+          "projectPath": "Report_App_WASM\\Shared\\Report_App_WASM.Shared.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "Report_App_WASM\\Shared\\Report_App_WASM.Shared.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "isFeature": false,
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0003": {
+      "id": "Api.0003",
+      "isFeature": false,
+      "description": "API has a behavioral change in selected .NET version: code and binaries may behave differently at runtime without needing recompilation, but the new behavior might be undesirable and require updates.",
+      "label": "Behavioral change in selected .NET version",
+      "severity": "Potential",
+      "effort": 1
+    },
+    "Api.0002": {
+      "id": "Api.0002",
+      "isFeature": false,
+      "description": "API is source incompatible for selected .NET version: requires code changes to compile successfully when targeting a new version, such as removing obsolete APIs or changing method signatures.",
+      "label": "Source incompatible for selected .NET version",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0003": {
+      "id": "NuGet.0003",
+      "isFeature": false,
+      "description": "NuGet package functionality is included with framework reference.\n\nPackage needs to be removed.",
+      "label": "NuGet package functionality is included with framework reference",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262609",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0001": {
+      "id": "NuGet.0001",
+      "isFeature": false,
+      "description": "NuGet package is incompatible with selected target framework.\n\nPackage needs to be upgraded to a version supporting selected project target framework. If there no new package versions supporting new target framework, different package needs to be used and all code needs to be upgraded to new API.",
+      "label": "NuGet package is incompatible",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262529",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0005": {
+      "id": "NuGet.0005",
+      "isFeature": false,
+      "description": "NuGet package is deprecated.\n\nGo to its documentation and if there is a guidance for replacement of functionality provided by this package.",
+      "label": "NuGet package is deprecated",
+      "severity": "Optional",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262531",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0001": {
+      "id": "Api.0001",
+      "isFeature": false,
+      "description": "API is binary incompatible for selected .NET version: affects existing binaries, often requiring recompilation, because the API has changed in a way that prevents older binaries from loading or executing.",
+      "label": "Binary incompatible for selected .NET version",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "DirectoryServices": {
+      "id": "DirectoryServices",
+      "isFeature": false,
+      "description": "APIs for interacting with directory services like Active Directory and LDAP that are available via NuGet packages. The core functionality has been moved to separate packages. Install System.DirectoryServices (AD/LDAP), System.DirectoryServices.AccountManagement (user/group management), System.DirectoryServices.Protocols (LDAP protocol).",
+      "label": "Directory Services (LDAP/Active Directory)",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "System.DirectoryServices packages",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2341613",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
