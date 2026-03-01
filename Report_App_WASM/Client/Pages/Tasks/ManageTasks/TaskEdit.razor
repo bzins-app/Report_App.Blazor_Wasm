@@ -403,7 +403,7 @@
         if (_changesToSave)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, BackdropClick = true, MaxWidth = MaxWidth.ExtraSmall };
-            var result = await DialogService.ShowMessageBox(Localizer.Get("Warning"), Localizer.Get("Are you sure?") + Environment.NewLine + Localizer.Get("There are changes pending"), Localizer.Get("Confirm"), null, Localizer.Get("Cancel"), dialogOptions);
+            var result = await DialogService.ShowMessageBoxAsync(Localizer.Get("Warning"), Localizer.Get("Are you sure?") + Environment.NewLine + Localizer.Get("There are changes pending"), Localizer.Get("Confirm"), null, Localizer.Get("Cancel"), dialogOptions);
 
             if (result != null)
             {

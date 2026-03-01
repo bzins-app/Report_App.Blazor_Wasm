@@ -11,7 +11,7 @@
 
     private async Task OpenRunConfirmationComponent()
     {
-        var feedback = await DialogService.ShowMessageBox(
+        var feedback = await DialogService.ShowMessageBoxAsync(
             Localizer.Get("Confirm manual job"),
             Localizer.Get("Caution !") + " " + Localizer.Get("Are you sure you want to create a file to the directory? It could interfer with other processes"),
             Localizer.Get("Validate"), cancelText: Localizer.Get("Cancel"));
