@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.OData;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Report_App_WASM.Server;
 using Report_App_WASM.Server.Services.EmailSender;
 using Report_App_WASM.Server.Services.FilesManagement;
